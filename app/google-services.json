@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "195119523095",
+    "firebase_url": "https://monthlybudgetsync.firebaseio.com",
+    "project_id": "monthlybudgetsync",
+    "storage_bucket": "monthlybudgetsync.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195119523095:android:ca3397c585256fc967c352",
+        "android_client_info": {
+          "package_name": "com.brosh.finance.monthlybudgetsync"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195119523095-0h35u4vks4f08bmcdgj28kkmd9dffcpd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brosh.finance.monthlybudgetsync",
+            "certificate_hash": "46c5a132044d11d2be73085ae52e1f037d1ab4ff"
+          }
+        },
+        {
+          "client_id": "195119523095-0ai1d91pq7626res0a6ijltbi3n4smr8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-lHUbewSes05bfUnFcjmKVZaxe3emNOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195119523095-0ai1d91pq7626res0a6ijltbi3n4smr8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
