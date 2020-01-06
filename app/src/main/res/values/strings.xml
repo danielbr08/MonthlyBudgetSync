@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">MonthlyBudgetSync</string>
+    <string name="app_name">AuthenticatorApp</string>
+    <string name="user">User</string>
+    <string name="language">Language</string>
+    <string name="heb">HEB</string>
+    <string name="en">EN</string>
+
+
+
 </resources>

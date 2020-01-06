@@ -16,8 +16,7 @@ public final class DateService {
         return c.getTime();
     }
 
-    public String getYearMonth(Date date,char separator)
-    {
+    public String getYearMonth(Date date,char separator) {
         int month = date.getMonth() + 1;
         String monthStr = String.valueOf(month);
         if(month < 10)
@@ -45,8 +44,7 @@ public final class DateService {
     }
 
     //  Input: String with date include day
-    public String reverseDateString(String date, String separator)
-    {
+    public String reverseDateString(String date, String separator) {
         String[] l = date.split(separator);
         if(separator == "\\.")
             separator = ".";
@@ -68,8 +66,7 @@ public final class DateService {
         return date;
     }
 
-    public String convertDateToString(Date date, String format)
-    {
+    public String convertDateToString(Date date, String format) {
         DateFormat df = new SimpleDateFormat(format);
         return df.format(date);
     }
