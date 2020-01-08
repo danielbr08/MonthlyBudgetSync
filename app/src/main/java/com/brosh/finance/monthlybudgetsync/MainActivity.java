@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -32,12 +33,19 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
     DatabaseReference DatabaseReferenceShares;
     private Month month;
+    private Button createActivityButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        createActivityButton =  findViewById(R.id.openCreateBudget);
+        createActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCreateBudgetActivity();
+            }
+        }) ;
         downloadData();// list of month exists(year and month only)
 
         String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
@@ -89,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReferenceShares.child(shareWith).setValue(email.getText().toString().trim().replace('.',','));
     }
 
-    public void openCreateBudgetActivity(View view){
-        startActivity(new Intent(MainActivity.this,Create_Budget_Activity.class));
+    public void openCreateBudgetActivity(){
+        Intent intent = new Intent(MainActivity.this,Create_Budget_Activity.class);
+        intent.putExtra(getString(R.string.language),getString(R.string.heb));
+        startActivity(intent);
     }
 
     private void downloadData(){

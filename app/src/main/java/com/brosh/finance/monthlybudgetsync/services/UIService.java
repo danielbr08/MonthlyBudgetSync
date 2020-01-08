@@ -1,13 +1,16 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
 import android.graphics.*;
+import android.os.Build;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.*;
 
+import androidx.annotation.RequiresApi;
+
 public final class UIService {
 
-    public void setHeaderProperties(TextView tv)
+    public static void setHeaderProperties(TextView tv)
     {
         tv.setTypeface(null, Typeface.BOLD);
         tv.setTextColor(Color.BLACK);
@@ -16,7 +19,7 @@ public final class UIService {
         Linkify.addLinks(tv,Linkify.ALL);
     }
 
-    public void reverseLinearLayout(LinearLayout linearLayout)
+    public static void reverseLinearLayout(LinearLayout linearLayout)
     {
         for(int i = linearLayout.getChildCount()-1 ; i >= 0 ; i--)
         {
@@ -26,6 +29,7 @@ public final class UIService {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setLanguageConf(LinearLayout l)
     {
         for (int i = 0;i < l.getChildCount();i++)
@@ -37,7 +41,7 @@ public final class UIService {
         reverseLinearLayout(l);
     }
 
-    public  void strikeThroughText(TextView tv)
+    public static void strikeThroughText(TextView tv)
     {
         tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }

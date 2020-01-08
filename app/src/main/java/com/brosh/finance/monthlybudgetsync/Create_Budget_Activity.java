@@ -29,6 +29,7 @@ import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
@@ -39,6 +40,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private DateService dateService;
     private Month month;
     private Language language;
+
+    TextView emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV;
+
 
     AlertDialog.Builder myAlert;
     private ArrayList<Budget> allBudgets;
@@ -62,6 +66,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
+        LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
+        allBudgets = new ArrayList<>();
+        allCategories = new ArrayList<>();
         String choosenLanguage=getIntent().getExtras().getString(getString(R.string.language),getString(R.string.heb));
         language = new Language(choosenLanguage);
         setTitle(language.appName);
@@ -76,8 +83,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         OKButton = new Button(Create_Budget_Activity.this);
         newll = new LinearLayout(Create_Budget_Activity.this);
 
-        allBudgets = new ArrayList<>();
-        allCategories = new ArrayList<>();
         //setAddButton();
         setTitleRow();
         setBudgetGui();
@@ -595,8 +600,25 @@ public class Create_Budget_Activity extends AppCompatActivity {
     public void setTitleRow()
     {
         final LinearLayout titleLL = new LinearLayout(Create_Budget_Activity.this);
-        TextView emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV;
+        initTitlesTv();
 
+        //int screenHeight = display.getHeight();
+        //categoryNameLabel.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4 , ViewGroup.LayoutParams.WRAP_CONTENT));
+        //categoryFamilyEditText.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 3 ,ViewGroup.LayoutParams.WRAP_CONTENT));
+        //categoryValueLabel.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4 ,ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        //categoryValueEditText.setTextSize(18);
+        //LinearLayout.LayoutParams lp =  new LinearLayout.LayoutParams(screenWidth / 4,categoryNameEditText.getHeight());
+
+        ArrayList<TextView> titlesTV = new ArrayList<>(Arrays.asList(emptyTV,categoryNameTV,categoryValueTV,constPaymentTV,shopTV,payDateTV));
+        setTitleStyle(titlesTV,titleLL);
+
+        newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        newll.setOrientation(LinearLayout.HORIZONTAL);
+        LLMain.addView(titleLL);
+    }
+
+    private void initTitlesTv() {
         emptyTV = new TextView(Create_Budget_Activity.this);
         categoryNameTV = new TextView(Create_Budget_Activity.this);
         categoryValueTV = new TextView(Create_Budget_Activity.this);
@@ -611,11 +633,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         shopTV.setText(textService.getWordCapitalLetter(language.shopName));
         payDateTV.setText(textService.getWordCapitalLetter(language.chargeDay));
 
-        //int screenHeight = display.getHeight();
-        //categoryNameLabel.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4 , ViewGroup.LayoutParams.WRAP_CONTENT));
-        //categoryFamilyEditText.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 3 ,ViewGroup.LayoutParams.WRAP_CONTENT));
-        //categoryValueLabel.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4 ,ViewGroup.LayoutParams.WRAP_CONTENT));
-
         emptyTV.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, ViewGroup.LayoutParams.WRAP_CONTENT));
         categoryNameTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize ) * 27/100, ViewGroup.LayoutParams.WRAP_CONTENT));
         categoryValueTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize ) * 17/100, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -623,37 +640,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
         shopTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize ) * 22/100, ViewGroup.LayoutParams.WRAP_CONTENT));
         payDateTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize ) * 22/100, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+    }
 
-        //categoryValueEditText.setTextSize(18);
-        //LinearLayout.LayoutParams lp =  new LinearLayout.LayoutParams(screenWidth / 4,categoryNameEditText.getHeight());
-
-        emptyTV.setTextSize(15);
-        categoryNameTV.setTextSize(15);
-        categoryValueTV.setTextSize(15);
-        constPaymentTV.setTextSize(15);
-        shopTV.setTextSize(15);
-        payDateTV.setTextSize(15);
-
-        uiService.setHeaderProperties(emptyTV);
-        uiService.setHeaderProperties(categoryNameTV);
-        uiService.setHeaderProperties(categoryValueTV);
-        uiService.setHeaderProperties(constPaymentTV);
-        uiService.setHeaderProperties(shopTV);
-        uiService.setHeaderProperties(payDateTV);
-
-        titleLL.addView(emptyTV);
-        titleLL.addView(categoryNameTV);
-        titleLL.addView(categoryValueTV);
-        titleLL.addView(constPaymentTV);
-        titleLL.addView(shopTV);
-        titleLL.addView(payDateTV);
-
-        newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        newll.setOrientation(LinearLayout.HORIZONTAL);
-
-        //LinearLayout llMain = (LinearLayout)findViewById(R.id.LLMainCreateBudget);
-        LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
-        LLMain.addView(titleLL);
+    private void setTitleStyle(ArrayList<TextView> titlesTV,LinearLayout titleLL){
+        for (TextView titletv:titlesTV) {
+            titletv.setTextSize(15);
+            uiService.setHeaderProperties(titletv);
+            titleLL.addView(titletv);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -781,20 +775,20 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
 //        if(language.isHeb()) {
 
-            newll.addView(deleteRowButton);
+        newll.addView(deleteRowButton);
 
-            if (!constPaymentCB.isChecked()) {
-                shopET.setVisibility(View.INVISIBLE);
-                //chargeDayET.setVisibility(View.INVISIBLE);
-                optionalDaysSpinner.setVisibility(View.INVISIBLE);
-            }
+        if (!constPaymentCB.isChecked()) {
+            shopET.setVisibility(View.INVISIBLE);
+            //chargeDayET.setVisibility(View.INVISIBLE);
+            optionalDaysSpinner.setVisibility(View.INVISIBLE);
+        }
 
-            newll.addView(categoryNameET);
-            newll.addView(categoryValueET);
-            newll.addView(constPaymentCB);
-            newll.addView(shopET);
-            //newll.addView(chargeDayET);
-            newll.addView(optionalDaysSpinner);
+        newll.addView(categoryNameET);
+        newll.addView(categoryValueET);
+        newll.addView(constPaymentCB);
+        newll.addView(shopET);
+        //newll.addView(chargeDayET);
+        newll.addView(optionalDaysSpinner);
         if(language.isEn())
             uiService.setLanguageConf(newll);
 //        }
@@ -820,7 +814,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         addRow(newll, isWithCloseBtn);
     }
 
-        public void setSpinnerOptionalDays(Spinner OptionalDaysSP)
+    public void setSpinnerOptionalDays(Spinner OptionalDaysSP)
     {
         ArrayList<String> daysInMonth = new ArrayList<>();
         int i = 1;
@@ -830,8 +824,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this,
                 R.layout.custom_spinner,daysInMonth );
         if(language.language.equals("HEB"))
-        adapter = new ArrayAdapter<String>(this,
-                R.layout.custom_spinner,daysInMonth );
+            adapter = new ArrayAdapter<String>(this,
+                    R.layout.custom_spinner,daysInMonth );
         else if(language.language.equals("EN"))
             adapter = new ArrayAdapter<String>(this,
                     R.layout.custom_spinner_eng,daysInMonth );
