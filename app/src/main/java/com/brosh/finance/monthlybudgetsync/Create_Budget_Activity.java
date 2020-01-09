@@ -22,12 +22,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +47,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private UIService uiService;
     private TextService textService;
     private DateService dateService;
+
+    DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private Month month;
     private Language language;
 
@@ -65,6 +76,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+
+        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
         setContentView(R.layout.activity_create_budget);
         LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
         allBudgets = new ArrayList<>();
@@ -250,8 +264,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
 //                }
 //                else if(isAddedBudgetsExists)// Insert the added budgets needed only
 //                    questionTrueAnswer("ADD");// Values of old budget updated only
+                writeBudget(allBudgets);
             }
         });
+
 
         TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
 
@@ -260,6 +276,22 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.setOrientation(LinearLayout.HORIZONTAL);
         newll.addView(closeButton, lp);
         LLMain.addView(newll);
+    }
+
+    private void writeBudget(final ArrayList<Budget> budgets) {
+        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String budgetNumber = String.valueOf(dataSnapshot.getChildrenCount());
+                DatabaseReferenceUserMonthlyBudget.child("Budget").child(budgetNumber).setValue(budgets);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void setBudgets() {

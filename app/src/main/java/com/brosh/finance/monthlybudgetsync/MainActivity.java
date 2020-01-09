@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
         DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference("Shares");
-        DatabaseReferenceUserMonthlyBudget.setValue("");
+//        DatabaseReferenceUserMonthlyBudget.setValue("");
 
         phone = findViewById(R.id.phone);
         fullName = findViewById(R.id.fullName);
@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
     public void openCreateBudgetActivity(){
         Intent intent = new Intent(MainActivity.this,Create_Budget_Activity.class);
         intent.putExtra(getString(R.string.language),getString(R.string.heb));
+        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        intent.putExtra(getString(R.string.user),userKey);
         startActivity(intent);
     }
 
