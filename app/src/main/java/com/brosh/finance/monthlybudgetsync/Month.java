@@ -23,10 +23,11 @@ public class Month {
 
     //private ArrayList<Transaction> transactions;
 
-    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
+//    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
+    public Month(String id, Date refMonth)
     {
-        this.dateService = dateService;
-        this.dbService = dbService;
+//        this.dateService = dateService;
+//        this.dbService = dbService;
 
         this.budgetHMDBData = new HashMap<String,Budget>();
         this.transactionHMDBData = new HashMap<String,Transaction>();

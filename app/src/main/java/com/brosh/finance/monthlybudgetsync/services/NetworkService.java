@@ -5,7 +5,7 @@ import com.brosh.finance.monthlybudgetsync.*;
 import com.brosh.finance.monthlybudgetsync.Transaction;
 import com.google.firebase.database.*;
 
-public class networkService {
+public class NetworkService {
     private DatabaseReference budgetDB;
     private DatabaseReference transactionDB;
     private DatabaseReference categoryDB;
@@ -14,20 +14,32 @@ public class networkService {
 
     private Month month;
 
-    networkService(Month month){
+    public NetworkService(Month month,String userKey){
         this.month = month;
         String yearMonth = dateService.getYearMonth(month.getRefMonth(),'-');
-        budgetDB = FirebaseDatabase.getInstance().getReference(yearMonth).child("budget");
-        transactionDB = FirebaseDatabase.getInstance().getReference(yearMonth).child("transaction");
-        categoryDB = FirebaseDatabase.getInstance().getReference(yearMonth).child("category");
+        budgetDB = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey).child("Budget");
+//        transactionDB = FirebaseDatabase.getInstance().getReference(yearMonth).child("transaction");
+//        categoryDB = FirebaseDatabase.getInstance().getReference(yearMonth).child("category");
 
-        setBudgetDBData();
-        setTransactionDBData();
-        setCategoryDBData();
+        Query budgetNumberQuery = budgetDB.orderByKey().limitToLast(1);
+        budgetNumberQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
+                    setBudgetDBData(myDataSnapshot.getKey());
+                }
+            }
+            public void onCancelled(DatabaseError firebaseError) {
+            }
+        });
+//        setTransactionDBData();
+//        setCategoryDBData();
     }
 
-    public void setBudgetDBData() {
-        budgetDB.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void setBudgetDBData(String budgetNumber) {
+        DatabaseReference currentBudgetDB = budgetDB.child(budgetNumber);
+        currentBudgetDB.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

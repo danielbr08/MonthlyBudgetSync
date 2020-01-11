@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.auth.AuthResult;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         userId = fAuth.getCurrentUser().getUid();
 
         DocumentReference documentReference = fStore.collection("users").document(userId);
+        NetworkService networkService = new NetworkService(new Month("",new Date()),userKey);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                     phone.setText(documentSnapshot.getString("phone"));
                     fullName.setText(documentSnapshot.getString("fName"));
                     email.setText(documentSnapshot.getString("email"));
+
                 }
                 catch(Exception ex){
                     String s = ex.getMessage().toString();

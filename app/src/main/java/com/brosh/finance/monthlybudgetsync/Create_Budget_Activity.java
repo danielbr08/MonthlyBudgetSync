@@ -28,6 +28,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.services.DateService;
+import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
 import com.google.firebase.database.DataSnapshot;
@@ -284,7 +285,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String budgetNumber = String.valueOf(dataSnapshot.getChildrenCount());
-                DatabaseReferenceUserMonthlyBudget.child("Budget").child(budgetNumber).setValue(budgets);
+                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child("Budget");
+                for (Budget bgt:budgets) {
+                    String id = budgetNode.child(budgetNumber).push().getKey();
+                    bgt.setId(id);
+                    budgetNode.child(budgetNumber).child(id).setValue(bgt);
+                }
             }
 
             @Override

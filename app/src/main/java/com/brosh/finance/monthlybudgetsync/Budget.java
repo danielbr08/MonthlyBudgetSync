@@ -1,12 +1,16 @@
 package com.brosh.finance.monthlybudgetsync;
 
 public class Budget {
+    private String id;
     private String categoryName;
     private int value;
     private boolean isConstPayment;
     private String shop;
     private int chargeDay;
     private int catPriority;
+
+    public Budget() {
+    }
 
     public Budget(String categoryName, int value, boolean isConstPayment, String shop, int chargeDay, int catPriority) {
         this.categoryName = categoryName;
@@ -51,6 +55,17 @@ public class Budget {
         return catPriority;
     }
 
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
 
 

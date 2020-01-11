@@ -5,7 +5,7 @@ import java.util.*;
 
 
 public final class DateService {
-    public Date getTodayDate(){
+    public static Date getTodayDate(){
         Calendar c = Calendar.getInstance();
 
         // set the calendar to start of today
@@ -16,7 +16,7 @@ public final class DateService {
         return c.getTime();
     }
 
-    public String getYearMonth(Date date,char separator) {
+    public static String getYearMonth(Date date,char separator) {
         int month = date.getMonth() + 1;
         String monthStr = String.valueOf(month);
         if(month < 10)
@@ -30,7 +30,7 @@ public final class DateService {
         return yearStr + separator + monthStr;
     }
 
-    public Date getDateStartMonth()
+    public static Date getDateStartMonth()
     {
         Calendar c = Calendar.getInstance();
 
@@ -44,14 +44,14 @@ public final class DateService {
     }
 
     //  Input: String with date include day
-    public String reverseDateString(String date, String separator) {
+    public static String reverseDateString(String date, String separator) {
         String[] l = date.split(separator);
         if(separator == "\\.")
             separator = ".";
         return l[2] + separator + l[1] + separator + l[0];
     }
 
-    public Date convertStringToDate(String stringDate, String format){ // "dd/MM/yyyy"
+    public static Date convertStringToDate(String stringDate, String format){ // "dd/MM/yyyy"
         //String lastTimeDateString = "06/27/2017";
         java.text.DateFormat df = new SimpleDateFormat(format, Locale.US);
         Date date = null;
@@ -66,7 +66,7 @@ public final class DateService {
         return date;
     }
 
-    public String convertDateToString(Date date, String format) {
+    public static String convertDateToString(Date date, String format) {
         DateFormat df = new SimpleDateFormat(format);
         return df.format(date);
     }
