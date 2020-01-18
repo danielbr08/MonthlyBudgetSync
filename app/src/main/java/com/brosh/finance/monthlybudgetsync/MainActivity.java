@@ -11,7 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.brosh.finance.monthlybudgetsync.services.NetworkService;
+import com.brosh.finance.monthlybudgetsync.services.DBService;
+//import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.auth.AuthResult;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,12 +39,14 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
     DatabaseReference DatabaseReferenceShares;
     private Month month;
+    DBService dbServise;
     private Button createActivityButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dbServise = new DBService();
         createActivityButton =  findViewById(R.id.openCreateBudget);
         createActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
         }) ;
         downloadData();// list of month exists(year and month only)
 
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
+        dbServise = (DBService) getIntent().getSerializableExtra("dbService");
+
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
         DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference("Shares");
@@ -67,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
         userId = fAuth.getCurrentUser().getUid();
 
         DocumentReference documentReference = fStore.collection("users").document(userId);
-        NetworkService networkService = new NetworkService(new Month("",new Date()),userKey);
+        //NetworkService networkService = new NetworkService(new Month("",new Date()),userKey);
+        //networkService.init();
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -104,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void openCreateBudgetActivity(){
         Intent intent = new Intent(MainActivity.this,Create_Budget_Activity.class);
-        intent.putExtra(getString(R.string.language),getString(R.string.heb));
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
-        intent.putExtra(getString(R.string.user),userKey);
+        intent.putExtra(getString(R.string.LANGUAGE),getString(R.string.HEB));
+        String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
+        intent.putExtra(getString(R.string.USER),userKey);
         startActivity(intent);
     }
 

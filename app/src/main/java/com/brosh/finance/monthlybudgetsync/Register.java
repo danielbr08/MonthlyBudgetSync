@@ -45,6 +45,8 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Month month = (Month) getIntent().getSerializableExtra("month");
+
 
         final DatabaseReference DatabaseReferenceUsers = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -61,9 +63,9 @@ public class Register extends AppCompatActivity {
 
         if(fAuth.getCurrentUser() != null){
             final String emailKeyDotsReplacedInComma  = fAuth.getCurrentUser().getEmail().trim().replace('.',',');
-            Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
-            mainActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
-            startActivity(mainActivity);
+            Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
+            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
+            startActivity(initAppActivity);
             finish();
             return;
         }

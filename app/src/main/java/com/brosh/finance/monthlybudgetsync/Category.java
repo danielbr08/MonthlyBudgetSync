@@ -1,24 +1,24 @@
 package com.brosh.finance.monthlybudgetsync;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Category {
+public class Category implements Serializable {
     private String id;
 
     private String name;
     private double balance;
-
     private int budget;
-    private Map<String, Transaction> transactions;
+    private Map<String, Transaction> transactionHMDB;
 
-    public Category(String id, String name,double balance, int budget,Map<String, Transaction> transactions){
+    public Category(String id, String name,double balance, int budget,Map<String, Transaction> transactionHMDB){
         // services
 
         this.id = id;
         this.name = name;
         this.balance = balance;
         this.budget = budget;
-        this.transactions = transactions;
+        this.transactionHMDB = transactionHMDB;
     }
 
     public String getId() {
@@ -45,16 +45,16 @@ public class Category {
     }
 
 
-    public Map<String, Transaction> getTransactions() {
-        return transactions;
+    public Map<String, Transaction> getTransactionHMDB() {
+        return transactionHMDB;
     }
 
-    public void setTransactions(Map<String, Transaction> transactions) {
-        this.transactions = transactions;
+    public void setTransactionHMDB(Map<String, Transaction> transactionHMDB) {
+        this.transactionHMDB = transactionHMDB;
     }
 
     public void addTransactions(String id, Transaction transactions) {
-        this.transactions.put(id,transactions);
+        this.transactionHMDB.put(id,transactions);
     }
 
     public void withdrawal(double trnPrice){

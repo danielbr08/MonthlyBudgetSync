@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Monthly Budget</string>
-    <string name="user">User</string>
-    <string name="language">Language</string>
-    <string name="heb">HEB</string>
-    <string name="en">EN</string>
-    <string name="id">id</string>
-
+    <string name="APP_NAME">Monthly Budget</string>
+    <string name="USER">User</string>
+    <string name="LANGUAGE">Language</string>
+    <string name="HEB">HEB</string>
+    <string name="EN">EN</string>
+    <string name="ID">id</string>
+    <string name="DB_SERVICE">dbService</string>
 
 
 </resources>

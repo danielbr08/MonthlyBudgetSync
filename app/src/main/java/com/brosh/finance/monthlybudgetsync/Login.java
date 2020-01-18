@@ -17,8 +17,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
     EditText mEmail,mPassword;
@@ -74,9 +81,9 @@ public class Login extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(Login.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             final String emailKeyDotsReplacedInComma  = mEmail.getText().toString().trim().replace('.',',');
-                            Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
-                            mainActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
-                            startActivity(mainActivity);
+                            Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
+                            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
+                            startActivity(initAppActivity);
                         }else {
                             Toast.makeText(Login.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
@@ -93,7 +100,8 @@ public class Login extends AppCompatActivity {
         mCreateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),Register.class));
+                Intent intent = new Intent(getApplicationContext(),Register.class);
+                startActivity(intent);
             }
         });
 

@@ -1,6 +1,8 @@
 package com.brosh.finance.monthlybudgetsync;
 
-public class Budget {
+import java.io.Serializable;
+
+public class Budget implements Serializable {
     private String id;
     private String categoryName;
     private int value;

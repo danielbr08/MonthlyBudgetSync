@@ -3,14 +3,16 @@ package com.brosh.finance.monthlybudgetsync;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Month {
-    private Map<String,Budget> budgetHMDBData;
-    private Map<String,Transaction> transactionHMDBData;
-    private Map<String,Category> categoryHMDBData;
+public class Month implements Serializable {
+//    private Map<String,HashMap<String,Budget>> budgetHMDBData;
+    public Map<String,Budget> budgetHMDB;
+    private Map<String,Transaction> transactionHMDB;
+    private Map<String,Category> categoryHMDB;
     // services
     private DateService dateService;
     private DBService dbService;
@@ -20,6 +22,7 @@ public class Month {
     private boolean isActive;
     private Map<String,Category> categories;
     private int tranIdNumerator;
+    private String budgetNumber;
 
     //private ArrayList<Transaction> transactions;
 
@@ -29,9 +32,10 @@ public class Month {
 //        this.dateService = dateService;
 //        this.dbService = dbService;
 
-        this.budgetHMDBData = new HashMap<String,Budget>();
-        this.transactionHMDBData = new HashMap<String,Transaction>();
-        this.categoryHMDBData = new HashMap<String,Category>();
+//        this.budgetHMDB = new HashMap<String,HashMap<String,Budget>>();
+        this.budgetHMDB = new HashMap<String,Budget>();
+        this.transactionHMDB = new HashMap<String,Transaction>();
+        this.categoryHMDB = new HashMap<String,Category>();
 
         this.id = id;
         this.refMonth = refMonth;
@@ -42,16 +46,24 @@ public class Month {
 //        initCategories();
     }
 
+    public String getBudgetNumber() {
+        return budgetNumber;
+    }
+
+    public void setBudgetNumber(String budgetNumber) {
+        this.budgetNumber = budgetNumber;
+    }
+
     public void updateSpecificBudget(String id, Budget bgt){
-        this.budgetHMDBData.put(id, bgt);
+        this.budgetHMDB.put(id, bgt);
     }
 
     public void updateSpecificTransaction(String id, Transaction trn){
-        this.transactionHMDBData.put(id, trn);
+        this.transactionHMDB.put(id, trn);
     }
 
     public void updateSpecificCategory(String id, Category cat){
-        this.categoryHMDBData.put(id, cat);
+        this.categoryHMDB.put(id, cat);
     }
 
     public Date getRefMonth() {
@@ -87,16 +99,20 @@ public class Month {
         this.tranIdNumerator = tranIdNumerator;
     }
 
-    public Map<String, Budget> getBudgetHMDBData() {
-        return budgetHMDBData;
+    public Map<String, Budget> getbudgetHMDB() {
+        return budgetHMDB;
     }
 
-    public Map<String, Transaction> getTransactionHMDBData() {
-        return transactionHMDBData;
+    public Map<String, Transaction> getTransactionHMDB() {
+        return transactionHMDB;
     }
 
-    public Map<String, Category> getCategoryHMDBData() {
-        return categoryHMDBData;
+    public Map<String, Category> getCategoryHMDB() {
+        return categoryHMDB;
+    }
+
+    public void addCategory(String id, Category category){
+        categoryHMDB.put(id,category);
     }
 
     public String getId() {
