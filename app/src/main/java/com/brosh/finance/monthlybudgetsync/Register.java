@@ -64,7 +64,7 @@ public class Register extends AppCompatActivity {
         if(fAuth.getCurrentUser() != null){
             final String emailKeyDotsReplacedInComma  = fAuth.getCurrentUser().getEmail().trim().replace('.',',');
             Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
-            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
+            initAppActivity.putExtra(getString(R.string.USER),emailKeyDotsReplacedInComma);
             startActivity(initAppActivity);
             finish();
             return;
@@ -136,7 +136,7 @@ public class Register extends AppCompatActivity {
                                             DatabaseReferenceUsers.child(emailKeyDotsReplacedInComma).setValue("Group1");// value = groupID[DBid]
                                         }
                                         Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
-                                        mainActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
+                                        mainActivity.putExtra(getString(R.string.USER),emailKeyDotsReplacedInComma);
                                         startActivity(mainActivity);
                                         return;
                                     }

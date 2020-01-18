@@ -28,7 +28,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.NetworkService;
+//import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
 import com.google.firebase.database.DataSnapshot;
@@ -77,14 +77,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
         setContentView(R.layout.activity_create_budget);
         LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
         allBudgets = new ArrayList<>();
         allCategories = new ArrayList<>();
-        String choosenLanguage=getIntent().getExtras().getString(getString(R.string.language),getString(R.string.heb));
+        String choosenLanguage=getIntent().getExtras().getString(getString(R.string.LANGUAGE),getString(R.string.HEB));
         language = new Language(choosenLanguage);
         setTitle(language.appName);
         dfaultBackground = new View(this).getBackground();

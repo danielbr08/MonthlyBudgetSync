@@ -24,7 +24,7 @@ public class InitAppActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_app);
         dbService = new DBService();
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
         initDB(userKey);
     }
 
