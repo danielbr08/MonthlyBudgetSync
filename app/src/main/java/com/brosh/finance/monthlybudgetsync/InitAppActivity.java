@@ -51,6 +51,7 @@ public class InitAppActivity extends AppCompatActivity {
                 }
                 Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
                 mainActivityIntent.putExtra("dbService",dbService);
+                startActivity(mainActivityIntent);
             }
             public void onCancelled(DatabaseError firebaseError) {
             }
@@ -63,7 +64,7 @@ public class InitAppActivity extends AppCompatActivity {
             for(DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
                 String budgetObjkey = mySnapshot.getKey().toString();
                 Budget budgetObj = mySnapshot.getValue(Budget.class);
-                dbService.updateSpecificBudget(budgetNumber,budgetObjkey,budgetObj);
+                dbService.updateSpecificBudget(budgetNumber,budgetObj);
                 setBudgetEventUpdateValue(budgetSnapshot.getRef(),budgetNumber,budgetObjkey);
             }
         }
@@ -89,13 +90,13 @@ public class InitAppActivity extends AppCompatActivity {
         }
     }
 
-    public void setBudgetEventUpdateValue(DatabaseReference budgetDBReference, final String refMonthKey,final String objId) {
+    public void setBudgetEventUpdateValue(DatabaseReference budgetDBReference, final String refMonthKey, String objId) {
         budgetDBReference.child(refMonthKey).child(objId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     Budget budgetObj = dataSnapshot.getValue(Budget.class);
-                    dbService.updateSpecificBudget(refMonthKey,objId, budgetObj);
+                    dbService.updateSpecificBudget(refMonthKey, budgetObj);
                 }
                 catch(Exception ex){
                     String message = ex.getMessage().toString();
@@ -113,7 +114,7 @@ public class InitAppActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     Category cat = dataSnapshot.getValue(Category.class);
-                    dbService.updateSpecificCategory(refMonthKey,catObjId, cat);
+                    dbService.updateSpecificCategory(refMonthKey, cat);
                     DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child("Transactions");
                     for(DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
                             String trnObjkey = transactionSnapshot.getKey().toString();

@@ -39,14 +39,14 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
     DatabaseReference DatabaseReferenceShares;
     private Month month;
-    DBService dbServise;
+    DBService dbService;
     private Button createActivityButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbServise = new DBService();
+        dbService = new DBService();
         createActivityButton =  findViewById(R.id.openCreateBudget);
         createActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         downloadData();// list of month exists(year and month only)
 
         String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
-        dbServise = (DBService) getIntent().getSerializableExtra("dbService");
+        dbService = (DBService) getIntent().getSerializableExtra("dbService");
 
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(getString(R.string.LANGUAGE),getString(R.string.HEB));
         String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
         intent.putExtra(getString(R.string.USER),userKey);
+        intent.putExtra("dbService",dbService);
         startActivity(intent);
     }
 

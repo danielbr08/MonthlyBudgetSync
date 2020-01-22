@@ -68,6 +68,10 @@ public class Budget implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
 }
 
 
