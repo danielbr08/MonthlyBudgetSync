@@ -77,7 +77,7 @@ public class Language {
     String messageName = "הודעה";
     String requiredField = "שדה חובה!";
 
-    Language(String language)
+    public Language(String language)
     {
         this.language = language;
         if(language.equals("HEB"))

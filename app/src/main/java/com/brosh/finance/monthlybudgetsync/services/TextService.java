@@ -15,6 +15,6 @@ public final class TextService {
     }
 
     public static String getSeperator() {
-        return "->";
+        return Definition.ARROW_RIGHT;
     }
 }

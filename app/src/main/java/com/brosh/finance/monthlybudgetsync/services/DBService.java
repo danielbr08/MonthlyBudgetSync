@@ -9,12 +9,12 @@ import com.brosh.finance.monthlybudgetsync.Budget;
 import com.brosh.finance.monthlybudgetsync.Category;
 import com.brosh.finance.monthlybudgetsync.MainActivity;
 import com.brosh.finance.monthlybudgetsync.Month;
+import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.Transaction;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
@@ -120,7 +120,7 @@ public final class DBService implements Serializable {
 
     public void initDB(String userKey){
         final DBService thisObject = this;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(tempActivity.getString(R.string.monthly_budget)).child(userKey);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -130,18 +130,18 @@ public final class DBService implements Serializable {
                 for(DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
                     String dbKey =  myDataSnapshot.getKey().toString();
                     switch(dbKey){
-                        case "Budget":{
+                        case Definition.BUDGET:{
                             setBudgetDB(myDataSnapshot);
                             break;
                         }
-                        case "Months":{
+                        case Definition.MONTHS:{
                             setMonthsDB(myDataSnapshot);
                             break;
                         }
                     }
                 }
                 Intent mainActivityIntent = new Intent(tempActivity.getApplicationContext(), MainActivity.class);
-                mainActivityIntent.putExtra("dbService",thisObject);
+                mainActivityIntent.putExtra(tempActivity.getString(R.string.db_service),thisObject);
                 tempActivity.startActivity(mainActivityIntent);
                 tempActivity.finish();
             }
@@ -176,7 +176,7 @@ public final class DBService implements Serializable {
             String refMonthKey =  monthSnapshot.getKey().toString();
             Month monthObj = monthSnapshot.getValue(Month.class);
             updateSpecificMonth(refMonthKey,monthObj);
-            DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child("Categories");
+            DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child(tempActivity.getString(R.string.categories));
             setCategoriesEventUpdateValue(categoriesDatabaseReference,refMonthKey);
             setMonthEventUpdateValue(monthSnapshot.getRef(),refMonthKey);
         }
@@ -207,7 +207,7 @@ public final class DBService implements Serializable {
                 try {
                     Category cat = dataSnapshot.getValue(Category.class);
                     updateSpecificCategory(refMonthKey, cat);
-                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child("Transactions");
+                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child(tempActivity.getString(R.string.transactions));
                     for(DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
                         String trnObjkey = transactionSnapshot.getKey().toString();
                         setTransactionEventUpdateValue(transactionDBReference.getRef(),refMonthKey,catObjId,trnObjkey);

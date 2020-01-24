@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class Create_Budget_Activity extends AppCompatActivity {
 
@@ -65,6 +66,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private Display display;
     private int screenWidth;
     private int buttonSize = 120;
+
     private Drawable dfaultBackground;
 
     private LinearLayout LLMain;
@@ -85,7 +87,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         dateService = new DateService();
 
-        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
+        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
         setContentView(R.layout.activity_create_budget);
         LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
         allBudgets = new ArrayList<>();
@@ -667,20 +669,19 @@ public class Create_Budget_Activity extends AppCompatActivity {
         constPaymentTV = new TextView(Create_Budget_Activity.this);
         shopTV = new TextView(Create_Budget_Activity.this);
         payDateTV = new TextView(Create_Budget_Activity.this);
+        List<View> widgets = Arrays.asList((View)categoryNameTV, (View)categoryNameTV, (View)constPaymentTV, (View)shopTV, (View)payDateTV);
 
-        emptyTV.setText("");
+        uiService.setTextTitleWidgets(widgets);
+        int screenWidthReduceButtonSize = screenWidth - buttonSize;
+        uiService.setWidthCreateBudgetPageTitleWidgets(widgets,screenWidthReduceButtonSize,ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    private void setTextTitleWidgets() {
         categoryNameTV.setText(textService.getWordCapitalLetter(language.categoryName));
         categoryValueTV.setText(textService.getWordCapitalLetter(language.budgetName));
         constPaymentTV.setText(textService.getWordCapitalLetter(language.constantDate));
         shopTV.setText(textService.getWordCapitalLetter(language.shopName));
         payDateTV.setText(textService.getWordCapitalLetter(language.chargeDay));
-
-        emptyTV.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, ViewGroup.LayoutParams.WRAP_CONTENT));
-        categoryNameTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 27 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        categoryValueTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 17 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        constPaymentTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 12 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        shopTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 22 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        payDateTV.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 22 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
 
     }
 
@@ -711,43 +712,21 @@ public class Create_Budget_Activity extends AppCompatActivity {
     public void add_New_row(String categoryName, int categoryValue, boolean isConstPayment, String shop, int chargeDay) {
         boolean isEmptyRow = (categoryName == null && categoryValue == 0 && isConstPayment == false && shop == null && chargeDay == 0);
         final LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
-        final EditText categoryNameET, categoryValueET;
-        final EditText shopET;
-        //final EditText chargeDayET;
-        final Spinner optionalDaysSpinner;
-        CheckBox constPaymentCB;
-
-        categoryNameET = new EditText(Create_Budget_Activity.this);
-        categoryValueET = new EditText(Create_Budget_Activity.this);
-        constPaymentCB = new CheckBox(Create_Budget_Activity.this);
-        shopET = new EditText(Create_Budget_Activity.this);
-        //chargeDayET = new EditText(Create_Budget_Activity.this);
-        optionalDaysSpinner = new Spinner(Create_Budget_Activity.this);
+        final EditText categoryNameET = new EditText(Create_Budget_Activity.this),
+                       categoryValueET = new EditText(Create_Budget_Activity.this),
+                       shopET = new EditText(Create_Budget_Activity.this);
+        final Spinner optionalDaysSpinner = new Spinner(Create_Budget_Activity.this);
+        final CheckBox constPaymentCB = new CheckBox(Create_Budget_Activity.this);;
         setSpinnerOptionalDays(optionalDaysSpinner);
 
-        categoryNameET.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 27 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        categoryValueET.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 14 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        constPaymentCB.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 14 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        shopET.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 23 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        //chargeDayET.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize ) * 11/100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        optionalDaysSpinner.setLayoutParams(new LinearLayout.LayoutParams((screenWidth - buttonSize) * 22 / 100, ViewGroup.LayoutParams.WRAP_CONTENT));
-        constPaymentCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    shopET.setVisibility(View.VISIBLE);
-                    //chargeDayET.setVisibility(View.VISIBLE);
-                    optionalDaysSpinner.setVisibility(View.VISIBLE);
-                } else {
-                    shopET.setVisibility(View.INVISIBLE);
-                    //chargeDayET.setVisibility(View.INVISIBLE);
-                    optionalDaysSpinner.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+        List<View> widgets = Arrays.asList((View)categoryNameET, (View)categoryNameET, (View)categoryValueET, (View)constPaymentCB, (View)shopET, (View)optionalDaysSpinner);
+        // todo check the width of widgets
+        int screenWidthReduceButtonSize = screenWidth - buttonSize;
+        uiService.setWidthCreateBudgetPageDataWidgets(widgets,screenWidthReduceButtonSize,ViewGroup.LayoutParams.WRAP_CONTENT);
+        setConstPaymentCBOnCheckChangedListner(constPaymentCB,shopET,optionalDaysSpinner);
 
         if (!isEmptyRow)
             categoryNameET.setText(categoryName);
-        //EditText categoryFamilyEditText = new EditText(Create_Budget_Activity.this);
         if (!isEmptyRow)
             categoryValueET.setText(String.valueOf(categoryValue));
 
@@ -755,7 +734,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         if (!isEmptyRow) {
             shopET.setText(shop);
-            //chargeDayET.setText(String.valueOf(chargeDay));
             optionalDaysSpinner.setSelection(chargeDay - 1);
         }
 
@@ -764,13 +742,11 @@ public class Create_Budget_Activity extends AppCompatActivity {
         categoryValueET.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         constPaymentCB.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
         shopET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-        //chargeDayET.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
 
         categoryNameET.setTextSize(12);
         categoryValueET.setTextSize(12);
         constPaymentCB.setTextSize(12);
         shopET.setTextSize(12);
-        //chargeDayET.setTextSize(12);
 
         newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         newll.setOrientation(LinearLayout.HORIZONTAL);
@@ -789,7 +765,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         });
 
         final ImageButton deleteRowButton = new ImageButton(this);
-        //deleteRowButton.setTooltipText("מחק שורה");
 
         deleteRowButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -812,7 +787,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         if (!constPaymentCB.isChecked()) {
             shopET.setVisibility(View.INVISIBLE);
-            //chargeDayET.setVisibility(View.INVISIBLE);
             optionalDaysSpinner.setVisibility(View.INVISIBLE);
         }
 
@@ -820,7 +794,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(categoryValueET);
         newll.addView(constPaymentCB);
         newll.addView(shopET);
-        //newll.addView(chargeDayET);
         newll.addView(optionalDaysSpinner);
         if (language.isEn())
             uiService.setLanguageConf(newll);
@@ -847,6 +820,20 @@ public class Create_Budget_Activity extends AppCompatActivity {
         addRow(newll, isWithCloseBtn);
     }
 
+    private void setConstPaymentCBOnCheckChangedListner(CheckBox constPaymentCB, final EditText shopET, final Spinner optionalDaysSpinner) {
+        constPaymentCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                shopET.setVisibility(View.VISIBLE);
+                optionalDaysSpinner.setVisibility(View.VISIBLE);
+            } else {
+                shopET.setVisibility(View.INVISIBLE);
+                optionalDaysSpinner.setVisibility(View.INVISIBLE);
+            }
+        }
+    });
+    }
+
     public void setSpinnerOptionalDays(Spinner OptionalDaysSP) {
         ArrayList<String> daysInMonth = new ArrayList<>();
         int i = 1;
@@ -861,7 +848,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         else if (language.language.equals(getString(R.string.ENGLISH)))
             adapter = new ArrayAdapter<String>(this,
                     R.layout.custom_spinner_eng, daysInMonth);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         OptionalDaysSP.setAdapter(adapter);
         OptionalDaysSP.setSelection(1, true);
     }
@@ -889,13 +875,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         deleteRowButton.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
         deleteRowButton.setAdjustViewBounds(true);
-        //LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(40, 40);
         LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
 
-        //addRowButton.setPadding();
-
         newll.setOrientation(LinearLayout.HORIZONTAL);
-        newll.addView(deleteRowButton);//,lp);
+        newll.addView(deleteRowButton);
         LLMain.addView(newll);
     }
 

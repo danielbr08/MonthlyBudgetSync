@@ -4,9 +4,15 @@ import android.graphics.*;
 import android.os.Build;
 import android.text.util.Linkify;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.annotation.RequiresApi;
+
+import com.brosh.finance.monthlybudgetsync.Config;
+import com.brosh.finance.monthlybudgetsync.Language;
+
+import java.util.List;
 
 public final class UIService {
 
@@ -44,5 +50,37 @@ public final class UIService {
     public static void strikeThroughText(TextView tv)
     {
         tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+    }
+
+    public void setWidthCreateBudgetPageDataWidgets(List<View> widgets, int screenWidthReduceButtonSize, int wrapContent) {
+        // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, optionalDaysSpinner
+        int i=0;
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize * Config.CATEGORY_NAME_ET_WIDTH_PERCENT), wrapContent));
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize * Config.CATEGORY_VALUE_ET_WIDTH_PERCENT), wrapContent));
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.CONST_PAYMENT_CB_WIDTH_PERCENT), wrapContent));
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.SHOP_ET_WIDTH_PERCENT), wrapContent));
+        widgets.get(i).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.OPTIONAL_DAYS_SPINNER_WIDTH_PERCENT), wrapContent));
+    }
+
+    public void setWidthCreateBudgetPageTitleWidgets(List<View> widgets, int screenWidthReduceButtonSize, int wrapContent) {
+        // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
+        int i=0;
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize * Config.CATEGORY_NAME_TV_TITLE_WIDTH_PERCENT), wrapContent));
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize * Config.CATEGORY_VALUE_TV_TITLE_WIDTH_PERCENT), wrapContent));
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.CONST_PAYMENT_TV_TITLE_WIDTH_PERCENT), wrapContent));
+        widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.SHOP_TV_TITLE_WIDTH_PERCENT), wrapContent));
+        widgets.get(i).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.PAY_DATE_TITLE_WIDTH_PERCENT), wrapContent));
+
+    }
+
+    public void setTextTitleWidgets(List<View> widgets) {
+        // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
+        Language language = new Language(Config.DEFAULT_LANGUAGE);
+        int i=0;
+        ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.categoryName));
+        ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.budgetName));
+        ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.constantDate));
+        ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.shopName));
+        ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.chargeDay));
     }
 }

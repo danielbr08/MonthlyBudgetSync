@@ -1,5 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import com.brosh.finance.monthlybudgetsync.Language;
+
 import java.text.*;
 import java.util.*;
 
@@ -20,7 +22,7 @@ public final class DateService {
         int month = date.getMonth() + 1;
         String monthStr = String.valueOf(month);
         if(month < 10)
-            monthStr = "0" + month;
+            monthStr = Definition.ZERO + month;
 
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -46,8 +48,8 @@ public final class DateService {
     //  Input: String with date include day
     public static String reverseDateString(String date, String separator) {
         String[] l = date.split(separator);
-        if(separator == "\\.")
-            separator = ".";
+        if(separator == "\\.")// todo add this string to Definition
+            separator = Definition.DOT;
         return l[2] + separator + l[1] + separator + l[0];
     }
 

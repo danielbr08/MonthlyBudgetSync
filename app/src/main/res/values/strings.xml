@@ -40,6 +40,14 @@
     <string name="register">Register</string>
     <string name="already_registered_login_here">Already Registered ? Login Here</string>
     <string name="transactions">Transactions</string>
+    <string name="monthly_budget">Monthly Budget</string>
+    <string name="budget">Budget</string>
+    <string name="months">Months</string>
+    <string name="db_service">dbService</string>
+    <string name="categories">Categories</string>
+    <string name="transactions">Transactions</string>
+    <string name="monthly_budget">Monthly Budget</string>
+    <string name="empty" />
 
 
 </resources>
