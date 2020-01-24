@@ -6,6 +6,40 @@
     <string name="EN">EN</string>
     <string name="ID">id</string>
     <string name="DB_SERVICE">dbService</string>
+    <string name="CATEGORY">Category</string>
+    <string name="CREATE">CRT</string>
+    <string name="ADD">ADD</string>
+    <string name="DELETE">DEL</string>
+    <string name="DB_SERVICE">dbService</string>
+    <string name="MONTH">month</string>
+    <string name="BUDGET">Budget</string>
+    <string name="EMPTY" />
+    <string name="ZERO">0</string>
+    <string name="SEPERATOR">-</string>
+    <string name="HEBREW">HEB</string>
+    <string name="ENGLISH">EN</string>
+    <string name="CREATE_BUDGET">Create Budget</string>
+    <string name="MONTHLY_BUDGET_APP">Monthly Budget App</string>
+    <string name="CREATE_NEW_ACCOUNT">Create New Account</string>
+    <string name="EMAIL">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="new_here_create_account">New Here ? Create Account</string>
+    <string name="logout">Logout</string>
+    <string name="your_profile">Your Profile</string>
+    <string name="your_name">Your Name</string>
+    <string name="your_email_address">Your Email Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="button">Button</string>
+    <string name="create_budget">create budget</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="full_name">Full Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="phone">Phone</string>
+    <string name="register">Register</string>
+    <string name="already_registered_login_here">Already Registered ? Login Here</string>
+    <string name="transactions">Transactions</string>
 
 
 </resources>

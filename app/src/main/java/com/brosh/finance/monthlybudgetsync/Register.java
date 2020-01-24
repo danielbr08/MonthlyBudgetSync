@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,11 +41,13 @@ public class Register extends AppCompatActivity {
     ProgressBar progressBar;
     FirebaseFirestore fStore;
     String userID;
+    private DBService dbService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        dbService = new DBService(this);
         Month month = (Month) getIntent().getSerializableExtra("month");
 
 
@@ -65,8 +68,7 @@ public class Register extends AppCompatActivity {
             final String emailKeyDotsReplacedInComma  = fAuth.getCurrentUser().getEmail().trim().replace('.',',');
             Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
             initAppActivity.putExtra(getString(R.string.USER),emailKeyDotsReplacedInComma);
-            startActivity(initAppActivity);
-            finish();
+            dbService.initDB(emailKeyDotsReplacedInComma);
             return;
         }
 

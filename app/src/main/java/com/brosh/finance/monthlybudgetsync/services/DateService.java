@@ -16,7 +16,7 @@ public final class DateService {
         return c.getTime();
     }
 
-    public static String getYearMonth(Date date,char separator) {
+    public static String getYearMonth(Date date, String separator) {
         int month = date.getMonth() + 1;
         String monthStr = String.valueOf(month);
         if(month < 10)

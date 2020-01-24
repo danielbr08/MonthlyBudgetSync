@@ -80,8 +80,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String userKey = getIntent().getExtras().getString(getString(R.string.USER), "");
-        dbService = (DBService) getIntent().getSerializableExtra("dbService");
-        month = (Month) getIntent().getSerializableExtra("month");
+        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.DB_SERVICE));
+        month = (Month) getIntent().getSerializableExtra(getString(R.string.MONTH));
 
         dateService = new DateService();
 
@@ -257,14 +257,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
                     //showMessageNoButton("אנא הזן תקציב!");
                     return;
                 } else if (month == null)
-                    questionTrueAnswer("CRT");// First time create budget
+                    questionTrueAnswer(getString(R.string.CREATE));// First time create budget
                 else if (isOriginContentBudgetChanged)// ReWriting of monthly budget needed
                 {
                     if (dbService.checkCurrentRefMonthExists())
                         showQuestion(language.createBudgetQuestion);
                     return;
                 } else if (isAddedBudgetsExists)// Insert the added budgets needed only
-                    questionTrueAnswer("ADD");// Values of old budget updated only
+                    questionTrueAnswer(getString(R.string.ADD));// Values of old budget updated only
             }
         });
 
@@ -280,12 +280,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     private void writeBudget(int budgetNumber, final ArrayList<Budget> budgets) {
         final String maxBudgetNumber = String.valueOf(budgetNumber);
-        Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child("Budget").child(maxBudgetNumber);
+        Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.BUDGET)).child(maxBudgetNumber);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
         addBudgetQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child("Budget");
+                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.BUDGET));
                 for (Budget bgt : budgets) {
                     String id = budgetNode.child(maxBudgetNumber).push().getKey();
                     bgt.setId(id);
@@ -302,12 +302,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     private void writeAddedCategories(final String yearMonthKey, final ArrayList<Budget> budgets) {
-        Query addCategoriesQuery = DatabaseReferenceUserMonthlyBudget.child("months").child(yearMonthKey);
+        Query addCategoriesQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.MONTH)).child(yearMonthKey);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
         addCategoriesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DatabaseReference categoryNode = DatabaseReferenceUserMonthlyBudget.child("Category");
+                DatabaseReference categoryNode = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.CATEGORY));
                 for (Budget bgt : budgets) {
                     String categoryId = categoryNode.push().getKey();
                     Category category = new Category(categoryId,bgt.getCategoryName(),bgt.getValue(),bgt.getValue());
@@ -353,15 +353,15 @@ public class Create_Budget_Activity extends AppCompatActivity {
             int chargeDay = 0;
 
             if (!constPayment) {
-                shopET.setText("");
+                shopET.setText(R.string.EMPTY);
                 shop = null;
-                chargeDayStr = "0";
+                chargeDayStr = getString(R.string.ZERO);
 //                chargeDayET.setText(chargeDayStr);
             }
             chargeDay = Integer.valueOf(chargeDayStr);
 
-            if (valueStr.equals(""))
-                valueStr = "0";
+            if (valueStr.equals(getString(R.string.EMPTY)))
+                valueStr = getString(R.string.ZERO);
             int value = Integer.valueOf(valueStr);
 
 
@@ -385,11 +385,11 @@ public class Create_Budget_Activity extends AppCompatActivity {
         String chargeDayStr = chargeDaySP.getSelectedItem().toString().trim();
 
         if (chargeDayStr.equals(""))
-            chargeDayStr = "0";
+            chargeDayStr = getString(R.string.EMPTY);
         int chargeDay = Integer.valueOf(chargeDayStr);
 
-        if (valueStr.equals(""))
-            valueStr = "0";
+        if (valueStr.equals(getString(R.string.EMPTY)))
+            valueStr = getString(R.string.ZERO);
         int value = Integer.valueOf(valueStr);
 
         //Check duplicate of category
@@ -462,7 +462,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
-                        questionTrueAnswer("DEL");
+                        questionTrueAnswer(getString(R.string.DELETE));
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -598,13 +598,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addCategoriesToMonthlyBudget(ArrayList<Budget> catAdd, int budgetNumber) {
-        String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), '-');
-        dbService.addToCategoriesFromBudget(yearMonth, catAdd);
+    public void addCategoriesToMonthlyBudget(ArrayList<Budget> catToAdd, int budgetNumber) {
+        String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.SEPERATOR));
+        DatabaseReference categoryDBReference = DatabaseReferenceUserMonthlyBudget.child(yearMonth).child(getString(R.string.CATEGORY));
+        dbService.setAddedCategoriesIncludeEventUpdateValue(categoryDBReference,yearMonth,catToAdd);
         dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
         int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);
         month.initCategories();
-        setFrqTrans(catAdd, maxIDPerMonth);
+        setFrqTrans(catToAdd, maxIDPerMonth);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -612,13 +613,13 @@ public class Create_Budget_Activity extends AppCompatActivity {
         int budgetNumber = dbService.getMaxBudgetNumber() + 1;
         writeBudget(budgetNumber,allBudgets);
         ArrayList<Budget> addedBudget = new ArrayList<>();
-        if (!operation.equals("CRT"))
+        if (!operation.equals(getString(R.string.CREATE)))
             addedBudget = getAddedCategories(budgetNumber - 1);
-        if (operation.equals("ADD"))
+        if (operation.equals(getString(R.string.ADD)))
             addCategoriesToMonthlyBudget(addedBudget, budgetNumber);
-        else if (operation.equals("DEL"))
-            dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(),'-'));
-        else if (operation.equals("CRT"))
+        else if (operation.equals(getString(R.string.DELETE)))
+            dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(),getString(R.string.SEPERATOR)));
+        else if (operation.equals(getString(R.string.CREATE)))
             ; // Delete or add not needed
         //deleteCurrentMonth();
         month = null;
@@ -694,7 +695,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setBudgetGui() {
-        allBudgets = null;// todo implement monthlyBudgetDB.getBudgetDataFromDB(monthlyBudgetDB.getMaxBudgetNumberBGT());
+        allBudgets = dbService.getBudgetDataFromDB(dbService.getMaxBudgetNumber());
         if (allBudgets == null || allBudgets.size() == 0) {
             add_New_row(null, 0, false, null, 0);
             allBudgets = new ArrayList<>();
@@ -854,10 +855,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this,
                 R.layout.custom_spinner, daysInMonth);
-        if (language.language.equals("HEB"))
+        if (language.language.equals(getString(R.string.HEBREW)))
             adapter = new ArrayAdapter<String>(this,
                     R.layout.custom_spinner, daysInMonth);
-        else if (language.language.equals("EN"))
+        else if (language.language.equals(getString(R.string.ENGLISH)))
             adapter = new ArrayAdapter<String>(this,
                     R.layout.custom_spinner_eng, daysInMonth);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

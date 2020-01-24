@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="logout"
-        android:text="Logout"
+        android:text="@string/logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Your Profile"
+        android:text="@string/your_profile"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,7 +50,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Your Name"
+        android:text="@string/your_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView" />
@@ -62,7 +62,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Your Email Address"
+        android:text="@string/your_email_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/fullName" />
@@ -74,7 +74,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Phone Number"
+        android:text="@string/phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/Email" />
@@ -93,7 +93,7 @@
         android:onClick="share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="@string/button"
         tools:layout_editor_absoluteX="274dp"
         tools:layout_editor_absoluteY="353dp" />
 
@@ -101,7 +101,7 @@
         android:id="@+id/openCreateBudget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="create budget"
+        android:text="@string/create_budget"
         app:layout_constraintBottom_toBottomOf="@+id/button"
         app:layout_constraintTop_toTopOf="@+id/etShare"
         tools:layout_editor_absoluteX="173dp" />

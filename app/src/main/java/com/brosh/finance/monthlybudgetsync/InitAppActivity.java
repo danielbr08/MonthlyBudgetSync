@@ -23,7 +23,7 @@ public class InitAppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_app);
-        dbService = new DBService();
+        dbService = new DBService(this);
         String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
         initDB(userKey);
     }
@@ -115,7 +115,7 @@ public class InitAppActivity extends AppCompatActivity {
                 try {
                     Category cat = dataSnapshot.getValue(Category.class);
                     dbService.updateSpecificCategory(refMonthKey, cat);
-                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child("Transactions");
+                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child(getString(R.string.transactions));
                     for(DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
                             String trnObjkey = transactionSnapshot.getKey().toString();
                             setTransactionEventUpdateValue(transactionDBReference.getRef(),refMonthKey,catObjId,trnObjkey);

@@ -30,7 +30,7 @@
                     android:id="@+id/createBudgetLabel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="בניית תקציב"
+                    android:text="@string/CREATE_BUDGET"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
