@@ -8,74 +8,74 @@ public class Language {
     String language;
 
     // Application name
-    String appName = "תקציב חודשי";
+    public String appName = "תקציב חודשי";
 
     // Payment method
-    String creditCardName;
-    String cashName;
-    String checkName;
-    String bankTransferName;
+    public String creditCardName;
+    public String cashName;
+    public String checkName;
+    public String bankTransferName;
 
     // Sort by
-    String IDName = "מזהה";
-    String categoryName = "קטגוריה";
-    String paymentMethodName = "א.תשלום";
-    String shopName = "חנות";
-    String chargeDateName = "ת.עסקה";
-    String sumName = "סכום";
-    String regisrationDateName = "ת.רישום";
+    public String IDName = "מזהה";
+    public String categoryName = "קטגוריה";
+    public String paymentMethodName = "א.תשלום";
+    public String shopName = "חנות";
+    public String chargeDateName = "ת.עסקה";
+    public String sumName = "סכום";
+    public String regisrationDateName = "ת.רישום";
 
     // Category
-    String subCategoryName = "ללא";
+    public String subCategoryName = "ללא";
 
     // Transaction
-    String subCategory = "ללא";
-    String all = "הכל";
+    public String subCategory = "ללא";
+    public String all = "הכל";
 
     // Main Activity
-    String monthName = "חודש";
-    String budgetButtonName = "תקציב";
-    String transactionsButtonName = "עסקאות";
-    String insertTransactionButtonName = "הכנסת עסקה";
-    String insert = "הכנס";
-    String createBudgetButtonName = "יצירת תקציב";
-    String close = "סגור";
+    public String monthName = "חודש";
+    public String budgetButtonName = "תקציב";
+    public String transactionsButtonName = "עסקאות";
+    public String insertTransactionButtonName = "הכנסת עסקה";
+    public String insert = "הכנס";
+    public String createBudgetButtonName = "יצירת תקציב";
+    public String close = "סגור";
 
     // Budget Activity
-    String budgetTitleName = "תקציב";
-    String budgetName = "תקציב";
-    String budgetCategoryName = "קטגוריה";
-    String transactionsName = "עסקאות";
-    String balanceName = "יתרה";
-    char quotes ='"';
-    String totalName = "סה"+ quotes + "כ";
+    public String budgetTitleName = "תקציב";
+    public String budgetName = "תקציב";
+    public String budgetCategoryName = "קטגוריה";
+    public String transactionsName = "עסקאות";
+    public String balanceName = "יתרה";
+    public char quotes ='"';
+    public String totalName = "סה"+ quotes + "כ";
 
-    // Transactions Activity
-    String noTransactionsExists;
+     // Transactions Activity
+     String noTransactionsExists;
 
     // CreateBudget Activity
-    String createBudgetQuestion = "יצירת תקציב חדש תגרום למחיקת נתוני חודש נוכחי, האם להמשיך?";
-    String createBudgetName = "בניית תקציב";
-    String createBudgetButton = "צור תקציב";
-    String createButton = "צור";
-    String duplicateCategory = "קטגוריה כפולה!";
-    String illegalCharacter = "תו לא חוקי!";
-    String pleaseInsertCategory = "נא להזין קטגוריה!";
-    String pleaseInsertValue = "נא להזין ערך!";
-    String pleaseInsertShop = "נא להזין חנות!";
-    String pleaseInsertBudget = "אנא הזן תקציב!";
-    String constantDate = "ת. קבוע";
-    String chargeDay = "יום לחיוב";
-    String yes = "כן";
-    String no = "לא";
-    String budgetCreatedSuccessfully = "תקציב נוצר בהצלחה!";
+    public String createBudgetQuestion = "יצירת תקציב חדש תגרום למחיקת נתוני חודש נוכחי, האם להמשיך?";
+    public String createBudgetName = "בניית תקציב";
+    public String createBudgetButton = "צור תקציב";
+    public String createButton = "צור";
+    public String duplicateCategory = "קטגוריה כפולה!";
+    public String illegalCharacter = "תו לא חוקי!";
+    public String pleaseInsertCategory = "נא להזין קטגוריה!";
+    public String pleaseInsertValue = "נא להזין ערך!";
+    public String pleaseInsertShop = "נא להזין חנות!";
+    public String pleaseInsertBudget = "אנא הזן תקציב!";
+    public String constantDate = "ת. קבוע";
+    public String chargeDay = "יום לחיוב";
+    public String yes = "כן";
+    public String no = "לא";
+    public String budgetCreatedSuccessfully = "תקציב נוצר בהצלחה!";
 
     // InsertTransaction Activity
-    String transactionPrice = "מחיר";
-    String selectingDate = "בחירת תאריך";
-    String transactionInsertedSuccessfully = "העסקה הוכנסה בהצלחה!";
-    String messageName = "הודעה";
-    String requiredField = "שדה חובה!";
+    public String transactionPrice = "מחיר";
+    public String selectingDate = "בחירת תאריך";
+    public String transactionInsertedSuccessfully = "העסקה הוכנסה בהצלחה!";
+    public String messageName = "הודעה";
+    public String requiredField = "שדה חובה!";
 
     public Language(String language)
     {

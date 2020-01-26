@@ -56,12 +56,12 @@ public class MainActivity extends AppCompatActivity {
         }) ;
         downloadData();// list of month exists(year and month only)
 
-        String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
-        dbService = (DBService) getIntent().getSerializableExtra("dbService");
+        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
 
 
-        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
-        DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference("Shares");
+        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
+        DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference(getString(R.string.shares));
 //        DatabaseReferenceUserMonthlyBudget.setValue("");
 
         phone = findViewById(R.id.phone);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         userId = fAuth.getCurrentUser().getUid();
 
-        DocumentReference documentReference = fStore.collection("users").document(userId);
+        DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userId);
         //NetworkService networkService = new NetworkService(new Month("",new Date()),userKey);
         //networkService.init();
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
                         System.err.println("Listen failed: " + e);
                         return;
                     }
-                    phone.setText(documentSnapshot.getString("phone"));
-                    fullName.setText(documentSnapshot.getString("fName"));
-                    email.setText(documentSnapshot.getString("email"));
+                    phone.setText(documentSnapshot.getString( getString(R.string.phone)));
+                    fullName.setText(documentSnapshot.getString(getString(R.string.first_name)));
+                    email.setText(documentSnapshot.getString( getString(R.string.email)));
 
                 }
                 catch(Exception ex){
@@ -112,10 +112,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void openCreateBudgetActivity(){
         Intent intent = new Intent(MainActivity.this,Create_Budget_Activity.class);
-        intent.putExtra(getString(R.string.LANGUAGE),getString(R.string.HEB));
-        String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
-        intent.putExtra(getString(R.string.USER),userKey);
-        intent.putExtra("dbService",dbService);
+        intent.putExtra(getString(R.string.language),getString(R.string.hebrew));
+        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        intent.putExtra(getString(R.string.user),userKey);
+        intent.putExtra( getString(R.string.db_service),dbService);
         startActivity(intent);
     }
 

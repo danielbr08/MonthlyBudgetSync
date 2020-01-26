@@ -73,4 +73,27 @@ public final class DateService {
         return df.format(date);
     }
 
+    public static int getLastDayCurrentMonth() {
+        return getTodayCalendar().getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+
+    public static Calendar getTodayCalendar() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c;
+    }
+
+    public static Date getCurrentDate(int day){
+        int _day = day;
+        int lastDayInMonth = getLastDayCurrentMonth();
+        if(day > lastDayInMonth)
+            _day = lastDayInMonth;
+        Calendar c = DateService.getTodayCalendar();
+        c.set(Calendar.DAY_OF_MONTH, _day);
+        return c.getTime();
+    }
+
 }

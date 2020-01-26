@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.Budget;
 import com.brosh.finance.monthlybudgetsync.Category;
+import com.brosh.finance.monthlybudgetsync.Config;
+import com.brosh.finance.monthlybudgetsync.Language;
 import com.brosh.finance.monthlybudgetsync.MainActivity;
 import com.brosh.finance.monthlybudgetsync.Month;
 import com.brosh.finance.monthlybudgetsync.R;
@@ -19,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +32,8 @@ public final class DBService implements Serializable {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
     private AppCompatActivity tempActivity;
+
+    private Language language = new Language(Config.DEFAULT_LANGUAGE);
 
     public DBService(){}
     public DBService(AppCompatActivity activity){
@@ -279,5 +284,44 @@ public final class DBService implements Serializable {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    public void setFrqTrans(ArrayList<Budget> freqBudgets, int idPerMonth, String refMonth)
+    {
+        int maxBudgetNumberBGT = getMaxBudgetNumber();
+        ArrayList<Budget> allBudget = freqBudgets;
+        if(allBudget == null)
+            allBudget= getBudgetDataFromDB(maxBudgetNumberBGT);
+        for (Budget budget:allBudget)
+        {
+            if(!budget.isConstPayment())
+                continue;
+
+            String categoryName = budget.getCategoryName();
+            double transactionPrice = Double.valueOf(budget.getValue());
+            String shop = budget.getShop();
+            int chargeDay = budget.getChargeDay();
+            Date payDate = DateService.getCurrentDate(chargeDay);
+            String paymentMethod = language.creditCardName;
+
+            //Insert data
+            Transaction transaction = new Transaction(getMaxIDPerMonthTRN(refMonth), categoryName,paymentMethod , shop, payDate, transactionPrice, new Date());
+            transaction.setIsStorno(false);
+            transaction.setStornoOf(-1);
+\
+            for (Category cat : month.getCategories())
+            {
+                if (categoryName.equals(cat.getName()))
+                {
+                    cat.subValRemaining(transactionPrice);
+                    cat.addTransaction(transaction);
+                }
+            }
+            shopsSet.add(shop);
+        }
+        month.setAllTransactions();
+        if( month.getTransChanged())
+            month.updateMonthData(idPerMonth + 1);
+        month.setTransChanged(false);
     }
 }

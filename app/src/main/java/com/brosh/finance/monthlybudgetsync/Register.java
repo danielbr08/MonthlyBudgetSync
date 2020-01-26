@@ -67,7 +67,7 @@ public class Register extends AppCompatActivity {
         if(fAuth.getCurrentUser() != null){
             final String emailKeyDotsReplacedInComma  = fAuth.getCurrentUser().getEmail().trim().replace('.',',');
             Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
-            initAppActivity.putExtra(getString(R.string.USER),emailKeyDotsReplacedInComma);
+            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
             dbService.initDB(emailKeyDotsReplacedInComma);
             return;
         }
@@ -106,11 +106,11 @@ public class Register extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(Register.this, "User Created.", Toast.LENGTH_SHORT).show();
                             userID = fAuth.getCurrentUser().getUid();
-                            DocumentReference documentReference = fStore.collection("users").document(userID);
+                            DocumentReference documentReference = fStore.collection( getString(R.string.users)).document(userID);
                             final Map<String,Object> user = new HashMap<>();
-                            user.put("fName",fullName);
-                            user.put("email",email);
-                            user.put("phone",phone);
+                            user.put( getString(R.string.first_name),fullName);
+                            user.put( getString(R.string.email),email);
+                            user.put( getString(R.string.phone),phone);
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -123,9 +123,9 @@ public class Register extends AppCompatActivity {
                                 }
                             });
                             try {
-                                user.put("fName",fullName);
-                                user.put("email",email);
-                                user.put("phone",phone);
+//                                user.put("fName",fullName);
+//                                user.put("email",email);
+//                                user.put("phone",phone);
 
 
                                 final String emailKeyDotsReplacedInComma  = email.replace('.',',');
@@ -138,7 +138,7 @@ public class Register extends AppCompatActivity {
                                             DatabaseReferenceUsers.child(emailKeyDotsReplacedInComma).setValue("Group1");// value = groupID[DBid]
                                         }
                                         Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
-                                        mainActivity.putExtra(getString(R.string.USER),emailKeyDotsReplacedInComma);
+                                        mainActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
                                         startActivity(mainActivity);
                                         return;
                                     }

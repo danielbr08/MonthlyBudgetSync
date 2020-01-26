@@ -24,12 +24,12 @@ public class InitAppActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_app);
         dbService = new DBService(this);
-        String userKey = getIntent().getExtras().getString(getString(R.string.USER),"");
+        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
         initDB(userKey);
     }
 
     public void initDB(String userKey){
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Monthly Budget").child(userKey);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -38,19 +38,15 @@ public class InitAppActivity extends AppCompatActivity {
                     return;
                 for(DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
                     String dbKey =  myDataSnapshot.getKey().toString();
-                    switch(dbKey){
-                        case "Budget":{
-                            setBudgetDB(myDataSnapshot);
-                            break;
-                        }
-                        case "Months":{
-                            setMonthsDB(myDataSnapshot);
-                            break;
-                        }
+                    if(dbKey.equals(getString(R.string.budget))){
+                        setBudgetDB(myDataSnapshot);
+                    }
+                    else if(dbKey.equals(getString(R.string.months))){
+                        setMonthsDB(myDataSnapshot);
                     }
                 }
                 Intent mainActivityIntent = new Intent(getApplicationContext(),MainActivity.class);
-                mainActivityIntent.putExtra("dbService",dbService);
+                mainActivityIntent.putExtra(getString(R.string.db_service),dbService);
                 startActivity(mainActivityIntent);
             }
             public void onCancelled(DatabaseError firebaseError) {

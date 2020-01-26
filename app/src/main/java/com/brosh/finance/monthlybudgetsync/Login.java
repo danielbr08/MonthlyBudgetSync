@@ -82,7 +82,7 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             final String emailKeyDotsReplacedInComma  = mEmail.getText().toString().trim().replace('.',',');
                             Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
-                            initAppActivity.putExtra(getString(R.string.USER),emailKeyDotsReplacedInComma);
+                            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
                             startActivity(initAppActivity);
                         }else {
                             Toast.makeText(Login.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
