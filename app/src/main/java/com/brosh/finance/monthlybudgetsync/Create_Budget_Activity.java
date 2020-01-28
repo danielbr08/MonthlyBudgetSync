@@ -259,14 +259,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
                     //showMessageNoButton("אנא הזן תקציב!");
                     return;
                 } else if (month == null)
-                    questionTrueAnswer(getString(R.string.create));// First time create budget
+                    createBudget(getString(R.string.create));// First time create budget
                 else if (isOriginContentBudgetChanged)// ReWriting of monthly budget needed
                 {
                     if (dbService.checkCurrentRefMonthExists())
                         showQuestion(language.createBudgetQuestion);
                     return;
                 } else if (isAddedBudgetsExists)// Insert the added budgets needed only
-                    questionTrueAnswer(getString(R.string.add));// Values of old budget updated only
+                    createBudget(getString(R.string.add));// Values of old budget updated only
             }
         });
 
@@ -280,7 +280,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         LLMain.addView(newll);
     }
 
-    private void writeBudget(int budgetNumber, final ArrayList<Budget> budgets) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void writeBudgetIncludeUpdateCategory(int budgetNumber, final ArrayList<Budget> budgets, final String operation, final ArrayList<Budget> addedBudgets) {
         final String maxBudgetNumber = String.valueOf(budgetNumber);
         Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.budget)).child(maxBudgetNumber);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
@@ -301,6 +302,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
             }
         });
+        if (operation.equals(getString(R.string.add))){
+            addCategoriesToMonthlyBudget(addedBudgets,budgetNumber);
+        }
     }
 
     private void writeAddedCategories(final String yearMonthKey, final ArrayList<Budget> budgets) {
@@ -464,7 +468,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
-                        questionTrueAnswer(getString(R.string.delete));
+                        createBudget(getString(R.string.delete));
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -611,18 +615,19 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void questionTrueAnswer(String operation) {
+    private void createBudget(String operation) {
         int budgetNumber = dbService.getMaxBudgetNumber() + 1;
-        writeBudget(budgetNumber,allBudgets);
         ArrayList<Budget> addedBudget = new ArrayList<>();
         if (!operation.equals(getString(R.string.create)))
             addedBudget = getAddedCategories(budgetNumber - 1);
-        if (operation.equals(getString(R.string.add)))
-            addCategoriesToMonthlyBudget(addedBudget, budgetNumber);
+//        if (operation.equals(getString(R.string.add)))
+//            addCategoriesToMonthlyBudget(addedBudget, budgetNumber);
         else if (operation.equals(getString(R.string.delete)))
             dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(),getString(R.string.seperator)));
-        else if (operation.equals(getString(R.string.create)))
-            ; // Delete or add not needed
+//        else if (operation.equals(getString(R.string.create)))
+//            ; // Delete or add not needed
+        writeBudgetIncludeUpdateCategory(budgetNumber,allBudgets,operation,addedBudget);
+
         //deleteCurrentMonth();
         month = null;
         showMessageToast(language.budgetCreatedSuccessfully, true);
