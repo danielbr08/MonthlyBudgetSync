@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -95,7 +97,7 @@ public final class DBService implements Serializable {
         return new ArrayList<Budget>(budgetDBHM.get(budgetNumber).values());
     }
 
-    public boolean checkCurrentRefMonthExists() {
+    public boolean isCurrentRefMonthExists() {
         String currentRefMonth = "";
         return (monthDBHM.get(currentRefMonth) != null && monthDBHM.get(currentRefMonth).getCategoryHMDB().size() > 0);
     }
@@ -267,61 +269,87 @@ public final class DBService implements Serializable {
         });
     }
 
-    public void setAddedCategoriesIncludeEventUpdateValue(DatabaseReference categoryDBReference,final String refMonthKey, final ArrayList<Budget> addedBudgets){
+    public void setAddedCategoriesIncludeEventUpdateValue(DatabaseReference categoryDBReference,final String refMonthKey, final List<Budget> addedBudgets,String operation){
+        final Activity activity = this.tempActivity;
         categoryDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DatabaseReference categoryNode = dataSnapshot.getRef();
                 for (Budget bgt : addedBudgets) {
+                    Transaction tran = createTransactionByBudget(bgt);
                     String catId = categoryNode.push().getKey();
                     Category cat = new Category(catId,bgt.getCategoryName(),bgt.getValue(),bgt.getValue());
+                    cat.withdrawal(tran.getPrice());
+                    if(isFrqTranExists(bgt)){
+                        DatabaseReference transactionsNode = categoryNode.child(activity.getString(R.string.transactions)).getRef();
+                        setFrqTranIncludeEventUpdateValue(transactionsNode,refMonthKey,catId,tran);
+                    }
                     categoryNode.child(catId).setValue(cat);
                     updateSpecificCategory(refMonthKey,cat);
                     setCategoryEventUpdateValue(categoryNode,refMonthKey,catId);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
 
-    public void setFrqTrans(ArrayList<Budget> freqBudgets, int idPerMonth, String refMonth)
-    {
-        int maxBudgetNumberBGT = getMaxBudgetNumber();
-        ArrayList<Budget> allBudget = freqBudgets;
-        if(allBudget == null)
-            allBudget= getBudgetDataFromDB(maxBudgetNumberBGT);
-        for (Budget budget:allBudget)
-        {
-            if(!budget.isConstPayment())
-                continue;
-
-            String categoryName = budget.getCategoryName();
-            double transactionPrice = Double.valueOf(budget.getValue());
-            String shop = budget.getShop();
-            int chargeDay = budget.getChargeDay();
-            Date payDate = DateService.getCurrentDate(chargeDay);
-            String paymentMethod = language.creditCardName;
-
-            //Insert data
-            Transaction transaction = new Transaction(getMaxIDPerMonthTRN(refMonth), categoryName,paymentMethod , shop, payDate, transactionPrice, new Date());
-            transaction.setIsStorno(false);
-            transaction.setStornoOf(-1);
-\
-            for (Category cat : month.getCategories())
-            {
-                if (categoryName.equals(cat.getName()))
-                {
-                    cat.subValRemaining(transactionPrice);
-                    cat.addTransaction(transaction);
-                }
-            }
-            shopsSet.add(shop);
-        }
-        month.setAllTransactions();
-        if( month.getTransChanged())
-            month.updateMonthData(idPerMonth + 1);
-        month.setTransChanged(false);
+    private boolean isFrqTranExists(Budget bgt){
+        return bgt.isConstPayment();
     }
+
+    private Transaction createTransactionByBudget(Budget bgt) {
+        int idPerMonth = 0;
+        String paymentMethod = language.creditCardName;
+        Date payDate = DateService.getCurrentDate(bgt.getChargeDay());
+        return new Transaction(idPerMonth,bgt.getCategoryName(),paymentMethod,bgt.getShop(), payDate, bgt.getValue());
+    }
+
+    private void setFrqTranIncludeEventUpdateValue(DatabaseReference transactionsNode, String refMonthKey, String catId, Transaction tran) {
+        String tranId = transactionsNode.push().getKey();
+        transactionsNode.child(catId).setValue(tran);
+        updateSpecificTransaction(refMonthKey,catId,tranId,tran);
+        setTransactionEventUpdateValue(transactionsNode,refMonthKey,catId,tranId);
+        }
+
+//    public void setFrqTrans(ArrayList<Budget> freqBudgets, int idPerMonth, String refMonth)
+//    {
+//        int maxBudgetNumberBGT = getMaxBudgetNumber();
+//        ArrayList<Budget> allBudget = freqBudgets;
+//        if(allBudget == null)
+//            allBudget= getBudgetDataFromDB(maxBudgetNumberBGT);
+//        for (Budget budget:allBudget)
+//        {
+//            if(!budget.isConstPayment())
+//                continue;
+//
+//            String categoryName = budget.getCategoryName();
+//            double transactionPrice = Double.valueOf(budget.getValue());
+//            String shop = budget.getShop();
+//            int chargeDay = budget.getChargeDay();
+//            Date payDate = DateService.getCurrentDate(chargeDay);
+//            String paymentMethod = language.creditCardName;
+//
+//            //Insert data
+//            Transaction transaction = new Transaction("", getMaxIDPerMonthTRN(refMonth), categoryName,paymentMethod , shop, payDate, transactionPrice, new Date());
+//            transaction.setIsStorno(false);
+//            transaction.setStornoOf(-1);
+//
+//            for (Category cat : month.getCategories())
+//            {
+//                if (categoryName.equals(cat.getName()))
+//                {
+//                    cat.subValRemaining(transactionPrice);
+//                    cat.addTransaction(transaction);
+//                }
+//            }
+//            shopsSet.add(shop);
+//        }
+//        month.setAllTransactions();
+//        if( month.getTransChanged())
+//            month.updateMonthData(idPerMonth + 1);
+//        month.setTransChanged(false);
+//    }
 }

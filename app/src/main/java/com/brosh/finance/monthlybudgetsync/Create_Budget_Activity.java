@@ -1,7 +1,6 @@
 package com.brosh.finance.monthlybudgetsync;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,7 +41,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class Create_Budget_Activity extends AppCompatActivity {
@@ -246,7 +244,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
             public void onClick(View view) {
                 setBudgets();
                 int budgetNumber = dbService.getMaxBudgetNumber();
-                ArrayList<Budget> newBudgets = getAddedCategories(budgetNumber);
+                ArrayList<Budget> newBudgets = getAddedBudgets(budgetNumber);
                 boolean isOriginContentBudgetChanged = isOriginBudgetChanged(budgetNumber);
                 boolean isBudgetChange = isBudgetChange(budgetNumber);
                 boolean isAddedBudgetsExists = newBudgets.size() > 0;
@@ -255,17 +253,15 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 else if (allBudgets.size() == 0) {// Nothing needed to do
                     showMessageNoButton(language.pleaseInsertBudget);
                     return;
-                } else if (!isBudgetChange) {// Nothing needed to do
-                    //showMessageNoButton("אנא הזן תקציב!");
-                    return;
-                } else if (month == null)
+                }
+                else if (month == null)
                     createBudget(getString(R.string.create));// First time create budget
-                else if (isOriginContentBudgetChanged)// ReWriting of monthly budget needed
-                {
-                    if (dbService.checkCurrentRefMonthExists())
+                else if (isOriginContentBudgetChanged){// ReWriting of monthly budget needed
+                    if (dbService.isCurrentRefMonthExists())
                         showQuestion(language.createBudgetQuestion);
                     return;
-                } else if (isAddedBudgetsExists)// Insert the added budgets needed only
+                }
+                else if (isAddedBudgetsExists)// Insert the added budgets needed only
                     createBudget(getString(R.string.add));// Values of old budget updated only
             }
         });
@@ -281,7 +277,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void writeBudgetIncludeUpdateCategory(int budgetNumber, final ArrayList<Budget> budgets, final String operation, final ArrayList<Budget> addedBudgets) {
+    private void writeBudgetIncludeUpdateCategory(int budgetNumber, final ArrayList<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
         final String maxBudgetNumber = String.valueOf(budgetNumber);
         Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.budget)).child(maxBudgetNumber);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
@@ -302,9 +298,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
             }
         });
+        List<Budget> budgetsToAdd  = addedBudgets;
         if (operation.equals(getString(R.string.add))){
-            addCategoriesToMonthlyBudget(addedBudgets,budgetNumber);
+            budgetsToAdd = budgets;
         }
+        addCategoriesToMonthlyBudget(budgetsToAdd,budgetNumber,operation);
+
     }
 
     private void writeAddedCategories(final String yearMonthKey, final ArrayList<Budget> budgets) {
@@ -585,7 +584,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         return allBudgets.size() != oldBudget.size();
     }
 
-    public ArrayList<Budget> getAddedCategories(int budgetNumber) {
+    public ArrayList<Budget> getAddedBudgets(int budgetNumber) {
         ArrayList<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
         ArrayList<Budget> addedBudgets = new ArrayList<>();
         boolean isBudgetExists = false;
@@ -604,10 +603,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addCategoriesToMonthlyBudget(ArrayList<Budget> catToAdd, int budgetNumber) {
+    public void addCategoriesToMonthlyBudget(List<Budget> catToAdd, int budgetNumber,String operation) {
         String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.seperator));
+        if(operation.equals(getString(R.string.add)) && !dbService.isCurrentRefMonthExists()){
+            // Exception - add operation cannot on empty month
+            return;
+        }
         DatabaseReference categoryDBReference = DatabaseReferenceUserMonthlyBudget.child(yearMonth).child(getString(R.string.category));
-        dbService.setAddedCategoriesIncludeEventUpdateValue(categoryDBReference,yearMonth,catToAdd);
+        dbService.setAddedCategoriesIncludeEventUpdateValue(categoryDBReference,yearMonth,catToAdd,operation);
         dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
         int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);
         month.initCategories();
@@ -617,16 +620,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createBudget(String operation) {
         int budgetNumber = dbService.getMaxBudgetNumber() + 1;
-        ArrayList<Budget> addedBudget = new ArrayList<>();
+        ArrayList<Budget> addedBudgets = new ArrayList<>();
         if (!operation.equals(getString(R.string.create)))
-            addedBudget = getAddedCategories(budgetNumber - 1);
+            addedBudgets = getAddedBudgets(budgetNumber - 1);
 //        if (operation.equals(getString(R.string.add)))
 //            addCategoriesToMonthlyBudget(addedBudget, budgetNumber);
         else if (operation.equals(getString(R.string.delete)))
             dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(),getString(R.string.seperator)));
 //        else if (operation.equals(getString(R.string.create)))
 //            ; // Delete or add not needed
-        writeBudgetIncludeUpdateCategory(budgetNumber,allBudgets,operation,addedBudget);
+        writeBudgetIncludeUpdateCategory(budgetNumber,allBudgets,operation,addedBudgets);
 
         //deleteCurrentMonth();
         month = null;

@@ -1,5 +1,8 @@
 package com.brosh.finance.monthlybudgetsync;
 
+import com.brosh.finance.monthlybudgetsync.services.DateService;
+import com.brosh.finance.monthlybudgetsync.services.Definition;
+
 import java.util.Date;
 
 public class Transaction {
@@ -15,7 +18,7 @@ public class Transaction {
     private boolean isStorno;
     private int stornoOf;
 
-    public Transaction(String id, int idPerMonth, String category, String subCategory, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
+    public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
         this.id = id;
         this.idPerMonth = idPerMonth;
         this.category = category;
@@ -27,6 +30,32 @@ public class Transaction {
         this.registrationDate = registrationDate;
         this.isStorno = isStorno;
         this.stornoOf = stornoOf;
+    }
+
+    public Transaction(int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
+        this.id = id;
+        this.idPerMonth = idPerMonth;
+        this.category = category;
+        this.paymentMethod = paymentMethod;
+        this.shop = shop;
+        this.payDate = payDate;
+        this.price = price;
+        this.registrationDate = registrationDate;
+        this.isStorno = isStorno;
+        this.stornoOf = stornoOf;
+    }
+
+    public Transaction(int idPerMonth, String category,String paymentMethod, String shop, Date payDate, double price) {
+        this.id = id;
+        this.idPerMonth = idPerMonth;
+        this.category = category;
+        this.paymentMethod = paymentMethod;
+        this.shop = shop;
+        this.payDate = payDate;
+        this.price = price;
+        this.registrationDate = DateService.getTodayDate();
+        this.isStorno = false;
+        this.stornoOf = -1;
     }
 
     public String getId() {
