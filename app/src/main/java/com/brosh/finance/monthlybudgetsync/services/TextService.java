@@ -1,5 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import com.brosh.finance.monthlybudgetsync.config.Definition;
+
 public final class TextService {
     public static String getSentenceCapitalLetter(String sentence,char separator) {
         if(sentence.indexOf(separator) == -1)

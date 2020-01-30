@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync;
+package com.brosh.finance.monthlybudgetsync.ui;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -11,26 +11,38 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-//import android.support.annotation.RequiresApi;
-//import android.support.v7.app.AlertDialog;
-//import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.objects.Budget;
+import com.brosh.finance.monthlybudgetsync.objects.Category;
+import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-//import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.brosh.finance.monthlybudgetsync.services.Language;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +54,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+//import android.support.annotation.RequiresApi;
+//import android.support.v7.app.AlertDialog;
+//import android.support.v7.app.AppCompatActivity;
+//import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 
 public class Create_Budget_Activity extends AppCompatActivity {
 
@@ -614,7 +631,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
         int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);
         month.initCategories();
-        setFrqTrans(catToAdd, maxIDPerMonth);
+        //setFrqTrans(catToAdd, maxIDPerMonth);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -850,10 +867,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this,
                 R.layout.custom_spinner, daysInMonth);
-        if (language.language.equals(getString(R.string.hebrew)))
+        if (language.equals(getString(R.string.hebrew)))
             adapter = new ArrayAdapter<String>(this,
                     R.layout.custom_spinner, daysInMonth);
-        else if (language.language.equals(getString(R.string.english)))
+        else if (language.equals(getString(R.string.english)))
             adapter = new ArrayAdapter<String>(this,
                     R.layout.custom_spinner_eng, daysInMonth);
         OptionalDaysSP.setAdapter(adapter);

@@ -5,11 +5,11 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/APP_NAME"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InitAppActivity"></activity>
+        <activity android:name=".ui.InitAppActivity"></activity>
         <activity android:name=".Login" />
         <activity android:name=".Create_Budget_Activity" />
         <activity android:name=".Register">

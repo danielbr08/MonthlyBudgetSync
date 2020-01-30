@@ -2,10 +2,20 @@
  * Copyright (c) Daniel Brosh.
  */
 
-package com.brosh.finance.monthlybudgetsync;
+package com.brosh.finance.monthlybudgetsync.services;
 
 public class Language {
     String language;
+
+    public boolean isLTR() {
+        return isLTR;
+    }
+
+    public void setLTR(boolean LTR) {
+        isLTR = LTR;
+    }
+
+    private boolean isLTR;
 
     // Application name
     public String appName = "תקציב חודשי";
@@ -80,10 +90,14 @@ public class Language {
     public Language(String language)
     {
         this.language = language;
-        if(language.equals("HEB"))
+        if(language.equals("HEB")) {
+            isLTR = false;
             setParamsHeb();
-        else if(language.equals("EN"))
+        }
+        else if(language.equals("EN")) {
+            isLTR = true;
             setParamsEN();
+        }
     }
 
     public boolean isHeb(){

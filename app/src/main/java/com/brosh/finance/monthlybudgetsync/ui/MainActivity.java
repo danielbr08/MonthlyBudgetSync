@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync;
+package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,8 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.login.Login;
+import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
+import com.brosh.finance.monthlybudgetsync.ui.Create_Budget_Activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -101,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();//logout
-        startActivity(new Intent(getApplicationContext(),Login.class));
+        startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
 
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openCreateBudgetActivity(){
-        Intent intent = new Intent(MainActivity.this,Create_Budget_Activity.class);
+        Intent intent = new Intent(MainActivity.this, Create_Budget_Activity.class);
         intent.putExtra(getString(R.string.language),getString(R.string.hebrew));
         String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
         intent.putExtra(getString(R.string.user),userKey);

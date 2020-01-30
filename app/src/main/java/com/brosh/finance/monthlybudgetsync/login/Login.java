@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync;
+package com.brosh.finance.monthlybudgetsync.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,19 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.ui.InitAppActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Login extends AppCompatActivity {
     EditText mEmail,mPassword;
@@ -81,7 +74,7 @@ public class Login extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(Login.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             final String emailKeyDotsReplacedInComma  = mEmail.getText().toString().trim().replace('.',',');
-                            Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
+                            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
                             initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
                             startActivity(initAppActivity);
                         }else {

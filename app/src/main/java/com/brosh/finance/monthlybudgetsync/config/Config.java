@@ -1,6 +1,6 @@
-package com.brosh.finance.monthlybudgetsync;
+package com.brosh.finance.monthlybudgetsync.config;
 
-import com.brosh.finance.monthlybudgetsync.services.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 
 import java.util.ArrayList;
 import java.util.Set;

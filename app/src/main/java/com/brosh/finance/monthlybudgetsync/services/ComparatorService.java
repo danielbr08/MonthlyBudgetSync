@@ -4,10 +4,9 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.brosh.finance.monthlybudgetsync.Config;
-import com.brosh.finance.monthlybudgetsync.Transaction;
-import com.brosh.finance.monthlybudgetsync.services.TextService;
 
+import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 
 import java.util.ArrayList;
 import java.util.Collections;

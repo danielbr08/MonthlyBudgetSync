@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync;
+package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,6 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.objects.Budget;
+import com.brosh.finance.monthlybudgetsync.objects.Category;
+import com.brosh.finance.monthlybudgetsync.objects.Month;
+import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync;
+package com.brosh.finance.monthlybudgetsync.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
+import com.brosh.finance.monthlybudgetsync.ui.InitAppActivity;
+import com.brosh.finance.monthlybudgetsync.ui.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -66,7 +70,7 @@ public class Register extends AppCompatActivity {
 
         if(fAuth.getCurrentUser() != null){
             final String emailKeyDotsReplacedInComma  = fAuth.getCurrentUser().getEmail().trim().replace('.',',');
-            Intent initAppActivity = new Intent(getApplicationContext(),InitAppActivity.class);
+            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
             initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
             dbService.initDB(emailKeyDotsReplacedInComma);
             return;
@@ -137,7 +141,7 @@ public class Register extends AppCompatActivity {
                                         }else{
                                             DatabaseReferenceUsers.child(emailKeyDotsReplacedInComma).setValue("Group1");// value = groupID[DBid]
                                         }
-                                        Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
+                                        Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
                                         mainActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
                                         startActivity(mainActivity);
                                         return;

@@ -9,8 +9,7 @@ import android.widget.*;
 
 import androidx.annotation.RequiresApi;
 
-import com.brosh.finance.monthlybudgetsync.Config;
-import com.brosh.finance.monthlybudgetsync.Language;
+import com.brosh.finance.monthlybudgetsync.config.Config;
 
 import java.util.List;
 
@@ -70,7 +69,6 @@ public final class UIService {
         widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.CONST_PAYMENT_TV_TITLE_WIDTH_PERCENT), wrapContent));
         widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.SHOP_TV_TITLE_WIDTH_PERCENT), wrapContent));
         widgets.get(i).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.PAY_DATE_TITLE_WIDTH_PERCENT), wrapContent));
-
     }
 
     public void setTextTitleWidgets(List<View> widgets) {

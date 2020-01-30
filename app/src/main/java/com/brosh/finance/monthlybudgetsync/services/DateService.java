@@ -1,6 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
-import com.brosh.finance.monthlybudgetsync.Language;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.services.Language;
 
 import java.text.*;
 import java.util.*;
