@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.ui.InitAppActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,12 +27,13 @@ public class Login extends AppCompatActivity {
     TextView mCreateBtn;
     ProgressBar progressBar;
     FirebaseAuth fAuth;
+    private DBService dbService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        dbService = new DBService(this);
 //        DatabaseReference monthsDB = FirebaseDatabase.getInstance().getReference("Users");
 
 
@@ -74,9 +76,10 @@ public class Login extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(Login.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                             final String emailKeyDotsReplacedInComma  = mEmail.getText().toString().trim().replace('.',',');
-                            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
-                            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
-                            startActivity(initAppActivity);
+//                            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
+//                            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
+//                            startActivity(initAppActivity);
+                            dbService.initDB(emailKeyDotsReplacedInComma);
                         }else {
                             Toast.makeText(Login.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);

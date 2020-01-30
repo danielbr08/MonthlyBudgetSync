@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     String userId;
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
     DatabaseReference DatabaseReferenceShares;
-    private Month month;
     DBService dbService;
     private Button createActivityButton;
 
@@ -50,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbService = new DBService();
         createActivityButton =  findViewById(R.id.openCreateBudget);
         createActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,49 +56,44 @@ public class MainActivity extends AppCompatActivity {
                 openCreateBudgetActivity();
             }
         }) ;
-        downloadData();// list of month exists(year and month only)
-
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        String userKey = getIntent().getExtras().getString(getString(R.string.user),getString(R.string.empty));
         dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
-
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
         DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference(getString(R.string.shares));
 //        DatabaseReferenceUserMonthlyBudget.setValue("");
 
-        phone = findViewById(R.id.phone);
-        fullName = findViewById(R.id.fullName);
-        email    = findViewById(R.id.Email);
-
-        fAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-
-        userId = fAuth.getCurrentUser().getUid();
-
-        DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userId);
-        //NetworkService networkService = new NetworkService(new Month("",new Date()),userKey);
-        //networkService.init();
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                try {
-                    if (e != null) {
-                        System.err.println("Listen failed: " + e);
-                        return;
-                    }
-                    phone.setText(documentSnapshot.getString( getString(R.string.phone)));
-                    fullName.setText(documentSnapshot.getString(getString(R.string.first_name)));
-                    email.setText(documentSnapshot.getString( getString(R.string.email)));
-
-                }
-                catch(Exception ex){
-                    String s = ex.getMessage().toString();
-                    s=s;
-                }
-            }
-        });
-
-
+//        phone = findViewById(R.id.phone);
+//        fullName = findViewById(R.id.fullName);
+//        email    = findViewById(R.id.Email);
+//
+//        fAuth = FirebaseAuth.getInstance();
+//        fStore = FirebaseFirestore.getInstance();
+//
+//        userId = fAuth.getCurrentUser().getUid();
+//
+//        DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userId);
+//        //NetworkService networkService = new NetworkService(new Month("",new Date()),userKey);
+//        //networkService.init();
+//        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+//                try {
+//                    if (e != null) {
+//                        System.err.println("Listen failed: " + e);
+//                        return;
+//                    }
+//                    phone.setText(documentSnapshot.getString( getString(R.string.phone)));
+//                    fullName.setText(documentSnapshot.getString(getString(R.string.first_name)));
+//                    email.setText(documentSnapshot.getString( getString(R.string.email)));
+//
+//                }
+//                catch(Exception ex){
+//                    String s = ex.getMessage().toString();
+//                    s=s;
+//                }
+//            }
+//        });
     }
 
     public void logout(View view) {
@@ -117,25 +110,9 @@ public class MainActivity extends AppCompatActivity {
     public void openCreateBudgetActivity(){
         Intent intent = new Intent(MainActivity.this, Create_Budget_Activity.class);
         intent.putExtra(getString(R.string.language),getString(R.string.hebrew));
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
+        String userKey = getIntent().getExtras().getString(getString(R.string.user),getString(R.string.empty));
         intent.putExtra(getString(R.string.user),userKey);
         intent.putExtra( getString(R.string.db_service),dbService);
         startActivity(intent);
-    }
-
-    private void downloadData(){
-//        DatabaseReference monthsDB = FirebaseDatabase.getInstance().getReference("months");
-//        monthsDB.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
     }
 }

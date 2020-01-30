@@ -10,7 +10,7 @@
     <string name="delete">DEL</string>
     <string name="month">month</string>
     <string name="budget">Budget</string>
-    <string name="empty" />
+    <string name="empty"></string>
     <string name="zero">0</string>
     <string name="seperator">-</string>
     <string name="hebrew">HEB</string>

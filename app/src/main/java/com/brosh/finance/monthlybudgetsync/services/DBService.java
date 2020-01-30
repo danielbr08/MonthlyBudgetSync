@@ -35,12 +35,13 @@ public final class DBService implements Serializable {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
     private AppCompatActivity tempActivity;
-
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
+    private Month month;
 
-    public DBService(){}
+    public DBService(){ month = new Month("",new Date());}
     public DBService(AppCompatActivity activity){
         tempActivity = activity;
+        month = new Month("",new Date());
     }
 
     public AppCompatActivity getTempActivity() {

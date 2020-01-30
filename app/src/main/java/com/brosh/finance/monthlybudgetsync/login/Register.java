@@ -52,7 +52,7 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         dbService = new DBService(this);
-        Month month = (Month) getIntent().getSerializableExtra("month");
+        //Month month = (Month) getIntent().getSerializableExtra("month");
 
 
         final DatabaseReference DatabaseReferenceUsers = FirebaseDatabase.getInstance().getReference("Users");
@@ -70,8 +70,8 @@ public class Register extends AppCompatActivity {
 
         if(fAuth.getCurrentUser() != null){
             final String emailKeyDotsReplacedInComma  = fAuth.getCurrentUser().getEmail().trim().replace('.',',');
-            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
-            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
+//            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
+//            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
             dbService.initDB(emailKeyDotsReplacedInComma);
             return;
         }

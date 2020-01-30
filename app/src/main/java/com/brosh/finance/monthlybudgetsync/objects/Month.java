@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class Month implements Serializable {
 //    private Map<String,HashMap<String,Budget>> budgetHMDBData;
-    public Map<String,Budget> budgetHMDB;
     private Map<String,Transaction> transactionHMDB;
     private Map<String,Category> categoryHMDB;
     // services
@@ -33,7 +32,6 @@ public class Month implements Serializable {
 //        this.dbService = dbService;
 
 //        this.budgetHMDB = new HashMap<String,HashMap<String,Budget>>();
-        this.budgetHMDB = new HashMap<String,Budget>();
         this.transactionHMDB = new HashMap<String,Transaction>();
         this.categoryHMDB = new HashMap<String,Category>();
 
@@ -54,9 +52,9 @@ public class Month implements Serializable {
         this.budgetNumber = budgetNumber;
     }
 
-    public void updateSpecificBudget(String id, Budget bgt){
-        this.budgetHMDB.put(id, bgt);
-    }
+//    public void updateSpecificBudget(String id, Budget bgt){
+//        this.budgetHMDB.put(id, bgt);
+//    }
 
     public void updateSpecificTransaction(String id, Transaction trn){
         this.transactionHMDB.put(id, trn);
@@ -99,9 +97,9 @@ public class Month implements Serializable {
         this.tranIdNumerator = tranIdNumerator;
     }
 
-    public Map<String, Budget> getbudgetHMDB() {
-        return budgetHMDB;
-    }
+//    public Map<String, Budget> getbudgetHMDB() {
+//        return budgetHMDB;
+//    }
 
     public Map<String, Transaction> getTransactionHMDB() {
         return transactionHMDB;
