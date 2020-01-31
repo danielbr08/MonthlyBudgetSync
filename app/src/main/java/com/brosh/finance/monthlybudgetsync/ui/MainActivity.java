@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createActivityButton =  findViewById(R.id.openCreateBudget);
+        final String userKey = getIntent().getExtras().getString(getString(R.string.user),getString(R.string.empty));
         createActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCreateBudgetActivity();
+                openCreateBudgetActivity(userKey);
             }
         }) ;
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),getString(R.string.empty));
         dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReferenceShares.child(shareWith).setValue(email.getText().toString().trim().replace('.',','));
     }
 
-    public void openCreateBudgetActivity(){
+    public void openCreateBudgetActivity(String userKey){
         Intent intent = new Intent(MainActivity.this, Create_Budget_Activity.class);
         intent.putExtra(getString(R.string.language),getString(R.string.hebrew));
-        String userKey = getIntent().getExtras().getString(getString(R.string.user),getString(R.string.empty));
+//        String userKey = getIntent().getExtras().getString(getString(R.string.user),getString(R.string.empty));
         intent.putExtra(getString(R.string.user),userKey);
         intent.putExtra( getString(R.string.db_service),dbService);
         startActivity(intent);

@@ -11,7 +11,6 @@ import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
-import com.brosh.finance.monthlybudgetsync.services.Language;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.ui.MainActivity;
@@ -19,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
@@ -34,22 +34,39 @@ import java.util.Map;
 public final class DBService implements Serializable {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
-    private AppCompatActivity tempActivity;
+    //private AppCompatActivity tempActivity;
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
+
     private Month month;
 
     public DBService(){ month = new Month("",new Date());}
     public DBService(AppCompatActivity activity){
-        tempActivity = activity;
+        //tempActivity = activity;
         month = new Month("",new Date());
     }
 
-    public AppCompatActivity getTempActivity() {
-        return tempActivity;
+//    public AppCompatActivity getTempActivity() {
+//        return tempActivity;
+//    }
+
+//    public void setTempActivity(AppCompatActivity tempActivity) {
+//        this.tempActivity = tempActivity;
+//    }
+
+    public Language getLanguage() {
+        return language;
     }
 
-    public void setTempActivity(AppCompatActivity tempActivity) {
-        this.tempActivity = tempActivity;
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    public Month getMonth() {
+        return month;
+    }
+
+    public void setMonth(Month month) {
+        this.month = month;
     }
 
     public Map<String, Map<String, Budget>> getBudgetDBHM() {
@@ -127,9 +144,9 @@ public final class DBService implements Serializable {
     public void updateBudgetNumberMB(String startCurrentMonth, int budgetNumber) {
     }
 
-    public void initDB(String userKey){
+    public void initDB(final String userKey, final Activity activity){
         final DBService thisObject = this;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(tempActivity.getString(R.string.monthly_budget)).child(userKey);
+        DatabaseReference databaseReference = Config.DatabaseReferenceMonthlyBudget.child(userKey);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -149,10 +166,17 @@ public final class DBService implements Serializable {
                         }
                     }
                 }
-                Intent mainActivityIntent = new Intent(tempActivity.getApplicationContext(), MainActivity.class);
-                mainActivityIntent.putExtra(tempActivity.getString(R.string.db_service),thisObject);
-                tempActivity.startActivity(mainActivityIntent);
-                tempActivity.finish();
+                try {
+                    Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
+                    mainActivityIntent.putExtra(activity.getString(R.string.db_service), thisObject);
+                    mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
+                    activity.startActivity(mainActivityIntent);
+                    activity.finish();
+                }
+                catch(Exception e){
+                    String s = e.getMessage().toString();// todo remove those lines
+                    s=s;
+                }
             }
             public void onCancelled(DatabaseError firebaseError) {
             }
@@ -185,7 +209,7 @@ public final class DBService implements Serializable {
             String refMonthKey =  monthSnapshot.getKey().toString();
             Month monthObj = monthSnapshot.getValue(Month.class);
             updateSpecificMonth(refMonthKey,monthObj);
-            DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child(tempActivity.getString(R.string.categories));
+            DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child("categories");
             setCategoriesEventUpdateValue(categoriesDatabaseReference,refMonthKey);
             setMonthEventUpdateValue(monthSnapshot.getRef(),refMonthKey);
         }
@@ -216,7 +240,7 @@ public final class DBService implements Serializable {
                 try {
                     Category cat = dataSnapshot.getValue(Category.class);
                     updateSpecificCategory(refMonthKey, cat);
-                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child(tempActivity.getString(R.string.transactions));
+                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child("transactions");
                     for(DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
                         String trnObjkey = transactionSnapshot.getKey().toString();
                         setTransactionEventUpdateValue(transactionDBReference.getRef(),refMonthKey,catObjId,trnObjkey);
@@ -272,7 +296,7 @@ public final class DBService implements Serializable {
     }
 
     public void setAddedCategoriesIncludeEventUpdateValue(DatabaseReference categoryDBReference,final String refMonthKey, final List<Budget> addedBudgets,String operation){
-        final Activity activity = this.tempActivity;
+//        final Activity activity = this.tempActivity;
         categoryDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -283,7 +307,7 @@ public final class DBService implements Serializable {
                     Category cat = new Category(catId,bgt.getCategoryName(),bgt.getValue(),bgt.getValue());
                     cat.withdrawal(tran.getPrice());
                     if(isFrqTranExists(bgt)){
-                        DatabaseReference transactionsNode = categoryNode.child(activity.getString(R.string.transactions)).getRef();
+                        DatabaseReference transactionsNode = categoryNode.child("transactions").getRef();
                         setFrqTranIncludeEventUpdateValue(transactionsNode,refMonthKey,catId,tran);
                     }
                     categoryNode.child(catId).setValue(cat);

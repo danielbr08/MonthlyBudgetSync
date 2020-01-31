@@ -10,16 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.InitAppActivity"></activity>
-        <activity android:name=".Login" />
-        <activity android:name=".Create_Budget_Activity" />
-        <activity android:name=".Register">
+        <activity android:name=".login.Login" />
+        <activity android:name=".ui.Create_Budget_Activity" />
+        <activity android:name=".login.Register">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".ui.MainActivity" />
     </application>
 
 </manifest>

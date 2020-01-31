@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,11 +29,13 @@ public class Login extends AppCompatActivity {
     ProgressBar progressBar;
     FirebaseAuth fAuth;
     private DBService dbService;
+    private Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        currentActivity = this;
         dbService = new DBService(this);
 //        DatabaseReference monthsDB = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -79,7 +82,7 @@ public class Login extends AppCompatActivity {
 //                            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
 //                            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
 //                            startActivity(initAppActivity);
-                            dbService.initDB(emailKeyDotsReplacedInComma);
+                            dbService.initDB(emailKeyDotsReplacedInComma,currentActivity);
                         }else {
                             Toast.makeText(Login.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);

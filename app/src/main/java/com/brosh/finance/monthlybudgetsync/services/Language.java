@@ -4,7 +4,9 @@
 
 package com.brosh.finance.monthlybudgetsync.services;
 
-public class Language {
+import java.io.Serializable;
+
+public class Language implements Serializable {
     String language;
 
     public boolean isLTR() {

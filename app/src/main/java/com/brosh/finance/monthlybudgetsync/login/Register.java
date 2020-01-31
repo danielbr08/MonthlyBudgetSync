@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.ui.InitAppActivity;
@@ -55,7 +56,7 @@ public class Register extends AppCompatActivity {
         //Month month = (Month) getIntent().getSerializableExtra("month");
 
 
-        final DatabaseReference DatabaseReferenceUsers = FirebaseDatabase.getInstance().getReference("Users");
+        final DatabaseReference DatabaseReferenceUsers = Config.DatabaseReferenceUsers;
 
         mFullName   = findViewById(R.id.fullName);
         mEmail      = findViewById(R.id.Email);
@@ -72,7 +73,7 @@ public class Register extends AppCompatActivity {
             final String emailKeyDotsReplacedInComma  = fAuth.getCurrentUser().getEmail().trim().replace('.',',');
 //            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
 //            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
-            dbService.initDB(emailKeyDotsReplacedInComma);
+            dbService.initDB(emailKeyDotsReplacedInComma,this);
             return;
         }
 
