@@ -21,6 +21,7 @@ public class Language implements Serializable {
 
     // Application name
     public String appName = "תקציב חודשי";
+    public String empty="";
 
     // Payment method
     public String creditCardName;

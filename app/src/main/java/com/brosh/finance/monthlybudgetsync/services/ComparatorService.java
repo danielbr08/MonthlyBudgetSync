@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 
 import java.util.ArrayList;
@@ -62,11 +63,12 @@ public class ComparatorService {
         }
     };
 
-/*    public Comparator<Budget> COMPARE_BY_CATEGORY_PRIORITY = new Comparator<Budget>() {
+    public static Comparator<Budget> COMPARE_BY_CATEGORY_PRIORITY = new Comparator<Budget>() {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         public int compare(Budget one, Budget other) {
             return Integer.compare(one.getCatPriority(), other.getCatPriority());
         }
-    };*/
+    };
 
     public void sort(ArrayList<Transaction> transactions,String sortBy, char ascOrDesc)
     {

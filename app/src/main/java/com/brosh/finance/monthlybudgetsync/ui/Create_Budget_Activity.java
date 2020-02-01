@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -75,7 +76,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
 
     AlertDialog.Builder myAlert;
-    private ArrayList<Budget> allBudgets;
+    private List<Budget> allBudgets;
     private ArrayList<String> allCategories;
     private boolean isInputValid;
     private Display display;
@@ -294,7 +295,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void writeBudgetIncludeUpdateCategory(int budgetNumber, final ArrayList<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
+    private void writeBudgetIncludeUpdateCategory(int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
         final String maxBudgetNumber = String.valueOf(budgetNumber);
         Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.budget)).child(maxBudgetNumber);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
@@ -573,7 +574,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 //    }
 
     public boolean isOriginBudgetChanged(int budgetNumber) {
-        ArrayList<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
+        List<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
         int counter = 0;
         for (Budget oldBgt : oldBudget)
             for (Budget bgt : allBudgets)
@@ -585,7 +586,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     public boolean isBudgetChange(int budgetNumber) {
-        ArrayList<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
+        List<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
         boolean isBudgetsEquals = false;
         for (Budget bgt : allBudgets) {
             for (Budget oldBgt : oldBudget) {
@@ -602,7 +603,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     public ArrayList<Budget> getAddedBudgets(int budgetNumber) {
-        ArrayList<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
+        List<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
         ArrayList<Budget> addedBudgets = new ArrayList<>();
         boolean isBudgetExists = false;
         for (Budget bgt : allBudgets) {
@@ -694,20 +695,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
         constPaymentTV = new TextView(Create_Budget_Activity.this);
         shopTV = new TextView(Create_Budget_Activity.this);
         payDateTV = new TextView(Create_Budget_Activity.this);
-        List<View> widgets = Arrays.asList((View)categoryNameTV, (View)categoryNameTV, (View)constPaymentTV, (View)shopTV, (View)payDateTV);
+        List<View> widgets = Arrays.asList((View)categoryNameTV, (View)categoryValueTV, (View)constPaymentTV, (View)shopTV, (View)payDateTV);
 
         uiService.setTextTitleWidgets(widgets);
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
         uiService.setWidthCreateBudgetPageTitleWidgets(widgets,screenWidthReduceButtonSize,ViewGroup.LayoutParams.WRAP_CONTENT);
-    }
-
-    private void setTextTitleWidgets() {
-        categoryNameTV.setText(textService.getWordCapitalLetter(language.categoryName));
-        categoryValueTV.setText(textService.getWordCapitalLetter(language.budgetName));
-        constPaymentTV.setText(textService.getWordCapitalLetter(language.constantDate));
-        shopTV.setText(textService.getWordCapitalLetter(language.shopName));
-        payDateTV.setText(textService.getWordCapitalLetter(language.chargeDay));
-
+        emptyTV.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
     }
 
     private void setTitleStyle(ArrayList<TextView> titlesTV, LinearLayout titleLL) {
@@ -725,11 +718,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
         if (allBudgets == null || allBudgets.size() == 0) {
             add_New_row(null, 0, false, null, 0);
             allBudgets = new ArrayList<>();
-        } else
+        } else {
             for (Budget budget : allBudgets) {
                 add_New_row(budget.getCategoryName(), budget.getValue(), budget.isConstPayment(), budget.getShop(), budget.getChargeDay());
                 setCloseButton();// Adding close button
             }
+//            setCloseButton();// Adding close button
+        }
+
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -820,7 +816,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(constPaymentCB);
         newll.addView(shopET);
         newll.addView(optionalDaysSpinner);
-        if (language.isEn())
+        if (language.isLTR())
             uiService.setLanguageConf(newll);
 //        }
 /*        else if(language.isEn())
@@ -859,6 +855,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     });
     }
 
+    @SuppressLint("NewApi")
     public void setSpinnerOptionalDays(Spinner OptionalDaysSP) {
         ArrayList<String> daysInMonth = new ArrayList<>();
         int i = 1;
@@ -875,6 +872,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                     R.layout.custom_spinner_eng, daysInMonth);
         OptionalDaysSP.setAdapter(adapter);
         OptionalDaysSP.setSelection(1, true);
+        OptionalDaysSP.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
     }
 
 

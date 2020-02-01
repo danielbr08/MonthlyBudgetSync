@@ -112,8 +112,10 @@ public final class DBService implements Serializable {
 
     }
 
-    public ArrayList<Budget> getBudgetDataFromDB(int budgetNumber) {
-        return new ArrayList<Budget>(budgetDBHM.get(budgetNumber).values());
+    public List<Budget> getBudgetDataFromDB(int budgetNumber) {
+        List<Budget> budgets = new ArrayList<Budget>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
+        Collections.sort(budgets,ComparatorService.COMPARE_BY_CATEGORY_PRIORITY);
+        return budgets;
     }
 
     public boolean isCurrentRefMonthExists() {

@@ -35,7 +35,7 @@ public final class UIService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void setLanguageConf(LinearLayout l)
+    public static void setLanguageConf(LinearLayout l)
     {
         for (int i = 0;i < l.getChildCount();i++)
         {
@@ -51,7 +51,7 @@ public final class UIService {
         tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
-    public void setWidthCreateBudgetPageDataWidgets(List<View> widgets, int screenWidthReduceButtonSize, int wrapContent) {
+    public static void setWidthCreateBudgetPageDataWidgets(List<View> widgets, int screenWidthReduceButtonSize, int wrapContent) {
         // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, optionalDaysSpinner
         int i=0;
         widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize * Config.CATEGORY_NAME_ET_WIDTH_PERCENT), wrapContent));
@@ -61,7 +61,7 @@ public final class UIService {
         widgets.get(i).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.OPTIONAL_DAYS_SPINNER_WIDTH_PERCENT), wrapContent));
     }
 
-    public void setWidthCreateBudgetPageTitleWidgets(List<View> widgets, int screenWidthReduceButtonSize, int wrapContent) {
+    public static void setWidthCreateBudgetPageTitleWidgets(List<View> widgets, int screenWidthReduceButtonSize, int wrapContent) {
         // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
         int i=0;
         widgets.get(i++).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize * Config.CATEGORY_NAME_TV_TITLE_WIDTH_PERCENT), wrapContent));
@@ -71,7 +71,7 @@ public final class UIService {
         widgets.get(i).setLayoutParams(new LinearLayout.LayoutParams((int)Math.floor(screenWidthReduceButtonSize *  Config.PAY_DATE_TITLE_WIDTH_PERCENT), wrapContent));
     }
 
-    public void setTextTitleWidgets(List<View> widgets) {
+    public static void setTextTitleWidgets(List<View> widgets) {
         // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
         Language language = new Language(Config.DEFAULT_LANGUAGE);
         int i=0;
@@ -79,6 +79,6 @@ public final class UIService {
         ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.budgetName));
         ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.constantDate));
         ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.shopName));
-        ((TextView)widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.chargeDay));
+        ((TextView)widgets.get(i)).setText(TextService.getWordCapitalLetter(language.chargeDay));
     }
 }
