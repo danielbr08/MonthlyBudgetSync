@@ -13,4 +13,6 @@ public class Definition {
     public static final String HEBREW ="HEB";
     public static final String ENGLISH ="EN";
     public static final String CREDIT_CARD =language.creditCardName;
+    public static final String dash="-";
+
 }

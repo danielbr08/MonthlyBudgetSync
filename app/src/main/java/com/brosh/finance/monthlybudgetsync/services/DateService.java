@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.services.Language;
 
@@ -97,4 +98,27 @@ public final class DateService {
         return c.getTime();
     }
 
+    public static Date getDate(String refMonthKey) {
+        String[] yearMonth = refMonthKey.split(Definition.dash);
+        String year = yearMonth[0];
+        String month = yearMonth[1];
+        String day = "01";
+        StringBuilder date = new StringBuilder();
+        date.append(day).append(Config.DATE_FORMAT_CHARACTER).append(month).append(Config.DATE_FORMAT_CHARACTER).append(year);
+        return stringToDate(date.toString(),Config.DATE_FORMAT);
+    }
+
+    public static Date stringToDate(String stringDate, String format)
+    {
+        java.text.DateFormat df = new SimpleDateFormat(format, Locale.US);
+        Date date = null;
+        try {
+            date = df.parse(stringDate);
+            String newStringDate = df.format(date);
+            System.out.println(newStringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 }

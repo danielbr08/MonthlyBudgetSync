@@ -87,7 +87,7 @@ public final class DBService implements Serializable {
 
     public void updateSpecificCategory(String refMonthKey, Category categoryObj){
         if(monthDBHM.get(refMonthKey) == null)
-            monthDBHM.put(refMonthKey,new Month(refMonthKey,new Date(refMonthKey)));
+            monthDBHM.put(refMonthKey,new Month(refMonthKey,DateService.getDate(refMonthKey)));
         monthDBHM.get(refMonthKey).addCategory(categoryObj.getId(),categoryObj);
     }
 
@@ -299,29 +299,35 @@ public final class DBService implements Serializable {
 
     public void setAddedCategoriesIncludeEventUpdateValue(DatabaseReference categoryDBReference,final String refMonthKey, final List<Budget> addedBudgets,String operation){
 //        final Activity activity = this.tempActivity;
-        categoryDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                DatabaseReference categoryNode = dataSnapshot.getRef();
-                for (Budget bgt : addedBudgets) {
-                    Transaction tran = createTransactionByBudget(bgt);
-                    String catId = categoryNode.push().getKey();
-                    Category cat = new Category(catId,bgt.getCategoryName(),bgt.getValue(),bgt.getValue());
-                    cat.withdrawal(tran.getPrice());
-                    if(isFrqTranExists(bgt)){
-                        DatabaseReference transactionsNode = categoryNode.child("transactions").getRef();
-                        setFrqTranIncludeEventUpdateValue(transactionsNode,refMonthKey,catId,tran);
+        try {
+            categoryDBReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    DatabaseReference categoryNode = dataSnapshot.getRef();
+                    for (Budget bgt : addedBudgets) {
+                        Transaction tran = createTransactionByBudget(bgt);
+                        String catId = categoryNode.push().getKey();
+                        Category cat = new Category(catId, bgt.getCategoryName(), bgt.getValue(), bgt.getValue());
+                        if (isFrqTranExists(bgt)) {
+                            cat.withdrawal(tran.getPrice());
+                            DatabaseReference transactionsNode = categoryNode.child("transactions").getRef();
+                            setFrqTranIncludeEventUpdateValue(transactionsNode, refMonthKey, catId, tran);
+                        }
+                        categoryNode.child(catId).setValue(cat);
+                        updateSpecificCategory(refMonthKey, cat);
+                        setCategoryEventUpdateValue(categoryNode, refMonthKey, catId);
                     }
-                    categoryNode.child(catId).setValue(cat);
-                    updateSpecificCategory(refMonthKey,cat);
-                    setCategoryEventUpdateValue(categoryNode,refMonthKey,catId);
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
+        catch(Exception e){
+            String s = e.getMessage().toString();
+            s=s;
+        }
     }
 
     private boolean isFrqTranExists(Budget bgt){

@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 public final class Config {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
+    public static final String DATE_FORMAT_CHARACTER = "/";
     public static final String SEPARATOR = "-->";
     public static final char DOWN_ARROW = 'ꜜ';
     public static final char UP_ARROW = 'ꜛ';

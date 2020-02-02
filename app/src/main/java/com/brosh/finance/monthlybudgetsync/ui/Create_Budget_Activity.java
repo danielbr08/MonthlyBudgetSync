@@ -295,7 +295,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void writeBudgetIncludeUpdateCategory(int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
+    private void writeBudgetIncludeUpdateCategory(final int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
         final String maxBudgetNumber = String.valueOf(budgetNumber);
         Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.budget)).child(maxBudgetNumber);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
@@ -309,6 +309,11 @@ public class Create_Budget_Activity extends AppCompatActivity {
                     budgetNode.child(maxBudgetNumber).child(id).setValue(bgt);
                     dbService.updateSpecificBudget(maxBudgetNumber,bgt);
                 }
+                List<Budget> budgetsToWrite  =  budgets;
+                if (operation.equals(getString(R.string.add))){ //todo check this condition again
+                    budgetsToWrite = addedBudgets;
+                }
+                addCategoriesToMonthlyBudget(budgetsToWrite,budgetNumber,operation);
             }
 
             @Override
@@ -316,12 +321,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
             }
         });
-        List<Budget> budgetsToAdd  = addedBudgets;
-        if (operation.equals(getString(R.string.add))){
-            budgetsToAdd = budgets;
-        }
-        addCategoriesToMonthlyBudget(budgetsToAdd,budgetNumber,operation);
-
     }
 
     private void writeAddedCategories(final String yearMonthKey, final ArrayList<Budget> budgets) {
@@ -629,9 +628,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
         }
         DatabaseReference categoryDBReference = DatabaseReferenceUserMonthlyBudget.child(yearMonth).child(getString(R.string.category));
         dbService.setAddedCategoriesIncludeEventUpdateValue(categoryDBReference,yearMonth,catToAdd,operation);
-        dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
-        int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);
-        month.initCategories();
+//        dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
+//        int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);
+//        month.initCategories();
         //setFrqTrans(catToAdd, maxIDPerMonth);
     }
 

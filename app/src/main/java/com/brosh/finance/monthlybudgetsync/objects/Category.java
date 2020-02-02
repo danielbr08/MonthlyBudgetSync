@@ -12,6 +12,9 @@ public class Category implements Serializable {
     private int budget;
     private Map<String, Transaction> transactionHMDB;
 
+    public Category() {
+    }
+
     public Category(String id, String name, double balance, int budget) {
         this.id = id;
         this.name = name;
