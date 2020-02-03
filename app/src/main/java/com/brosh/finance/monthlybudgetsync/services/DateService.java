@@ -121,4 +121,8 @@ public final class DateService {
         }
         return date;
     }
+
+    public static boolean isSameYearMonth(Date d1, Date d2){
+        return d1.getYear() == d2.getYear() && d1.getMonth() == d2.getMonth();
+    }
 }

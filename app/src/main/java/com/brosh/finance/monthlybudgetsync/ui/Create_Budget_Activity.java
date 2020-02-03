@@ -36,6 +36,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
@@ -103,7 +104,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         dateService = new DateService();
 
-        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
+        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
         setContentView(R.layout.activity_create_budget);
         LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
         allBudgets = new ArrayList<>();
@@ -297,12 +298,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void writeBudgetIncludeUpdateCategory(final int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
         final String maxBudgetNumber = String.valueOf(budgetNumber);
-        Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.budget)).child(maxBudgetNumber);
+        Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS).child(maxBudgetNumber);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
         addBudgetQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.budget));
+                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS);
                 for (Budget bgt : budgets) {
                     String id = budgetNode.child(maxBudgetNumber).push().getKey();
                     bgt.setId(id);
@@ -324,12 +325,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     private void writeAddedCategories(final String yearMonthKey, final ArrayList<Budget> budgets) {
-        Query addCategoriesQuery = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.month)).child(yearMonthKey);
+        Query addCategoriesQuery = DatabaseReferenceUserMonthlyBudget.child(Definition.MONTHS).child(yearMonthKey);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
         addCategoriesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DatabaseReference categoryNode = DatabaseReferenceUserMonthlyBudget.child(getString(R.string.category));
+                DatabaseReference categoryNode = DatabaseReferenceUserMonthlyBudget.child(Definition.CATEGORIES);
                 for (Budget bgt : budgets) {
                     String categoryId = categoryNode.push().getKey();
                     Category category = new Category(categoryId,bgt.getCategoryName(),bgt.getValue(),bgt.getValue());
@@ -609,7 +610,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
             for (Budget oldBgt : oldBudget) {
                 if (bgt.equals(oldBgt)) {
                     isBudgetExists = true;
-                    continue;
+                    break;
                 }
             }
             if (isBudgetExists == false)
@@ -626,7 +627,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
             // Exception - add operation cannot on empty month
             return;
         }
-        DatabaseReference categoryDBReference = DatabaseReferenceUserMonthlyBudget.child(yearMonth).child(getString(R.string.category));
+        DatabaseReference categoryDBReference = DatabaseReferenceUserMonthlyBudget.child(Definition.MONTHS).child(yearMonth).child(Definition.CATEGORIES);
         dbService.setAddedCategoriesIncludeEventUpdateValue(categoryDBReference,yearMonth,catToAdd,operation);
 //        dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
 //        int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);

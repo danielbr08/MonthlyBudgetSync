@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
@@ -85,7 +86,7 @@ public class InitAppActivity extends AppCompatActivity {
             String refMonthKey =  monthSnapshot.getKey().toString();
             Month monthObj = monthSnapshot.getValue(Month.class);
             dbService.updateSpecificMonth(refMonthKey,monthObj);
-            DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child("Categories");
+            DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child(Definition.CATEGORIES);
             setCategoriesEventUpdateValue(categoriesDatabaseReference,refMonthKey);
             setMonthEventUpdateValue(monthSnapshot.getRef(),refMonthKey);
         }
@@ -116,7 +117,7 @@ public class InitAppActivity extends AppCompatActivity {
                 try {
                     Category cat = dataSnapshot.getValue(Category.class);
                     dbService.updateSpecificCategory(refMonthKey, cat);
-                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child(getString(R.string.transactions));
+                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child(Definition.TRANSACTIONS);
                     for(DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
                             String trnObjkey = transactionSnapshot.getKey().toString();
                             setTransactionEventUpdateValue(transactionDBReference.getRef(),refMonthKey,catObjId,trnObjkey);
