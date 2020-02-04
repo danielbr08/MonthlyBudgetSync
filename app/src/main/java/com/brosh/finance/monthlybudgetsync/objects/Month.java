@@ -11,7 +11,7 @@ import java.util.Map;
 public class Month implements Serializable {
     // services
     private DateService dateService;
-    private DBService dbService;
+//    private DBService dbService;
 
     private String id;
     private Date refMonth;
@@ -21,17 +21,18 @@ public class Month implements Serializable {
     private String budgetNumber;
 
     public Month() {
+        categoryHMDB = new HashMap<String,Category>();
     }
 
     //    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
-    public Month(String id, Date refMonth)
+    public Month(String refMonth)
     {
 //        this.dateService = dateService;
 //        this.dbService = dbService;
 
-        this.id = id;
+        this.id = refMonth;
         this.categoryHMDB = new HashMap<String,Category>();
-        this.refMonth = refMonth;
+        this.refMonth = DateService.getDate(refMonth);
         this.tranIdNumerator = 1;
         setIsActive();
 //        initCategories();

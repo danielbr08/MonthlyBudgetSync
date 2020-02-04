@@ -628,6 +628,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
             return;
         }
         DatabaseReference categoryDBReference = DatabaseReferenceUserMonthlyBudget.child(Definition.MONTHS).child(yearMonth).child(Definition.CATEGORIES);
+        DatabaseReference monthDBReference = DatabaseReferenceUserMonthlyBudget.child(Definition.MONTHS);
+        dbService.setMonthIncludeEventUpdateValue(monthDBReference,yearMonth,catToAdd,operation);
         dbService.setAddedCategoriesIncludeEventUpdateValue(categoryDBReference,yearMonth,catToAdd,operation);
 //        dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
 //        int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);
