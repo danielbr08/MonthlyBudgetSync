@@ -47,7 +47,7 @@ public final class DBService implements Serializable {
         //tempActivity = activity;
 //        month = new Month("",new Date());
         month = new Month();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
 //    public AppCompatActivity getTempActivity() {
@@ -164,7 +164,18 @@ public final class DBService implements Serializable {
                     String dbKey =  myDataSnapshot.getKey().toString();
                     switch(dbKey){
                         case Definition.BUDGETS:{
-                            setBudgetDB(myDataSnapshot);
+
+                            setBudgetDB(myDataSnapshot,new DataStatus() {
+                                @Override
+                                public void DataIsLoaded(Map<String, Map<String,Budget>> budgets, List<String> keys) {
+                                    Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
+                                    mainActivityIntent.putExtra(activity.getString(R.string.db_service), thisObject);
+                                    mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
+                                    activity.startActivity(mainActivityIntent);
+                                    activity.finish();
+                                }
+                            });
+//                            setBudgetDB(myDataSnapshot);
                             break;
                         }
                         case Definition.MONTHS:{
@@ -174,11 +185,11 @@ public final class DBService implements Serializable {
                     }
                 }
                 try {
-                    Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
-                    mainActivityIntent.putExtra(activity.getString(R.string.db_service), thisObject);
-                    mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
-                    activity.startActivity(mainActivityIntent);
-                    activity.finish();
+//                    Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
+//                    mainActivityIntent.putExtra(activity.getString(R.string.db_service), thisObject);
+//                    mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
+//                    activity.startActivity(mainActivityIntent);
+//                    activity.finish();
                 }
                 catch(Exception e){
                     String s = e.getMessage().toString();// todo remove those lines
@@ -190,16 +201,39 @@ public final class DBService implements Serializable {
         });
     }
 
-    public void setBudgetDB(DataSnapshot budgetsSnapshot){
-        for(DataSnapshot budgetSnapshot : budgetsSnapshot.getChildren()) {
-            String budgetNumber =  budgetSnapshot.getKey();
-            for(DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
-                String budgetObjkey = mySnapshot.getKey();
-                Budget budgetObj = mySnapshot.getValue(Budget.class);
-                updateSpecificBudget(budgetNumber,budgetObj); // todo check if needed because this call from setBudgetEventUpdateValue function(next line)
-                setBudgetEventUpdateValue(budgetSnapshot.getRef(),budgetNumber,budgetObjkey);
+    public interface DataStatus{
+        void DataIsLoaded(Map<String,Map<String,Budget>> budgets, List<String> keys);
+    }
+
+    public void setBudgetDB(DataSnapshot budgetsSnapshot,final DataStatus dataStatus){
+        budgetsSnapshot.getRef().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Map<String,Map<String,Budget>> budgets = new HashMap<String,Map<String,Budget>>();
+                List<String> keys = new ArrayList<String>();
+                for(DataSnapshot mySnapshot : dataSnapshot.getChildren()) {
+                    String key = mySnapshot.getKey();
+                    Map<String,Budget> budget = (Map<String,Budget>) mySnapshot.getValue();
+                    budgets.put(key,budget);
+                }
+                dataStatus.DataIsLoaded(budgets,keys);
             }
-        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+//        for(DataSnapshot budgetSnapshot : budgetsSnapshot.getChildren()) {
+//            String budgetNumber =  budgetSnapshot.getKey();
+//            for(DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
+//                String budgetObjkey = mySnapshot.getKey();
+//                Budget budgetObj = mySnapshot.getValue(Budget.class);
+//                updateSpecificBudget(budgetNumber,budgetObj); // todo check if needed because this call from setBudgetEventUpdateValue function(next line)
+//                setBudgetEventUpdateValue(budgetSnapshot.getRef(),budgetNumber,budgetObjkey);
+//            }
+//        }
     }
 
     public void setCategoriesEventUpdateValue(DataSnapshot categoriesSnapshot, String refMonthKey){
