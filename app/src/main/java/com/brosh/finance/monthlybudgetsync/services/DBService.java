@@ -2,6 +2,7 @@ package com.brosh.finance.monthlybudgetsync.services;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.session.PlaybackState;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -320,8 +321,8 @@ public final class DBService implements Serializable {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    DataSnapshot categoryDBReference = dataSnapshot.child(Definition.CATEGORIES);
-                    Month month = dataSnapshot.getValue(Month.class);
+                    DataSnapshot categoryDBReference = dataSnapshot.child(refMonthKey).child(Definition.CATEGORIES);
+                    Month month = dataSnapshot.child(refMonthKey).getValue(Month.class);
                     updateSpecificMonth(refMonthKey, month);
                     setCategoriesEventUpdateValue(categoryDBReference,refMonthKey);
                 }

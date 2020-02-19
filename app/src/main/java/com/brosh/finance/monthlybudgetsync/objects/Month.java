@@ -18,7 +18,7 @@ public class Month implements Serializable {
     private boolean isActive;
     private Map<String,Category> categoryHMDB;
     private int tranIdNumerator;
-    private String budgetNumber;
+    private long budgetNumber;
 
     public Month() {
         categoryHMDB = new HashMap<String,Category>();
@@ -46,11 +46,11 @@ public class Month implements Serializable {
         this.dateService = dateService;
     }
 
-    public String getBudgetNumber() {
+    public long getBudgetNumber() {
         return budgetNumber;
     }
 
-    public void setBudgetNumber(String budgetNumber) {
+    public void setBudgetNumber(long budgetNumber) {
         this.budgetNumber = budgetNumber;
     }
 
