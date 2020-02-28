@@ -296,7 +296,7 @@ public final class DBService implements Serializable {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
     }
 
     private void setCategoryFieldsEventUpdateValue(final DataSnapshot categoryDBDataSnapshot, String refMonthKey, Category cat) {
