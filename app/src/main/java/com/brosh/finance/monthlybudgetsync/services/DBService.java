@@ -137,7 +137,7 @@ public final class DBService implements Serializable {
     }
 
     public void updateSpecificMonth(String refMonthKey,Month monthObj){
-            monthDBHM.put(refMonthKey,monthObj);
+        monthDBHM.put(refMonthKey,monthObj);
     }
 
     public int getMaxBudgetNumber(){
@@ -239,10 +239,10 @@ public final class DBService implements Serializable {
 
     public void setCategoriesEventUpdateValue(DataSnapshot categoriesSnapshot, String refMonthKey){
         for(DataSnapshot categorySnapshot : categoriesSnapshot.getChildren()) {
-                String categoryObjkey = categorySnapshot.getKey();
-                Category cat = categoriesSnapshot.getValue(Category.class);
-                updateSpecificCategory(refMonthKey, cat);
-                setCategoryEventUpdateValue(categoriesSnapshot.getRef(),refMonthKey,categoryObjkey);
+            String categoryObjkey = categorySnapshot.getKey();
+            Category cat = categoriesSnapshot.getValue(Category.class);
+            updateSpecificCategory(refMonthKey, cat);
+            setCategoryEventUpdateValue(categoriesSnapshot.getRef(),refMonthKey,categoryObjkey);
         }
     }
 
