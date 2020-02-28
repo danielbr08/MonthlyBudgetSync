@@ -17,5 +17,8 @@ public class Definition {
     public static final String ENGLISH ="EN";
     public static final String CREDIT_CARD =language.creditCardName;
     public static final String dash="-";
+    public static final String balance="balance";
+    public static final String budget="budget";
+    public static final String name="name";
 
 }
