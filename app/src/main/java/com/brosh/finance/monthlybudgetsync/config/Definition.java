@@ -4,7 +4,7 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.services.Language;
 
 public class Definition {
-    public static final String CATEGORIES = "Category";// todo replace name to Categories
+    public static final String CATEGORIES = "categories";
     public static final String TRANSACTIONS = "Transactions";
     public static final String MONTHLY_BUDGET = "Monthly Budget";
     private static final Language language = new Language(Config.DEFAULT_LANGUAGE);
@@ -17,5 +17,11 @@ public class Definition {
     public static final String ENGLISH ="EN";
     public static final String CREDIT_CARD =language.creditCardName;
     public static final String dash="-";
+    public static final String balance="balance";
+    public static final String budget="budget";
+    public static final String name="name";
+
+
+
 
 }

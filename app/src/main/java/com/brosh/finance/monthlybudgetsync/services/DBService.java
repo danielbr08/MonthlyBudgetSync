@@ -36,12 +36,40 @@ public final class DBService implements Serializable {
     private Map<String, Month> monthDBHM = new HashMap<>();
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
 
+    private Map<String,Category> Category;
+
+    public Map<String, com.brosh.finance.monthlybudgetsync.objects.Category> getCategory() {
+        return Category;
+    }
+
+    public void setCategory(Map<String, com.brosh.finance.monthlybudgetsync.objects.Category> category) {
+        Category = category;
+    }
+
     private Month month;
+    //private Activity activity;
+    private String userKey;
+
+    public String getUserKey() {
+        return userKey;
+    }
+
+    public void setUserKey(String userKey) {
+        this.userKey = userKey;
+    }
+
+//    public Activity getActivity() {
+//        return activity;
+//    }
+//
+//    public void setActivity(Activity activity) {
+//        this.activity = activity;
+//    }
 
     public DBService(){
 //        month = new Month("",new Date());
         month = new Month();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
     public DBService(AppCompatActivity activity){
         //tempActivity = activity;
@@ -99,7 +127,7 @@ public final class DBService implements Serializable {
     public void updateSpecificTransaction(String refMonthKey,String categoryObjkey,String transactionObj, Transaction trnObj){
         if(monthDBHM.get(refMonthKey) == null)
             monthDBHM.put(refMonthKey,null);
-        monthDBHM.get(refMonthKey).getCategoryHMDB().get(categoryObjkey).addTransactions(transactionObj,trnObj);
+        monthDBHM.get(refMonthKey).getCategories().get(categoryObjkey).addTransactions(transactionObj,trnObj);
     }
 
     public void updateSpecificBudget(String budgetNumber, Budget budgetObj){
@@ -125,18 +153,18 @@ public final class DBService implements Serializable {
 
     public boolean isCurrentRefMonthExists() {
         String currentRefMonth =  DateService.getYearMonth(DateService.getTodayDate(), Definition.dash);
-        return (monthDBHM.get(currentRefMonth) != null && monthDBHM.get(currentRefMonth).getCategoryHMDB().size() > 0);
+        return (monthDBHM.get(currentRefMonth) != null && monthDBHM.get(currentRefMonth).getCategories().size() > 0);
     }
 
     public void deleteDataRefMonth(String refMonth) {
-        monthDBHM.get(refMonth).getCategoryHMDB().clear();
+        monthDBHM.get(refMonth).getCategories().clear();
         //monthDBHM.get(refMonth).setTranIdNumerator(0);
     }
 
     public int getMaxIDPerMonthTRN(String refMonth) {
         //return monthDBHM.get(refMonth).getTranIdNumerator();
         int maxId = -1;
-        List<Category> categories = new ArrayList<Category>(monthDBHM.get(refMonth).getCategoryHMDB().values());
+        List<Category> categories = new ArrayList<Category>(monthDBHM.get(refMonth).getCategories().values());
         for (Category cat:categories) {
             List<Transaction> transactions =  new ArrayList<Transaction>(cat.getTransactionHMDB().values());
             for (Transaction trn:transactions) {
@@ -185,11 +213,7 @@ public final class DBService implements Serializable {
                     }
                 }
                 try {
-//                    Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
-//                    mainActivityIntent.putExtra(activity.getString(R.string.db_service), thisObject);
-//                    mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
-//                    activity.startActivity(mainActivityIntent);
-//                    activity.finish();
+                    startApp(thisObject, activity);
                 }
                 catch(Exception e){
                     String s = e.getMessage().toString();// todo remove those lines
@@ -201,39 +225,16 @@ public final class DBService implements Serializable {
         });
     }
 
-    public interface DataStatus{
-        void DataIsLoaded(Map<String,Map<String,Budget>> budgets, List<String> keys);
-    }
-
-    public void setBudgetDB(DataSnapshot budgetsSnapshot,final DataStatus dataStatus){
-        budgetsSnapshot.getRef().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                Map<String,Map<String,Budget>> budgets = new HashMap<String,Map<String,Budget>>();
-                List<String> keys = new ArrayList<String>();
-                for(DataSnapshot mySnapshot : dataSnapshot.getChildren()) {
-                    String key = mySnapshot.getKey();
-                    Map<String,Budget> budget = (Map<String,Budget>) mySnapshot.getValue();
-                    budgets.put(key,budget);
-                }
-                dataStatus.DataIsLoaded(budgets,keys);
+    public void setBudgetDB(DataSnapshot budgetsSnapshot){
+        for(DataSnapshot budgetSnapshot : budgetsSnapshot.getChildren()) {
+            String budgetNumber =  budgetSnapshot.getKey();
+            for(DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
+                String budgetObjkey = mySnapshot.getKey();
+                Budget budgetObj = mySnapshot.getValue(Budget.class);
+                updateSpecificBudget(budgetNumber,budgetObj); // todo check if needed because this call from setBudgetEventUpdateValue function(next line)
+                setBudgetEventUpdateValue(budgetSnapshot.getRef(),budgetNumber,budgetObjkey);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-//        for(DataSnapshot budgetSnapshot : budgetsSnapshot.getChildren()) {
-//            String budgetNumber =  budgetSnapshot.getKey();
-//            for(DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
-//                String budgetObjkey = mySnapshot.getKey();
-//                Budget budgetObj = mySnapshot.getValue(Budget.class);
-//                updateSpecificBudget(budgetNumber,budgetObj); // todo check if needed because this call from setBudgetEventUpdateValue function(next line)
-//                setBudgetEventUpdateValue(budgetSnapshot.getRef(),budgetNumber,budgetObjkey);
-//            }
-//        }
+        }
     }
 
     public void setCategoriesEventUpdateValue(DataSnapshot categoriesSnapshot, String refMonthKey){
@@ -245,12 +246,18 @@ public final class DBService implements Serializable {
         }
     }
 
+    public void setTransactionsEventUpdateValue(DataSnapshot transactionsSnapshot, String refMonthKey,String categoryObjkey){
+        for(DataSnapshot transactionSnapshot : transactionsSnapshot.getChildren()) {
+            setTransactionEventUpdateValue(transactionSnapshot.getRef(),refMonthKey,categoryObjkey);
+        }
+    }
+
     public void setMonthsDB(DataSnapshot monthsSnapshot){
-        for(DataSnapshot monthSnapshot : monthsSnapshot.getChildren()) {
-            String refMonthKey = monthSnapshot.getKey();
-//            Month month = monthSnapshot.getValue(Month.class);
-//            updateSpecificMonth(refMonthKey, month);
-            setMonthEventUpdateValue(monthSnapshot.getRef(),refMonthKey);
+        for(DataSnapshot currentMonthDataSnapshot : monthsSnapshot.getChildren()) {
+            String refMonthKey = currentMonthDataSnapshot.getKey();
+            Month month = currentMonthDataSnapshot.getValue(Month.class);
+            updateSpecificMonth(refMonthKey, month);
+            setMonthEventUpdateValue(currentMonthDataSnapshot.getRef(),refMonthKey);
         }
     }
 
@@ -279,11 +286,7 @@ public final class DBService implements Serializable {
                 try {
                     Category cat = dataSnapshot.getValue(Category.class);
                     updateSpecificCategory(refMonthKey, cat);
-                    DataSnapshot transactionDBReference = dataSnapshot.child(Definition.TRANSACTIONS);
-                    for(DataSnapshot transactionSnapshot : transactionDBReference.getChildren()) {
-                        String trnObjkey = transactionSnapshot.getKey();
-                        setTransactionEventUpdateValue(transactionDBReference.getRef(),refMonthKey,catObjId,trnObjkey);
-                    }
+                    //setCategoryFieldsEventUpdateValue(dataSnapshot, refMonthKey, cat);
                 }
                 catch(Exception ex){
                     String message = ex.getMessage().toString();
@@ -296,11 +299,56 @@ public final class DBService implements Serializable {
         });
     }
 
+    private void setCategoryFieldsEventUpdateValue(final DataSnapshot categoryDBDataSnapshot, String refMonthKey, Category cat) {
+        DataSnapshot transactionDBReference = categoryDBDataSnapshot.child(Definition.TRANSACTIONS);
+        setTransactionsEventUpdateValue(transactionDBReference, refMonthKey, cat.getId());
+
+        List<String> categoryFields = Arrays.asList(Definition.balance, Definition.budget, Definition.name);
+        for (String categoryField : categoryFields)
+            setCategoryFieldEventUpdateValue(categoryDBDataSnapshot.child(categoryField).getRef(), refMonthKey, cat.getId());
+    }
+
+    private void setCategoryFieldEventUpdateValue(final DatabaseReference categoryFieldDataBaseReference, final String refMonthKey, final String catId){
+        ValueEventListener event = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    String fieldName = dataSnapshot.getKey();
+                    Category curentCategory = monthDBHM.get(refMonthKey).getCategories().get(catId);
+                    switch(fieldName){
+                        case Definition.balance:
+                            double balance = Double.valueOf(dataSnapshot.getValue().toString());
+                            curentCategory.setBalance(balance);
+                            break;
+                        case Definition.budget:
+                            int budget = Integer.valueOf(dataSnapshot.getValue().toString());
+                            curentCategory.setBudget(budget);
+                            break;
+                        case Definition.name:
+                            String name = dataSnapshot.getValue().toString();
+                            curentCategory.setName(name);
+                            break;
+                    }
+                }
+                catch(Exception ex){
+                    String message = ex.getMessage().toString();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        categoryFieldDataBaseReference.addValueEventListener(event);
+    }
+
+
     public void setTransactionEventUpdateValue(DatabaseReference transactionDBReference, final String refMonthKey,final String catObjId, final String trnObjId) {
         transactionDBReference.child(trnObjId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
+                    String tranId = dataSnapshot.getKey();
                     Transaction trn = dataSnapshot.getValue(Transaction.class);
                     updateSpecificTransaction(refMonthKey,catObjId, trnObjId,trn);
                 }
@@ -320,10 +368,10 @@ public final class DBService implements Serializable {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    DataSnapshot categoryDBReference = dataSnapshot.child(Definition.CATEGORIES);
                     Month month = dataSnapshot.getValue(Month.class);
                     updateSpecificMonth(refMonthKey, month);
-                    setCategoriesEventUpdateValue(categoryDBReference,refMonthKey);
+//                    DataSnapshot categoryDBReference = dataSnapshot.child(Definition.CATEGORIES);
+//                    setCategoriesEventUpdateValue(categoryDBReference,refMonthKey);
                 }
                 catch(Exception ex){
                     String message = ex.getMessage();
@@ -353,7 +401,7 @@ public final class DBService implements Serializable {
                         }
 //                        categoryNode.child(catId).setValue(cat);
 //                        updateSpecificCategory(refMonthKey, cat);
-                        setCategoryEventUpdateValue(categoryNode, refMonthKey, catId);
+                        setCategoryEventUpdateValue(categoryNode, refMonthKey);
                     }
                 }
 
@@ -383,7 +431,8 @@ public final class DBService implements Serializable {
         String tranId = transactionsNode.push().getKey();
         transactionsNode.child(catId).setValue(tran);
         updateSpecificTransaction(refMonthKey,catId,tranId,tran);
-        setTransactionEventUpdateValue(transactionsNode,refMonthKey,catId,tranId);
+//        setTransactionEventUpdateValue(transactionsNode,refMonthKey,catId,tranId); // todo restore
+        setTransactionEventUpdateValue(transactionsNode,refMonthKey,catId);
         }
 
     public void setMonthIncludeEventUpdateValue(DatabaseReference monthDBReference,final  String refMonthKey, final List<Budget> catToAdd, final String operation) {

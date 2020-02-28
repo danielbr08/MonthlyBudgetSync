@@ -1,6 +1,5 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
-import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 
 import java.io.Serializable;
@@ -16,12 +15,13 @@ public class Month implements Serializable {
     private String id;
     private Date refMonth;
     private boolean isActive;
-    private Map<String,Category> categoryHMDB;
+    private Map<String,Category> categories;
+
     private int tranIdNumerator;
-    private String budgetNumber;
+    private long budgetNumber;
 
     public Month() {
-        categoryHMDB = new HashMap<String,Category>();
+        categories = new HashMap<String,Category>();
     }
 
     //    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
@@ -31,7 +31,7 @@ public class Month implements Serializable {
 //        this.dbService = dbService;
 
         this.id = refMonth;
-        this.categoryHMDB = new HashMap<String,Category>();
+        this.categories = new HashMap<String,Category>();
         this.refMonth = DateService.getDate(refMonth);
         this.tranIdNumerator = 1;
         setIsActive();
@@ -46,16 +46,16 @@ public class Month implements Serializable {
         this.dateService = dateService;
     }
 
-    public String getBudgetNumber() {
+    public long getBudgetNumber() {
         return budgetNumber;
     }
 
-    public void setBudgetNumber(String budgetNumber) {
+    public void setBudgetNumber(long budgetNumber) {
         this.budgetNumber = budgetNumber;
     }
 
     public void updateSpecificCategory(String id, Category cat){
-        this.categoryHMDB.put(id, cat);
+        this.categories.put(id, cat);
     }
 
     public Date getRefMonth() {
@@ -71,7 +71,7 @@ public class Month implements Serializable {
     }
 
     public void setCategories(Map<String,Category> categories) {
-        this.categoryHMDB = categories;
+        this.categories = categories;
     }
 
     private void setIsActive(){
@@ -87,12 +87,12 @@ public class Month implements Serializable {
         this.tranIdNumerator = tranIdNumerator;
     }
 
-    public Map<String, Category> getCategoryHMDB() {
-        return categoryHMDB;
+    public Map<String, Category> getCategories() {
+        return categories;
     }
 
     public void addCategory(String id, Category category){
-        categoryHMDB.put(id,category);
+        categories.put(id,category);
     }
 
     public String getId() {
