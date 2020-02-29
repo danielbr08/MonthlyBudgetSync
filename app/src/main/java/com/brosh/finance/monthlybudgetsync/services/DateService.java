@@ -99,7 +99,7 @@ public final class DateService {
     }
 
     public static Date getDate(String refMonthKey) {
-        String[] yearMonth = refMonthKey.split(Definition.dash);
+        String[] yearMonth = refMonthKey.split(Definition.DASH);
         String year = yearMonth[0];
         String month = yearMonth[1];
         String day = "01";

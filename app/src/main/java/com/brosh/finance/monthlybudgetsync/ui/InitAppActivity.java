@@ -29,7 +29,7 @@ public class InitAppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_app);
-        dbService = new DBService(this);
+        dbService = new DBService();
         String userKey = getIntent().getExtras().getString(getString(R.string.user),"");
         initDB(userKey);
     }

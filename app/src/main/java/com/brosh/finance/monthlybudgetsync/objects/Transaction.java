@@ -102,7 +102,53 @@ public class Transaction {
         return stornoOf;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 
+    public void setIdPerMonth(int idPerMonth) {
+        this.idPerMonth = idPerMonth;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public void setShop(String shop) {
+        this.shop = shop;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public boolean isStorno() {
+        return isStorno;
+    }
+
+    public void setStorno(boolean storno) {
+        isStorno = storno;
+    }
+
+    public void setStornoOf(int stornoOf) {
+        this.stornoOf = stornoOf;
+    }
 
     public boolean isStorno(Transaction tran) {
             return ((this.getId() != tran.getId()) &&

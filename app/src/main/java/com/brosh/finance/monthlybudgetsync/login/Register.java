@@ -52,7 +52,7 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        dbService = new DBService(this);
+        dbService = new DBService();
         //Month month = (Month) getIntent().getSerializableExtra("month");
 
 
