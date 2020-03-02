@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 //import android.support.annotation.RequiresApi;
 //import android.support.v7.app.AlertDialog;
@@ -277,7 +278,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                     createBudget(getString(R.string.create));// First time create budget
                 else if (isOriginContentBudgetChanged){// ReWriting of monthly budget needed
                     if (dbService.isCurrentRefMonthExists())
-                        showQuestion(language.createBudgetQuestion);
+                        showQuestionDeleteCurrentMonth(language.createBudgetQuestion);
                     return;
                 }
                 else if (isAddedBudgetsExists)// Insert the added budgets needed only
@@ -295,9 +296,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
         LLMain.addView(newll);
     }
 
+    public void writeBudget(int budgetNumber, final List<Budget> budgets){
+        for (Budget budget:budgets) {
+            dbService.updateSpecificBudget(String.valueOf(budgetNumber),budget);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void writeBudgetIncludeUpdateCategory(final int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
         final String maxBudgetNumber = String.valueOf(budgetNumber);
+
         Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS).child(maxBudgetNumber);
 //        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
         addBudgetQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -477,7 +485,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         et.setError(errorMesage);
     }
 
-    public void showQuestion(String message) {
+    public void showQuestionDeleteCurrentMonth(String message) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -641,7 +649,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private void createBudget(String operation) {
         int budgetNumber = dbService.getMaxBudgetNumber() + 1;
         ArrayList<Budget> addedBudgets = new ArrayList<>();
-        if (!operation.equals(getString(R.string.create)))
+        if (operation.equals(getString(R.string.add)))
             addedBudgets = getAddedBudgets(budgetNumber - 1);
 //        if (operation.equals(getString(R.string.add)))
 //            addCategoriesToMonthlyBudget(addedBudget, budgetNumber);
@@ -649,12 +657,32 @@ public class Create_Budget_Activity extends AppCompatActivity {
             dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(),getString(R.string.seperator)));
 //        else if (operation.equals(getString(R.string.create)))
 //            ; // Delete or add not needed
-        writeBudgetIncludeUpdateCategory(budgetNumber,allBudgets,operation,addedBudgets);
+        writeBudget(budgetNumber,allBudgets);
+        addBudgetInTreeFB(budgetNumber);
+//        writeCategories();
+//        addCategoriesInTreeFB();
+//        writeBudgetIncludeUpdateCategory(budgetNumber,allBudgets,operation,addedBudgets);
 
         //deleteCurrentMonth();
         month = null;
         showMessageToast(language.budgetCreatedSuccessfully, true);
     }
+
+    private void addBudgetInTreeFB(final int budgetNumber){
+        String budgetNumberStr = String.valueOf(budgetNumber);
+        Map<String, Budget> hmBudgets = dbService.getBudget(budgetNumberStr);
+        dbService.getDBBudgetPath().child(budgetNumberStr).setValue(hmBudgets);
+    }
+
+//    private void writeCategoriesByBudgetObjects(final String refMonth, List<Budget> budgets){
+//        Map<String, Budget> hmBudgets = dbService.getBudget(budgetNumberStr);
+//        dbService.getDBBudgetPath().child(budgetNumberStr).setValue(hmBudgets);
+//    }
+//
+//    private void addCategoriesInTreeFB(final String refMonth){
+//        Map<String, Category> hmCategories = dbService.getCategories(refMonth);
+//        dbService.getDBCategoriesPath(refMonth).child(refMonth).setValue(hmCategories);
+//    }
 
     private void questionFalseAnswer() {
     }

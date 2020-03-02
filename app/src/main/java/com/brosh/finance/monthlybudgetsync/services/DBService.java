@@ -18,6 +18,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
@@ -121,8 +122,9 @@ public final class DBService implements Serializable {
     }
 
     public void deleteDataRefMonth(String refMonth) {
-        monthDBHM.get(refMonth).getCategories().clear();
-        //monthDBHM.get(refMonth).setTranIdNumerator(0);
+        monthDBHM.remove(refMonth);
+        Config.DatabaseReferenceMonthlyBudget.child(userKey).child(refMonth).removeValue();
+        //removeEventListners();
     }
 
     public int getMaxIDPerMonthTRN(String refMonth) {
@@ -243,12 +245,13 @@ public final class DBService implements Serializable {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                String refMonth = dataSnapshot.getKey();
+                thisObject.monthDBHM.remove(refMonth);
+//                removeEventListner(); todo implement
             }
 
             @Override
@@ -573,5 +576,39 @@ public final class DBService implements Serializable {
             String s = e.getMessage().toString();
             s=s;
         }
+    }
+
+    public static Map<String,Budget> listToMap(List<Budget> budgets){
+        Map<String, Budget> mapedItems = new HashMap<>();
+        for (Budget budget: budgets) {
+            mapedItems.put(budget.getId(),budget);
+        }
+        return mapedItems;
+    }
+
+    public DatabaseReference getDBUserRootPath(){
+        return FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
+    }
+
+    public DatabaseReference getDBBudgetPath(){
+        return getDBUserRootPath().child(Definition.BUDGETS);
+    }
+
+    public DatabaseReference getDBMonthstPath(){
+        return getDBUserRootPath().child(Definition.MONTHS);
+    }
+
+    public DatabaseReference getDBCategoriesPath(String refMonth){
+        return getDBMonthstPath().child(refMonth).child(Definition.CATEGORIES);
+    }
+
+    public DatabaseReference getDBUserTransactionsPath(String refMonth, String catId){
+        return getDBCategoriesPath(refMonth).child(catId).child(Definition.TRANSACTIONS);
+    }
+
+    public Map<String, Budget> getBudget(String budgetNumber){
+        if(budgetDBHM.containsKey(budgetNumber))
+            return budgetDBHM.get(budgetNumber);
+        return null;
     }
 }
