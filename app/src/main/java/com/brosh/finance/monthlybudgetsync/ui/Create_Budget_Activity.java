@@ -297,39 +297,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     public void writeBudget(int budgetNumber, final List<Budget> budgets){
+        String budgetNumberStr = String.valueOf(budgetNumber);
         for (Budget budget:budgets) {
+            String budgetId = dbService.getDBBudgetPath().child(budgetNumberStr).push().toString();
+            budget.setId(budgetId);
             dbService.updateSpecificBudget(String.valueOf(budgetNumber),budget);
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void writeBudgetIncludeUpdateCategory(final int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
-        final String maxBudgetNumber = String.valueOf(budgetNumber);
-
-        Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS).child(maxBudgetNumber);
-//        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
-        addBudgetQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS);
-                for (Budget bgt : budgets) {
-                    String id = budgetNode.child(maxBudgetNumber).push().getKey();
-                    bgt.setId(id);
-                    budgetNode.child(maxBudgetNumber).child(id).setValue(bgt);
-                    dbService.updateSpecificBudget(maxBudgetNumber,bgt);
-                }
-                List<Budget> budgetsToWrite  =  budgets;
-                if (operation.equals(getString(R.string.add))){ //todo check this condition again
-                    budgetsToWrite = addedBudgets;
-                }
-                addCategoriesToMonthlyBudget(budgetsToWrite,budgetNumber,operation);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void writeAddedCategories(final String yearMonthKey, final ArrayList<Budget> budgets) {
@@ -657,40 +630,46 @@ public class Create_Budget_Activity extends AppCompatActivity {
             dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(),getString(R.string.seperator)));
 //        else if (operation.equals(getString(R.string.create)))
 //            ; // Delete or add not needed
+        String refMonth = dateService.getYearMonth(dateService.getTodayDate(),getString(R.string.seperator));
         writeBudget(budgetNumber,allBudgets);
-        addBudgetInTreeFB(budgetNumber);
-//        writeCategories();
-//        addCategoriesInTreeFB();
-//        writeBudgetIncludeUpdateCategory(budgetNumber,allBudgets,operation,addedBudgets);
+        addBudgetToTreeFB(budgetNumber);
+
+        List<Budget> categoriesToConvert = operation.equals(getString(R.string.add)) ? addedBudgets : allBudgets;
+        List<Category> categoriesToWrite = budgetToCategories(categoriesToConvert);
+        writeCategories(refMonth,categoriesToWrite);
+        dbService.setAddedCategoriesEventUpdateValue(dbService.getDBCategoriesPath(refMonth),refMonth,categoriesToWrite);
 
         //deleteCurrentMonth();
         month = null;
         showMessageToast(language.budgetCreatedSuccessfully, true);
     }
 
-    private void addBudgetInTreeFB(final int budgetNumber){
+    private List<Category> budgetToCategories(List<Budget> budgets) {
+        List<Category> categories= new ArrayList<>();
+        for (Budget budget:budgets) {
+            Category cat = new Category("",budget.getCategoryName(), budget.getValue(),budget.getValue());
+            categories.add(cat);
+        }
+        return categories;
+    }
+
+    private void addBudgetToTreeFB(final int budgetNumber){
         String budgetNumberStr = String.valueOf(budgetNumber);
         Map<String, Budget> hmBudgets = dbService.getBudget(budgetNumberStr);
         dbService.getDBBudgetPath().child(budgetNumberStr).setValue(hmBudgets);
     }
 
-//    private void writeCategoriesByBudgetObjects(final String refMonth, List<Budget> budgets){
-//        Map<String, Budget> hmBudgets = dbService.getBudget(budgetNumberStr);
-//        dbService.getDBBudgetPath().child(budgetNumberStr).setValue(hmBudgets);
-//    }
-//
-//    private void addCategoriesInTreeFB(final String refMonth){
-//        Map<String, Category> hmCategories = dbService.getCategories(refMonth);
-//        dbService.getDBCategoriesPath(refMonth).child(refMonth).setValue(hmCategories);
-//    }
+    private void writeCategories(final String refMonth, List<Category> categories){
+        for (Category cat:categories) {
+            String catId = dbService.getDBCategoriesPath(refMonth).push().toString();
+            cat.setId(catId);
+            dbService.getDBCategoriesPath(refMonth).child(catId).setValue(cat);
+            dbService.updateSpecificCategory(refMonth, cat);
+        }
+    }
 
     private void questionFalseAnswer() {
     }
-
-/*    public void writeBudget(ArrayList<String> lines, String fileName, String dirPath) {
-        // Writing the categories and budget values to file
-        writeToFile(lines, fileName, dirPath);
-    }*/
 
     public void setButtonsNames() {
         // CreateBudget window buttons
@@ -934,6 +913,37 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(deleteRowButton);
         LLMain.addView(newll);
     }
+
+//    todo remove this method
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    private void writeBudgetIncludeUpdateCategory(final int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
+//        final String maxBudgetNumber = String.valueOf(budgetNumber);
+//
+//        Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS).child(maxBudgetNumber);
+////        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
+//        addBudgetQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS);
+//                for (Budget bgt : budgets) {
+//                    String id = budgetNode.child(maxBudgetNumber).push().getKey();
+//                    bgt.setId(id);
+//                    budgetNode.child(maxBudgetNumber).child(id).setValue(bgt);
+//                    dbService.updateSpecificBudget(maxBudgetNumber,bgt);
+//                }
+//                List<Budget> budgetsToWrite  =  budgets;
+//                if (operation.equals(getString(R.string.add))){ //todo check this condition again
+//                    budgetsToWrite = addedBudgets;
+//                }
+//                addCategoriesToMonthlyBudget(budgetsToWrite,budgetNumber,operation);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onPause() {
