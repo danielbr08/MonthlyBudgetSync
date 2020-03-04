@@ -634,10 +634,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
         writeBudget(budgetNumber,allBudgets);
         addBudgetToTreeFB(budgetNumber);
 
-        List<Budget> categoriesToConvert = operation.equals(getString(R.string.add)) ? addedBudgets : allBudgets;
-        List<Category> categoriesToWrite = budgetToCategories(categoriesToConvert);
-        writeCategories(refMonth,categoriesToWrite);
-        dbService.setAddedCategoriesEventUpdateValue(dbService.getDBCategoriesPath(refMonth),refMonth,categoriesToWrite);
+        List<Budget> budgetssToConvert = operation.equals(getString(R.string.add)) ? addedBudgets : allBudgets;
+        List<Category> wrotedCategories = writeCategoriesByBudgets(refMonth, budgetssToConvert);
+        dbService.setAddedCategoriesEventUpdateValue(dbService.getDBCategoriesPath(refMonth),refMonth,wrotedCategories);
 
         //deleteCurrentMonth();
         month = null;
@@ -653,19 +652,27 @@ public class Create_Budget_Activity extends AppCompatActivity {
         return categories;
     }
 
+    private Category budgetToCategory (Budget budget, String catId) {
+        return new Category(catId ,budget.getCategoryName(), budget.getValue(),budget.getValue());
+    }
+
     private void addBudgetToTreeFB(final int budgetNumber){
         String budgetNumberStr = String.valueOf(budgetNumber);
         Map<String, Budget> hmBudgets = dbService.getBudget(budgetNumberStr);
         dbService.getDBBudgetPath().child(budgetNumberStr).setValue(hmBudgets);
     }
 
-    private void writeCategories(final String refMonth, List<Category> categories){
-        for (Category cat:categories) {
+    // Returns new categories wroted
+    private List<Category> writeCategoriesByBudgets(final String refMonth, List<Budget> budgets){
+        List<Category> wrotedCategories = new ArrayList<>();
+        for (Budget bgt:budgets) {
             String catId = dbService.getDBCategoriesPath(refMonth).push().toString();
-            cat.setId(catId);
+            Category cat = budgetToCategory(bgt, catId);
             dbService.getDBCategoriesPath(refMonth).child(catId).setValue(cat);
             dbService.updateSpecificCategory(refMonth, cat);
+            wrotedCategories.add(cat);
         }
+        return wrotedCategories;
     }
 
     private void questionFalseAnswer() {
