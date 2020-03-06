@@ -602,23 +602,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addCategoriesToMonthlyBudget(List<Budget> catToAdd, int budgetNumber,String operation) {
-        String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.seperator));
-        if(operation.equals(getString(R.string.add)) && !dbService.isCurrentRefMonthExists()){
-            // Exception - add operation cannot on empty month
-            return;
-        }
-        DatabaseReference categoryDBReference = DatabaseReferenceUserMonthlyBudget.child(Definition.MONTHS).child(yearMonth).child(Definition.CATEGORIES);
-        DatabaseReference monthDBReference = DatabaseReferenceUserMonthlyBudget.child(Definition.MONTHS);
-        dbService.setMonthIncludeEventUpdateValue(monthDBReference,yearMonth,catToAdd,operation);
-        dbService.setAddedCategoriesIncludeEventUpdateValue(categoryDBReference,yearMonth,catToAdd,operation);
-//        dbService.updateBudgetNumberMB(yearMonth, budgetNumber);
-//        int maxIDPerMonth = dbService.getMaxIDPerMonthTRN(yearMonth);
-//        month.initCategories();
-        //setFrqTrans(catToAdd, maxIDPerMonth);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createBudget(String operation) {
         int budgetNumber = dbService.getMaxBudgetNumber() + 1;
         ArrayList<Budget> addedBudgets = new ArrayList<>();
