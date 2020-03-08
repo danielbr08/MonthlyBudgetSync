@@ -35,13 +35,6 @@ public final class DBService implements Serializable {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
 
-    private void addChildValueEventListener(DataSnapshot dataSnapshot, ChildEventListener event) {
-        Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-        if(!childEventListenersHM.containsKey(dataSnapshot))
-            childEventListenersHM.put(dataSnapshot,new ArrayList<ChildEventListener>());
-        childEventListenersHM.get(dataSnapshot).add(event);
-    }
-
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
 
     private Month month;
@@ -535,6 +528,13 @@ public final class DBService implements Serializable {
                 deleteChildValueEventListener(dataSnapshot, event);
             }
         }
+    }
+
+    private void addChildValueEventListener(DataSnapshot dataSnapshot, ChildEventListener event) {
+        Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
+        if(!childEventListenersHM.containsKey(dataSnapshot))
+            childEventListenersHM.put(dataSnapshot,new ArrayList<ChildEventListener>());
+        childEventListenersHM.get(dataSnapshot).add(event);
     }
 
     //****************************************************************************************
