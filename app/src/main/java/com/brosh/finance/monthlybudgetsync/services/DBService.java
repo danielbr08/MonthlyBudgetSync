@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
+import com.brosh.finance.monthlybudgetsync.objects.EventListenerMap;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
@@ -33,17 +34,9 @@ import java.util.Map;
 public final class DBService implements Serializable {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
-    private Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = new HashMap<>();
-
-    public Map<DataSnapshot, List<ChildEventListener>> getChildEventListenersHM() {
-        return childEventListenersHM;
-    }
-
-    public void setChildEventListenersHM(Map<DataSnapshot, List<ChildEventListener>> childEventListenersHM) {
-        this.childEventListenersHM = childEventListenersHM;
-    }
 
     private void addChildValueEventListener(DataSnapshot dataSnapshot, ChildEventListener event) {
+        Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
         if(!childEventListenersHM.containsKey(dataSnapshot))
             childEventListenersHM.put(dataSnapshot,new ArrayList<ChildEventListener>());
         childEventListenersHM.get(dataSnapshot).add(event);
@@ -224,6 +217,8 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String budgetNumber = dataSnapshot.getKey();
                 thisObject.budgetDBHM.remove(budgetNumber);
+
+                Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
                 List<ChildEventListener> nodeEvents = childEventListenersHM.get(dataSnapshot);
                 deleteChildValueEventsListener(dataSnapshot, nodeEvents);            }
 
@@ -277,6 +272,8 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String refMonth = dataSnapshot.getKey();
                 thisObject.monthDBHM.remove(refMonth);
+
+                Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
                 List<ChildEventListener> nodeEvents = childEventListenersHM.get(dataSnapshot);
                 deleteChildValueEventsListener(dataSnapshot, nodeEvents);
             }
@@ -313,6 +310,8 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String catId = dataSnapshot.getKey();
                 thisObject.getCategories(refMonth).remove(catId);
+
+                Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
                 List<ChildEventListener> nodeEvents = childEventListenersHM.get(dataSnapshot);
                 deleteChildValueEventsListener(dataSnapshot, nodeEvents);
             }
@@ -367,6 +366,8 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String catId = dataSnapshot.getKey();
                 thisObject.getCategories(refMonthKey).remove(catId);
+
+                Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
                 List<ChildEventListener> nodeEvents = childEventListenersHM.get(dataSnapshot);
                 deleteChildValueEventsListener(dataSnapshot, nodeEvents);
             }
@@ -437,6 +438,7 @@ public final class DBService implements Serializable {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
                 List<ChildEventListener> nodeEvents = childEventListenersHM.get(dataSnapshot);
                 deleteChildValueEventsListener(dataSnapshot, nodeEvents);
             }
@@ -494,6 +496,7 @@ public final class DBService implements Serializable {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
                 List<ChildEventListener> nodeEvents = childEventListenersHM.get(dataSnapshot);
                 deleteChildValueEventsListener(dataSnapshot, nodeEvents);
             }
@@ -513,6 +516,7 @@ public final class DBService implements Serializable {
     }
 
     public void deleteChildValueEventListener(DataSnapshot dataSnapshot, ChildEventListener event){
+        Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
         if(childEventListenersHM.containsKey(dataSnapshot))
             dataSnapshot.getRef().removeEventListener(event);
     }
@@ -520,6 +524,7 @@ public final class DBService implements Serializable {
     public void deleteChildValueEventsListener(DataSnapshot dataSnapshot, List<ChildEventListener> events){
 
         for (DataSnapshot node: dataSnapshot.getChildren()) {
+            Map<DataSnapshot, List<ChildEventListener> > childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
             if( childEventListenersHM.containsKey(node)){
                 List<ChildEventListener> childEvents = childEventListenersHM.get(node);
                 deleteChildValueEventsListener(node, childEvents);
