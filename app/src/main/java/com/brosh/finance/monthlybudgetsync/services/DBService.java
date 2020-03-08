@@ -292,7 +292,7 @@ public final class DBService implements Serializable {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Category cat = dataSnapshot.getValue(Category.class);
                 thisObject.getCategories(refMonth).put(cat.getId(),cat);
-                setCategoryFieldsEventUpdateValue(dataSnapshot.child(cat.getId()), refMonth);
+                setCategoryFieldsEventUpdateValue(dataSnapshot, refMonth);
             }
 
             @Override
@@ -386,11 +386,7 @@ public final class DBService implements Serializable {
 
     private void setCategoryFieldsEventUpdateValue(final DataSnapshot categoryDBDataSnapshot, String refMonthKey) {
         String catId = categoryDBDataSnapshot.getKey();
-        List<String> categoryFields = Arrays.asList(Definition.BALANCE, Definition.BUDGET, Definition.NAME);
-        for (String categoryField : categoryFields) {
-            DataSnapshot categoryFieldDataSnapshot = categoryDBDataSnapshot.child(categoryField);
-            setCategoryFieldEventUpdateValue(categoryFieldDataSnapshot, refMonthKey, catId);
-        }
+        setCategoryFieldEventUpdateValue(categoryDBDataSnapshot, refMonthKey, catId);
 
         DataSnapshot transactionDBDataSnapshot = categoryDBDataSnapshot.child(Definition.TRANSACTIONS);
         if(transactionDBDataSnapshot.exists())
@@ -665,6 +661,9 @@ public final class DBService implements Serializable {
                     DataSnapshot categoryDBReference = dataSnapshot.child(Definition.CATEGORIES);
                     Month month = dataSnapshot.getValue(Month.class);
                     updateSpecificMonth(refMonthKey, month);
+                    //delete old events
+
+
                     setCategoriesFieldsEventUpdateValue(categoryDBReference,refMonthKey);
 //                    setCategoriesEventUpdateValue(categoryDBReference,refMonthKey); // todo remove
                 }
