@@ -276,7 +276,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 }
                 else if (month == null)
                     createBudget(getString(R.string.create));// First time create budget
-                else if (isOriginContentBudgetChanged){// ReWriting of monthly budget needed
+                else if (isOriginContentBudgetChanged){// Rewriting of monthly budget needed
                     if (dbService.isCurrentRefMonthExists())
                         showQuestionDeleteCurrentMonth(language.createBudgetQuestion);
                     return;

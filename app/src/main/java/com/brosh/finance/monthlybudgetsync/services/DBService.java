@@ -126,7 +126,7 @@ public final class DBService implements Serializable {
     public void deleteDataRefMonth(String refMonth) {
         monthDBHM.remove(refMonth);
         Config.DatabaseReferenceMonthlyBudget.child(userKey).child(refMonth).removeValue();
-        //removeEventListners();
+//        deleteChildValueEventsListener(Config.DatabaseReferenceMonthlyBudget.child(userKey).child(refMonth)); // todo add support databasereference parameter
     }
 
     public int getMaxIDPerMonthTRN(String refMonth) {
@@ -210,10 +210,7 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String budgetNumber = dataSnapshot.getKey();
                 thisObject.budgetDBHM.remove(budgetNumber);
-
-                Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-                ChildEventListener nodeEvent = childEventListenersHM.get(dataSnapshot.getRef());
-                deleteChildValueEventsListener(dataSnapshot, nodeEvent);
+                deleteChildValueEventsListener(dataSnapshot);
             }
 
             @Override
@@ -267,10 +264,7 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String refMonth = dataSnapshot.getKey();
                 thisObject.monthDBHM.remove(refMonth);
-
-                Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-                ChildEventListener nodeEvent = childEventListenersHM.get(dataSnapshot.getRef());
-                deleteChildValueEventsListener(dataSnapshot, nodeEvent);
+                deleteChildValueEventsListener(dataSnapshot);
             }
 
             @Override
@@ -307,10 +301,7 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String catId = dataSnapshot.getKey();
                 thisObject.getCategories(refMonth).remove(catId);
-
-                Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-                ChildEventListener nodeEvent = childEventListenersHM.get(dataSnapshot.getRef());
-                deleteChildValueEventsListener(dataSnapshot, nodeEvent);
+                deleteChildValueEventsListener(dataSnapshot);
             }
 
             @Override
@@ -367,10 +358,7 @@ public final class DBService implements Serializable {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String catId = dataSnapshot.getKey();
                 thisObject.getCategories(refMonthKey).remove(catId);
-
-                Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-                ChildEventListener nodeEvent = childEventListenersHM.get(dataSnapshot.getRef());
-                deleteChildValueEventsListener(dataSnapshot, nodeEvent);
+                deleteChildValueEventsListener(dataSnapshot);
             }
 
             @Override
@@ -436,9 +424,7 @@ public final class DBService implements Serializable {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-                ChildEventListener nodeEvent = childEventListenersHM.get(dataSnapshot.getRef());
-                deleteChildValueEventsListener(dataSnapshot, nodeEvent);
+                deleteChildValueEventsListener(dataSnapshot);
             }
 
             @Override
@@ -495,9 +481,7 @@ public final class DBService implements Serializable {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-                ChildEventListener nodeEvent = childEventListenersHM.get(dataSnapshot.getRef());
-                deleteChildValueEventsListener(dataSnapshot, nodeEvent);
+                deleteChildValueEventsListener(dataSnapshot);
             }
 
             @Override
@@ -516,24 +500,21 @@ public final class DBService implements Serializable {
         }
     }
 
-    public void deleteChildValueEventListener(DatabaseReference databaseReference, ChildEventListener event) {
+    public void deleteChildValueEventListener(DatabaseReference databaseReference) {
         Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
-        if (childEventListenersHM.containsKey(databaseReference))
-            databaseReference.removeEventListener(event);
+        ChildEventListener event = childEventListenersHM.get(databaseReference);
+        databaseReference.removeEventListener(event);
     }
 
-    public void deleteChildValueEventsListener(DataSnapshot dataSnapshot, ChildEventListener event) {
-
+    public void deleteChildValueEventsListener(DataSnapshot dataSnapshot) {
+        Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
         for (DataSnapshot node : dataSnapshot.getChildren()) {
-            Map<DatabaseReference, ChildEventListener> childEventListenersHM = EventListenerMap.getInstance().getChildEventListenersHM();
             if (childEventListenersHM.containsKey(node.getRef())) {
-                ChildEventListener childEvent = childEventListenersHM.get(node.getRef());
-                deleteChildValueEventsListener(node, childEvent);
+                deleteChildValueEventsListener(node);
             }
         }
-        if (event != null) {
-            deleteChildValueEventListener(dataSnapshot.getRef(), event);
-        }
+        if(childEventListenersHM.containsKey(dataSnapshot.getRef()))
+            deleteChildValueEventListener(dataSnapshot.getRef());
     }
 
     private void addChildValueEventListener(DatabaseReference databaseReference, ChildEventListener event) {
