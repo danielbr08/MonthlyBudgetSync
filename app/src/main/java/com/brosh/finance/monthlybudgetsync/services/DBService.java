@@ -125,7 +125,7 @@ public final class DBService implements Serializable {
 
     public void deleteDataRefMonth(String refMonth) {
         monthDBHM.remove(refMonth);
-        Config.DatabaseReferenceMonthlyBudget.child(userKey).child(refMonth).removeValue();
+        getDBMonthtPath(refMonth).removeValue(); // todo  check if this call will run delete event listener node. if yes, the next line is not needed.
 //        deleteChildValueEventsListener(Config.DatabaseReferenceMonthlyBudget.child(userKey).child(refMonth)); // todo add support databasereference parameter
     }
 
@@ -676,6 +676,10 @@ public final class DBService implements Serializable {
 
     public DatabaseReference getDBMonthstPath() {
         return getDBUserRootPath().child(Definition.MONTHS);
+    }
+
+    public DatabaseReference getDBMonthtPath(String refMonth) {
+        return getDBMonthstPath().child(refMonth);
     }
 
     public DatabaseReference getDBCategoriesPath(String refMonth) {
