@@ -112,7 +112,7 @@ public final class DBService implements Serializable {
 
     }
 
-    public List<Budget> getBudgetDataFromDB(int budgetNumber) {
+    public List<Budget> getBudgetDataFromDB(long budgetNumber) {
         List<Budget> budgets = new ArrayList<Budget>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
         Collections.sort(budgets, ComparatorService.COMPARE_BY_CATEGORY_PRIORITY);
         return budgets;
@@ -703,10 +703,46 @@ public final class DBService implements Serializable {
         return null;
     }
 
+    public Map<String, Category> getCategoriesClone(String refMonth) {
+        try {
+            Map<String, Category> categoriesClone = new HashMap<>();
+            if (monthDBHM.containsKey(refMonth)) {
+                for (Category cat : monthDBHM.get(refMonth).getCategories().values()) {
+                    categoriesClone.put(cat.getId(), (Category) cat.clone());
+                }
+                return monthDBHM.get(refMonth).getCategories();
+            }
+            return null;
+        }
+        catch (Exception e){
+            String s = e.getMessage();
+            s=s;
+            return null;
+        }
+
+    }
     public void setAddedCategoriesEventUpdateValue(final DatabaseReference DatabaseReference, final String refMonthKey, List<Category> addedCategories) {
         for (Category cat : addedCategories) {
             setCategoryEventUpdateValue(DatabaseReference, refMonthKey, cat.getId());
         }
+    }
+
+    public List<Category> getCategoriesByPriority(String refMonth){
+        long budgetNumber = getMonthDBHM().get(refMonth).getBudgetNumber();
+        Map<String, Category> categoriesClone = getCategoriesClone(refMonth);
+        List<Budget> sortedBudgets = getBudgetDataFromDB(budgetNumber);
+        List<Category> sortedCategories = new ArrayList<>();
+
+        for (Budget budget : sortedBudgets) {
+            for (Category cat : categoriesClone.values()) {
+                if( budget.getCategoryName() == cat.getName() && budget.getValue() == cat.getBudget()) {
+                    sortedCategories.add(cat);
+                    categoriesClone.remove(cat.getId());
+                    break;
+                }
+            }
+        }
+        return sortedCategories;
     }
 
 

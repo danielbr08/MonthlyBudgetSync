@@ -4,13 +4,17 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Category implements Serializable {
+public class Category implements Serializable, Cloneable {
     private String id;
 
     private String name;
     private double balance;
     private int budget;
     private Map<String, Transaction> transactionHMDB;
+
+    public Object clone()throws CloneNotSupportedException{
+        return super.clone();
+    }
 
     public Category() {
     }
