@@ -745,6 +745,10 @@ public final class DBService implements Serializable {
         return sortedCategories;
     }
 
+    public List<String> getAllMonthesYearMonth() {
+        return (List<String>)monthDBHM.keySet();
+    }
+
 
     // ****************************************************************************
 
