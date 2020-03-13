@@ -201,8 +201,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
                     EditText categoryValueET = (EditText) rowLL.getChildAt(2);
                     if (language.isEn())
                         uiService.reverseLinearLayout(rowLL);
-                    if (categoryNameET.getText().toString().equals( getString(R.string.empty)) ||
-                            categoryValueET.getText().toString().equals( getString(R.string.empty))) {
+                    if (categoryNameET.getText().toString().equals(getString(R.string.empty)) ||
+                            categoryValueET.getText().toString().equals(getString(R.string.empty))) {
                         isEmptyRowExists = true;
                         break;
                     }
@@ -273,15 +273,13 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 else if (allBudgets.size() == 0) {// Nothing needed to do
                     showMessageNoButton(language.pleaseInsertBudget);
                     return;
-                }
-                else if (month == null)
+                } else if (month == null)
                     createBudget(getString(R.string.create));// First time create budget
-                else if (isOriginContentBudgetChanged){// Rewriting of monthly budget needed
+                else if (isOriginContentBudgetChanged) {// Rewriting of monthly budget needed
                     if (dbService.isCurrentRefMonthExists())
                         showQuestionDeleteCurrentMonth(language.createBudgetQuestion);
                     return;
-                }
-                else if (isAddedBudgetsExists)// Insert the added budgets needed only
+                } else if (isAddedBudgetsExists)// Insert the added budgets needed only
                     createBudget(getString(R.string.add));// Values of old budget updated only
             }
         });
@@ -296,12 +294,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
         LLMain.addView(newll);
     }
 
-    public void writeBudget(int budgetNumber, final List<Budget> budgets){
+    public void writeBudget(int budgetNumber, final List<Budget> budgets) {
         String budgetNumberStr = String.valueOf(budgetNumber);
-        for (Budget budget:budgets) {
+        for (Budget budget : budgets) {
             String budgetId = dbService.getDBBudgetPath().child(budgetNumberStr).push().toString();
             budget.setId(budgetId);
-            dbService.updateSpecificBudget(String.valueOf(budgetNumber),budget);
+            dbService.updateSpecificBudget(String.valueOf(budgetNumber), budget);
         }
     }
 
@@ -314,9 +312,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 DatabaseReference categoryNode = DatabaseReferenceUserMonthlyBudget.child(Definition.CATEGORIES);
                 for (Budget bgt : budgets) {
                     String categoryId = categoryNode.push().getKey();
-                    Category category = new Category(categoryId,bgt.getCategoryName(),bgt.getValue(),bgt.getValue());
+                    Category category = new Category(categoryId, bgt.getCategoryName(), bgt.getValue(), bgt.getValue());
                     categoryNode.child(yearMonthKey).child(categoryId).setValue(category);
-                    dbService.updateSpecificCategory(yearMonthKey,category);
+                    dbService.updateSpecificCategory(yearMonthKey, category);
                 }
             }
 
@@ -610,16 +608,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
 //        if (operation.equals(getString(R.string.add)))
 //            addCategoriesToMonthlyBudget(addedBudget, budgetNumber);
         else if (operation.equals(getString(R.string.delete)))
-            dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(),getString(R.string.seperator)));
+            dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(), getString(R.string.seperator)));
 //        else if (operation.equals(getString(R.string.create)))
 //            ; // Delete or add not needed
-        String refMonth = dateService.getYearMonth(dateService.getTodayDate(),getString(R.string.seperator));
-        writeBudget(budgetNumber,allBudgets);
+        String refMonth = dateService.getYearMonth(dateService.getTodayDate(), getString(R.string.seperator));
+        writeBudget(budgetNumber, allBudgets);
         addBudgetToTreeFB(budgetNumber);
 
         List<Budget> budgetssToConvert = operation.equals(getString(R.string.add)) ? addedBudgets : allBudgets;
         List<Category> wrotedCategories = writeCategoriesByBudgets(refMonth, budgetssToConvert);
-        dbService.setAddedCategoriesEventUpdateValue(dbService.getDBCategoriesPath(refMonth),refMonth,wrotedCategories);
+        dbService.setAddedCategoriesEventUpdateValue(dbService.getDBCategoriesPath(refMonth), refMonth, wrotedCategories);
 
         //deleteCurrentMonth();
         month = null;
@@ -627,28 +625,28 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     private List<Category> budgetToCategories(List<Budget> budgets) {
-        List<Category> categories= new ArrayList<>();
-        for (Budget budget:budgets) {
-            Category cat = new Category("",budget.getCategoryName(), budget.getValue(),budget.getValue());
+        List<Category> categories = new ArrayList<>();
+        for (Budget budget : budgets) {
+            Category cat = new Category("", budget.getCategoryName(), budget.getValue(), budget.getValue());
             categories.add(cat);
         }
         return categories;
     }
 
-    private Category budgetToCategory (Budget budget, String catId) {
-        return new Category(catId ,budget.getCategoryName(), budget.getValue(),budget.getValue());
+    private Category budgetToCategory(Budget budget, String catId) {
+        return new Category(catId, budget.getCategoryName(), budget.getValue(), budget.getValue());
     }
 
-    private void addBudgetToTreeFB(final int budgetNumber){
+    private void addBudgetToTreeFB(final int budgetNumber) {
         String budgetNumberStr = String.valueOf(budgetNumber);
         Map<String, Budget> hmBudgets = dbService.getBudget(budgetNumberStr);
         dbService.getDBBudgetPath().child(budgetNumberStr).setValue(hmBudgets);
     }
 
     // Returns new categories wroted
-    private List<Category> writeCategoriesByBudgets(final String refMonth, List<Budget> budgets){
+    private List<Category> writeCategoriesByBudgets(final String refMonth, List<Budget> budgets) {
         List<Category> wrotedCategories = new ArrayList<>();
-        for (Budget bgt:budgets) {
+        for (Budget bgt : budgets) {
             String catId = dbService.getDBCategoriesPath(refMonth).push().toString();
             Category cat = budgetToCategory(bgt, catId);
             dbService.getDBCategoriesPath(refMonth).child(catId).setValue(cat);
@@ -694,17 +692,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
         constPaymentTV = new TextView(Create_Budget_Activity.this);
         shopTV = new TextView(Create_Budget_Activity.this);
         payDateTV = new TextView(Create_Budget_Activity.this);
-        List<View> widgets = Arrays.asList((View)categoryNameTV, (View)categoryValueTV, (View)constPaymentTV, (View)shopTV, (View)payDateTV);
+        List<View> widgets = Arrays.asList((View) categoryNameTV, (View) categoryValueTV, (View) constPaymentTV, (View) shopTV, (View) payDateTV);
 
         uiService.setTextTitleWidgets(widgets);
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
-        uiService.setWidthCreateBudgetPageTitleWidgets(widgets,screenWidthReduceButtonSize,ViewGroup.LayoutParams.WRAP_CONTENT);
+        uiService.setWidthCreateBudgetPageTitleWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
         emptyTV.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
     }
 
     private void setTitleStyle(ArrayList<TextView> titlesTV, LinearLayout titleLL) {
         for (TextView titletv : titlesTV) {
-            titletv.setTextSize(15);
             uiService.setHeaderProperties(titletv);
             titleLL.addView(titletv);
         }
@@ -733,17 +730,18 @@ public class Create_Budget_Activity extends AppCompatActivity {
         boolean isEmptyRow = (categoryName == null && categoryValue == 0 && isConstPayment == false && shop == null && chargeDay == 0);
         final LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
         final EditText categoryNameET = new EditText(Create_Budget_Activity.this),
-                       categoryValueET = new EditText(Create_Budget_Activity.this),
-                       shopET = new EditText(Create_Budget_Activity.this);
+                categoryValueET = new EditText(Create_Budget_Activity.this),
+                shopET = new EditText(Create_Budget_Activity.this);
         final Spinner optionalDaysSpinner = new Spinner(Create_Budget_Activity.this);
-        final CheckBox constPaymentCB = new CheckBox(Create_Budget_Activity.this);;
+        final CheckBox constPaymentCB = new CheckBox(Create_Budget_Activity.this);
+        ;
         setSpinnerOptionalDays(optionalDaysSpinner);
 
-        List<View> widgets = Arrays.asList((View)categoryNameET, (View)categoryNameET, (View)categoryValueET, (View)constPaymentCB, (View)shopET, (View)optionalDaysSpinner);
+        List<View> widgets = Arrays.asList((View) categoryNameET, (View) categoryNameET, (View) categoryValueET, (View) constPaymentCB, (View) shopET, (View) optionalDaysSpinner);
         // todo check the width of widgets
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
-        uiService.setWidthCreateBudgetPageDataWidgets(widgets,screenWidthReduceButtonSize,ViewGroup.LayoutParams.WRAP_CONTENT);
-        setConstPaymentCBOnCheckChangedListner(constPaymentCB,shopET,optionalDaysSpinner);
+        uiService.setWidthCreateBudgetPageDataWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
+        setConstPaymentCBOnCheckChangedListner(constPaymentCB, shopET, optionalDaysSpinner);
 
         if (!isEmptyRow)
             categoryNameET.setText(categoryName);
@@ -842,16 +840,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     private void setConstPaymentCBOnCheckChangedListner(CheckBox constPaymentCB, final EditText shopET, final Spinner optionalDaysSpinner) {
         constPaymentCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-                shopET.setVisibility(View.VISIBLE);
-                optionalDaysSpinner.setVisibility(View.VISIBLE);
-            } else {
-                shopET.setVisibility(View.INVISIBLE);
-                optionalDaysSpinner.setVisibility(View.INVISIBLE);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    shopET.setVisibility(View.VISIBLE);
+                    optionalDaysSpinner.setVisibility(View.VISIBLE);
+                } else {
+                    shopET.setVisibility(View.INVISIBLE);
+                    optionalDaysSpinner.setVisibility(View.INVISIBLE);
+                }
             }
-        }
-    });
+        });
     }
 
     @SuppressLint("NewApi")

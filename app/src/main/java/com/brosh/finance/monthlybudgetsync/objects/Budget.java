@@ -25,12 +25,12 @@ public class Budget implements Serializable {
 
     public boolean equals(Object object2) {
         return object2 instanceof Budget
-                && categoryName.equals(((Budget)object2).categoryName)
-                && value ==((Budget)object2).value
-                && isConstPayment ==((Budget)object2).isConstPayment
-                && ((shop == ((Budget)object2).shop)//null
-                || shop != null && shop.equals(((Budget)object2).shop))
-                && chargeDay ==((Budget)object2).chargeDay;
+                && categoryName.equals(((Budget) object2).categoryName)
+                && value == ((Budget) object2).value
+                && isConstPayment == ((Budget) object2).isConstPayment
+                && ((shop == ((Budget) object2).shop)//null
+                || shop != null && shop.equals(((Budget) object2).shop))
+                && chargeDay == ((Budget) object2).chargeDay;
     }
 
     public String getCategoryName() {

@@ -1,10 +1,13 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
+import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Month implements Serializable {
@@ -15,23 +18,22 @@ public class Month implements Serializable {
     private String id;
     private Date refMonth;
     private boolean isActive;
-    private Map<String,Category> categories;
+    private Map<String, Category> categories;
 
     private int tranIdNumerator;
     private long budgetNumber;
 
     public Month() {
-        categories = new HashMap<String,Category>();
+        categories = new HashMap<String, Category>();
     }
 
     //    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
-    public Month(String refMonth)
-    {
+    public Month(String refMonth) {
 //        this.dateService = dateService;
 //        this.dbService = dbService;
 
         this.id = refMonth;
-        this.categories = new HashMap<String,Category>();
+        this.categories = new HashMap<String, Category>();
         this.refMonth = DateService.getDate(refMonth);
         this.tranIdNumerator = 1;
         setIsActive();
@@ -54,7 +56,7 @@ public class Month implements Serializable {
         this.budgetNumber = budgetNumber;
     }
 
-    public void updateSpecificCategory(String id, Category cat){
+    public void updateSpecificCategory(String id, Category cat) {
         this.categories.put(id, cat);
     }
 
@@ -70,13 +72,13 @@ public class Month implements Serializable {
         return isActive;
     }
 
-    public void setCategories(Map<String,Category> categories) {
+    public void setCategories(Map<String, Category> categories) {
         this.categories = categories;
     }
 
-    private void setIsActive(){
+    private void setIsActive() {
         Date today = this.dateService.getTodayDate();
-        isActive = DateService.isSameYearMonth(refMonth,today);
+        isActive = DateService.isSameYearMonth(refMonth, today);
     }
 
     public int getTranIdNumerator() {
@@ -91,16 +93,15 @@ public class Month implements Serializable {
         return categories;
     }
 
-    public void addCategory(String id, Category category){
-        categories.put(id,category);
+    public void addCategory(String id, Category category) {
+        categories.put(id, category);
     }
 
     public String getId() {
         return id;
     }
 
-    public void initCategories()
-    {
+    public void initCategories() {
 //        if(!this.dbService.isCurrentMBExists()) {
 //            this.dbService.writeMBFromBudget(this.refMonth);
 //        }

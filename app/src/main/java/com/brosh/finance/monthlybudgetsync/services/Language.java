@@ -21,7 +21,7 @@ public class Language implements Serializable {
 
     // Application name
     public String appName = "תקציב חודשי";
-    public String empty="";
+    public String empty = "";
 
     // Payment method
     public String creditCardName;
@@ -60,11 +60,11 @@ public class Language implements Serializable {
     public String budgetCategoryName = "קטגוריה";
     public String transactionsName = "עסקאות";
     public String balanceName = "יתרה";
-    public char quotes ='"';
-    public String totalName = "סה"+ quotes + "כ";
+    public char quotes = '"';
+    public String totalName = "סה" + quotes + "כ";
 
-     // Transactions Activity
-     String noTransactionsExists;
+    // Transactions Activity
+    public String noTransactionsExists;
 
     // CreateBudget Activity
     public String createBudgetQuestion = "יצירת תקציב חדש תגרום למחיקת נתוני חודש נוכחי, האם להמשיך?";
@@ -90,32 +90,29 @@ public class Language implements Serializable {
     public String messageName = "הודעה";
     public String requiredField = "שדה חובה!";
 
-    public Language(String language)
-    {
+    public Language(String language) {
         this.language = language;
-        if(language.equals("HEB")) {
+        if (language.equals("HEB")) {
             isLTR = false;
             setParamsHeb();
-        }
-        else if(language.equals("EN")) {
+        } else if (language.equals("EN")) {
             isLTR = true;
             setParamsEN();
         }
     }
 
-    public boolean isHeb(){
+    public boolean isHeb() {
         return language.equals("HEB");
     }
 
-    public boolean isEn(){
+    public boolean isEn() {
         return language.equals("EN");
     }
 
-    void setParamsHeb()
-    {
+    void setParamsHeb() {
         // Payment method
         creditCardName = "כרטיס אשראי";
-        cashName ="מזומן";
+        cashName = "מזומן";
         checkName = "צ'ק";
         bankTransferName = "העברה בנקאית";
 
@@ -152,8 +149,8 @@ public class Language implements Serializable {
         budgetName = "תקציב";
         budgetCategoryName = "קטגוריה";
         balanceName = "יתרה";
-        char quotes ='"';
-        totalName = "סה"+ quotes + "כ";
+        char quotes = '"';
+        totalName = "סה" + quotes + "כ";
 
         // Transactions Activity
         noTransactionsExists = "לא נמצאו עסקאות!";
@@ -181,11 +178,10 @@ public class Language implements Serializable {
         requiredField = "שדה חובה!";
     }
 
-    void setParamsEN()
-    {
+    void setParamsEN() {
         // Payment method
         creditCardName = "Credit Card";
-        cashName ="Cash";
+        cashName = "Cash";
         checkName = "Check";
         bankTransferName = "Bank Transfer";
 

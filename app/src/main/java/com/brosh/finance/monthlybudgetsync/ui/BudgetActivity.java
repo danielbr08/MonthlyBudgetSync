@@ -7,8 +7,9 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+//import android.support.annotation.RequiresApi;
+//import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,12 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
+import com.brosh.finance.monthlybudgetsync.objects.Month;
+import com.brosh.finance.monthlybudgetsync.services.DBService;
+import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.Language;
 
 import java.text.ParseException;
@@ -28,17 +34,26 @@ import java.util.Date;
 
 public class BudgetActivity extends AppCompatActivity {
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_budget);
-//    }
 
-    LinearLayout ll;
+    private LinearLayout ll;
     //todo get thos fields from caller intent
-    Month month;
-    Language language;
+    private Month month;
+    private Language language;
+    private DBService dbService;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_budget);
+
+        setButtonsNames();
+//        setTitle(getYearMonth(month.getMonth(), '.'));
+
+        ll = (LinearLayout) findViewById(R.id.LLBudget);
+        setCategoriesInGui();
+        //setCloseButton();
+    }
 //        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
 //        public void setTitle(String refMonth) {
 //            //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
@@ -61,32 +76,32 @@ public class BudgetActivity extends AppCompatActivity {
 //        }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void addCategoryRow(String categoryName, String Budget, String Remainder, boolean isExceptionFromBudget)//Bundle savedInstanceState)
+    public void addCategoryRow(String categoryName, String Budget, String balance, boolean isExceptionFromBudget)//Bundle savedInstanceState)
     {
         TextView categoryNameTextView = new TextView(BudgetActivity.this);
         TextView budgetTextView = new TextView(BudgetActivity.this);
-        TextView remainderTextView = new TextView(BudgetActivity.this);
+        TextView balanceTextView = new TextView(BudgetActivity.this);
 
         LinearLayout newll = new LinearLayout(BudgetActivity.this);
 
         categoryNameTextView.setText(categoryName);
-        remainderTextView.setText(Remainder);
+        balanceTextView.setText(balance);
         budgetTextView.setText(Budget);
 
         budgetTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
-        remainderTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
+        balanceTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
 
         if (language.isLTR()) {
             categoryNameTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
-            remainderTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+            balanceTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
         } else {
             categoryNameTextView.setTextDirection(View.TEXT_DIRECTION_RTL);
-            remainderTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            balanceTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         }
 
         budgetTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         //budgetTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        //remainderTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+        //balanceTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
         categoryNameTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         if (categoryName == language.totalName) {
             categoryNameTextView.setTypeface(null, Typeface.BOLD);
@@ -95,22 +110,22 @@ public class BudgetActivity extends AppCompatActivity {
             budgetTextView.setTypeface(null, Typeface.BOLD);
             budgetTextView.setTextSize(13);
             budgetTextView.setTextColor(Color.BLACK);
-            remainderTextView.setTypeface(null, Typeface.BOLD);
-            remainderTextView.setTextSize(13);
-            remainderTextView.setTextColor(Color.BLACK);
+            balanceTextView.setTypeface(null, Typeface.BOLD);
+            balanceTextView.setTextSize(13);
+            balanceTextView.setTextColor(Color.BLACK);
         }
 
         if (isExceptionFromBudget == true) {
             categoryNameTextView.setTextColor(Color.RED);
             budgetTextView.setTextColor(Color.RED);
-            remainderTextView.setTextColor(Color.RED);
+            balanceTextView.setTextColor(Color.RED);
         }
 
         Display display = getWindowManager().getDefaultDisplay();
         int screenWidth = display.getWidth();
         categoryNameTextView.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, ViewGroup.LayoutParams.WRAP_CONTENT));
         budgetTextView.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, ViewGroup.LayoutParams.WRAP_CONTENT));
-        remainderTextView.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, ViewGroup.LayoutParams.WRAP_CONTENT));
+        balanceTextView.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4, ViewGroup.LayoutParams.WRAP_CONTENT));
         //categoryValueEditText.setTextSize(18);
 
         newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -119,10 +134,10 @@ public class BudgetActivity extends AppCompatActivity {
         if (!language.isLTR()) {
             newll.addView(categoryNameTextView);
             newll.addView(budgetTextView);
-            newll.addView(remainderTextView);
+            newll.addView(balanceTextView);
 
         } else if (language.isLTR()) {
-            newll.addView(remainderTextView);
+            newll.addView(balanceTextView);
             newll.addView(budgetTextView);
             newll.addView(categoryNameTextView);
         }
@@ -136,7 +151,6 @@ public class BudgetActivity extends AppCompatActivity {
         //  onResumeFragments();
         // setCategoriesInGui();
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setButtonsNames() {
@@ -163,22 +177,8 @@ public class BudgetActivity extends AppCompatActivity {
             llBudgetTitle.addView(categoryTV);
         }
 
-        if (month != null)
-            setTitle(getYearMonth(month.getMonth(), '.'));
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_budget);
-
-        setButtonsNames();
-        setTitle(getYearMonth(month.getMonth(), '.'));
-
-        ll = (LinearLayout) findViewById(R.id.LLBudget);
-        setCategoriesInGui();
-        //setCloseButton();
+//        if (month != null)
+//            setTitle(getYearMonth(month.getMonth(), '.'));
     }
 
     public void setCloseButton() {
@@ -209,7 +209,8 @@ public class BudgetActivity extends AppCompatActivity {
         double remainderTotal = 0;
         boolean isExceptionFromBudget = false;
 
-        for (Category category : month.getCategories()) {
+        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
+        for (Category category : dbService.getCategoriesByPriority(currentRefMonth)) {
             String categoryName = category.getName();
             double remaining = category.getBalance();
             remaining = Math.round(remaining * 100.d) / 100.0d;
@@ -227,97 +228,5 @@ public class BudgetActivity extends AppCompatActivity {
             isExceptionFromBudget = true;
         addCategoryRow(language.totalName, String.valueOf(budgetTotal), String.valueOf(remainderTotal), isExceptionFromBudget);
 
-        //setValueGui("BudgetTotal", budgetTotal);
-        //setValueGui("RemainderTotal", remainderTotal);
     }
-
-/*    public ArrayList<String> makeStrListCategoriesOriginFile(String separator)
-    {
-        ArrayList<String> lines = new ArrayList<>();
-        String line = "";
-        for (Category cat: month.getCategories())
-        {
-            line = cat.getName() + separator + cat.getBudgetValue() + separator + cat.getRamainingValue();
-            lines.add(line);
-        }
-        return lines;
-    }*/
-
-/*
-    public void setCategoriesFromGui()
-    {
-        setCatNamesArray();
-        month.getCategories().clear();
-        for (String catName:global.catNamesArray)
-        {
-            int budgetValue = Integer.valueOf(getValueGui("Budget" + catName));
-            double remainderValue = Double.valueOf(getValueGui("Remainder" + catName));
-            month.getCategories().add(new Category(catName, budgetValue, remainderValue,null));
-        }
-    }
-    // Initialize the list of the categories
-    public void initCatArray()
-    {
-        String dirPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + "/Monthly Budget";
-        boolean isFileExists = false;
-        final File filePath = new File(dirPath + "/Monthly Budget.txt");
-        if(filePath.exists())
-            isFileExists = true;
-        if(isFileExists)
-            catArray = getCategoriesFromFile(dirPath,"-->", "-->");
-        else
-        {
-            setCategoriesFromGui();
-            global.writeCategories(dirPath, "-->", null);
-        }
-    }
-    public void subValue(String categoryName, double value)
-    {
-        int index = global.getIndexByName(categoryName);
-        Category category = catArray.get(index);
-        category.subValRemaining(value);
-        catArray.set(index,category);
-    }*/
-
-    public Date convertStringToDate(String stringDate) {
-        //String lastTimeDateString = "06/27/2017";
-        java.text.DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-        Date date = null;
-        try {
-            date = df.parse(stringDate);
-            String newStringDate = df.format(date);
-            System.out.println(newStringDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        // need end of month
-        return date;
-    }
-
-    public void checkDate() {
-        Calendar c = Calendar.getInstance();
-// set the calendar to start of today
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-// and get that as a Date
-        Date today = c.getTime();
-        String lastTimeDateString = getDateFromFile();
-        Date lastTimeDate = convertStringToDate(lastTimeDateString);
-        Date forMonth = lastTimeDate;
-        // set the ref month to start of next month
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(forMonth);
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1;
-        int day = 1;
-        c.set(Calendar.YEAR, year);
-        forMonth = c.getTime();
-        if (c.before(forMonth)) {
-            // create a new file for this month
-            // and close the file of previouse month
-        }
-    }
-}
 }

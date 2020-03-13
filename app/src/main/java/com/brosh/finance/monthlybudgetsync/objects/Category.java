@@ -12,7 +12,7 @@ public class Category implements Serializable, Cloneable {
     private int budget;
     private Map<String, Transaction> transactionHMDB;
 
-    public Object clone()throws CloneNotSupportedException{
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -28,7 +28,7 @@ public class Category implements Serializable, Cloneable {
 
     }
 
-    public Category(String id, String name, double balance, int budget, Map<String, Transaction> transactionHMDB){
+    public Category(String id, String name, double balance, int budget, Map<String, Transaction> transactionHMDB) {
         // services
 
         this.id = id;
@@ -61,6 +61,7 @@ public class Category implements Serializable, Cloneable {
     public void setBalance(double balance) {
         this.balance = balance;
     }
+
     public String getName() {
         return name;
     }
@@ -79,10 +80,10 @@ public class Category implements Serializable, Cloneable {
     }
 
     public void addTransactions(String id, Transaction transactions) {
-        this.transactionHMDB.put(id,transactions);
+        this.transactionHMDB.put(id, transactions);
     }
 
-    public void withdrawal(double trnPrice){
+    public void withdrawal(double trnPrice) {
         this.balance -= trnPrice;
     }
 

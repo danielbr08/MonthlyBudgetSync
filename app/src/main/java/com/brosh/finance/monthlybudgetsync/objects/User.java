@@ -7,6 +7,8 @@ public class User implements Serializable {
     private String email;
     private String phone;
     private String password;
+    private String dbKey;
+    private boolean isOwner; // if he is the owner of the DB
     //private String groupID;
 
     public String getEmail() {

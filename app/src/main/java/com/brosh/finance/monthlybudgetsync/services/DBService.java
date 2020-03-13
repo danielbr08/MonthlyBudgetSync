@@ -28,8 +28,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class DBService implements Serializable {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
@@ -513,7 +515,7 @@ public final class DBService implements Serializable {
                 deleteChildValueEventsListener(node);
             }
         }
-        if(childEventListenersHM.containsKey(dataSnapshot.getRef()))
+        if (childEventListenersHM.containsKey(dataSnapshot.getRef()))
             deleteChildValueEventListener(dataSnapshot.getRef());
     }
 
@@ -713,21 +715,21 @@ public final class DBService implements Serializable {
                 return monthDBHM.get(refMonth).getCategories();
             }
             return null;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             String s = e.getMessage();
-            s=s;
+            s = s;
             return null;
         }
 
     }
+
     public void setAddedCategoriesEventUpdateValue(final DatabaseReference DatabaseReference, final String refMonthKey, List<Category> addedCategories) {
         for (Category cat : addedCategories) {
             setCategoryEventUpdateValue(DatabaseReference, refMonthKey, cat.getId());
         }
     }
 
-    public List<Category> getCategoriesByPriority(String refMonth){
+    public List<Category> getCategoriesByPriority(String refMonth) {
         long budgetNumber = getMonthDBHM().get(refMonth).getBudgetNumber();
         Map<String, Category> categoriesClone = getCategoriesClone(refMonth);
         List<Budget> sortedBudgets = getBudgetDataFromDB(budgetNumber);
@@ -735,7 +737,7 @@ public final class DBService implements Serializable {
 
         for (Budget budget : sortedBudgets) {
             for (Category cat : categoriesClone.values()) {
-                if( budget.getCategoryName() == cat.getName() && budget.getValue() == cat.getBudget()) {
+                if (budget.getCategoryName() == cat.getName() && budget.getValue() == cat.getBudget()) {
                     sortedCategories.add(cat);
                     categoriesClone.remove(cat.getId());
                     break;
@@ -746,9 +748,50 @@ public final class DBService implements Serializable {
     }
 
     public List<String> getAllMonthesYearMonth() {
-        return (List<String>)monthDBHM.keySet();
+        return (List<String>) monthDBHM.keySet();
     }
 
+    public List<String> getCategoriesNames(String refMonth){
+        List<String> categoriesNamesList = new ArrayList<>();
+        Set<String> categoriesNamesSet = new HashSet<>();
+
+        for (Category cat : getCategoriesByPriority(refMonth)) {
+            String categoryName = cat.getName();
+            if(!categoriesNamesSet.contains(categoryName)) {
+                categoriesNamesList.add(categoryName);
+                categoriesNamesList.add(categoryName);
+            }
+        }
+        return categoriesNamesList;
+    }
+
+    public List<Transaction> getTransactions(String refMonth, String catName){
+        if(catName.equals(language.all)){
+            return getTransactions(refMonth);
+        }
+        Category category = getCategoryByName(refMonth, catName);
+        return (List<Transaction>)category.getTransactionHMDB().values();
+
+    }
+
+    public List<Transaction> getTransactions(String refMonth){
+        Map<String,Category> categoriesHM = getCategories(refMonth);
+        List<Transaction> transactions = new ArrayList<>();
+        for (Category cat : categoriesHM.values()) {
+            transactions.addAll(cat.getTransactionHMDB().values());
+        }
+        return transactions;
+    }
+
+    public Category getCategoryByName(String refMonth, String catName){
+        Map<String,Category> categoriesHM = getCategories(refMonth);
+        for (Category cat : categoriesHM.values()) {
+            if(catName.equals(cat.getName())){
+                return cat;
+            }
+        }
+        return null;
+    }
 
     // ****************************************************************************
 

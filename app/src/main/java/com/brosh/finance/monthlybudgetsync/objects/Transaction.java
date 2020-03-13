@@ -45,7 +45,7 @@ public class Transaction {
         this.stornoOf = stornoOf;
     }
 
-    public Transaction(int idPerMonth, String category,String paymentMethod, String shop, Date payDate, double price) {
+    public Transaction(int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price) {
         this.id = id;
         this.idPerMonth = idPerMonth;
         this.category = category;
@@ -151,12 +151,12 @@ public class Transaction {
     }
 
     public boolean isStorno(Transaction tran) {
-            return ((this.getId() != tran.getId()) &&
-                    (this.getIdPerMonth() != tran.getIdPerMonth()) &&
-                    this.getCategory().equals(tran.getCategory()) &&
-                    (this.getPayDate().compareTo(tran.getPayDate()) == 0) &&
-                    this.getPrice() == -tran.getPrice() &&
-                    this.getShop().equals(tran.getShop()) &&
-                    ((this.getIsStorno() == false)));
-        }
+        return ((this.getId() != tran.getId()) &&
+                (this.getIdPerMonth() != tran.getIdPerMonth()) &&
+                this.getCategory().equals(tran.getCategory()) &&
+                (this.getPayDate().compareTo(tran.getPayDate()) == 0) &&
+                this.getPrice() == -tran.getPrice() &&
+                this.getShop().equals(tran.getShop()) &&
+                ((this.getIsStorno() == false)));
+    }
 }
