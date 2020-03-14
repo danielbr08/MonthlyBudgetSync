@@ -87,4 +87,8 @@ public class Category implements Serializable, Cloneable {
         this.balance -= trnPrice;
     }
 
+    public void addTransaction(Transaction trn) {
+        this.transactionHMDB.put(trn.getId(), trn);
+    }
+
 }

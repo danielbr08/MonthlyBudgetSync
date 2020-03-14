@@ -237,38 +237,38 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         //Listening to button event
-//        insertTransactionButton.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View arg0) {
-//                //Starting a new Intent
-//                if (insertTransactionScreen == null)
-//                    insertTransactionScreen = new Intent(getApplicationContext(), InsertTransactionActivity.class);
-//
-//                //Sending data to another Activity by key[name] and value[something]
-//                //nextScreen.putExtra("name", "something");
-//                //nextScreen.putExtra("email", "something2");
-//
-//                startActivity(insertTransactionScreen);
-//
-//            }
-//        });
+        insertTransactionButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View arg0) {
+                //Starting a new Intent
+                if (insertTransactionScreen == null)
+                    insertTransactionScreen = new Intent(getApplicationContext(), InsertTransactionActivity.class);
+
+                insertTransactionScreen.putExtra(getString(R.string.language), getString(R.string.hebrew));
+                insertTransactionScreen.putExtra(getString(R.string.user), userKey);
+                insertTransactionScreen.putExtra(getString(R.string.db_service), dbService);
+
+                startActivity(insertTransactionScreen);
+
+            }
+        });
 
         //Listening to button event
-//        transactionsButton.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View arg0) {
-//                //Starting a new Intent
-//                if (transactionsScreen == null)
-//                    transactionsScreen = new Intent(getApplicationContext(), TransactionsActivity.class);
-//
-//                //Sending data to another Activity by key[name] and value[something]
-//                //nextScreen.putExtra("name", "something");
-//                //nextScreen.putExtra("email", "something2");
-//
-//                startActivity(transactionsScreen);
-//
-//            }
-//        });
+        transactionsButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View arg0) {
+                //Starting a new Intent
+                if (transactionsScreen == null)
+                    transactionsScreen = new Intent(getApplicationContext(), TransactionsActivity.class);
+
+                transactionsScreen.putExtra(getString(R.string.language), getString(R.string.hebrew));
+                transactionsScreen.putExtra(getString(R.string.user), userKey);
+                transactionsScreen.putExtra(getString(R.string.db_service), dbService);
+
+                startActivity(transactionsScreen);
+
+            }
+        });
 
         //Listening to button event
         createBudgetButton.setOnClickListener(new View.OnClickListener() {
@@ -279,9 +279,6 @@ public class MainActivity extends AppCompatActivity {
                     createBudgetScreen = new Intent(getApplicationContext(), Create_Budget_Activity.class);
                 //initRefMonthSpinner();
 
-                //Sending data to another Activity by key[name] and value[something]
-                //nextScreen.putExtra("name", "something");
-                //nextScreen.putExtra("email", "something2");
                 createBudgetScreen.putExtra(getString(R.string.language), getString(R.string.hebrew));
                 createBudgetScreen.putExtra(getString(R.string.user), userKey);
                 createBudgetScreen.putExtra(getString(R.string.db_service), dbService);

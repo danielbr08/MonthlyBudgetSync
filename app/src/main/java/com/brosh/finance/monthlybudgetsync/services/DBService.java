@@ -36,11 +36,20 @@ import java.util.Set;
 public final class DBService implements Serializable {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
+    private Set<String> shopsSet = new HashSet<String>();
 
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
 
     private Month month;
     private String userKey;
+
+    public Set<String> getShopsSet() {
+        return shopsSet;
+    }
+
+    public void setShopsSet(Set<String> shopsSet) {
+        this.shopsSet = shopsSet;
+    }
 
     public String getUserKey() {
         return userKey;
@@ -538,6 +547,7 @@ public final class DBService implements Serializable {
 
     private void setFrqTranIncludeEventUpdateValue(DatabaseReference transactionsNode, String refMonthKey, String catId, Transaction tran) {
         String tranId = transactionsNode.push().getKey();
+        tran.setId(tranId);
         transactionsNode.child(catId).setValue(tran);
         updateSpecificTransaction(refMonthKey, catId, tranId, tran);
         setTransactionEventUpdateValue(transactionsNode, refMonthKey, catId);
@@ -751,13 +761,13 @@ public final class DBService implements Serializable {
         return (List<String>) monthDBHM.keySet();
     }
 
-    public List<String> getCategoriesNames(String refMonth){
+    public List<String> getCategoriesNames(String refMonth) {
         List<String> categoriesNamesList = new ArrayList<>();
         Set<String> categoriesNamesSet = new HashSet<>();
 
         for (Category cat : getCategoriesByPriority(refMonth)) {
             String categoryName = cat.getName();
-            if(!categoriesNamesSet.contains(categoryName)) {
+            if (!categoriesNamesSet.contains(categoryName)) {
                 categoriesNamesList.add(categoryName);
                 categoriesNamesList.add(categoryName);
             }
@@ -765,17 +775,17 @@ public final class DBService implements Serializable {
         return categoriesNamesList;
     }
 
-    public List<Transaction> getTransactions(String refMonth, String catName){
-        if(catName.equals(language.all)){
+    public List<Transaction> getTransactions(String refMonth, String catName) {
+        if (catName.equals(language.all)) {
             return getTransactions(refMonth);
         }
         Category category = getCategoryByName(refMonth, catName);
-        return (List<Transaction>)category.getTransactionHMDB().values();
+        return (List<Transaction>) category.getTransactionHMDB().values();
 
     }
 
-    public List<Transaction> getTransactions(String refMonth){
-        Map<String,Category> categoriesHM = getCategories(refMonth);
+    public List<Transaction> getTransactions(String refMonth) {
+        Map<String, Category> categoriesHM = getCategories(refMonth);
         List<Transaction> transactions = new ArrayList<>();
         for (Category cat : categoriesHM.values()) {
             transactions.addAll(cat.getTransactionHMDB().values());
@@ -783,15 +793,27 @@ public final class DBService implements Serializable {
         return transactions;
     }
 
-    public Category getCategoryByName(String refMonth, String catName){
-        Map<String,Category> categoriesHM = getCategories(refMonth);
+    public Category getCategoryByName(String refMonth, String catName) {
+        Map<String, Category> categoriesHM = getCategories(refMonth);
         for (Category cat : categoriesHM.values()) {
-            if(catName.equals(cat.getName())){
+            if (catName.equals(cat.getName())) {
                 return cat;
             }
         }
         return null;
     }
+
+    public int getMaxIdPerMonth(String refMonth, String catId) {
+        List<Transaction> catTransactions = getTransactions(refMonth, catId);
+        int maxId = 0;
+        for (Transaction trn : catTransactions) {
+            if (trn.getIdPerMonth() > maxId) {
+                maxId = trn.getIdPerMonth();
+            }
+        }
+        return maxId;
+    }
+
 
     // ****************************************************************************
 
