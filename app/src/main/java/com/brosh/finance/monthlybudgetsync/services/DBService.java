@@ -240,6 +240,7 @@ public final class DBService implements Serializable {
         for (DataSnapshot currentMonthDataSnapshot : monthsSnapshot.getChildren()) {
             String refMonthKey = currentMonthDataSnapshot.getKey();
             Month month = currentMonthDataSnapshot.getValue(Month.class);
+            month.setIsActive();
             updateSpecificMonth(refMonthKey, month);
         }
 
@@ -717,7 +718,7 @@ public final class DBService implements Serializable {
                 for (Category cat : monthDBHM.get(refMonth).getCategories().values()) {
                     categoriesClone.put(cat.getId(), (Category) cat.clone());
                 }
-                return monthDBHM.get(refMonth).getCategories();
+                return categoriesClone;
             }
             return null;
         } catch (Exception e) {
@@ -725,7 +726,6 @@ public final class DBService implements Serializable {
             s = s;
             return null;
         }
-
     }
 
     public void setAddedCategoriesEventUpdateValue(final DatabaseReference DatabaseReference, final String refMonthKey, List<Category> addedCategories) {
@@ -742,7 +742,7 @@ public final class DBService implements Serializable {
 
         for (Budget budget : sortedBudgets) {
             for (Category cat : categoriesClone.values()) {
-                if (budget.getCategoryName() == cat.getName() && budget.getValue() == cat.getBudget()) {
+                if (budget.getCategoryName().equals(cat.getName()) && budget.getValue() == cat.getBudget()) {
                     sortedCategories.add(cat);
                     categoriesClone.remove(cat.getId());
                     break;
@@ -753,7 +753,10 @@ public final class DBService implements Serializable {
     }
 
     public List<String> getAllMonthesYearMonth() {
-        return (List<String>) monthDBHM.keySet();
+        List<String> monthsList = new ArrayList<String>(monthDBHM.keySet());
+        java.util.Collections.sort(monthsList);
+        java.util.Collections.reverse(monthsList);
+        return monthsList;
     }
 
     public List<String> getCategoriesNames(String refMonth) {
@@ -775,8 +778,9 @@ public final class DBService implements Serializable {
             return getTransactions(refMonth);
         }
         Category category = getCategoryByName(refMonth, catName);
-        return (List<Transaction>) category.getTransactionHMDB().values();
-
+        if (category.getTransactionHMDB() != null)
+            return (List<Transaction>) category.getTransactionHMDB().values();
+        return null;
     }
 
     public List<Transaction> getTransactions(String refMonth) {

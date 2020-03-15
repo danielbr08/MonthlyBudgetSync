@@ -2,6 +2,7 @@ package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
+import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public class Month implements Serializable {
         this.refMonth = refMonth;
     }
 
+    @Exclude
     public boolean isActive() {
         return isActive;
     }
@@ -78,7 +80,7 @@ public class Month implements Serializable {
         this.categories = categories;
     }
 
-    private void setIsActive() {
+    public void setIsActive() {
         Date today = this.dateService.getTodayDate();
         isActive = DateService.isSameYearMonth(refMonth, today);
     }

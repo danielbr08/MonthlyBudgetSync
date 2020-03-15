@@ -33,6 +33,7 @@ public class BudgetActivity extends AppCompatActivity {
     private Month month;
     private Language language;
     private DBService dbService;
+    private String userKey;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -40,6 +41,13 @@ public class BudgetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget);
 
+        Bundle extras = getIntent().getExtras();
+        String selectedLanguage = extras.getString(getString(R.string.language), getString(R.string.english));
+        String refMonth = extras.getString(getString(R.string.month), null);
+        language = new Language(selectedLanguage);
+        userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
+        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
+        month = dbService.getMonth(refMonth);
         setButtonsNames();
 //        setTitle(getYearMonth(month.getMonth(), '.'));
 

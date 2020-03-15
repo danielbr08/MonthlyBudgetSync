@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setButtonsNames() {
         // Main window buttons
-        ((TextView) findViewById(R.id.monthLabel)).setText(language.monthName);
+//        ((TextView) findViewById(R.id.monthLabel)).setText(language.monthName);
         ((Button) findViewById(R.id.budgetButton)).setText(language.budgetButtonName);
         ((Button) findViewById(R.id.transactionsButton)).setText(language.transactionsButtonName);
         ((Button) findViewById(R.id.insertTransactionButton)).setText(language.insertTransactionButtonName);
@@ -169,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
         initLanguageSpinner();
 
 
-        language = new Language(Config.DEFAULT_LANGUAGE);
         setSpinnerAllignment(true);
         setButtonsNames();
 
@@ -189,8 +188,9 @@ public class MainActivity extends AppCompatActivity {
             budgetButton.setEnabled(false);
             transactionsButton.setEnabled(false);
             insertTransactionButton.setEnabled(false);
+            month = null;
         } else {
-            month = new Month(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
+            month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
 //            setTitle(getYearMonth(month.getMonth(), '.'));
             initRefMonthSpinner();
         }
@@ -200,19 +200,16 @@ public class MainActivity extends AppCompatActivity {
         //initRefMonthSpinner();
 
         //Listening to button event
-//        budgetButton.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View arg0) {
-//                //Starting a new Intent
-//                if (budgetScreen == null)
-//                    budgetScreen = new Intent(getApplicationContext(), BudgetActivity.class);
-//
-//                //Sending data to another Activity by key[name] and value[something]
-//                //nextScreen.putExtra("name", "something");
-//                //nextScreen.putExtra("email", "something2");
-//                startActivity(budgetScreen);
-//            }
-//        });
+        budgetButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View arg0) {
+                //Starting a new Intent
+                if (budgetScreen == null)
+                    budgetScreen = new Intent(getApplicationContext(), BudgetActivity.class);
+                addParametersToActivity(budgetScreen);
+                startActivity(budgetScreen);
+            }
+        });
 
         //Listening to button event
         insertTransactionButton.setOnClickListener(new View.OnClickListener() {
@@ -278,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!Touched)
                     return;
                 String lang = languageSpinner.getSelectedItem().toString();
+                language.setLanguage(lang);
 
 //                if (lang.equals(getString(R.string.hebrew))) { // todo set default language in user object
 //
@@ -312,11 +310,12 @@ public class MainActivity extends AppCompatActivity {
 //                refMonth = DateService.reverseDateString(refMonth,"\\.");
 //                refMonth = refMonth.replace('.', '/');
 //                Date selectedDate = DateService.convertStringToDate(refMonth, Config.DATE_FORMAT);
-//                refMonth = DateService.getYearMonth(selectedDate, Config.SEPARATOR);
+//                refMonth = DateService.getYearMonth(selectedDate, Config.DATE_FORMAT_CHARACTER);
                 month = dbService.getMonth(refMonth);
                 boolean isActive = month != null && month.isActive();
 //                if(month != null)
 //                setTitle(DateService.getYearMonth(month.getMonth(), '.'));
+
                 insertTransactionButton.setEnabled(isActive);
                 createBudgetButton.setEnabled(isActive);
             }
@@ -349,8 +348,10 @@ public class MainActivity extends AppCompatActivity {
 ////    }
 
     public void addParametersToActivity(Intent activity) {
-        activity.putExtra(getString(R.string.language), getString(R.string.hebrew));
+        activity.putExtra(getString(R.string.language), language.getLanguage());
         activity.putExtra(getString(R.string.user), userKey);
         activity.putExtra(getString(R.string.db_service), dbService);
+        activity.putExtra(getString(R.string.month), month.getYearMonth());
+
     }
 }

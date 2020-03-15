@@ -7,7 +7,7 @@ package com.brosh.finance.monthlybudgetsync.config;
 import java.io.Serializable;
 
 public class Language implements Serializable {
-    String language;
+    private String language;
     private boolean isLTR;
 
     // Application name
@@ -246,5 +246,17 @@ public class Language implements Serializable {
 
     public void setLTR(boolean LTR) {
         isLTR = LTR;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+        if (isEn())
+            setParamsEN();
+        else if (isHeb())
+            setParamsHeb();
     }
 }

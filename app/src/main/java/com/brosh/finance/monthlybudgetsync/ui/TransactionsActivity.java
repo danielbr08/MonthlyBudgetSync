@@ -49,6 +49,7 @@ public class TransactionsActivity extends AppCompatActivity {
     private Month month;
     private Language language;
     private DBService dbService;
+    private String userKey;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -57,6 +58,13 @@ public class TransactionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
 
+        Bundle extras = getIntent().getExtras();
+        String selectedLanguage = extras.getString(getString(R.string.language), getString(R.string.english));
+        String refMonth = extras.getString(getString(R.string.month), null);
+        language = new Language(selectedLanguage);
+        userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
+        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
+        month = dbService.getMonth(refMonth);
         setButtonsNames();
 //        setTitle( getYearMonth(month.getMonth(),'.'));
         //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//Rotate the screen to to be on landspace moade only
@@ -389,11 +397,13 @@ public class TransactionsActivity extends AppCompatActivity {
 
         newll.setLayoutParams(paramsTV);
 
-        TextView[] stornoRow = getStornoRow(categoryName, tran);
-        Boolean isStornoRow = (stornoRow != null);
-        if (isStornoRow == true) {
-            ArrayList<TextView> tvRow = new ArrayList<>(Arrays.asList(IDTV, catNameTV, paymentMethodTV, shopTV, tranDateTV, tranPriceTV));
-            UIService.setRowStrikeThroughStyle(tvRow);
+        if (!isHeaderLine) {
+            TextView[] stornoRow = getStornoRow(categoryName, tran);
+            Boolean isStornoRow = (stornoRow != null);
+            if (isStornoRow == true) {
+                ArrayList<TextView> tvRow = new ArrayList<>(Arrays.asList(IDTV, catNameTV, paymentMethodTV, shopTV, tranDateTV, tranPriceTV));
+                UIService.setRowStrikeThroughStyle(tvRow);
+            }
         }
 
         newll.addView(IDTV);
@@ -498,7 +508,7 @@ public class TransactionsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.textViewTotalTransactionsLabel)).setText(language.totalName);
         ((TextView) findViewById(R.id.transactionsTitleLabel)).setText(language.transactionsName);
 //        if (month != null)
-//            setTitle(DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR));
+//            setTitle(DateService.getYearMonth(month.getRefMonth(), Config.DATE_FORMAT_CHARACTER));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

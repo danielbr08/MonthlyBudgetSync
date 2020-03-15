@@ -12,7 +12,7 @@ import java.util.TreeSet;
 public final class Config {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
     public static final String DATE_FORMAT_CHARACTER = "/";
-    public static final String SEPARATOR = "-->";
+    public static final String SEPARATOR = "-";
     public static final char DOWN_ARROW = 'ꜜ';
     public static final char UP_ARROW = 'ꜛ';
     public static final String DEFAULT_LANGUAGE = Definition.HEBREW;
@@ -29,7 +29,6 @@ public final class Config {
     public static double PAY_DATE_TITLE_WIDTH_PERCENT = 22.0 / 100;
 
     public static Set<String> shopsSet = new TreeSet<>();
-    public static String reasonCheckFileChanged = "Show";
     public static Thread closeActivity;
     public static ArrayList<String> LOG_REPORT = new ArrayList<>();
 

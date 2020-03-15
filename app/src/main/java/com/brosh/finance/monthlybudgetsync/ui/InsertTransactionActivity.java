@@ -56,6 +56,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
     private Language language;// todo init those fieds using put extra
     private DBService dbService;
+    private String userKey;
     private Month month;
 
     private Set<String> shopsSet;
@@ -222,6 +223,14 @@ public class InsertTransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_transaction);
+
+        Bundle extras = getIntent().getExtras();
+        String selectedLanguage = extras.getString(getString(R.string.language), getString(R.string.english));
+        String refMonth = extras.getString(getString(R.string.month), null);
+        language = new Language(selectedLanguage);
+        userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
+        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
+        month = dbService.getMonth(refMonth);
 
         setButtonsNames();
         shopsSet = dbService.getShopsSet();
