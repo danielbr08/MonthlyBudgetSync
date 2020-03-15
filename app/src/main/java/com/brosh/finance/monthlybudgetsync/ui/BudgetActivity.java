@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 //import android.support.annotation.RequiresApi;
 //import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +19,11 @@ import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.Language;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.brosh.finance.monthlybudgetsync.config.Language;
 
 public class BudgetActivity extends AppCompatActivity {
 

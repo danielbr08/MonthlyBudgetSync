@@ -30,7 +30,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.Language;
+import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.google.firebase.database.DatabaseReference;
 

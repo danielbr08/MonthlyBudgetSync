@@ -1,8 +1,5 @@
 package com.brosh.finance.monthlybudgetsync.config;
 
-import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.services.Language;
-
 public class Definition {
     public static final String CATEGORIES = "categories";// todo replace name to Categories
     public static final String TRANSACTIONS = "Transactions";

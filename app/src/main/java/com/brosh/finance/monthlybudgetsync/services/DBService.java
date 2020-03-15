@@ -6,6 +6,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.EventListenerMap;
@@ -40,7 +41,6 @@ public final class DBService implements Serializable {
 
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
 
-    private Month month;
     private String userKey;
 
     public Set<String> getShopsSet() {
@@ -60,7 +60,6 @@ public final class DBService implements Serializable {
     }
 
     public DBService() {
-        month = new Month();
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
@@ -72,12 +71,8 @@ public final class DBService implements Serializable {
         this.language = language;
     }
 
-    public Month getMonth() {
-        return month;
-    }
-
-    public void setMonth(Month month) {
-        this.month = month;
+    public Month getMonth(String refMonth) {
+        return monthDBHM.get(refMonth);
     }
 
     public Map<String, Map<String, Budget>> getBudgetDBHM() {

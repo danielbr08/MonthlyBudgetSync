@@ -4,12 +4,12 @@ import android.graphics.*;
 import android.os.Build;
 import android.text.util.Linkify;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.annotation.RequiresApi;
 
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Language;
 
 import java.util.List;
 

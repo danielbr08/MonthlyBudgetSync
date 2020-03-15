@@ -2,21 +2,12 @@
  * Copyright (c) Daniel Brosh.
  */
 
-package com.brosh.finance.monthlybudgetsync.services;
+package com.brosh.finance.monthlybudgetsync.config;
 
 import java.io.Serializable;
 
 public class Language implements Serializable {
     String language;
-
-    public boolean isLTR() {
-        return isLTR;
-    }
-
-    public void setLTR(boolean LTR) {
-        isLTR = LTR;
-    }
-
     private boolean isLTR;
 
     // Application name
@@ -247,5 +238,13 @@ public class Language implements Serializable {
         transactionInsertedSuccessfully = "Transaction inserted successfully!";
         messageName = "Message";
         requiredField = "Required field!";
+    }
+
+    public boolean isLTR() {
+        return isLTR;
+    }
+
+    public void setLTR(boolean LTR) {
+        isLTR = LTR;
     }
 }

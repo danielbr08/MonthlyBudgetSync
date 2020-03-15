@@ -1,7 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
@@ -29,7 +28,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.ComparatorService;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.Language;
+import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
 
@@ -197,7 +196,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
     public void init() {
         //global.setCatArrayHebNames();
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(),Config.SEPARATOR);
+        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<String> spinnerCategories = new ArrayList<String>(dbService.getCategoriesNames(currentRefMonth));
         spinnerCategories.add(0, language.all);
 
@@ -214,7 +213,7 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     public TextView[] getStornoRow(String catName, Transaction transaction) {
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(),Config.SEPARATOR);
+        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<Transaction> categoryTrans = dbService.getTransactions(currentRefMonth, catName);
         if (categoryTrans == null || transaction == null)
             return null;
@@ -420,12 +419,12 @@ public class TransactionsActivity extends AppCompatActivity {
         Boolean isIncludeCategory = false;
         if (catName.equals(language.all))
             isIncludeCategory = true;
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(),Config.SEPARATOR);
+        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<Transaction> transactions = dbService.getTransactions(currentRefMonth, catName);
         if (transactions == null)
             return;
         if (sortBy != null)
-            ComparatorService.sort(transactions,sortBy, ascOrDesc);
+            ComparatorService.sort(transactions, sortBy, ascOrDesc);
         double tranSum = 0;
         for (Transaction tran : transactions) {
             long ID = tran.getIdPerMonth();
@@ -480,7 +479,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
     public void setSpinnersAllignment() {
         ArrayAdapter<String> adapter;
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(),Config.SEPARATOR);
+        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<String> allCategories = dbService.getCategoriesNames(currentRefMonth);
         allCategories.add(0, language.all);
         if (language.isLTR()) {
@@ -594,8 +593,8 @@ public class TransactionsActivity extends AppCompatActivity {
                     switch (ascOrDesc) {
                         case ('ꜜ'): {
                             //sort(text,upArrow);
-                            ascOrDesc = Definition.ARROW_UP ;
-                            headerTV.setText(text + String.valueOf(Definition.ARROW_UP ));
+                            ascOrDesc = Definition.ARROW_UP;
+                            headerTV.setText(text + String.valueOf(Definition.ARROW_UP));
                             headerTV.setTextColor(Color.RED);
                             break;
                         }

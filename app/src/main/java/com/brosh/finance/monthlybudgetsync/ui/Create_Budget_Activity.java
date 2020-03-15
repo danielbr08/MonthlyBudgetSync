@@ -44,7 +44,7 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
-import com.brosh.finance.monthlybudgetsync.services.Language;
+import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,9 +65,6 @@ import java.util.Map;
 
 public class Create_Budget_Activity extends AppCompatActivity {
 
-    private UIService uiService;
-    private TextService textService;
-    private DateService dateService;
     private DBService dbService;
 
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
@@ -103,8 +100,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
         month = (Month) getIntent().getSerializableExtra(getString(R.string.month));
 
-        dateService = new DateService();
-
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
         setContentView(R.layout.activity_create_budget);
         LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
@@ -137,7 +132,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 setLanguageConf((LinearLayout) LLMain.getChildAt(i));
             }*/
             int lastRowIndex = LLMain.getChildCount() - 2;
-            uiService.setLanguageConf((LinearLayout) LLMain.getChildAt(1));
+            UIService.setLanguageConf((LinearLayout) LLMain.getChildAt(1));
             //setLanguageConf((LinearLayout) LLMain.getChildAt(lastRowIndex));
         }
     }
@@ -196,11 +191,11 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 for (int i = 2; i < LLMain.getChildCount() - 2; i++) {
                     LinearLayout rowLL = (LinearLayout) LLMain.getChildAt(i);
                     if (language.isEn())
-                        uiService.reverseLinearLayout(rowLL);
+                        UIService.reverseLinearLayout(rowLL);
                     EditText categoryNameET = (EditText) rowLL.getChildAt(1);
                     EditText categoryValueET = (EditText) rowLL.getChildAt(2);
                     if (language.isEn())
-                        uiService.reverseLinearLayout(rowLL);
+                        UIService.reverseLinearLayout(rowLL);
                     if (categoryNameET.getText().toString().equals(getString(R.string.empty)) ||
                             categoryValueET.getText().toString().equals(getString(R.string.empty))) {
                         isEmptyRowExists = true;
@@ -248,7 +243,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(deleteRowsButton);
         newll.addView(emptyTV);
         if (language.isEn())
-            uiService.setLanguageConf(newll);
+            UIService.setLanguageConf(newll);
         LLMain.addView(newll);
     }
 
@@ -401,7 +396,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         }
 
         //Check illegal characters
-        if (category.contains(textService.getSeperator())) {
+        if (category.contains(TextService.getSeperator())) {
             setErrorEditText(categoryET, language.illegalCharacter);
             isInputValid = false;
         }
@@ -441,7 +436,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         }*/
 
         //Check illegal characters
-        if (shop.contains(textService.getSeperator())) {
+        if (shop.contains(TextService.getSeperator())) {
             setErrorEditText(shopET, language.illegalCharacter);
             isInputValid = false;
         }
@@ -608,10 +603,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
 //        if (operation.equals(getString(R.string.add)))
 //            addCategoriesToMonthlyBudget(addedBudget, budgetNumber);
         else if (operation.equals(getString(R.string.delete)))
-            dbService.deleteDataRefMonth(dateService.getYearMonth(month.getRefMonth(), getString(R.string.seperator)));
+            dbService.deleteDataRefMonth(DateService.getYearMonth(month.getRefMonth(), getString(R.string.seperator)));
 //        else if (operation.equals(getString(R.string.create)))
 //            ; // Delete or add not needed
-        String refMonth = dateService.getYearMonth(dateService.getTodayDate(), getString(R.string.seperator));
+        String refMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.seperator));
         writeBudget(budgetNumber, allBudgets);
         addBudgetToTreeFB(budgetNumber);
 
@@ -694,15 +689,15 @@ public class Create_Budget_Activity extends AppCompatActivity {
         payDateTV = new TextView(Create_Budget_Activity.this);
         List<View> widgets = Arrays.asList((View) categoryNameTV, (View) categoryValueTV, (View) constPaymentTV, (View) shopTV, (View) payDateTV);
 
-        uiService.setTextTitleWidgets(widgets);
+        UIService.setTextTitleWidgets(widgets);
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
-        uiService.setWidthCreateBudgetPageTitleWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
+        UIService.setWidthCreateBudgetPageTitleWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
         emptyTV.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
     }
 
     private void setTitleStyle(ArrayList<TextView> titlesTV, LinearLayout titleLL) {
         for (TextView titletv : titlesTV) {
-            uiService.setHeaderProperties(titletv);
+            UIService.setHeaderProperties(titletv);
             titleLL.addView(titletv);
         }
     }
@@ -740,7 +735,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         List<View> widgets = Arrays.asList((View) categoryNameET, (View) categoryNameET, (View) categoryValueET, (View) constPaymentCB, (View) shopET, (View) optionalDaysSpinner);
         // todo check the width of widgets
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
-        uiService.setWidthCreateBudgetPageDataWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
+        UIService.setWidthCreateBudgetPageDataWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
         setConstPaymentCBOnCheckChangedListner(constPaymentCB, shopET, optionalDaysSpinner);
 
         if (!isEmptyRow)
@@ -814,7 +809,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(shopET);
         newll.addView(optionalDaysSpinner);
         if (language.isLTR())
-            uiService.setLanguageConf(newll);
+            UIService.setLanguageConf(newll);
 //        }
 /*        else if(language.isEn())
         {

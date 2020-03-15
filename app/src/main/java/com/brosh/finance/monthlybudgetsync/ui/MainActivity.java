@@ -1,81 +1,59 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.login.Login;
-import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.Language;
-import com.brosh.finance.monthlybudgetsync.ui.Create_Budget_Activity;
+import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.auth.AuthResult;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    DatabaseReference DatabaseReferenceUserMonthlyBudget;
-    DatabaseReference DatabaseReferenceShares;
-    DBService dbService;
-    Language language;
+    private DatabaseReference DatabaseReferenceUserMonthlyBudget;
+    private DatabaseReference DatabaseReferenceShares;
+    private DBService dbService;
+    private Language language;
+    private String userKey;
 
-    SharedPreferences sharedpreference;
-    Intent budgetScreen, transactionsScreen, insertTransactionScreen, createBudgetScreen;
-    Spinner refMonthSpinner, languageSpinner;
-    Button insertTransactionButton;
-    Button budgetButton;
-    Button transactionsButton;
-    Button createBudgetButton;
-    Button closeMainButton;
-    boolean Touched = false; // Indicate for language spinner
-
-    public static Month month;
+    private SharedPreferences sharedpreference;
+    private Intent budgetScreen, transactionsScreen, insertTransactionScreen, createBudgetScreen;
+    private Spinner refMonthSpinner, languageSpinner;
+    private Button insertTransactionButton;
+    private Button budgetButton;
+    private Button transactionsButton;
+    private Button createBudgetButton;
+    private Button closeMainButton;
+    private boolean Touched = false; // Indicate for language spinner
+    private Month month;
 
     public void initLanguageSpinner() {
         //global.setCatArrayHebNames();
         List<String> allMonths = new ArrayList<>();
-        allMonths.add("עברית");
-        allMonths.add("EN");
+        allMonths.add(getString(R.string.hebrew));
+        allMonths.add(getString(R.string.english));
 
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this,
@@ -180,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         language = new Language(Config.DEFAULT_LANGUAGE);
-        final String userKey = getIntent().getExtras().getString(getString(R.string.user), getString(R.string.empty));
+        userKey = getIntent().getExtras().getString(getString(R.string.user), getString(R.string.empty));
         dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
@@ -243,11 +221,7 @@ public class MainActivity extends AppCompatActivity {
                 //Starting a new Intent
                 if (insertTransactionScreen == null)
                     insertTransactionScreen = new Intent(getApplicationContext(), InsertTransactionActivity.class);
-
-                insertTransactionScreen.putExtra(getString(R.string.language), getString(R.string.hebrew));
-                insertTransactionScreen.putExtra(getString(R.string.user), userKey);
-                insertTransactionScreen.putExtra(getString(R.string.db_service), dbService);
-
+                addParametersToActivity(insertTransactionScreen);
                 startActivity(insertTransactionScreen);
 
             }
@@ -260,13 +234,8 @@ public class MainActivity extends AppCompatActivity {
                 //Starting a new Intent
                 if (transactionsScreen == null)
                     transactionsScreen = new Intent(getApplicationContext(), TransactionsActivity.class);
-
-                transactionsScreen.putExtra(getString(R.string.language), getString(R.string.hebrew));
-                transactionsScreen.putExtra(getString(R.string.user), userKey);
-                transactionsScreen.putExtra(getString(R.string.db_service), dbService);
-
+                addParametersToActivity(transactionsScreen);
                 startActivity(transactionsScreen);
-
             }
         });
 
@@ -278,10 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 if (createBudgetScreen == null)
                     createBudgetScreen = new Intent(getApplicationContext(), Create_Budget_Activity.class);
                 //initRefMonthSpinner();
-
-                createBudgetScreen.putExtra(getString(R.string.language), getString(R.string.hebrew));
-                createBudgetScreen.putExtra(getString(R.string.user), userKey);
-                createBudgetScreen.putExtra(getString(R.string.db_service), dbService);
+                addParametersToActivity(createBudgetScreen);
                 startActivity(createBudgetScreen);
             }
         });
@@ -347,10 +313,12 @@ public class MainActivity extends AppCompatActivity {
 //                refMonth = refMonth.replace('.', '/');
 //                Date selectedDate = DateService.convertStringToDate(refMonth, Config.DATE_FORMAT);
 //                refMonth = DateService.getYearMonth(selectedDate, Config.SEPARATOR);
-                month = new Month(refMonth);
+                month = dbService.getMonth(refMonth);
+                boolean isActive = month != null && month.isActive();
+//                if(month != null)
 //                setTitle(DateService.getYearMonth(month.getMonth(), '.'));
-                insertTransactionButton.setEnabled(month.isActive());
-                createBudgetButton.setEnabled(month.isActive());
+                insertTransactionButton.setEnabled(isActive);
+                createBudgetButton.setEnabled(isActive);
             }
 
             @Override
@@ -379,4 +347,10 @@ public class MainActivity extends AppCompatActivity {
 ////        intent.putExtra( getString(R.string.db_service),dbService);
 ////        startActivity(intent);
 ////    }
+
+    public void addParametersToActivity(Intent activity) {
+        activity.putExtra(getString(R.string.language), getString(R.string.hebrew));
+        activity.putExtra(getString(R.string.user), userKey);
+        activity.putExtra(getString(R.string.db_service), dbService);
+    }
 }
