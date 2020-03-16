@@ -391,8 +391,8 @@ public class TransactionsActivity extends AppCompatActivity {
 
         if (isHeaderLine) {
             final LinearLayout titleLL = new LinearLayout(TransactionsActivity.this);
-            ArrayList<TextView> titlesTV = new ArrayList<>(Arrays.asList(IDTV, catNameTV, paymentMethodTV, shopTV, tranDateTV, tranPriceTV));
-            UIService.setTitleStyle(titlesTV, titleLL);
+            List<TextView> titlesTV = new ArrayList<>(Arrays.asList(IDTV, catNameTV, paymentMethodTV, shopTV, tranDateTV, tranPriceTV));
+            UIService.setTitleStyle(titlesTV);//, titleLL);
         }
 
         newll.setLayoutParams(paramsTV);
@@ -431,7 +431,7 @@ public class TransactionsActivity extends AppCompatActivity {
             isIncludeCategory = true;
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<Transaction> transactions = dbService.getTransactions(currentRefMonth, catName);
-        if (transactions == null)
+        if (transactions == null || transactions.size() == 0)
             return;
         if (sortBy != null)
             ComparatorService.sort(transactions, sortBy, ascOrDesc);

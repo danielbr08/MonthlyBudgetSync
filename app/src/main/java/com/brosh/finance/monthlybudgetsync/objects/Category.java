@@ -17,6 +17,7 @@ public class Category implements Serializable, Cloneable {
     }
 
     public Category() {
+        this.transactionHMDB = new HashMap<>();
     }
 
     public Category(String id, String name, double balance, int budget) {

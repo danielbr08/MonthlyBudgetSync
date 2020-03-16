@@ -767,7 +767,7 @@ public final class DBService implements Serializable {
             String categoryName = cat.getName();
             if (!categoriesNamesSet.contains(categoryName)) {
                 categoriesNamesList.add(categoryName);
-                categoriesNamesList.add(categoryName);
+                categoriesNamesSet.add(categoryName);
             }
         }
         return categoriesNamesList;
@@ -779,7 +779,7 @@ public final class DBService implements Serializable {
         }
         Category category = getCategoryByName(refMonth, catName);
         if (category.getTransactionHMDB() != null)
-            return (List<Transaction>) category.getTransactionHMDB().values();
+            return new ArrayList<Transaction>(category.getTransactionHMDB().values());
         return null;
     }
 

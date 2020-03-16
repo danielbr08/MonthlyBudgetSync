@@ -97,8 +97,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String userKey = getIntent().getExtras().getString(getString(R.string.user), "");
+        String refMonth = getIntent().getExtras().getString(getString(R.string.month));
         dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
-        month = (Month) getIntent().getSerializableExtra(getString(R.string.month));
+        month = dbService.getMonth(refMonth);
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
         setContentView(R.layout.activity_create_budget);

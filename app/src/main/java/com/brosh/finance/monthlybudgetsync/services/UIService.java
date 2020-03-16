@@ -4,6 +4,7 @@ import android.graphics.*;
 import android.os.Build;
 import android.text.util.Linkify;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.annotation.RequiresApi;
@@ -76,10 +77,10 @@ public final class UIService {
         ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(language.chargeDay));
     }
 
-    public static void setTitleStyle(List<TextView> titlesTV, LinearLayout titleLL) {
+    public static void setTitleStyle(List<TextView> titlesTV) {//}, LinearLayout titleLL) {
         for (TextView titletv : titlesTV) {
             setHeaderProperties(titletv);
-            titleLL.addView(titletv);
+//            titleLL.addView(titletv);
         }
     }
 
