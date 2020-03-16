@@ -1,6 +1,8 @@
 package com.brosh.finance.monthlybudgetsync.config;
 
-public class UserConfig {
+import java.io.Serializable;
+
+public class UserConfig implements Serializable {
     private String language;
     private int chargeDay;
     private boolean isAdEnabled;
@@ -9,6 +11,9 @@ public class UserConfig {
         this.language = language;
         this.chargeDay = chargeDay;
         this.isAdEnabled = isAdEnabled;
+    }
+
+    public UserConfig() {
     }
 
     public String getLanguage() {

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
+import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.ui.InitAppActivity;
 import com.brosh.finance.monthlybudgetsync.ui.MainActivity;
@@ -40,6 +41,7 @@ import java.util.Map;
 public class Register extends AppCompatActivity {
     public static final String TAG = "TAG";
     EditText mFullName, mEmail, mPassword, mPhone;
+    private String userDBKey;
     Button mRegisterBtn;
     TextView mLoginBtn;
     FirebaseAuth fAuth;
@@ -70,10 +72,10 @@ public class Register extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         if (fAuth.getCurrentUser() != null) {
-            final String emailKeyDotsReplacedInComma = fAuth.getCurrentUser().getEmail().trim().replace('.', ',');
+            userDBKey = fAuth.getCurrentUser().getEmail().trim().replace('.', ',');
 //            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
 //            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
-            dbService.initDB(emailKeyDotsReplacedInComma, this);
+            dbService.initDB(userDBKey, this);
             return;
         }
 
@@ -82,7 +84,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
+                final String password = mPassword.getText().toString().trim();
                 final String fullName = mFullName.getText().toString();
                 final String phone = mPhone.getText().toString();
 
@@ -112,11 +114,11 @@ public class Register extends AppCompatActivity {
                             Toast.makeText(Register.this, "User Created.", Toast.LENGTH_SHORT).show();
                             userID = fAuth.getCurrentUser().getUid();
                             DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userID);
-                            final Map<String, Object> user = new HashMap<>();
-                            user.put(getString(R.string.first_name), fullName);
-                            user.put(getString(R.string.email), email);
-                            user.put(getString(R.string.phone), phone);
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            final Map<String, Object> userFS = new HashMap<>();
+                            userFS.put(getString(R.string.first_name), fullName);
+                            userFS.put(getString(R.string.email), email);
+                            userFS.put(getString(R.string.phone), phone);
+                            documentReference.set(userFS).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d(TAG, "onSuccess: user Profile is created for " + userID);
@@ -131,19 +133,18 @@ public class Register extends AppCompatActivity {
 //                                user.put("fName",fullName);
 //                                user.put("email",email);
 //                                user.put("phone",phone);
+                                final User user = new User(fullName, email, phone, password, userDBKey);
 
-
-                                final String emailKeyDotsReplacedInComma = email.replace('.', ',');
                                 DatabaseReferenceUsers.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot snapshot) {
-                                        if (snapshot.hasChild(emailKeyDotsReplacedInComma)) {
+                                        if (snapshot.hasChild(userDBKey)) {
                                             return;
                                         } else {
-                                            DatabaseReferenceUsers.child(emailKeyDotsReplacedInComma).setValue("Group1");// value = groupID[DBid]
+                                            DatabaseReferenceUsers.child(userDBKey).setValue(user);// value = groupID[DBid]
                                         }
                                         Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                                        mainActivity.putExtra(getString(R.string.user), emailKeyDotsReplacedInComma);
+                                        mainActivity.putExtra(getString(R.string.user), userDBKey);
                                         startActivity(mainActivity);
                                         return;
                                     }
