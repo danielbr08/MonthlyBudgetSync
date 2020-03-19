@@ -2,6 +2,7 @@ package com.brosh.finance.monthlybudgetsync.services;
 
 import android.graphics.*;
 import android.os.Build;
+import android.text.InputType;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,7 @@ public final class UIService {
 
     public static void setTextTitleWidgets(List<View> widgets) {
         // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
-        Language language = new Language(Config.DEFAULT_LANGUAGE);
+        Language language = new Language(Config.DEFAULT_LANGUAGE);//todo dynamic
         int i = 0;
         ((TextView) widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.categoryName));
         ((TextView) widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.budgetName));
@@ -88,5 +89,51 @@ public final class UIService {
         for (TextView tv : tvRow) {
             strikeThroughText(tv);
         }
+    }
+
+    public static void setTxtSize(View view, float size) {
+        if (view instanceof TextView)
+            ((TextView) view).setTextSize(size);
+        else if (view instanceof EditText)
+            ((EditText) view).setTextSize(size);
+        else if (view instanceof CheckBox)
+            ((CheckBox) view).setTextSize(size);
+    }
+
+    public static void setTxtSize(List<View> views, float size) {
+        for (View view : views) {
+            setTxtSize(view, size);
+        }
+    }
+
+    public static void setViewInputTypeText(View view) {
+        int inputTypeText = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL;
+        if (view instanceof EditText)
+            ((EditText) view).setInputType(inputTypeText);
+        else if (view instanceof CheckBox)
+            ((CheckBox) view).setInputType(inputTypeText);
+    }
+
+    public static void setViewInputTypeNumber(View view) {
+        int inputTypeNumber = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL;
+        if (view instanceof EditText)
+            ((EditText) view).setInputType(inputTypeNumber);
+    }
+
+    public static void setViewsText(List<View> views, List<String> viewsText) {
+        for (int i = 0; i < views.size(); i++) {
+            View view = views.get(i);
+            if (view instanceof EditText) {
+                String val = viewsText.get(i);
+                ((EditText) view).setText(val);
+            } else if (view instanceof Spinner) {
+                int val = Integer.valueOf(viewsText.get(i));
+                ((Spinner) view).setSelection(val);
+            }
+        }
+    }
+
+    public static void setInputFocus(View view) {
+        view.requestFocus();
     }
 }

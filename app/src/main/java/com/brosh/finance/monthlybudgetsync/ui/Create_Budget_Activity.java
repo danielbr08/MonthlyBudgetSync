@@ -57,6 +57,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 //import android.support.annotation.RequiresApi;
 //import android.support.v7.app.AlertDialog;
@@ -85,11 +87,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private Drawable dfaultBackground;
 
     private LinearLayout LLMain;
+    private LinearLayout LLBudgets;
     //Button to add a row
     private Button addCategoryButton;
+
     //Button to write all the inserted categories to budget file
     private Button OKButton;
-    private LinearLayout newll;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -104,6 +107,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
         setContentView(R.layout.activity_create_budget);
         LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
+        LLBudgets = new LinearLayout(this);
+        LLBudgets.setOrientation(LinearLayout.VERTICAL);
         allBudgets = new ArrayList<>();
         allCategories = new ArrayList<>();
         String choosenLanguage = getIntent().getExtras().getString(getString(R.string.language), getString(R.string.hebrew));
@@ -118,12 +123,13 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         addCategoryButton = new Button(Create_Budget_Activity.this);
         OKButton = new Button(Create_Budget_Activity.this);
-        newll = new LinearLayout(Create_Budget_Activity.this);
 
-        //setAddButton();
-        setTitleRow();
-        setBudgetGui();
-
+        try {
+            setBudgetGui();
+        } catch (Exception e) {
+            String s = e.getMessage();
+            s = s;
+        }
         if (language.isEn()) {
 /*            for (int i=1;i<LLMain.getChildCount() - 1;i++)
             {
@@ -132,48 +138,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
                 setLanguageConf((LinearLayout) LLMain.getChildAt(i));
             }*/
-            int lastRowIndex = LLMain.getChildCount() - 2;
             UIService.setLanguageConf((LinearLayout) LLMain.getChildAt(1));
             //setLanguageConf((LinearLayout) LLMain.getChildAt(lastRowIndex));
         }
-    }
-
-
-//    public void setSpinnerAllignment(Spinner spinner)
-//    {
-//        ArrayAdapter<String> adapter;
-//        if(language.isEn())
-//        {
-//            adapter = new ArrayAdapter<String>(this,
-//                    R.layout.custom_spinner_eng, month.getCategoriesNames());
-//            spinner.setAdapter(adapter);
-//        }
-//        else if(language.isHeb())
-//        {
-//            adapter = new ArrayAdapter<String>(this,
-//                    R.layout.custom_spinner, month.getCategoriesNames());
-//            spinner.setAdapter(adapter);
-//        }
-//    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void addRow(LinearLayout ll, boolean isWithCloseBtn) {
-        LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
-        if (LLMain.getChildCount() > 2) {
-            LLMain.removeViewAt(LLMain.getChildCount() - 1);// Remove Close button
-            LLMain.removeViewAt(LLMain.getChildCount() - 1);// Remove add button
-        }
-        LLMain.addView(ll);
-        setAddAndDeleteButton();// Adding add button
-        LinearLayout addButtonRowLL = (LinearLayout) LLMain.getChildAt(LLMain.getChildCount() - 1);
-        if (isWithCloseBtn)
-            setCloseButton();// Adding close button
     }
 
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setAddAndDeleteButton() {
         final LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
+        newll.setOrientation(LinearLayout.HORIZONTAL);
 
         final ImageButton addRowButton = new ImageButton(this);
         final ImageButton deleteRowsButton = new ImageButton(this);
@@ -183,38 +157,23 @@ public class Create_Budget_Activity extends AppCompatActivity {
         addRowButton.setBackgroundDrawable(dfaultBackground);
         deleteRowsButton.setBackgroundDrawable(dfaultBackground);
 
-        //addRowButton.setTooltipText("הוסף שורה");
-        //deleteRowsButton.setTooltipText("נקה");
-
         addRowButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                boolean isEmptyRowExists = false;
-                for (int i = 2; i < LLMain.getChildCount() - 2; i++) {
-                    LinearLayout rowLL = (LinearLayout) LLMain.getChildAt(i);
-                    if (language.isEn())
-                        UIService.reverseLinearLayout(rowLL);
-                    EditText categoryNameET = (EditText) rowLL.getChildAt(1);
-                    EditText categoryValueET = (EditText) rowLL.getChildAt(2);
-                    if (language.isEn())
-                        UIService.reverseLinearLayout(rowLL);
-                    if (categoryNameET.getText().toString().equals(getString(R.string.empty)) ||
-                            categoryValueET.getText().toString().equals(getString(R.string.empty))) {
-                        isEmptyRowExists = true;
-                        break;
-                    }
-                }
-                if (!isEmptyRowExists)
+                int budgetSize = LLBudgets.getChildCount() - 1;
+                LinearLayout lastBudgetRow = (LinearLayout) LLBudgets.getChildAt(budgetSize);
+                int categoryNameIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 2 : 1;
+                int categoryValueIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 3 : 2;
+                EditText categoryNameET = (EditText) lastBudgetRow.getChildAt(categoryNameIndex);
+                EditText categoryValueET = (EditText) lastBudgetRow.getChildAt(categoryValueIndex);
+                boolean isLastRowValid = !categoryNameET.getText().toString().trim().equals("") && !categoryValueET.getText().toString().trim().equals("");
+                if (isLastRowValid)
                     add_New_row(null, 0, false, null, 0);
             }
         });
 
         deleteRowsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                LLMain.removeViews(2, LLMain.getChildCount() - 2);
-/*                for (int i = 1; i < LLMain.getChildCount() - 2; i++)
-                {
-                    deleteSpecificRow(i);
-                }*/
+                LLBudgets.removeAllViews();
                 add_New_row(null, 0, false, null, 0);
             }
         });
@@ -222,9 +181,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         deleteRowsButton.setScaleType(ImageView.ScaleType.FIT_XY);
 
         addRowButton.setImageDrawable(getResources().getDrawable(R.drawable.add_button_md));
-        //addRowButton.setBackground(null);
-        //addRowButton.getLayoutParams().width = 40;
-        //addRowButton.getLayoutParams().height = 40;
         addRowButton.setScaleType(ImageView.ScaleType.FIT_XY);
 
 
@@ -233,7 +189,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         addRowButton.setAdjustViewBounds(true);
         deleteRowsButton.setAdjustViewBounds(true);
 
-        int a = screenWidth - 2 * buttonSize;
         emptyTV.setLayoutParams(new LinearLayout.LayoutParams(screenWidth - 2 * buttonSize, buttonSize));
         //LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(40, 40);
 
@@ -324,29 +279,24 @@ public class Create_Budget_Activity extends AppCompatActivity {
     public void setBudgets() {
         allCategories.clear();
         allBudgets.clear();
-        int priorityCat = 1;
-        for (int i = 2; i < LLMain.getChildCount() - 2; i++) {
+        int catPriority = 1;
+        for (int i = 0; i < LLBudgets.getChildCount() - 1; i++) {
             EditText categoryET, valueET, shopET;
             CheckBox constPaymentCB;
             Spinner chargeDaySP;
-            if (!language.isEn()) {
-                categoryET = ((EditText) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(1));
-                valueET = ((EditText) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(2));
-                constPaymentCB = ((CheckBox) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(3));
-                shopET = ((EditText) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(4));
-                chargeDaySP = ((Spinner) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(5));
-            } else {
-                categoryET = ((EditText) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(4));
-                valueET = ((EditText) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(3));
-                constPaymentCB = ((CheckBox) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(2));
-                shopET = ((EditText) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(1));
-                chargeDaySP = ((Spinner) ((LinearLayout) LLMain.getChildAt(i)).getChildAt(0));
-            }
+            int firstViewIndex = language.isEn() ? 5 : 0;
+            int addToNextIndex = language.isEn() ? -1 : 1;
+            int addToNextIndexCounter = 1;
+            categoryET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));// todo this expression generc
+            valueET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));
+            constPaymentCB = ((CheckBox) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));
+            shopET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));
+            chargeDaySP = ((Spinner) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter * addToNextIndex)));
+
             String category = categoryET.getText().toString().trim();
             String valueStr = valueET.getText().toString().trim();
             boolean constPayment = constPaymentCB.isChecked();
             String shop = shopET.getText().toString().trim();
-            //String chargeDayStr = chargeDayET.getText().toString().trim();
             String chargeDayStr = chargeDaySP.getSelectedItem().toString().trim();
             int chargeDay = 0;
 
@@ -354,7 +304,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 shopET.setText(R.string.empty);
                 shop = null;
                 chargeDayStr = getString(R.string.zero);
-//                chargeDayET.setText(chargeDayStr);
             }
             chargeDay = Integer.valueOf(chargeDayStr);
 
@@ -364,10 +313,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
 
             allCategories.add(category);
-            //String categorySon = ((EditText)((LinearLayout)LLMain.getChildAt(i)).getChildAt(1)).getText().toString();
             verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET, chargeDaySP);// chargeDayET);
             if (isInputValid)
-                allBudgets.add(new Budget(category, value, constPayment, shop, chargeDay, priorityCat++));
+                allBudgets.add(new Budget(category, value, constPayment, shop, chargeDay, catPriority++));
             else
                 return;
         }
@@ -379,7 +327,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         String valueStr = valueET.getText().toString().trim();
         boolean constPayment = constPaymentCB.isChecked();
         String shop = shopET.getText().toString().trim();
-        //String chargeDayStr = chargeDayET.getText().toString().trim();
         String chargeDayStr = chargeDaySP.getSelectedItem().toString().trim();
 
         if (chargeDayStr.equals(""))
@@ -423,18 +370,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
             setErrorEditText(shopET, language.pleaseInsertShop);
             isInputValid = false;
         }
-
-/*        if(constPayment && chargeDay == 0)
-        {
-            setErrorEditText(chargeDayET, "נא להזין יום לחיוב!");
-            isInputValid = false;
-        }*/
-
-/*        if(constPayment && chargeDay > 31)
-        {
-            setErrorEditText(chargeDayET, "נא להזין יום חוקי לחיוב!");
-            isInputValid = false;
-        }*/
 
         //Check illegal characters
         if (shop.contains(TextService.getSeperator())) {
@@ -497,56 +432,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 Toast.LENGTH_LONG).show();
         if (isFinishNeeded)
             finish();
-/*        TextView msg = new TextView(this);
-        // You Can Customise your Title here
-        msg.setText(message);
-        //title.setBackgroundColor(Color.DKGRAY);
-        msg.setPadding(10, 10, 10, 10);
-        msg.setGravity(Gravity.CENTER);
-        msg.setTextColor(Color.BLACK);
-        msg.setTextSize(20);
-        myAlert = new AlertDialog.Builder(this);
-        myAlert.setView(msg);//.create()
-        myAlert.show();
-        Handler handler = new Handler();
-        if(isFinishNeeded)
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    myAlert.create().dismiss();
-                    finish();
-                }
-            }, 1000); // 1000 milliseconds delay
-        else
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                myAlert.create().dismiss();
-                //finish();
-            }
-        }, 1000); // 1000 milliseconds delay*/
-
     }
 
-//    public void writeBudget(long budgetNumber)
-//    {
-//        long status = 0;
-//        int categoryID = 0;
-//        int subCategoryID = 0;
-//        for (Budget bgt:allBudgets)
-//        {
-//            categoryID = monthlyBudgetDB.getCategoryId(bgt.getCategory());
-//            if(categoryID == -1) {
-//                status = monthlyBudgetDB.insertCategoryData(bgt.getCategory());
-//                categoryID = monthlyBudgetDB.getCategoryId(bgt.getCategory());
-//            }
-//            subCategoryID = monthlyBudgetDB.getSubCategoryId(categoryID,bgt.getCategorySon());
-//            if(subCategoryID == -1) {
-//                status = monthlyBudgetDB.insertSubCategoryData(categoryID, bgt.getCategorySon());
-//                subCategoryID = monthlyBudgetDB.getSubCategoryId(categoryID, bgt.getCategorySon());
-//            }
-//            int catPriority = bgt.getCatPriority();
-//            status = monthlyBudgetDB.insertBudgetTableData(budgetNumber, categoryID, subCategoryID,catPriority, bgt.getValue(), bgt.isConstPayment(), bgt.getShop(), bgt.getChargeDay());
-//        }
-//    }
 
     public boolean isOriginBudgetChanged(int budgetNumber) {
         List<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
@@ -676,8 +563,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         ArrayList<TextView> titlesTV = new ArrayList<>(Arrays.asList(emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV));
         setTitleStyle(titlesTV, titleLL);
 
-        newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        newll.setOrientation(LinearLayout.HORIZONTAL);
+//        newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        newll.setOrientation(LinearLayout.HORIZONTAL);
         LLMain.addView(titleLL);
     }
 
@@ -706,61 +593,41 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setBudgetGui() {
+        setTitleRow(); // index 1
+        LLMain.addView(LLBudgets);
         allBudgets = dbService.getBudgetDataFromDB(dbService.getMaxBudgetNumber());
-        if (allBudgets == null || allBudgets.size() == 0) {
-            add_New_row(null, 0, false, null, 0);
-            allBudgets = new ArrayList<>();
-        } else {
-            for (Budget budget : allBudgets) {
-                add_New_row(budget.getCategoryName(), budget.getValue(), budget.isConstPayment(), budget.getShop(), budget.getChargeDay());
-                setCloseButton();// Adding close button
-            }
-//            setCloseButton();// Adding close button
+        for (Budget budget : allBudgets) {
+            add_New_row(budget.getCategoryName(), budget.getValue(), budget.isConstPayment(), budget.getShop(), budget.getChargeDay());
         }
-
+        setAddAndDeleteButton(); // add row and clean buttons
+        setCloseButton();// Adding close button (last index)
     }
 
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void add_New_row(String categoryName, int categoryValue, boolean isConstPayment, String shop, int chargeDay) {
-        boolean isEmptyRow = (categoryName == null && categoryValue == 0 && isConstPayment == false && shop == null && chargeDay == 0);
         final LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
         final EditText categoryNameET = new EditText(Create_Budget_Activity.this),
                 categoryValueET = new EditText(Create_Budget_Activity.this),
                 shopET = new EditText(Create_Budget_Activity.this);
         final Spinner optionalDaysSpinner = new Spinner(Create_Budget_Activity.this);
         final CheckBox constPaymentCB = new CheckBox(Create_Budget_Activity.this);
-        ;
-        setSpinnerOptionalDays(optionalDaysSpinner);
 
-        List<View> widgets = Arrays.asList((View) categoryNameET, (View) categoryNameET, (View) categoryValueET, (View) constPaymentCB, (View) shopET, (View) optionalDaysSpinner);
         // todo check the width of widgets
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
-        UIService.setWidthCreateBudgetPageDataWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
+        List<View> rowViews = Arrays.asList(categoryNameET, categoryValueET, constPaymentCB, shopET, optionalDaysSpinner);
+        List<String> viewsText = Arrays.asList(categoryName, String.valueOf(categoryValue), String.valueOf(isConstPayment), shop, String.valueOf(chargeDay - 1));
+        List<View> textInputType = Arrays.asList(categoryNameET, constPaymentCB, shopET);
+        List<View> numberInputType = Arrays.asList(categoryValueET);
+        UIService.setViewsText(rowViews, viewsText);
+        UIService.setTxtSize(rowViews, 12);
+        setViewsInput(textInputType, numberInputType);
+        UIService.setInputFocus(categoryNameET);
+        setSpinnerOptionalDays(optionalDaysSpinner);
+
+        UIService.setWidthCreateBudgetPageDataWidgets(rowViews, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
         setConstPaymentCBOnCheckChangedListner(constPaymentCB, shopET, optionalDaysSpinner);
 
-        if (!isEmptyRow)
-            categoryNameET.setText(categoryName);
-        if (!isEmptyRow)
-            categoryValueET.setText(String.valueOf(categoryValue));
-
-        constPaymentCB.setChecked(isConstPayment);
-
-        if (!isEmptyRow) {
-            shopET.setText(shop);
-            optionalDaysSpinner.setSelection(chargeDay - 1);
-        }
-
-        categoryNameET.requestFocus();
-        categoryNameET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-        categoryValueET.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-        constPaymentCB.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-        shopET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-
-        categoryNameET.setTextSize(12);
-        categoryValueET.setTextSize(12);
-        constPaymentCB.setTextSize(12);
-        shopET.setTextSize(12);
 
         newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         newll.setOrientation(LinearLayout.HORIZONTAL);
@@ -779,19 +646,13 @@ public class Create_Budget_Activity extends AppCompatActivity {
         });
 
         final ImageButton deleteRowButton = new ImageButton(this);
-
         deleteRowButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                LLMain.removeView(newll);
-                //for (int i = 1; i < LLMain.getChildCount() - 2; i++)
-                //deleteSpecificRow(i);
-                if (LLMain.getChildCount() == 4)
-                    add_New_row(null, 0, false, null, 0);
+                LLBudgets.removeView(newll);
             }
         });
         deleteRowButton.setImageDrawable(getResources().getDrawable(R.drawable.delete_icon));
         deleteRowButton.setBackgroundDrawable(dfaultBackground);
-        //deleteRowButton.setBackgroundColor(Color.parseColor("#FAFAFA"));View v;v.getBackground().deleteRowButton.setScaleType(ImageView.ScaleType.FIT_XY);
         deleteRowButton.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
         deleteRowButton.setAdjustViewBounds(true);
 
@@ -830,8 +691,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
             newll.addView(deleteRowButton);
 
         }*/
-        boolean isWithCloseBtn = isEmptyRow;
-        addRow(newll, isWithCloseBtn);
+        LLBudgets.addView(newll);
+    }
+
+    private void setViewsInput(List<View> textInputType, List<View> numberInputType) {
+        for (View view : textInputType) {
+            UIService.setViewInputTypeText(view);
+        }
+        for (View view : numberInputType) {
+            UIService.setViewInputTypeNumber(view);
+        }
     }
 
     private void setConstPaymentCBOnCheckChangedListner(CheckBox constPaymentCB, final EditText shopET, final Spinner optionalDaysSpinner) {
@@ -850,90 +719,29 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     public void setSpinnerOptionalDays(Spinner OptionalDaysSP) {
-        ArrayList<String> daysInMonth = new ArrayList<>();
-        int i = 1;
-        while (i <= 31)
-            daysInMonth.add(String.valueOf(i++));
-        ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>(this,
+        List<Integer> daysInMonth = new ArrayList<>();
+//        int i = 1;
+//        while (i <= 31)
+//            daysInMonth.add(String.valueOf(i++));
+        daysInMonth = IntStream.range(1, 31).boxed().collect(Collectors.toList());
+        ArrayAdapter<Integer> adapter;
+        adapter = new ArrayAdapter<Integer>(this,
                 R.layout.custom_spinner, daysInMonth);
-        if (language.equals(getString(R.string.hebrew)))
-            adapter = new ArrayAdapter<String>(this,
+        if (!language.isLTR())
+            adapter = new ArrayAdapter<Integer>(this,
                     R.layout.custom_spinner, daysInMonth);
-        else if (language.equals(getString(R.string.english)))
-            adapter = new ArrayAdapter<String>(this,
+        else
+            adapter = new ArrayAdapter<Integer>(this,
                     R.layout.custom_spinner_eng, daysInMonth);
         OptionalDaysSP.setAdapter(adapter);
         OptionalDaysSP.setSelection(1, true);
         OptionalDaysSP.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
     }
 
-
-    public void deleteSpecificRow(int index) {
-        LLMain.removeViewAt(index);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void setDeleteButton() {
-        final ImageButton deleteRowButton = new ImageButton(this);
-
-        deleteRowButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-
-            }
-        });
-        deleteRowButton.setImageDrawable(getResources().getDrawable(R.drawable.delete_icon));
-        //addRowButton.setBackground(null);
-        //addRowButton.getLayoutParams().width = 40;
-        //addRowButton.getLayoutParams().height = 40;
-        deleteRowButton.setScaleType(ImageView.ScaleType.FIT_XY);
-
-
-        deleteRowButton.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
-        deleteRowButton.setAdjustViewBounds(true);
-        LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
-
-        newll.setOrientation(LinearLayout.HORIZONTAL);
-        newll.addView(deleteRowButton);
-        LLMain.addView(newll);
-    }
-
-//    todo remove this method
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    private void writeBudgetIncludeUpdateCategory(final int budgetNumber, final List<Budget> budgets, final String operation, final List<Budget> addedBudgets) {
-//        final String maxBudgetNumber = String.valueOf(budgetNumber);
-//
-//        Query addBudgetQuery = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS).child(maxBudgetNumber);
-////        Query query = DatabaseReferenceUserMonthlyBudget.child("Budget").orderByKey().limitToLast(1);
-//        addBudgetQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                DatabaseReference budgetNode = DatabaseReferenceUserMonthlyBudget.child(Definition.BUDGETS);
-//                for (Budget bgt : budgets) {
-//                    String id = budgetNode.child(maxBudgetNumber).push().getKey();
-//                    bgt.setId(id);
-//                    budgetNode.child(maxBudgetNumber).child(id).setValue(bgt);
-//                    dbService.updateSpecificBudget(maxBudgetNumber,bgt);
-//                }
-//                List<Budget> budgetsToWrite  =  budgets;
-//                if (operation.equals(getString(R.string.add))){ //todo check this condition again
-//                    budgetsToWrite = addedBudgets;
-//                }
-//                addCategoriesToMonthlyBudget(budgetsToWrite,budgetNumber,operation);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        if (myAlert != null)
+//            myAlert.create().dismiss();
 //    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (myAlert != null)
-            myAlert.create().dismiss();
-    }
-
 }

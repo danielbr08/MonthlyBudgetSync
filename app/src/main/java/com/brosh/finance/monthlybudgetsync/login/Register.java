@@ -55,8 +55,6 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         dbService = new DBService();
-        //Month month = (Month) getIntent().getSerializableExtra("month");
-
 
         final DatabaseReference DatabaseReferenceUsers = Config.DatabaseReferenceUsers;
 
