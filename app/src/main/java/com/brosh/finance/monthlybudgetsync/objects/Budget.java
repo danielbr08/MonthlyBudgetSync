@@ -72,6 +72,22 @@ public class Budget implements Serializable {
     public void setValue(int value) {
         this.value = value;
     }
+
+    public void setConstPayment(boolean constPayment) {
+        isConstPayment = constPayment;
+    }
+
+    public void setShop(String shop) {
+        this.shop = shop;
+    }
+
+    public void setChargeDay(int chargeDay) {
+        this.chargeDay = chargeDay;
+    }
+
+    public void setCatPriority(int catPriority) {
+        this.catPriority = catPriority;
+    }
 }
 
 

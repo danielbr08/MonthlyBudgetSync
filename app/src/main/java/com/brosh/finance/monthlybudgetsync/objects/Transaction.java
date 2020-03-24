@@ -3,9 +3,10 @@ package com.brosh.finance.monthlybudgetsync.objects;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Transaction {
+public class Transaction implements Serializable {
     private String id;
     private int idPerMonth;
     private String category;
@@ -18,34 +19,48 @@ public class Transaction {
     private boolean isStorno;
     private int stornoOf;
 
-    public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
-        this.id = id;
-        this.idPerMonth = idPerMonth;
-        this.category = category;
-        this.subCategory = subCategory;
-        this.paymentMethod = paymentMethod;
-        this.shop = shop;
-        this.payDate = payDate;
-        this.price = price;
-        this.registrationDate = registrationDate;
-        this.isStorno = isStorno;
-        this.stornoOf = stornoOf;
+    public Transaction() {
     }
 
-    public Transaction(int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
-        this.id = id;
-        this.idPerMonth = idPerMonth;
-        this.category = category;
-        this.paymentMethod = paymentMethod;
-        this.shop = shop;
-        this.payDate = payDate;
-        this.price = price;
-        this.registrationDate = registrationDate;
-        this.isStorno = isStorno;
-        this.stornoOf = stornoOf;
-    }
+    //    public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
+//        this.id = id;
+//        this.idPerMonth = idPerMonth;
+//        this.category = category;
+//        this.paymentMethod = paymentMethod;
+//        this.shop = shop;
+//        this.payDate = payDate;
+//        this.price = price;
+//        this.registrationDate = registrationDate;
+//        this.isStorno = isStorno;
+//        this.stornoOf = stornoOf;
+//    }
+//
+//    public Transaction(int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
+//        this.id = id;
+//        this.idPerMonth = idPerMonth;
+//        this.category = category;
+//        this.paymentMethod = paymentMethod;
+//        this.shop = shop;
+//        this.payDate = payDate;
+//        this.price = price;
+//        this.registrationDate = registrationDate;
+//        this.isStorno = isStorno;
+//        this.stornoOf = stornoOf;
+//    }
 
     public Transaction(int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price) {
+        this.idPerMonth = idPerMonth;
+        this.category = category;
+        this.paymentMethod = paymentMethod;
+        this.shop = shop;
+        this.payDate = payDate;
+        this.price = price;
+        this.registrationDate = DateService.getTodayDate();
+        this.isStorno = false;
+        this.stornoOf = -1;
+    }
+
+    public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price) {
         this.id = id;
         this.idPerMonth = idPerMonth;
         this.category = category;

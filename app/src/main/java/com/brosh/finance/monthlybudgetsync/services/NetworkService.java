@@ -54,7 +54,7 @@
 ////                    return;
 ////                for(DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
 ////
-////                    String key = myDataSnapshot.getKey().toString();
+////                    String key = myDataSnapshot.getKey();
 ////                    key = key;
 ////                }
 ////            }
@@ -96,7 +96,7 @@
 //        budgetDB.child(objId).addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                //String id = dataSnapshot.getKey().toString();
+//                //String id = dataSnapshot.getKey();
 //                try {
 //                    Budget bgt = dataSnapshot.getValue(Budget.class);
 //                    month.updateSpecificBudget(objId, bgt);
@@ -144,7 +144,7 @@
 //                if(!dataSnapshot.exists())
 //                    return;
 //                for(DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
-//                    String dbKey =  myDataSnapshot.getKey().toString();
+//                    String dbKey =  myDataSnapshot.getKey();
 //                    switch(dbKey){
 //                        case "Budget":{
 //                            setBudgetDB(dbKey,myDataSnapshot);
@@ -171,10 +171,10 @@
 //    public void setBudgetDB(String dbKey,DataSnapshot budgetsSnapshot){
 //        Map<String, Map<String,Budget>> budgetDBHM = new HashMap<>();
 //        for(DataSnapshot budgetSnapshot : budgetsSnapshot.getChildren()) {
-//            String budgetNumber =  budgetSnapshot.getKey().toString();
+//            String budgetNumber =  budgetSnapshot.getKey();
 //            Map<String,Budget> currentDBHM = new HashMap<>();
 //            for(DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
-//                String budgetObjkey = mySnapshot.getKey().toString();
+//                String budgetObjkey = mySnapshot.getKey();
 //                Budget budgetObj = mySnapshot.getValue(Budget.class);
 //                currentDBHM.put(budgetObjkey,budgetObj);
 //            }
@@ -226,7 +226,7 @@
 //        transactionDB.child(objId).addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-////                String id = dataSnapshot.getKey().toString();
+////                String id = dataSnapshot.getKey();
 //                Transaction trn = dataSnapshot.getValue(Transaction.class);
 //                month.updateSpecificTransaction(objId, trn);
 //            }

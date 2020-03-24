@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Month implements Serializable {
-    // services
-    private DateService dateService;
-//    private DBService dbService;
 
     private String id;
     private Date refMonth;
@@ -30,25 +27,19 @@ public class Month implements Serializable {
     }
 
     //    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
-    public Month(String yearMonth) {
+
+    public Month(String yearMonth, long budgetNumber) {
 //        this.dateService = dateService;
 //        this.dbService = dbService;
 
         this.id = yearMonth;
+        this.budgetNumber = budgetNumber;
         this.categories = new HashMap<String, Category>();
         this.refMonth = DateService.getDate(yearMonth);
         this.yearMonth = yearMonth;
         this.tranIdNumerator = 1;
         setIsActive();
 //        initCategories();
-    }
-
-    public DateService getDateService() {
-        return dateService;
-    }
-
-    public void setDateService(DateService dateService) {
-        this.dateService = dateService;
     }
 
     public long getBudgetNumber() {
@@ -81,7 +72,7 @@ public class Month implements Serializable {
     }
 
     public void setIsActive() {
-        Date today = this.dateService.getTodayDate();
+        Date today = DateService.getTodayDate();
         isActive = DateService.isSameYearMonth(refMonth, today);
     }
 

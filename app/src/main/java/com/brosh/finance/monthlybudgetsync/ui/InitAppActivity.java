@@ -44,7 +44,7 @@ public class InitAppActivity extends AppCompatActivity {
                 if (!dataSnapshot.exists())
                     return;
                 for (DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
-                    String dbKey = myDataSnapshot.getKey().toString();
+                    String dbKey = myDataSnapshot.getKey();
                     if (dbKey.equals(getString(R.string.budget))) {
                         setBudgetDB(myDataSnapshot);
                     } else if (dbKey.equals(getString(R.string.months))) {
@@ -63,9 +63,9 @@ public class InitAppActivity extends AppCompatActivity {
 
     public void setBudgetDB(DataSnapshot budgetsSnapshot) {
         for (DataSnapshot budgetSnapshot : budgetsSnapshot.getChildren()) {
-            String budgetNumber = budgetSnapshot.getKey().toString();
+            String budgetNumber = budgetSnapshot.getKey();
             for (DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
-                String budgetObjkey = mySnapshot.getKey().toString();
+                String budgetObjkey = mySnapshot.getKey();
                 Budget budgetObj = mySnapshot.getValue(Budget.class);
                 dbService.updateSpecificBudget(budgetNumber, budgetObj);
                 setBudgetEventUpdateValue(budgetSnapshot.getRef(), budgetNumber, budgetObjkey);
@@ -73,22 +73,22 @@ public class InitAppActivity extends AppCompatActivity {
         }
     }
 
-    public void setCategoriesEventUpdateValue(DataSnapshot categoriesSnapshot, String refMonthKey) {
+    public void setCategoriesEventUpdateValue(DataSnapshot categoriesSnapshot, String refMonthKey, int budgetNumber) {
         for (DataSnapshot categorySnapshot : categoriesSnapshot.getChildren()) {
             for (DataSnapshot mySnapshot : categoriesSnapshot.child(refMonthKey).getChildren()) {
-                String categoryObjkey = mySnapshot.getKey().toString();
-                setCategoryEventUpdateValue(categorySnapshot.getRef(), refMonthKey, categoryObjkey);
+                String categoryObjkey = mySnapshot.getKey();
+                setCategoryEventUpdateValue(categorySnapshot.getRef(), refMonthKey, budgetNumber, categoryObjkey);
             }
         }
     }
 
     public void setMonthsDB(DataSnapshot monthsSnapshot) {
         for (DataSnapshot monthSnapshot : monthsSnapshot.getChildren()) {
-            String refMonthKey = monthSnapshot.getKey().toString();
+            String refMonthKey = monthSnapshot.getKey();
             Month monthObj = monthSnapshot.getValue(Month.class);
             dbService.updateSpecificMonth(refMonthKey, monthObj);
             DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child(Definition.CATEGORIES);
-            setCategoriesEventUpdateValue(categoriesDatabaseReference, refMonthKey);
+            setCategoriesEventUpdateValue(categoriesDatabaseReference, refMonthKey, (int) monthObj.getBudgetNumber());
             setMonthEventUpdateValue(monthSnapshot.getRef(), refMonthKey);
         }
     }
@@ -101,7 +101,7 @@ public class InitAppActivity extends AppCompatActivity {
                     Budget budgetObj = dataSnapshot.getValue(Budget.class);
                     dbService.updateSpecificBudget(refMonthKey, budgetObj);
                 } catch (Exception ex) {
-                    String message = ex.getMessage().toString();
+                    String message = ex.getMessage();
                 }
             }
 
@@ -111,20 +111,20 @@ public class InitAppActivity extends AppCompatActivity {
         });
     }
 
-    public void setCategoryEventUpdateValue(final DatabaseReference categoryDBReference, final String refMonthKey, final String catObjId) {
+    public void setCategoryEventUpdateValue(final DatabaseReference categoryDBReference, final String refMonthKey, final int budgetNumber, final String catObjId) {
         categoryDBReference.child(catObjId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     Category cat = dataSnapshot.getValue(Category.class);
-                    dbService.updateSpecificCategory(refMonthKey, cat);
+                    dbService.updateSpecificCategory(refMonthKey, budgetNumber, cat);
                     DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child(Definition.TRANSACTIONS);
                     for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
-                        String trnObjkey = transactionSnapshot.getKey().toString();
+                        String trnObjkey = transactionSnapshot.getKey();
                         setTransactionEventUpdateValue(transactionDBReference.getRef(), refMonthKey, catObjId, trnObjkey);
                     }
                 } catch (Exception ex) {
-                    String message = ex.getMessage().toString();
+                    String message = ex.getMessage();
                 }
             }
 

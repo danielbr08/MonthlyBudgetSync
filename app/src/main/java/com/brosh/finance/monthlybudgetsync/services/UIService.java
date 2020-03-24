@@ -129,6 +129,9 @@ public final class UIService {
             } else if (view instanceof Spinner) {
                 int val = Integer.valueOf(viewsText.get(i));
                 ((Spinner) view).setSelection(val);
+            } else if (view instanceof CheckBox) {
+                boolean val = Boolean.valueOf(viewsText.get(i));
+                ((CheckBox) view).setChecked(val);
             }
         }
     }

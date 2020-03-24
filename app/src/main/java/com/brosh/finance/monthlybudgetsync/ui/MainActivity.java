@@ -18,7 +18,10 @@ import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.login.Login;
+import com.brosh.finance.monthlybudgetsync.objects.Budget;
+import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
@@ -29,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -184,12 +188,17 @@ public class MainActivity extends AppCompatActivity {
         createBudgetButton = (Button) findViewById(R.id.createBudgetButton);
         closeMainButton = (Button) findViewById(R.id.closeMainButton);
 
-        if (!dbService.isCurrentRefMonthExists()) {
+        if (!dbService.isAnyBudgetExists()) {
             budgetButton.setEnabled(false);
             transactionsButton.setEnabled(false);
             insertTransactionButton.setEnabled(false);
             month = null;
         } else {
+            if (!dbService.isCurrentRefMonthExists()) {
+                String refMonth = DateService.getYearMonth(new Date(), Config.SEPARATOR);
+                int budgetNumber = dbService.getMaxBudgetNumber();
+                dbService.createNewMonth(budgetNumber, refMonth);
+            }
             month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
 //            setTitle(getYearMonth(month.getMonth(), '.'));
             initRefMonthSpinner();
