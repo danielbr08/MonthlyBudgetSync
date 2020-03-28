@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
         language = new Language(Config.DEFAULT_LANGUAGE);
         userKey = getIntent().getExtras().getString(getString(R.string.user), getString(R.string.empty));
-        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
+        dbService = DBService.getInstance();
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
         DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference(getString(R.string.shares));
@@ -362,5 +362,10 @@ public class MainActivity extends AppCompatActivity {
         activity.putExtra(getString(R.string.db_service), dbService);
         activity.putExtra(getString(R.string.month), month.getYearMonth());
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

@@ -67,7 +67,7 @@ public class ComparatorService {
     public static Comparator<Budget> COMPARE_BY_CATEGORY_PRIORITY = new Comparator<Budget>() {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         public int compare(Budget one, Budget other) {
-            return Integer.compare(one.getCatPriority(), other.getCatPriority());
+            return Long.compare(one.getCatPriority(), other.getCatPriority());
         }
     };
 

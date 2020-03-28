@@ -63,7 +63,7 @@ public class TransactionsActivity extends AppCompatActivity {
         String refMonth = extras.getString(getString(R.string.month), null);
         language = new Language(selectedLanguage);
         userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
-        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
+        dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
         setButtonsNames();
 //        setTitle( getYearMonth(month.getMonth(),'.'));
@@ -397,7 +397,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
         newll.setLayoutParams(paramsTV);
 
-        if (!isHeaderLine) {
+        if (!isHeaderLine && tran != null) { // Header or total row
             TextView[] stornoRow = getStornoRow(categoryName, tran);
             Boolean isStornoRow = (stornoRow != null);
             if (isStornoRow == true) {
@@ -454,23 +454,23 @@ public class TransactionsActivity extends AppCompatActivity {
         }
     }
 
-    public void setCloseButton() {
-        final Button myButton = new Button(this);
-        myButton.setText(language.close);
-        myButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on PORTRAIT moade only
-                finish();
-            }
-        });
-
-        TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-        LinearLayout newll = new LinearLayout(TransactionsActivity.this);
-
-        newll.setOrientation(LinearLayout.HORIZONTAL);
-        newll.addView(myButton, lp);
-        ll.addView(newll);
-    }
+//    public void setCloseButton() {
+//        final Button myButton = new Button(this);
+//        myButton.setText(language.close);
+//        myButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View view) {
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on PORTRAIT moade only
+//                finish();
+//            }
+//        });
+//
+//        TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+//        LinearLayout newll = new LinearLayout(TransactionsActivity.this);
+//
+//        newll.setOrientation(LinearLayout.HORIZONTAL);
+//        newll.addView(myButton, lp);
+//        ll.addView(newll);
+//    }
 
 /*    public void setCloseButton()
     {

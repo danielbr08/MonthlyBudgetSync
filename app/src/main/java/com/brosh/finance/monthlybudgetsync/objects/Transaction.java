@@ -10,7 +10,6 @@ public class Transaction implements Serializable {
     private String id;
     private int idPerMonth;
     private String category;
-    private String subCategory;
     private String paymentMethod;
     private String shop;
     private Date payDate;
@@ -85,10 +84,6 @@ public class Transaction implements Serializable {
         return category;
     }
 
-    public String getSubCategory() {
-        return subCategory;
-    }
-
     public String getPaymentMethod() {
         return paymentMethod;
     }
@@ -127,10 +122,6 @@ public class Transaction implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public void setSubCategory(String subCategory) {
-        this.subCategory = subCategory;
     }
 
     public void setPaymentMethod(String paymentMethod) {

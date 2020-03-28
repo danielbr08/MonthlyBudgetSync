@@ -46,7 +46,7 @@ public class BudgetActivity extends AppCompatActivity {
         String refMonth = extras.getString(getString(R.string.month), null);
         language = new Language(selectedLanguage);
         userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
-        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
+        dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
         setButtonsNames();
 //        setTitle(getYearMonth(month.getMonth(), '.'));

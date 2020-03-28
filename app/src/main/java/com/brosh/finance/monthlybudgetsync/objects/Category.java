@@ -10,14 +10,14 @@ public class Category implements Serializable, Cloneable {
     private String name;
     private double balance;
     private int budget;
-    private Map<String, Transaction> transactionHMDB;
+    private Map<String, Transaction> transactions;
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
     public Category() {
-        this.transactionHMDB = new HashMap<>();
+        this.transactions = new HashMap<>();
     }
 
     public Category(String id, String name, double balance, int budget) {
@@ -25,18 +25,18 @@ public class Category implements Serializable, Cloneable {
         this.name = name;
         this.balance = balance;
         this.budget = budget;
-        this.transactionHMDB = new HashMap<>();
+        this.transactions = new HashMap<>();
 
     }
 
-    public Category(String id, String name, double balance, int budget, Map<String, Transaction> transactionHMDB) {
+    public Category(String id, String name, double balance, int budget, Map<String, Transaction> transactions) {
         // services
 
         this.id = id;
         this.name = name;
         this.balance = balance;
         this.budget = budget;
-        this.transactionHMDB = transactionHMDB;
+        this.transactions = transactions;
     }
 
     public void setName(String name) {
@@ -72,16 +72,16 @@ public class Category implements Serializable, Cloneable {
     }
 
 
-    public Map<String, Transaction> getTransactionHMDB() {
-        return transactionHMDB;
+    public Map<String, Transaction> getTransactions() {
+        return transactions;
     }
 
-    public void setTransactionHMDB(Map<String, Transaction> transactionHMDB) {
-        this.transactionHMDB = transactionHMDB;
+    public void setTransactions(Map<String, Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     public void addTransactions(String id, Transaction transactions) {
-        this.transactionHMDB.put(id, transactions);
+        this.transactions.put(id, transactions);
     }
 
     public void withdrawal(double trnPrice) {
@@ -89,7 +89,7 @@ public class Category implements Serializable, Cloneable {
     }
 
     public void addTransaction(Transaction trn) {
-        this.transactionHMDB.put(trn.getId(), trn);
+        this.transactions.put(trn.getId(), trn);
     }
 
 }

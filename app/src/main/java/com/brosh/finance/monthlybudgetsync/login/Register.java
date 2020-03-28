@@ -54,7 +54,7 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        dbService = new DBService();
+        dbService = DBService.getInstance();
 
         final DatabaseReference DatabaseReferenceUsers = Config.DatabaseReferenceUsers;
 

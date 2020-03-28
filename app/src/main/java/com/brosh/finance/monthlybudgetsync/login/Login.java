@@ -36,7 +36,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         currentActivity = this;
-        dbService = new DBService();
+        dbService = DBService.getInstance();
 //        DatabaseReference monthsDB = FirebaseDatabase.getInstance().getReference("Users");
 
 

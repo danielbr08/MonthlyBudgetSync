@@ -101,7 +101,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         String userKey = getIntent().getExtras().getString(getString(R.string.user), "");
         String refMonth = getIntent().getExtras().getString(getString(R.string.month));
-        dbService = (DBService) getIntent().getSerializableExtra(getString(R.string.db_service));
+        dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
@@ -503,8 +503,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         dbService.createNewMonth(budgetNumber, refMonth);
 
         //deleteCurrentMonth();
-        month = null;
-        showMessageToast(language.budgetCreatedSuccessfully, true); // todo fix run time exception (activity.finishe() is not allowed)
+//        month = null;
+//        showMessageToast(language.budgetCreatedSuccessfully, true); // todo fix run time exception (activity.finishe() is not allowed)
     }
 
     private List<Category> budgetToCategories(List<Budget> budgets) {

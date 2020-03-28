@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
@@ -35,6 +36,19 @@ import java.util.Map;
 import java.util.Set;
 
 public final class DBService implements Serializable {
+
+    private static DBService instance;
+
+    private DBService() {
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    }
+
+    public static DBService getInstance() {
+        if (instance == null)
+            instance = new DBService();
+        return instance;
+    }
+
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
     private Set<String> shopsSet = new HashSet<String>();
@@ -57,10 +71,6 @@ public final class DBService implements Serializable {
 
     public void setUserKey(String userKey) {
         this.userKey = userKey;
-    }
-
-    public DBService() {
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     public Language getLanguage() {
@@ -129,7 +139,12 @@ public final class DBService implements Serializable {
 
     public List<Budget> getBudgetDataFromDB(long budgetNumber) {
         List<Budget> budgets = new ArrayList<Budget>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
-        Collections.sort(budgets, ComparatorService.COMPARE_BY_CATEGORY_PRIORITY);
+        try {
+            Collections.sort(budgets, ComparatorService.COMPARE_BY_CATEGORY_PRIORITY);
+        } catch (Exception e) {
+            String s = e.getMessage();
+            s = s;
+        }
         return budgets;
     }
 
@@ -149,7 +164,7 @@ public final class DBService implements Serializable {
         int maxId = -1;
         List<Category> categories = new ArrayList<Category>(getCategories(refMonth).values());
         for (Category cat : categories) {
-            List<Transaction> transactions = new ArrayList<Transaction>(cat.getTransactionHMDB().values());
+            List<Transaction> transactions = new ArrayList<Transaction>(cat.getTransactions().values());
             for (Transaction trn : transactions) {
                 if (trn.getIdPerMonth() > maxId) {
                     maxId = trn.getIdPerMonth();
@@ -212,8 +227,10 @@ public final class DBService implements Serializable {
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {
+                };
                 String budgetNumber = dataSnapshot.getKey();
-                Map<String, Budget> budgets = (Map<String, Budget>) dataSnapshot.getValue();
+                Map<String, Budget> budgets = (Map<String, Budget>) dataSnapshot.getValue(genericTypeIndicator);
                 thisObject.budgetDBHM.put(budgetNumber, budgets);
             }
 
@@ -343,14 +360,13 @@ public final class DBService implements Serializable {
 
     public void startApp(DBService thisObject, Activity activity) {
         Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
-        mainActivityIntent.putExtra(activity.getString(R.string.db_service), thisObject);
         mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
         activity.startActivity(mainActivityIntent);
         activity.finish();
     }
 
     public void setTransactionsFieldsEventUpdateValue(DataSnapshot transactionsSnapshot, String refMonthKey, String categoryObjkey) {
-        Map<String, Transaction> currentTransactions = this.monthDBHM.get(refMonthKey).getCategories().get(categoryObjkey).getTransactionHMDB();
+        Map<String, Transaction> currentTransactions = this.monthDBHM.get(refMonthKey).getCategories().get(categoryObjkey).getTransactions();
         for (String tranId : currentTransactions.keySet()) {
             DataSnapshot transactionFieldsDataBaseReference = transactionsSnapshot.child(tranId);
             setTransactionFieldsEventUpdateValue(transactionFieldsDataBaseReference, refMonthKey, categoryObjkey);
@@ -484,7 +500,7 @@ public final class DBService implements Serializable {
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
                     String fieldName = dataSnapshot.getKey();
-                    Transaction curentTransaction = monthDBHM.get(refMonthKey).getCategories().get(catId).getTransactionHMDB().get(tranId);
+                    Transaction curentTransaction = monthDBHM.get(refMonthKey).getCategories().get(catId).getTransactions().get(tranId);
                     switch (fieldName) {
                         case Definition.IS_STORNO:
                             boolean isStorno = Boolean.valueOf(dataSnapshot.getValue().toString());
@@ -570,7 +586,7 @@ public final class DBService implements Serializable {
             String tranId = getDBUserTransactionsPath(yearMonth, catId).push().getKey();
             Transaction transaction = new Transaction(tranId, idPerMonth, budget.getCategoryName(), paymentMethod, budget.getShop(), payDate, budget.getValue());
             transactions.put(tranId, transaction);
-            cat.setTransactionHMDB(transactions);
+            cat.setTransactions(transactions);
         }
         return cat;
     }
@@ -580,8 +596,8 @@ public final class DBService implements Serializable {
     }
 
     public void createNewMonth(int budgetNumber, String refMonth) {
-        List<Budget> budgetssToConvert = getBudgetDataFromDB(budgetNumber);
-        List<Category> wrotedCategories = writeCategoriesByBudgets(refMonth, budgetNumber, budgetssToConvert);
+        List<Budget> budgetsToConvert = getBudgetDataFromDB(budgetNumber);
+        List<Category> wrotedCategories = writeCategoriesByBudgets(refMonth, budgetNumber, budgetsToConvert);
         Month newMonth = getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
 
         getDBMonthtPath(refMonth).setValue(newMonth);
@@ -648,7 +664,7 @@ public final class DBService implements Serializable {
         }
     }
 
-    public List<Category> getCategoriesByPriority(String refMonth) {
+    public List<Category> getCategoriesByPriority(String refMonth) { // todo check performance
         long budgetNumber = getMonthDBHM().get(refMonth).getBudgetNumber();
         Map<String, Category> categoriesClone = getCategoriesClone(refMonth);
         List<Budget> sortedBudgets = getBudgetDataFromDB(budgetNumber);
@@ -692,8 +708,8 @@ public final class DBService implements Serializable {
             return getTransactions(refMonth);
         }
         Category category = getCategoryByName(refMonth, catName);
-        if (category.getTransactionHMDB() != null)
-            return new ArrayList<Transaction>(category.getTransactionHMDB().values());
+        if (category.getTransactions() != null)
+            return new ArrayList<Transaction>(category.getTransactions().values());
         return null;
     }
 
@@ -701,7 +717,7 @@ public final class DBService implements Serializable {
         Map<String, Category> categoriesHM = getCategories(refMonth);
         List<Transaction> transactions = new ArrayList<>();
         for (Category cat : categoriesHM.values()) {
-            transactions.addAll(cat.getTransactionHMDB().values());
+            transactions.addAll(cat.getTransactions().values());
         }
         return transactions;
     }
