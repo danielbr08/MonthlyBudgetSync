@@ -573,6 +573,7 @@ public final class DBService implements Serializable {
             updateSpecificCategory(refMonth, budgetNumber, cat);
             wrotedCategories.add(cat);
         }
+        setIdNumerator(refMonth, idPerMonth);
         return wrotedCategories;
     }
 
@@ -752,6 +753,10 @@ public final class DBService implements Serializable {
         String paymentMethod = language.creditCardName;
         Date payDate = DateService.getCurrentDate(bgt.getChargeDay());
         return new Transaction(idPerMonth, bgt.getCategoryName(), paymentMethod, bgt.getShop(), payDate, bgt.getValue());
+    }
+
+    private void setIdNumerator(String refMonth, int idPerMonth) {
+        monthDBHM.get(refMonth).setTranIdNumerator(idPerMonth);
     }
     //****************************************************************************************
 
