@@ -144,11 +144,7 @@ public class Transaction implements Serializable {
         this.registrationDate = registrationDate;
     }
 
-    public boolean isStorno() {
-        return isStorno;
-    }
-
-    public void setStorno(boolean storno) {
+    public void setIsStorno(boolean storno) {
         isStorno = storno;
     }
 

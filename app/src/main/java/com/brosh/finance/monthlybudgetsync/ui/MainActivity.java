@@ -195,11 +195,13 @@ public class MainActivity extends AppCompatActivity {
             month = null;
         } else {
             if (!dbService.isCurrentRefMonthExists()) {
-                String refMonth = DateService.getYearMonth(new Date(), Config.SEPARATOR);
-                int budgetNumber = dbService.getMaxBudgetNumber();
-                dbService.createNewMonth(budgetNumber, refMonth);
+                createNewMonth(new Date());
             }
             month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
+            Date nextRefMonth = DateService.getNextRefMonth(month.getRefMonth());
+            if (new Date().after(nextRefMonth)) {
+                createNewMonth(nextRefMonth);
+            }
 //            setTitle(getYearMonth(month.getMonth(), '.'));
             initRefMonthSpinner();
         }
@@ -342,6 +344,12 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    private void createNewMonth(Date refMonthDate) {
+        String refMonth = DateService.getYearMonth(refMonthDate, Config.SEPARATOR);
+        int budgetNumber = dbService.getMaxBudgetNumber();
+        dbService.createNewMonth(budgetNumber, refMonth);
+    }
+
 //    public void share(View view) {
 //        String shareWith = ((EditText)findViewById(R.id.etShare)).getText().toString().trim().replace('.',',');
 //        DatabaseReferenceShares.child(shareWith).setValue(email.getText().toString().trim().replace('.',','));
@@ -359,9 +367,7 @@ public class MainActivity extends AppCompatActivity {
     public void addParametersToActivity(Intent activity) {
         activity.putExtra(getString(R.string.language), language.getLanguage());
         activity.putExtra(getString(R.string.user), userKey);
-        activity.putExtra(getString(R.string.db_service), dbService);
         activity.putExtra(getString(R.string.month), month.getYearMonth());
-
     }
 
     @Override

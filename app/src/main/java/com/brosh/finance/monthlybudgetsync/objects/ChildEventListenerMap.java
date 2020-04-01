@@ -1,25 +1,23 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public final class EventListenerMap {
+public final class ChildEventListenerMap {
 
-    private static EventListenerMap instance;
+    private static ChildEventListenerMap instance;
     private static Map<DatabaseReference, ChildEventListener> childEventListenersHM;
 
-    private EventListenerMap() {
+    private ChildEventListenerMap() {
         childEventListenersHM = new HashMap<>();
     }
 
-    public static EventListenerMap getInstance() {
+    public static ChildEventListenerMap getInstance() {
         if (instance == null) {
-            instance = new EventListenerMap();
+            instance = new ChildEventListenerMap();
         }
         return instance;
     }

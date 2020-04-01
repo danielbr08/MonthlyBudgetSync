@@ -17,6 +17,7 @@ public class Month implements Serializable {
     private Date refMonth;
     private String yearMonth;
     private boolean isActive;
+    private int chargeDay;
     private Map<String, Category> categories;
 
     private int tranIdNumerator;
@@ -28,18 +29,27 @@ public class Month implements Serializable {
 
     //    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
 
-    public Month(String yearMonth, long budgetNumber) {
+    public Month(String yearMonth, long budgetNumber, int chargeDay) {
 //        this.dateService = dateService;
 //        this.dbService = dbService;
 
+        this.chargeDay = chargeDay;
         this.id = yearMonth;
         this.budgetNumber = budgetNumber;
         this.categories = new HashMap<String, Category>();
-        this.refMonth = DateService.getDate(yearMonth);
+        this.refMonth = DateService.setDayToDate(DateService.getDate(yearMonth), chargeDay);
         this.yearMonth = yearMonth;
         this.tranIdNumerator = 1;
         setIsActive();
 //        initCategories();
+    }
+
+    public int getChargeDay() {
+        return chargeDay;
+    }
+
+    public void setChargeDay(int chargeDay) {
+        this.chargeDay = chargeDay;
     }
 
     public long getBudgetNumber() {

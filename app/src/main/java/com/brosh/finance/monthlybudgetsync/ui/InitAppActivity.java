@@ -52,7 +52,6 @@ public class InitAppActivity extends AppCompatActivity {
                     }
                 }
                 Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                mainActivityIntent.putExtra(getString(R.string.db_service), dbService);
                 startActivity(mainActivityIntent);
             }
 

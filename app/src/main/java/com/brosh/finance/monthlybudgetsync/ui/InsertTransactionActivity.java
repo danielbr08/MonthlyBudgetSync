@@ -326,17 +326,17 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 for (Category cat : month.getCategories().values()) {
                     if (categoryName.equals(cat.getName())) {
                         cat.withdrawal(transactionPrice);
-                        List<Transaction> catTrans = dbService.getTransactions(month.getYearMonth(), categoryName);
+                        List<Transaction> catTrans = dbService.getTransactions(month.getYearMonth(), cat.getId());
                         for (Transaction tran : catTrans) {
                             isStorno = tran.isStorno(transaction);
                             if (isStorno == true) {
                                 stornoOf = tran.getIdPerMonth();
-                                tran.setStorno(true);
+                                tran.setIsStorno(true);
                                 tran.setStornoOf(transaction.getIdPerMonth());
                                 break;
                             }
                         }
-                        transaction.setStorno(isStorno);
+                        transaction.setIsStorno(isStorno);
                         transaction.setStornoOf(stornoOf);
                         cat.addTransaction(transaction);
                         break;

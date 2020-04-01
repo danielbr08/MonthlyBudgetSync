@@ -1,7 +1,10 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import android.provider.CalendarContract;
+
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.objects.Month;
 
 import java.text.*;
 import java.util.*;
@@ -121,5 +124,23 @@ public final class DateService {
 
     public static boolean isSameYearMonth(Date d1, Date d2) {
         return d1.getYear() == d2.getYear() && d1.getMonth() == d2.getMonth();
+    }
+
+    public static Date setDayToDate(Date date, int day) {
+        int _day = day;
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int lastDayInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+        if (day > lastDayInMonth)
+            _day = lastDayInMonth;
+        c.set(Calendar.DAY_OF_MONTH, _day);
+        return c.getTime();
+    }
+
+    public static Date getNextRefMonth(Date refMonth) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(refMonth);
+        c.add(Calendar.MONTH, 1);
+        return c.getTime();
     }
 }

@@ -222,7 +222,8 @@ public class TransactionsActivity extends AppCompatActivity {
 
     public TextView[] getStornoRow(String catName, Transaction transaction) {
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
-        List<Transaction> categoryTrans = dbService.getTransactions(currentRefMonth, catName);
+        String catId = dbService.getCategoryByName(currentRefMonth, catName).getId();
+        List<Transaction> categoryTrans = dbService.getTransactions(currentRefMonth, catId);
         if (categoryTrans == null || transaction == null)
             return null;
         for (Transaction tran : categoryTrans) {
@@ -430,7 +431,8 @@ public class TransactionsActivity extends AppCompatActivity {
         if (catName.equals(language.all))
             isIncludeCategory = true;
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
-        List<Transaction> transactions = dbService.getTransactions(currentRefMonth, catName);
+        String catId = isIncludeCategory ? null : dbService.getCategoryByName(currentRefMonth, catName).getId();
+        List<Transaction> transactions = dbService.getTransactions(currentRefMonth, catId);
         if (transactions == null || transactions.size() == 0)
             return;
         if (sortBy != null)
