@@ -30,6 +30,7 @@ import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -373,5 +374,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ValueEventListener rootEventListener = DBService.getInstance().getRootEventListener();
+        if (rootEventListener != null) {
+            Config.DatabaseReferenceMonthlyBudget.child(userKey).removeEventListener(rootEventListener);
+        }
     }
 }

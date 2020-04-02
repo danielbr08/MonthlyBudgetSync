@@ -49,6 +49,8 @@ public final class DBService {
         return instance;
     }
 
+    private ValueEventListener rootEventListener;
+
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
     private Set<String> shopsSet = new HashSet<String>();
@@ -56,6 +58,14 @@ public final class DBService {
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
 
     private String userKey;
+
+    public ValueEventListener getRootEventListener() {
+        return rootEventListener;
+    }
+
+    public void setRootEventListener(ValueEventListener rootEventListener) {
+        this.rootEventListener = rootEventListener;
+    }
 
     public Set<String> getShopsSet() {
         return shopsSet;
@@ -180,9 +190,9 @@ public final class DBService {
 
     public void initDB(final String userKey, final Activity activity) {
         this.userKey = userKey;
-        final DBService thisObject = this;
         DatabaseReference databaseReference = Config.DatabaseReferenceMonthlyBudget.child(userKey);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        rootEventListener = new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -211,7 +221,9 @@ public final class DBService {
 
             public void onCancelled(DatabaseError firebaseError) {
             }
-        });
+        };
+
+        databaseReference.addListenerForSingleValueEvent(rootEventListener);
     }
 
     public void setBudgetDB(DataSnapshot budgetsSnapshot) {
@@ -222,45 +234,10 @@ public final class DBService {
                 Budget budgetObj = mySnapshot.getValue(Budget.class);
                 updateSpecificBudget(budgetNumber, budgetObj);
             }
+            setAddChildBudgetNumberEvent(budgetSnapshot, budgetNumber);
         }
         // Set event add child
-        final DBService thisObject = this;
-        ChildEventListener addChildEvent = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {
-                };
-                String budgetNumber = dataSnapshot.getKey();
-                Map<String, Budget> budgets = (Map<String, Budget>) dataSnapshot.getValue(genericTypeIndicator);
-                thisObject.budgetDBHM.put(budgetNumber, budgets);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                String budgetNumber = dataSnapshot.getKey();
-                thisObject.budgetDBHM.remove(budgetNumber);
-                deleteEventsListener(dataSnapshot.getRef());
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(budgetsSnapshot.getRef())) {
-            budgetsSnapshot.getRef().addChildEventListener(addChildEvent);
-            addChildValueEventListener(budgetsSnapshot.getRef(), addChildEvent);
-        }
+        setAddChildBudgetsEvent(budgetsSnapshot);
     }
 
     public void setMonthsDB(DataSnapshot monthsSnapshot) {
@@ -277,19 +254,19 @@ public final class DBService {
     }
 
     public void setAddChildMonthEvent(DataSnapshot MonthDataSnapshot) {
-        final DBService thisObject = this;
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String refMonth = dataSnapshot.getKey();
                 Month month = dataSnapshot.getValue(Month.class);
                 month.setIsActive();
-                thisObject.monthDBHM.put(refMonth, month);
+                DBService.getInstance().monthDBHM.put(refMonth, month);
                 DataSnapshot categoriesDBSnapShot = dataSnapshot.child(Definition.CATEGORIES);
                 if (categoriesDBSnapShot.exists()) {
                     setAddChildCategoryEvent(categoriesDBSnapShot, refMonth);
                 }
-                setTranIdNumeratorEventUpdateValue(dataSnapshot.child(Definition.TRAN_ID_NUMERATOR), refMonth);
+                setTranIdNumeratorEventUpdateValue(dataSnapshot.child(Definition.TRAN_ID_NUMERATOR), refMonth); // todo check why fired twice(next line also)
+                setBudgetNumberEventUpdateValue(dataSnapshot.child(Definition.BUDGET_NUMBER), refMonth);
             }
 
             @Override
@@ -320,12 +297,11 @@ public final class DBService {
     }
 
     public void setAddChildCategoryEvent(DataSnapshot categoryDataSnapshot, final String refMonth) {
-        final DBService thisObject = this;
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Category cat = dataSnapshot.getValue(Category.class);
-                thisObject.getCategories(refMonth).put(cat.getId(), cat);
+                DBService.getInstance().getCategories(refMonth).put(cat.getId(), cat);
                 setCategoryFieldsEventUpdateValue(dataSnapshot, refMonth);
             }
 
@@ -336,7 +312,7 @@ public final class DBService {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String catId = dataSnapshot.getKey();
-                thisObject.getCategories(refMonth).remove(catId);
+                DBService.getInstance().getCategories(refMonth).remove(catId);
                 deleteEventsListener(dataSnapshot.getRef());
             }
 
@@ -357,13 +333,12 @@ public final class DBService {
     }
 
     public void setAddChildTransactionEvent(DataSnapshot transactionDataSnapshot, final String refMonth, final String catId) {
-        final DBService thisObject = this;
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String tranId = dataSnapshot.getKey();
                 Transaction tran = dataSnapshot.getValue(Transaction.class);
-                thisObject.getCategoryById(refMonth, catId).getTransactions().put(tranId, tran);
+                DBService.getInstance().getCategoryById(refMonth, catId).getTransactions().put(tranId, tran);
                 setTransactionFieldsEventUpdateValue(dataSnapshot, refMonth, catId);
             }
 
@@ -374,7 +349,7 @@ public final class DBService {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String tranId = dataSnapshot.getKey();
-                thisObject.getTransactions(refMonth, catId).remove(tranId);
+                DBService.getInstance().getTransactions(refMonth, catId).remove(tranId);
                 deleteEventsListener(dataSnapshot.getRef());
             }
 
@@ -503,11 +478,6 @@ public final class DBService {
             if (eventNodePathInMap.startsWith(eventNodePath))
                 deleteEventListener(childDatabaseReference);
         }
-//        for (DatabaseReference childDatabaseReference: valueEventListenersHM.keySet()) { // find childs nodes of this event
-//            String eventNodePathInMap = childDatabaseReference.toString();
-//            if(eventNodePathInMap.startsWith(eventNodePath))
-//                deleteEventListener(childDatabaseReference);
-//        }
     }
 
     private void addChildValueEventListener(DatabaseReference databaseReference, ChildEventListener event) {
@@ -569,7 +539,7 @@ public final class DBService {
         return FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
     }
 
-    public DatabaseReference getDBBudgetPath() {
+    public DatabaseReference getDBBudgetsPath() {
         return getDBUserRootPath().child(Definition.BUDGETS);
     }
 
@@ -721,7 +691,6 @@ public final class DBService {
         ValueEventListener event = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 Long value = (Long) dataSnapshot.getValue();
                 if (value != null)
                     monthDBHM.get(refMonthKey).setTranIdNumerator(value.intValue());
@@ -738,6 +707,119 @@ public final class DBService {
             tranIdNumeratorDB.getRef().addValueEventListener(event);
             addValueEventListener(tranIdNumeratorDB.getRef(), event);
         }
+    }
+
+    private void setBudgetNumberEventUpdateValue(final DataSnapshot budgetNumberDB, final String refMonthKey) {
+        ValueEventListener event = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Long value = (Long) dataSnapshot.getValue();
+                if (value != null)
+                    monthDBHM.get(refMonthKey).setBudgetNumber(value.intValue());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        budgetNumberDB.getRef().addValueEventListener(event);
+
+        if (!ValueEventListenerMap.getInstance().isEventAlreadyExists(budgetNumberDB.getRef())) {
+            budgetNumberDB.getRef().addValueEventListener(event);
+            addValueEventListener(budgetNumberDB.getRef(), event);
+        }
+    }
+
+    public void addNewCategoriesToExistingMonth(String refMonth, int budgetNumber, List<Budget> budgets) {
+        int idPerMonth = monthDBHM.get(refMonth).getTranIdNumerator() + 1;
+        DatabaseReference categoriesDBReference = getDBCategoriesPath(refMonth);
+        String catId = categoriesDBReference.push().getKey();
+        for (Budget budget : budgets) {
+            Category cat = budgetToCategory(budget, catId, idPerMonth++);
+            updateSpecificCategory(refMonth, budgetNumber, cat);
+            categoriesDBReference.child(catId).setValue(cat);
+        }
+    }
+
+    private void setAddChildBudgetNumberEvent(DataSnapshot budgetSnapshot, final String budgetNumber) {
+        ChildEventListener addChildEvent = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Budget budget = dataSnapshot.getValue(Budget.class);
+                DBService.getInstance().updateSpecificBudget(budgetNumber, budget);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(budgetSnapshot.getRef())) {
+            budgetSnapshot.getRef().addChildEventListener(addChildEvent);
+            addChildValueEventListener(budgetSnapshot.getRef(), addChildEvent);
+        }
+    }
+
+    private void setAddChildBudgetsEvent(final DataSnapshot budgetsSnapshot) {
+        ChildEventListener addChildEvent = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {
+                };
+                String budgetNumber = dataSnapshot.getKey();
+                Map<String, Budget> budgets = (Map<String, Budget>) dataSnapshot.getValue(genericTypeIndicator);
+                DBService.getInstance().budgetDBHM.put(budgetNumber, budgets);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                String budgetNumber = dataSnapshot.getKey();
+                DBService.getInstance().budgetDBHM.remove(budgetNumber);
+                deleteEventsListener(dataSnapshot.getRef());
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(budgetsSnapshot.getRef())) {
+            budgetsSnapshot.getRef().addChildEventListener(addChildEvent);
+            addChildValueEventListener(budgetsSnapshot.getRef(), addChildEvent);
+        }
+    }
+
+    public void updateBudgetNumberFB(String refMonth, int budgetNumber) {
+        getDBMonthPath(refMonth).child(Definition.BUDGET_NUMBER).setValue(budgetNumber);
+    }
+
+    public void updateBudgetNumber(String refMonth, int budgetNumber) {
+        getMonth(refMonth).setBudgetNumber(budgetNumber);
     }
 
 
