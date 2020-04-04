@@ -1,5 +1,8 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 
 public final class TextService {
@@ -18,5 +21,14 @@ public final class TextService {
 
     public static String getSeperator() {
         return Definition.ARROW_RIGHT;
+    }
+
+    public static void showMessage(String message, Context context) {
+        new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            }
+        }.run();
     }
 }

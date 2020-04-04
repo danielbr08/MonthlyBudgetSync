@@ -401,14 +401,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         }, 1000); // 1000 milliseconds delay
     }
 
-    public void showMessageToast(String message, boolean isFinishNeeded) { //View view)
-        Toast.makeText(this, message,
-                Toast.LENGTH_LONG).show();
-        if (isFinishNeeded)
-            finish();
-    }
-
-
     public boolean isOriginBudgetChanged(int budgetNumber) {
         List<Budget> oldBudget = dbService.getBudgetDataFromDB(budgetNumber);
         int counter = 0;
@@ -478,7 +470,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         //deleteCurrentMonth();
 //        month = null;
-        //showMessageToast(language.budgetCreatedSuccessfully, true); // todo fix run time exception (activity.finishe() is not allowed)
+        TextService.showMessage(language.budgetCreatedSuccessfully, getApplicationContext());
+        finish();
     }
 
     private List<Category> budgetToCategories(List<Budget> budgets) {

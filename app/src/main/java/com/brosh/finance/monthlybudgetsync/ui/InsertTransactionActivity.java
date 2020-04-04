@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
@@ -354,6 +355,18 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 showMessageNoButton(language.transactionInsertedSuccessfully);
 
                 //finish();
+            }
+        });
+    }
+
+    public void showMessageToast(String message, boolean isFinishNeeded) {
+        Context context = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                if (isFinishNeeded)
+                    finish();
             }
         });
     }
