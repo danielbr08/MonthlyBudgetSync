@@ -24,6 +24,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.config.Language;
+import com.brosh.finance.monthlybudgetsync.services.UIService;
 
 public class BudgetActivity extends AppCompatActivity {
 
@@ -89,18 +90,19 @@ public class BudgetActivity extends AppCompatActivity {
         balanceTextView.setText(balance);
         budgetTextView.setText(Budget);
 
-        budgetTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
-        balanceTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
-
         if (language.isLTR()) {
             categoryNameTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
-            balanceTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+//            budgetTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
+            balanceTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
         } else {
-            categoryNameTextView.setTextDirection(View.TEXT_DIRECTION_RTL);
-            balanceTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            categoryNameTextView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            budgetTextView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+            balanceTextView.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         }
-
+        categoryNameTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
         budgetTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        balanceTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+
         //budgetTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         //balanceTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
         categoryNameTextView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
@@ -171,7 +173,7 @@ public class BudgetActivity extends AppCompatActivity {
             llBudgetTitle.addView(categoryTV);
             llBudgetTitle.addView(budgetTV);
             llBudgetTitle.addView(balanceTV);
-        } else if (language.isLTR()) {
+        } else {
             llBudgetTitle.removeAllViews();
             llBudgetTitle.addView(balanceTV);
             llBudgetTitle.addView(budgetTV);

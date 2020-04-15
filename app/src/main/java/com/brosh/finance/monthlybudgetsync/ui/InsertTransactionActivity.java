@@ -349,7 +349,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 transaction.setId(tranId);
                 transactionsNode.child(catId).setValue(transaction); // todo check if event listener call
                 shopsSet.add(shop); // todo check if event listener call
-
+                dbService.writeNewShopFB(shop);
                 // send message and close window
                 //showMessage("העסקה הוכנסה בהצלחה!");
                 showMessageNoButton(language.transactionInsertedSuccessfully);

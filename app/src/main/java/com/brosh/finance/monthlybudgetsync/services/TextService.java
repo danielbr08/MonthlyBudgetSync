@@ -23,12 +23,16 @@ public final class TextService {
         return Definition.ARROW_RIGHT;
     }
 
-    public static void showMessage(String message, Context context) {
+    public static void showMessage(String message, int duration, Context context) {
         new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, message, duration).show();
             }
         }.run();
+    }
+
+    public static String getEmailComma(String email) {
+        return email.trim().replace(Definition.DOT, Definition.COMMA);
     }
 }

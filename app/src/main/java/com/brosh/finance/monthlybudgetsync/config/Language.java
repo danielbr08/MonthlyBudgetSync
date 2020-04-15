@@ -81,6 +81,17 @@ public class Language implements Serializable {
     public String messageName = "הודעה";
     public String requiredField = "שדה חובה!";
 
+    // Shares
+    public String questionChangeDB = "שיתוף התקציב יגרום למחיקת המידע הקיים.\nהאם בכל זאת לסנכרן את התקציב? ";
+    public String pleaseInsertEmailToShareTheBudget = "אנא הזן מייל לשיתוף ";
+    public String shareMonthlyBudget = "שיתוף תקציב חודשי ";
+    public String emailAlreadyshared = "בוצע כבר שיתוף למייל זה ";
+    public String successfullyShared = "השיתוף בוציע בהצלחה! ";
+
+    // General
+    public String cancel = "בטל";
+
+
     public Language(String language) {
         this.language = language;
         if (language.equals("HEB")) {
@@ -167,6 +178,16 @@ public class Language implements Serializable {
         transactionInsertedSuccessfully = "העסקה הוכנסה בהצלחה!";
         messageName = "הודעה";
         requiredField = "שדה חובה!";
+
+        // Shares
+        questionChangeDB = "שיתוף התקציב יגרום למחיקת המידע הקיים.\nהאם בכל זאת לסנכרן את התקציב? ";
+        pleaseInsertEmailToShareTheBudget = "אנא הזן מייל לשיתוף ";
+        shareMonthlyBudget = "שיתוף תקציב חודשי ";
+        emailAlreadyshared = "בוצע כבר שיתוף למייל זה ";
+        successfullyShared = "השיתוף בוציע בהצלחה! ";
+        // General
+        cancel = "בטל";
+
     }
 
     void setParamsEN() {
@@ -238,6 +259,17 @@ public class Language implements Serializable {
         transactionInsertedSuccessfully = "Transaction inserted successfully!";
         messageName = "Message";
         requiredField = "Required field!";
+
+        // Shares
+        questionChangeDB = "Sharing the budget will erase the existing information.\nStill synchronize your budget?";
+        pleaseInsertEmailToShareTheBudget = "Please insert a email to share ";
+        shareMonthlyBudget = "Share Monthly Budget ";
+        emailAlreadyshared = "This email has already been shared ";
+        successfullyShared = "Success sharing!";
+
+        //General
+        cancel = "Cancel";
+
     }
 
     public boolean isLTR() {

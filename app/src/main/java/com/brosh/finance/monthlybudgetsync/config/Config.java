@@ -32,6 +32,7 @@ public final class Config {
     public static Thread closeActivity;
     public static ArrayList<String> LOG_REPORT = new ArrayList<>();
 
+    public static final DatabaseReference DatabaseReferenceRoot = FirebaseDatabase.getInstance().getReference();
     public static final DatabaseReference DatabaseReferenceUsers = FirebaseDatabase.getInstance().getReference("Users");
     public static final DatabaseReference DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference("Shares");
     public static final DatabaseReference DatabaseReferenceMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget");

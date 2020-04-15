@@ -39,4 +39,6 @@
     <string name="shares">Shares</string>
     <string name="users">users</string>
     <string name="first_name">fName</string>
+    <string name="Share">Share</string>
+    <string name="isNewUser">isNewUser</string>
 </resources>

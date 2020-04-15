@@ -1,6 +1,8 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.brosh.finance.monthlybudgetsync.config.UserConfig;
+import com.brosh.finance.monthlybudgetsync.services.DBService;
+import com.brosh.finance.monthlybudgetsync.services.TextService;
 
 import java.io.Serializable;
 
@@ -10,7 +12,7 @@ public class User implements Serializable {
     private String phone;
     private String password;
     private String dbKey;
-    private boolean isOwner; // if he is the owner of the DB
+    private String owner; // if he is the owner of the DB
 
     private UserConfig usserConfig;
     //private String groupID;
@@ -60,28 +62,30 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String dbKey, boolean isOwner) {
+    public User(String name, String email, String phone, String password, String dbKey, String owner) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.password = password;
-        this.dbKey = dbKey;
-        this.isOwner = isOwner;
+        this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
+        this.owner = owner;
     }
 
     public User(String name, String email, String phone, String password, String dbKey) {
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.dbKey = dbKey;
+        this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
         this.password = password;
+        this.owner = null;
     }
 
     public User(String name, String email, String phone, String dbKey) {
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.dbKey = dbKey;
+        this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
+        this.owner = null;
     }
 
     public String getPassword() {
@@ -100,12 +104,12 @@ public class User implements Serializable {
         this.dbKey = dbKey;
     }
 
-    public boolean isOwner() {
-        return isOwner;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setOwner(boolean owner) {
-        isOwner = owner;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public UserConfig getUsserConfig() {

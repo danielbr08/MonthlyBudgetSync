@@ -118,12 +118,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
         addCategoryButton = new Button(Create_Budget_Activity.this);
         OKButton = new Button(Create_Budget_Activity.this);
 
-        try {
-            setBudgetGui();
-        } catch (Exception e) {
-            String s = e.getMessage();
-            s = s;
-        }
+//        try {
+        setBudgetGui();
+//        } catch (Exception e) {
+//            String s = e.getMessage();
+//            s = s;
+//        }
         if (language.isEn()) {
 /*            for (int i=1;i<LLMain.getChildCount() - 1;i++)
             {
@@ -465,12 +465,14 @@ public class Create_Budget_Activity extends AppCompatActivity {
             dbService.updateBudgetNumber(refMonth, budgetNumber);
             dbService.addNewCategoriesToExistingMonth(refMonth, budgetNumber, addedBudgets);
             dbService.updateBudgetNumberFB(refMonth, budgetNumber);
+            dbService.updateShopsFB();
+
         } else
             dbService.createNewMonth(budgetNumber, refMonth);
 
         //deleteCurrentMonth();
 //        month = null;
-        TextService.showMessage(language.budgetCreatedSuccessfully, getApplicationContext());
+        TextService.showMessage(language.budgetCreatedSuccessfully, Toast.LENGTH_LONG, getApplicationContext());
         finish();
     }
 
@@ -549,6 +551,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         for (Budget budget : allBudgets) {
             add_New_row(budget.getCategoryName(), budget.getValue(), budget.isConstPayment(), budget.getShop(), budget.getChargeDay());
         }
+        if (allBudgets.size() == 0) // No any budget exists
+            add_New_row("", 0, false, "", 2);
         setAddAndDeleteButton(); // add row and clean buttons
         setCloseButton();// Adding close button (last index)
     }

@@ -4,17 +4,25 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
@@ -27,6 +35,7 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.config.Language;
+import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,11 +60,10 @@ public class MainActivity extends AppCompatActivity {
     private Button transactionsButton;
     private Button createBudgetButton;
     private Button closeMainButton;
-    private boolean Touched = false; // Indicate for language spinner
+    private boolean touched = false; // Indicate for language spinner
     private Month month;
 
     public void initLanguageSpinner() {
-        //global.setCatArrayHebNames();
         List<String> allMonths = new ArrayList<>();
         allMonths.add(getString(R.string.hebrew));
         allMonths.add(getString(R.string.english));
@@ -63,27 +71,27 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this,
                 R.layout.custom_spinner, allMonths);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageSpinner.setAdapter(adapter);
     }
 
     public void changeTouchValue(boolean touched) {
-        Touched = touched;
+        this.touched = touched;
     }
 
     public void initRefMonthSpinner() {
-        List<String> allMonths = dbService.getAllMonthesYearMonth();
-
+        List<String> allMonths = dbService.getAllMonthsYearMonth();
+        String refMonth;
+        if (month != null) {
+            refMonth = month.getYearMonth();
+            if (allMonths.contains(refMonth)) {
+                allMonths.remove(refMonth);
+                allMonths.add(0, refMonth);// put the current month first
+            }
+        }
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<String>(this,
                 R.layout.custom_spinner, allMonths);
         refMonthSpinner.setAdapter(adapter);
-
-/*        String refMonth = refMonthSpinner.getSelectedItem().toString();
-        refMonth = ("01." + refMonth);
-        refMonth = refMonth.replace('.','/');
-        month = new Month(convertStringToDate(refMonth,dateFormat));
-        refMonth = refMonth.replace('/','.').substring(0,refMonth.length() -3);*/
     }
 
 //    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -284,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (!Touched)
+                if (!touched)
                     return;
                 String lang = languageSpinner.getSelectedItem().toString();
                 language.setLanguage(lang);
@@ -340,10 +348,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logout(View view) {
+        SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("rememberMe", "false");
+        if (preferences.contains("email"))
+            editor.remove("email");
+        if (preferences.contains("password"))
+            editor.remove("password");
+        editor.apply();
+
         FirebaseAuth.getInstance().signOut();//logout
         startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
+
+//    public void openShareDialog() {
+//        final Context context = this;
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setTitle(language.shareMonthlyBudget);
+//        final EditText emailInput = new EditText(this);
+//        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+//        emailInput.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                String emailText = emailInput.getText().toString();
+//                if (dbService.isEmailAlreadyShared(emailText)) {
+//                    emailInput.setError(language.emailAlreadyshared);
+//                } else {
+//                    emailInput.setError(null);
+//                }
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                String emailText = emailInput.getText().toString();
+//                if (dbService.isEmailAlreadyShared(emailText)) {
+//                    emailInput.setError(language.emailAlreadyshared);
+//                } else {
+//                    emailInput.setError(null);
+//                }
+//            }
+//        });
+//
+//        builder.setView(emailInput);
+//        builder.setPositiveButton(language.insert, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                String emailText = emailInput.getText().toString();
+//                try {
+//                    dbService.share(emailText);
+//                    TextService.showMessage(language.successfullyShared, Toast.LENGTH_LONG, context);
+//                } catch (Exception e) {
+//                    TextService.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
+//                }
+//            }
+//        });
+//        builder.setNegativeButton(language.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        builder.show();
+//    }
 
     private void createNewMonth(Date refMonthDate) {
         String refMonth = DateService.getYearMonth(refMonthDate, Config.SEPARATOR);
@@ -368,12 +439,33 @@ public class MainActivity extends AppCompatActivity {
     public void addParametersToActivity(Intent activity) {
         activity.putExtra(getString(R.string.language), language.getLanguage());
         activity.putExtra(getString(R.string.user), userKey);
-        activity.putExtra(getString(R.string.month), month.getYearMonth());
+        activity.putExtra(getString(R.string.month), month == null ? month : month.getYearMonth());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!dbService.isAnyBudgetExists()) { // Budget not exists at all
+            budgetButton.setEnabled(false);
+            transactionsButton.setEnabled(false);
+            insertTransactionButton.setEnabled(false);
+            month = null;
+        } else {
+            if (month == null) { // After create budget first time
+                if (dbService.isCurrentRefMonthExists()) {
+                    month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
+                    initRefMonthSpinner();
+                    budgetButton.setEnabled(true);
+                    transactionsButton.setEnabled(true);
+                    insertTransactionButton.setEnabled(true);
+                } else { // todo Exception should throws
+
+                }
+            } else { // Same month as before
+
+            }
+        }
     }
 
     @Override

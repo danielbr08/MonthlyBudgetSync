@@ -2,11 +2,14 @@ package com.brosh.finance.monthlybudgetsync.services;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.View;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.brosh.finance.monthlybudgetsync.config.Language;
+import com.brosh.finance.monthlybudgetsync.login.Login;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.ChildEventListenerMap;
@@ -15,6 +18,8 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.objects.User;
+import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.objects.ValueEventListenerMap;
 import com.brosh.finance.monthlybudgetsync.ui.MainActivity;
 import com.google.firebase.database.ChildEventListener;
@@ -29,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,10 +60,12 @@ public final class DBService {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
     private Set<String> shopsSet = new HashSet<String>();
+//    private Map<String,String> sharesMap = new HashMap<>();
 
     private Language language = new Language(Config.DEFAULT_LANGUAGE);
 
     private String userKey;
+    private User user;
 
     public ValueEventListener getRootEventListener() {
         return rootEventListener;
@@ -67,12 +75,28 @@ public final class DBService {
         this.rootEventListener = rootEventListener;
     }
 
+//    public Map<String, String> getSharesMap() {
+//        return sharesMap;
+//    }
+//
+//    public void setSharesMap(Map<String, String> sharesMap) {
+//        this.sharesMap = sharesMap;
+//    }
+
     public Set<String> getShopsSet() {
         return shopsSet;
     }
 
     public void setShopsSet(Set<String> shopsSet) {
         this.shopsSet = shopsSet;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getUserKey() {
@@ -141,7 +165,7 @@ public final class DBService {
     }
 
     public List<Integer> getBudgetNumbesrAsInt() {
-        List<Integer> budetNumbers = new ArrayList<>();
+        List<Integer> budetNumbers = new ArrayList<>(Arrays.asList(0));
         for (String bugetNumber : budgetDBHM.keySet()) {
             budetNumbers.add(Integer.valueOf(bugetNumber));
         }
@@ -149,7 +173,10 @@ public final class DBService {
     }
 
     public List<Budget> getBudgetDataFromDB(long budgetNumber) {
-        List<Budget> budgets = new ArrayList<Budget>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
+        List<Budget> budgets = new ArrayList<>();
+        if (!budgetDBHM.containsKey(String.valueOf(budgetNumber)))
+            return budgets;
+        budgets = new ArrayList<Budget>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
         try {
             Collections.sort(budgets, ComparatorService.COMPARE_BY_CATEGORY_PRIORITY);
         } catch (Exception e) {
@@ -188,16 +215,20 @@ public final class DBService {
     public void updateBudgetNumberMB(String startCurrentMonth, int budgetNumber) {
     }
 
-    public void initDB(final String userKey, final Activity activity) {
-        this.userKey = userKey;
+    public void initDB(final User user, Activity activity) {
+
+        this.userKey = user.getDbKey();
+        this.user = user;
         DatabaseReference databaseReference = Config.DatabaseReferenceMonthlyBudget.child(userKey);
 
         rootEventListener = new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists())
+                if (!dataSnapshot.exists()) {
+                    startApp(activity);
                     return;
+                }
                 for (DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
                     String keyNode = myDataSnapshot.getKey();
                     switch (keyNode) {
@@ -209,6 +240,14 @@ public final class DBService {
                             setMonthsDB(myDataSnapshot);
                             break;
                         }
+                        case Definition.SHOPS: {
+                            setShopsDB(myDataSnapshot);
+                            break;
+                        }
+//                        case Definition.SHARES: {
+//                            setSharesDB(myDataSnapshot);
+//                            break;
+//                        }
                     }
                 }
                 try {
@@ -252,6 +291,98 @@ public final class DBService {
         // Set event add child
         setAddChildMonthEvent(monthsSnapshot);
     }
+
+    public void setShopsDB(DataSnapshot shopsSnapshot) {
+        ValueEventListener updateShopsEvent = new ValueEventListener() {//todo check if can delete
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Object value = dataSnapshot.getValue();
+                List<String> shops = value != null ? (List<String>) value : null;
+                if (shops != null) {
+                    shopsSet.clear();
+                    shopsSet.addAll(shops);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
+            shopsSnapshot.getRef().addValueEventListener(updateShopsEvent);
+            addValueEventListener(shopsSnapshot.getRef(), updateShopsEvent);
+        }
+//
+//        ChildEventListener addChildEvent = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                String shop = dataSnapshot.getValue().toString();
+//                shopsSet.add(shop);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                String key = dataSnapshot.getKey();
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//                String shop = dataSnapshot.getValue().toString();
+//                shopsSet.remove(shop);
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        };
+//        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
+//            shopsSnapshot.getRef().addChildEventListener(addChildEvent);
+//            addChildValueEventListener(shopsSnapshot.getRef(), addChildEvent);
+//        }
+    }
+
+//    public void setSharesDB(DataSnapshot shopsSnapshot) {
+//        ChildEventListener addChildEvent = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                String newUser = dataSnapshot.getKey();
+//                String owner = dataSnapshot.getValue().toString();
+//                sharesMap.put(newUser, owner);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                String key = dataSnapshot.getKey();
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//                String shop = dataSnapshot.getValue().toString();
+//                shopsSet.remove(shop);
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        };
+//        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
+//            shopsSnapshot.getRef().addChildEventListener(addChildEvent);
+//            addChildValueEventListener(shopsSnapshot.getRef(), addChildEvent);
+//        }
+//    }
 
     public void setAddChildMonthEvent(DataSnapshot MonthDataSnapshot) {
         ChildEventListener addChildEvent = new ChildEventListener() {
@@ -349,8 +480,10 @@ public final class DBService {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String tranId = dataSnapshot.getKey();
-                DBService.getInstance().getTransactions(refMonth, catId).remove(tranId);
-                deleteEventsListener(dataSnapshot.getRef());
+                if (isTranExists(refMonth, catId, tranId)) { // todo for all child removed event
+                    DBService.getInstance().getTransactions(refMonth, catId).remove(tranId);
+                    deleteEventsListener(dataSnapshot.getRef());// todo delete anyway (method need to support case of have no event listener for this node)
+                }
             }
 
             @Override
@@ -369,10 +502,27 @@ public final class DBService {
         }
     }
 
+    private boolean isTranExists(String refMonth, String catId, String tranId) {
+        if (isCatExists(refMonth, catId))
+            return getTransactions(refMonth).contains(tranId);
+        return false;
+    }
+
+    private boolean isCatExists(String refMonth, String catId) {
+        if (isRefMonthExists(refMonth))
+            return getCategories(refMonth).keySet().contains(catId);
+        return false;
+    }
+
+    private boolean isRefMonthExists(String refMonth) {
+        return monthDBHM.containsKey(refMonth);
+    }
+
     public void startApp(Activity activity) {
         Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
         mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
         activity.startActivity(mainActivityIntent);
+        ((UserStartApp) activity).getProgressBar().setVisibility(View.GONE);
         activity.finish();
     }
 
@@ -514,9 +664,10 @@ public final class DBService {
             String paymentMethod = language.creditCardName;
             Date payDate = DateService.getCurrentDate(budget.getChargeDay());
             String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR);
-            String tranId = getDBUserTransactionsPath(yearMonth, catId).push().getKey();
+            String tranId = getDBTransactionsPath(yearMonth, catId).push().getKey();
             Transaction transaction = new Transaction(tranId, idPerMonth, budget.getCategoryName(), paymentMethod, budget.getShop(), payDate, budget.getValue());
             transactions.put(tranId, transaction);
+            shopsSet.add(budget.getShop());
             cat.setTransactions(transactions);
             cat.withdrawal(budget.getValue());
         }
@@ -533,6 +684,12 @@ public final class DBService {
         Month newMonth = getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
 
         getDBMonthPath(refMonth).setValue(newMonth);
+        updateShopsFB();
+
+//        Set<String> updatedShops = new HashSet<String>(shopsSet);
+//        updatedShops.removeAll(oldShops);
+//        writeNewShopFB(updatedShops, oldShops.size());
+
     }
 
     public DatabaseReference getDBUserRootPath() {
@@ -555,8 +712,16 @@ public final class DBService {
         return getDBMonthsPath().child(refMonth).child(Definition.CATEGORIES);
     }
 
-    public DatabaseReference getDBUserTransactionsPath(String refMonth, String catId) {
+    public DatabaseReference getDBTransactionsPath(String refMonth, String catId) {
         return getDBCategoriesPath(refMonth).child(catId).child(Definition.TRANSACTIONS);
+    }
+
+    public DatabaseReference getDBShopsPath() {
+        return getDBUserRootPath().child(Definition.SHOPS);
+    }
+
+    public DatabaseReference getDBSaresPath() {
+        return getDBUserRootPath().child(Definition.SHARES);
     }
 
     public Map<String, Budget> getBudget(String budgetNumber) {
@@ -607,7 +772,7 @@ public final class DBService {
         return sortedCategories;
     }
 
-    public List<String> getAllMonthesYearMonth() {
+    public List<String> getAllMonthsYearMonth() {
         List<String> monthsList = new ArrayList<String>(monthDBHM.keySet());
         java.util.Collections.sort(monthsList);
         java.util.Collections.reverse(monthsList);
@@ -821,6 +986,31 @@ public final class DBService {
     public void updateBudgetNumber(String refMonth, int budgetNumber) {
         getMonth(refMonth).setBudgetNumber(budgetNumber);
     }
+
+    public void writeNewShopFB(String newShop) {
+        int size = shopsSet.size();
+        size = shopsSet.contains(newShop) ? size - 1 : size;
+        String indexShopKey = String.valueOf(size);
+        getDBShopsPath().child(indexShopKey).setValue(newShop);
+    }
+
+    public void updateShopsFB() {
+        List<String> shops = new ArrayList<>(shopsSet);
+        getDBShopsPath().setValue(shops);
+    }
+
+//    public void share(String emailToShare) throws Exception {
+//        if(isEmailAlreadyShared(emailToShare)){
+//            throw new Exception(language.emailAlreadyshared);
+//        }
+//        String emailCommaReplaced = emailToShare.replace(Definition.DOT, Definition.COMMA);
+//        getDBSaresPath().child(emailCommaReplaced).setValue(userKey);
+//    }
+//
+//    public boolean isEmailAlreadyShared(String emailToShare) {
+//        String emailCommaReplaced = emailToShare.replace(Definition.DOT, Definition.COMMA);
+//        return sharesMap.containsKey(emailCommaReplaced) ? true : false;
+//    }
 
 
     //****************************************************************************************

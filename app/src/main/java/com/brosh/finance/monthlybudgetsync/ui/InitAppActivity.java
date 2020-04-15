@@ -1,174 +1,78 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.brosh.finance.monthlybudgetsync.R;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
-import com.brosh.finance.monthlybudgetsync.objects.Budget;
-import com.brosh.finance.monthlybudgetsync.objects.Category;
-import com.brosh.finance.monthlybudgetsync.objects.Month;
-import com.brosh.finance.monthlybudgetsync.objects.Transaction;
+import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Language;
+import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class InitAppActivity extends AppCompatActivity {
     private DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private DBService dbService;
+    private User user;
+    private Language language;
+    private boolean isNewUser;
+    private RelativeLayout loadingPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_app);
         dbService = DBService.getInstance();
-        String userKey = getIntent().getExtras().getString(getString(R.string.user), "");
-        initDB(userKey);
+        User user = (User) getIntent().getSerializableExtra(getString(R.string.user));
+        isNewUser = (boolean) getIntent().getExtras().get(getString(R.string.isNewUser));
+        language = new Language(Config.DEFAULT_LANGUAGE);
+//        if(user.getOwner() != null){
+//            showQuestionChangeDB(language.questionChangeDB);
+//        }
+//        else{
+        loadingPanel = findViewById(R.id.loadingPanel);
+        loadingPanel.setVisibility(View.VISIBLE);
+
+        dbService.initDB(user, this);
+//        }
     }
 
-    public void initDB(String userKey) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void changeDB() {
+        user.setDbKey(user.getOwner());
+    }
 
+    public void removeOwner() {
+        user.setOwner(null);
+    }
+
+    public void showQuestionChangeDB(String message) {
+        Activity currentActivity = this;
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists())
-                    return;
-                for (DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
-                    String dbKey = myDataSnapshot.getKey();
-                    if (dbKey.equals(getString(R.string.budget))) {
-                        setBudgetDB(myDataSnapshot);
-                    } else if (dbKey.equals(getString(R.string.months))) {
-                        setMonthsDB(myDataSnapshot);
-                    }
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        changeDB();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        removeOwner();
+                        break;
                 }
-                Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(mainActivityIntent);
+                dbService.initDB(user, currentActivity);
             }
-
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
-    }
-
-    public void setBudgetDB(DataSnapshot budgetsSnapshot) {
-        for (DataSnapshot budgetSnapshot : budgetsSnapshot.getChildren()) {
-            String budgetNumber = budgetSnapshot.getKey();
-            for (DataSnapshot mySnapshot : budgetsSnapshot.child(budgetNumber).getChildren()) {
-                String budgetObjkey = mySnapshot.getKey();
-                Budget budgetObj = mySnapshot.getValue(Budget.class);
-                dbService.updateSpecificBudget(budgetNumber, budgetObj);
-                setBudgetEventUpdateValue(budgetSnapshot.getRef(), budgetNumber, budgetObjkey);
-            }
-        }
-    }
-
-    public void setCategoriesEventUpdateValue(DataSnapshot categoriesSnapshot, String refMonthKey, int budgetNumber) {
-        for (DataSnapshot categorySnapshot : categoriesSnapshot.getChildren()) {
-            for (DataSnapshot mySnapshot : categoriesSnapshot.child(refMonthKey).getChildren()) {
-                String categoryObjkey = mySnapshot.getKey();
-                setCategoryEventUpdateValue(categorySnapshot.getRef(), refMonthKey, budgetNumber, categoryObjkey);
-            }
-        }
-    }
-
-    public void setMonthsDB(DataSnapshot monthsSnapshot) {
-        for (DataSnapshot monthSnapshot : monthsSnapshot.getChildren()) {
-            String refMonthKey = monthSnapshot.getKey();
-            Month monthObj = monthSnapshot.getValue(Month.class);
-            dbService.updateSpecificMonth(refMonthKey, monthObj);
-            DataSnapshot categoriesDatabaseReference = monthSnapshot.child(refMonthKey).child(Definition.CATEGORIES);
-            setCategoriesEventUpdateValue(categoriesDatabaseReference, refMonthKey, (int) monthObj.getBudgetNumber());
-            setMonthEventUpdateValue(monthSnapshot.getRef(), refMonthKey);
-        }
-    }
-
-    public void setBudgetEventUpdateValue(DatabaseReference budgetDBReference, final String refMonthKey, String objId) {
-        budgetDBReference.child(refMonthKey).child(objId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    Budget budgetObj = dataSnapshot.getValue(Budget.class);
-                    dbService.updateSpecificBudget(refMonthKey, budgetObj);
-                } catch (Exception ex) {
-                    String message = ex.getMessage();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-
-    public void setCategoryEventUpdateValue(final DatabaseReference categoryDBReference, final String refMonthKey, final int budgetNumber, final String catObjId) {
-        categoryDBReference.child(catObjId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    Category cat = dataSnapshot.getValue(Category.class);
-                    dbService.updateSpecificCategory(refMonthKey, budgetNumber, cat);
-                    DataSnapshot transactionDBReference = dataSnapshot.child(catObjId).child(Definition.TRANSACTIONS);
-                    for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
-                        String trnObjkey = transactionSnapshot.getKey();
-                        setTransactionEventUpdateValue(transactionDBReference.getRef(), refMonthKey, catObjId, trnObjkey);
-                    }
-                } catch (Exception ex) {
-                    String message = ex.getMessage();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void setTransactionEventUpdateValue(DatabaseReference transactionDBReference, final String refMonthKey, final String catObjId, final String trnObjId) {
-        transactionDBReference.child(trnObjId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    Transaction trn = dataSnapshot.getValue(Transaction.class);
-                    dbService.updateSpecificTransaction(refMonthKey, catObjId, trnObjId, trn);
-                } catch (Exception ex) {
-                    String message = ex.getMessage().toString();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void setMonthEventUpdateValue(DatabaseReference monthDBReference, final String refMonthKey) {
-        monthDBReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    Month month = dataSnapshot.getValue(Month.class);
-                    dbService.updateSpecificMonth(refMonthKey, month);
-                } catch (Exception ex) {
-                    String message = ex.getMessage().toString();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message).setPositiveButton(language.yes, dialogClickListener)
+                .setNegativeButton(language.no, dialogClickListener).show();
     }
 }
