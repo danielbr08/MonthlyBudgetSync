@@ -226,14 +226,14 @@ public class InsertTransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_insert_transaction);
 
         Bundle extras = getIntent().getExtras();
-        String selectedLanguage = extras.getString(getString(R.string.language), getString(R.string.english));
-        String refMonth = extras.getString(getString(R.string.month), null);
+        String selectedLanguage = extras.getString(Definition.LANGUAGE, getString(R.string.english));
+        String refMonth = extras.getString(Definition.MONTH, null);
         language = new Language(selectedLanguage);
-        userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
+        userKey = extras.getString(Definition.USER, getString(R.string.empty));
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
 
-        setButtonsNames();
+//        setButtonsNames();
         shopsSet = dbService.getShopsSet();
 //        setTitle( getYearMonth(month.getMonth(),'.'));
         categoriesSpinner = (Spinner) findViewById(R.id.categorySpinner);

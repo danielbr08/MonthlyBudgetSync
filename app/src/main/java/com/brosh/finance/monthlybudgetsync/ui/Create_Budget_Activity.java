@@ -65,7 +65,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private Month month;
-    private Language language;
+//    private Language language;
 
     TextView emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV;
 
@@ -93,8 +93,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String userKey = getIntent().getExtras().getString(getString(R.string.user), "");
-        String refMonth = getIntent().getExtras().getString(getString(R.string.month));
+        String userKey = getIntent().getExtras().getString(Definition.USER, "");
+        String refMonth = getIntent().getExtras().getString(Definition.MONTH);
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
 
@@ -105,11 +105,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
         LLBudgets.setOrientation(LinearLayout.VERTICAL);
         allBudgets = new ArrayList<>();
         allCategories = new ArrayList<>();
-        String choosenLanguage = getIntent().getExtras().getString(getString(R.string.language), getString(R.string.hebrew));
-        language = new Language(choosenLanguage);
-        setTitle(language.appName);
+        setTitle(getString(R.string.app_name));
         dfaultBackground = new View(this).getBackground();
-        setButtonsNames();
+//        setButtonsNames();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
         display = getWindowManager().getDefaultDisplay();
@@ -124,7 +122,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 //            String s = e.getMessage();
 //            s = s;
 //        }
-        if (language.isEn()) {
+//        if (language.isEn()) {
 /*            for (int i=1;i<LLMain.getChildCount() - 1;i++)
             {
                 //LinearLayout currentLL = (LinearLayout) LLMain.getChildAt(i);
@@ -132,9 +130,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
                 setLanguageConf((LinearLayout) LLMain.getChildAt(i));
             }*/
-            UIService.setLanguageConf((LinearLayout) LLMain.getChildAt(1));
-            //setLanguageConf((LinearLayout) LLMain.getChildAt(lastRowIndex));
-        }
+        //UIService.setLanguageConf((LinearLayout) LLMain.getChildAt(1));
+        //setLanguageConf((LinearLayout) LLMain.getChildAt(lastRowIndex));
+//        }
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -155,8 +153,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
             public void onClick(View view) {
                 int budgetSize = LLBudgets.getChildCount() - 1;
                 LinearLayout lastBudgetRow = (LinearLayout) LLBudgets.getChildAt(budgetSize);
-                int categoryNameIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 2 : 1;
-                int categoryValueIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 3 : 2;
+//                int categoryNameIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 2 : 1;
+//                int categoryValueIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 3 : 2;
+                int categoryNameIndex = 1;
+                int categoryValueIndex = 2;
                 EditText categoryNameET = (EditText) lastBudgetRow.getChildAt(categoryNameIndex);
                 EditText categoryValueET = (EditText) lastBudgetRow.getChildAt(categoryValueIndex);
                 boolean isLastRowValid = !categoryNameET.getText().toString().trim().equals("") && !categoryValueET.getText().toString().trim().equals("");
@@ -192,8 +192,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(addRowButton);//,lp);
         newll.addView(deleteRowsButton);
         newll.addView(emptyTV);
-        if (language.isEn())
-            UIService.setLanguageConf(newll);
+//        if (language.isEn())
+//            UIService.setLanguageConf(newll);
         LLMain.addView(newll);
     }
 
@@ -201,7 +201,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         final Button closeButton = new Button(this);
         int size = (150 * buttonSize) / 100;
         closeButton.setHeight(size);
-        closeButton.setText(language.createButton);
+        closeButton.setText(getString(R.string.create));
         closeButton.setTextColor(Color.BLACK);
         closeButton.setTypeface(null, Typeface.BOLD);
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -209,7 +209,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
             public void onClick(View view) {
                 setBudgets();
                 if (allBudgets.size() == 0) {// Nothing needed to do
-                    showMessageNoButton(language.pleaseInsertBudget);
+                    showMessageNoButton(getString(R.string.please_insert_budget));
                     return;
                 }
                 int budgetNumber = dbService.getMaxBudgetNumber();
@@ -220,13 +220,13 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 if (!isInputValid || !isBudgetChange)
                     return;
                 if (month == null)
-                    createBudget(getString(R.string.create));// First time create budget
+                    createBudget(Definition.CREATE_CODE);// First time create budget
                 else if (isOriginContentBudgetChanged) {// Rewriting of monthly budget needed
                     if (dbService.isCurrentRefMonthExists())
-                        showQuestionDeleteCurrentMonth(language.createBudgetQuestion);
+                        showQuestionDeleteCurrentMonth(getString(R.string.create_budget_question));
                     return;
                 } else if (isAddedBudgetsExists)// Insert the added budgets needed only
-                    createBudget(getString(R.string.add));// Values of old budget updated only
+                    createBudget(Definition.ADD_CODE);// Values of old budget updated only
             }
         });
 
@@ -257,8 +257,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
             EditText categoryET, valueET, shopET;
             CheckBox constPaymentCB;
             Spinner chargeDaySP;
-            int firstViewIndex = language.isEn() ? 5 : 0;
-            int addToNextIndex = language.isEn() ? -1 : 1;
+//            int firstViewIndex = language.isEn() ? 5 : 0;
+//            int addToNextIndex = language.isEn() ? -1 : 1;
+            int firstViewIndex = 0;
+            int addToNextIndex = 1;
             int addToNextIndexCounter = 1;
             categoryET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));// todo this expression generc
             valueET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));
@@ -314,23 +316,23 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         //Check duplicate of category
         if (Collections.frequency(allCategories, category) > 1) {
-            setErrorEditText(categoryET, language.duplicateCategory);
+            setErrorEditText(categoryET, getString(R.string.duplicate_category));
             isInputValid = false;
         }
 
         //Check illegal characters
         if (category.contains(TextService.getSeperator())) {
-            setErrorEditText(categoryET, language.illegalCharacter);
+            setErrorEditText(categoryET, getString(R.string.illegal_Character));
             isInputValid = false;
         }
         //Check illegal category
         if (category.length() == 0) {
-            setErrorEditText(categoryET, language.pleaseInsertCategory);
+            setErrorEditText(categoryET, getString(R.string.please_insert_category));
             isInputValid = false;
         }
         //Check illegal value
         if (value == 0) {
-            setErrorEditText(valueET, language.pleaseInsertValue);
+            setErrorEditText(valueET, getString(R.string.please_insert_value));
             isInputValid = false;
         }
 
@@ -342,13 +344,13 @@ public class Create_Budget_Activity extends AppCompatActivity {
         }*/
 
         if (constPayment && shop.length() == 0) {
-            setErrorEditText(shopET, language.pleaseInsertShop);
+            setErrorEditText(shopET, getString(R.string.please_insert_store));
             isInputValid = false;
         }
 
         //Check illegal characters
         if (shop.contains(TextService.getSeperator())) {
-            setErrorEditText(shopET, language.illegalCharacter);
+            setErrorEditText(shopET, getString(R.string.please_insert_value));
             isInputValid = false;
         }
 
@@ -370,7 +372,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
-                        createBudget(getString(R.string.delete));
+                        createBudget(Definition.DELETE_CODE);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -382,8 +384,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message).setPositiveButton(language.yes, dialogClickListener)
-                .setNegativeButton(language.no, dialogClickListener).show();
+        builder.setMessage(message).setPositiveButton(getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.no), dialogClickListener).show();
     }
 
     public void showMessageNoButton(String message)//View view)
@@ -452,16 +454,16 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private void createBudget(String operation) {
         int budgetNumber = dbService.getMaxBudgetNumber() + 1;
         ArrayList<Budget> addedBudgets = new ArrayList<>();
-        if (operation.equals(getString(R.string.add)))
+        if (operation.equals(Definition.ADD_CODE))
             addedBudgets = getAddedBudgets(budgetNumber - 1);
-        else if (operation.equals(getString(R.string.delete)))
+        else if (operation.equals(Definition.DELETE_CODE))
             dbService.deleteDataRefMonth(month.getYearMonth());
 
         String refMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.seperator));
         writeBudget(budgetNumber, allBudgets);
         writeBudgetsToTreeFB(budgetNumber);
 
-        if (operation.equals(getString(R.string.add))) {
+        if (operation.equals(Definition.ADD_CODE)) {
             dbService.updateBudgetNumber(refMonth, budgetNumber);
             dbService.addNewCategoriesToExistingMonth(refMonth, budgetNumber, addedBudgets);
             dbService.updateBudgetNumberFB(refMonth, budgetNumber);
@@ -472,7 +474,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         //deleteCurrentMonth();
 //        month = null;
-        TextService.showMessage(language.budgetCreatedSuccessfully, Toast.LENGTH_LONG, getApplicationContext());
+        TextService.showMessage(getString(R.string.budget_created_successfully), Toast.LENGTH_LONG, getApplicationContext());
         finish();
     }
 
@@ -496,7 +498,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     public void setButtonsNames() {
         // CreateBudget window buttons
-        ((TextView) findViewById(R.id.createBudgetLabel)).setText(language.createBudgetName);
+        ((TextView) findViewById(R.id.createBudgetLabel)).setText(getString(R.string.create_budget));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -529,7 +531,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         payDateTV = new TextView(Create_Budget_Activity.this);
         List<View> widgets = Arrays.asList((View) categoryNameTV, (View) categoryValueTV, (View) constPaymentTV, (View) shopTV, (View) payDateTV);
 
-        UIService.setTextTitleWidgets(widgets);
+        List<String> titles = Arrays.asList(getString(R.string.category), getString(R.string.budget), getString(R.string.constant_date), getString(R.string.store), getString(R.string.charge_day));
+        UIService.setTextTitleWidgets(widgets, titles);
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
         UIService.setWidthCreateBudgetPageTitleWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
         emptyTV.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
@@ -624,8 +627,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(constPaymentCB);
         newll.addView(shopET);
         newll.addView(optionalDaysSpinner);
-        if (language.isLTR())
-            UIService.setLanguageConf(newll);
+//        if (language.isLTR())
+//            UIService.setLanguageConf(newll);
 //        }
 /*        else if(language.isEn())
         {
@@ -681,12 +684,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
         ArrayAdapter<Integer> adapter;
         adapter = new ArrayAdapter<Integer>(this,
                 R.layout.custom_spinner, daysInMonth);
-        if (!language.isLTR())
-            adapter = new ArrayAdapter<Integer>(this,
-                    R.layout.custom_spinner, daysInMonth);
-        else
-            adapter = new ArrayAdapter<Integer>(this,
-                    R.layout.custom_spinner_eng, daysInMonth);
+//        if (!language.isLTR())
+//            adapter = new ArrayAdapter<Integer>(this,
+//                    R.layout.custom_spinner, daysInMonth);
+//        else
+//            adapter = new ArrayAdapter<Integer>(this,
+//                    R.layout.custom_spinner_eng, daysInMonth);
         OptionalDaysSP.setAdapter(adapter);
         OptionalDaysSP.setSelection(1, true);
         OptionalDaysSP.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

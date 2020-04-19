@@ -47,7 +47,6 @@ public class TransactionsActivity extends AppCompatActivity {
 
     //todo get thos fields from caller intent
     private Month month;
-    private Language language;
     private DBService dbService;
     private String userKey;
 
@@ -59,18 +58,15 @@ public class TransactionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transactions);
 
         Bundle extras = getIntent().getExtras();
-        String selectedLanguage = extras.getString(getString(R.string.language), getString(R.string.english));
-        String refMonth = extras.getString(getString(R.string.month), null);
-        language = new Language(selectedLanguage);
-        userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
+        String refMonth = extras.getString(Definition.MONTH, null);
+        userKey = extras.getString(Definition.USER, getString(R.string.empty));
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
-        setButtonsNames();
 //        setTitle( getYearMonth(month.getMonth(),'.'));
         //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//Rotate the screen to to be on landspace moade only
 
-        if (language.isLTR())
-            setLanguageConf();//send ll parameter to static method like this method
+//        if (language.isLTR())
+//            setLanguageConf();//send ll parameter to static method like this method
 
         textViews.clear();
         DisplayMetrics dm = new DisplayMetrics();
@@ -79,9 +75,9 @@ public class TransactionsActivity extends AppCompatActivity {
 
         ll = (LinearLayout) findViewById(R.id.LLTransactions);
         categoriesSpinner = (Spinner) findViewById(R.id.categorySpinnerTransactions);
-        setSpinnersAllignment();
-
-        addCategoryRow(null, language.IDName, language.categoryName, language.paymentMethodName, language.shopName, language.chargeDateName, language.sumName, true, true);
+        init();
+        addCategoryRow(null, getString(R.string.id), getString(R.string.category), getString(R.string.payment_method), getString(R.string.store), getString(R.string.charge_date), getString(R.string.sum), true, true);
+//        setTransactionsInGui(getString(R.string.all), Definition.SORT_BY_ID, Definition.ARROW_UP); // This call is not needed because its will call inside the onItemSelected of categoriesSpinner.
 
         categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -94,7 +90,6 @@ public class TransactionsActivity extends AppCompatActivity {
 
                 LinearLayout llTitleTrans = ((LinearLayout) ll.getChildAt(0));
 
-                // Default is Hebrew
                 TextView IDTV = (TextView) llTitleTrans.getChildAt(0);
                 TextView catNameTV = (TextView) llTitleTrans.getChildAt(1);
                 TextView shopTV = (TextView) llTitleTrans.getChildAt(2);
@@ -102,17 +97,8 @@ public class TransactionsActivity extends AppCompatActivity {
                 TextView paymentMethodTV = (TextView) llTitleTrans.getChildAt(4);
                 TextView tranPriceTV = (TextView) llTitleTrans.getChildAt(5);
 
-                // English case
-                if (language.isLTR()) {
-                    IDTV = (TextView) llTitleTrans.getChildAt(5);
-                    catNameTV = (TextView) llTitleTrans.getChildAt(4);
-                    shopTV = (TextView) llTitleTrans.getChildAt(3);
-                    tranDateTV = (TextView) llTitleTrans.getChildAt(2);
-                    paymentMethodTV = (TextView) llTitleTrans.getChildAt(1);
-                    tranPriceTV = (TextView) llTitleTrans.getChildAt(0);
-                }
                 //Except category
-                if (categoryName != language.all) {
+                if (categoryName != getString(R.string.all)) {
                     LinearLayout headerRowLL = (LinearLayout) ll.getChildAt(0);
                     catNameTV.setVisibility(View.GONE);
                     setTVLayoutParams(IDTV, widthDisplay * 16 / 100);
@@ -133,12 +119,12 @@ public class TransactionsActivity extends AppCompatActivity {
                 }
                 //Not include category
                 // addCategoryRow(null, "מזהה" ,"categoryName","חנות", "תאריך", "סכום",false, true);
-                setTransactionsInGui(categoryName, language.IDName, Definition.ARROW_UP);
+                setTransactionsInGui(categoryName, Definition.SORT_BY_ID, Definition.ARROW_UP);
 
                 if (ll.getChildCount() == 1)//if no transactions and only header in layout
                 {
                     TextView messageTV = new TextView(TransactionsActivity.this);
-                    messageTV.setText(language.noTransactionsExists);
+                    messageTV.setText(getString(R.string.no_transactions_exists));
                     messageTV.setTextSize(24);
                     messageTV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                     //messageTV.setLayoutParams(paramsTV);
@@ -154,7 +140,6 @@ public class TransactionsActivity extends AppCompatActivity {
 
         });
 
-        init();
         //addCategoryRow(null, language.IDName,language.categoryName, language.paymentMethodName, language.shopName, language.chargeDateName, language.sumName,true, true);
         //textViews.clear();
         //setTransactionsInGui(language.all, language.IDName, UP_ARROW);
@@ -205,11 +190,11 @@ public class TransactionsActivity extends AppCompatActivity {
     public void init() {
         //global.setCatArrayHebNames();
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
-        List<String> spinnerCategories = new ArrayList<String>(dbService.getCategoriesNames(currentRefMonth));
-        spinnerCategories.add(0, language.all);
-
-        setSpinnersAllignment();
-
+        List<String> monthCategories = new ArrayList<String>(dbService.getCategoriesNames(currentRefMonth));
+        monthCategories.add(0, getString(R.string.all));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.custom_spinner, monthCategories);
+        categoriesSpinner.setAdapter(adapter);
     }
 
     public int getIndexRowById(long ID) {
@@ -247,91 +232,22 @@ public class TransactionsActivity extends AppCompatActivity {
         TV.setLayoutParams(paramsTV);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void setLanguageProperties(TextView[] row, boolean isHeaderLine) {
-        int i = 0;
-        if (language.isLTR()) {
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_LTR);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_LTR);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_LTR);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_LTR);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_LTR);
-            ((TextView) row[i]).setTextDirection(View.TEXT_DIRECTION_RTL);
-
-            i = 0;
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        } else {
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_RTL);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_RTL);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_RTL);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_RTL);
-            ((TextView) row[i++]).setTextDirection(View.TEXT_DIRECTION_RTL);
-            ((TextView) row[i]).setTextDirection(View.TEXT_DIRECTION_LTR);
-
-            i = 0;
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i++]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            ((TextView) row[i]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        }
-
-/*        if(isHeaderLine)
-        {
-            if(language.language.equals("EN"))
-            {
-                ((TextView) row[i]).setTextDirection(View.TEXT_DIRECTION_LTR);
-                ((TextView) row[i]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            }
-            else if(language.language.equals("HEB"))
-            {
-                ((TextView) row[i]).setTextDirection(View.TEXT_DIRECTION_RTL);
-                ((TextView) row[i]).setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            }
-        }*/
-    }
-
     public void setTextViewsLength(TextView[] row, boolean isIncludeCategory) {
-        if (!language.isLTR()) {
-            int i = 0;
-            if (isIncludeCategory) {
-                setTVLayoutParams(row[i++], widthDisplay * 12 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 20 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 15 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 19 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 20 / 100);//replace 20 in 25
-                setTVLayoutParams(row[i++], widthDisplay * 14 / 100);
-            } else {
-                setTVLayoutParams(row[i++], widthDisplay * 16 / 100);
-                i++;
-                setTVLayoutParams(row[i++], widthDisplay * 19 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 23 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 24 / 100);//replace 20 in 25
-                setTVLayoutParams(row[i++], widthDisplay * 18 / 100);
-            }
+        int i = 0;
+        if (isIncludeCategory) {
+            setTVLayoutParams(row[i++], widthDisplay * 12 / 100);
+            setTVLayoutParams(row[i++], widthDisplay * 20 / 100);
+            setTVLayoutParams(row[i++], widthDisplay * 15 / 100);
+            setTVLayoutParams(row[i++], widthDisplay * 19 / 100);
+            setTVLayoutParams(row[i++], widthDisplay * 20 / 100);//replace 20 in 25
+            setTVLayoutParams(row[i++], widthDisplay * 14 / 100);
         } else {
-            int i = 0;
-            if (isIncludeCategory) {
-                setTVLayoutParams(row[i++], widthDisplay * 12 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 20 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 15 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 19 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 20 / 100);//replace 20 in 25
-                setTVLayoutParams(row[i++], widthDisplay * 14 / 100);
-            } else {
-                setTVLayoutParams(row[i++], widthDisplay * 16 / 100);
-                i++;
-                setTVLayoutParams(row[i++], widthDisplay * 19 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 23 / 100);
-                setTVLayoutParams(row[i++], widthDisplay * 24 / 100);//replace 20 in 25
-                setTVLayoutParams(row[i++], widthDisplay * 18 / 100);
-            }
+            setTVLayoutParams(row[i++], widthDisplay * 16 / 100);
+            i++;
+            setTVLayoutParams(row[i++], widthDisplay * 19 / 100);
+            setTVLayoutParams(row[i++], widthDisplay * 23 / 100);
+            setTVLayoutParams(row[i++], widthDisplay * 24 / 100);//replace 20 in 25
+            setTVLayoutParams(row[i++], widthDisplay * 18 / 100);
         }
     }
 
@@ -353,7 +269,7 @@ public class TransactionsActivity extends AppCompatActivity {
         row[index++] = paymentMethodTV;
         row[index] = tranPriceTV;
 
-        setLanguageProperties(row, isHeaderLine);
+//        setLanguageProperties(row, isHeaderLine);
         textViews.add(row);
 
         if (isIncludeCategory == true)
@@ -381,7 +297,7 @@ public class TransactionsActivity extends AppCompatActivity {
         tranDateTV.setTextSize(11);
         tranPriceTV.setTextSize(11);
 
-        if (ID == language.totalName) {
+        if (ID == getString(R.string.total)) {
             IDTV.setTypeface(null, Typeface.BOLD);
             IDTV.setTextSize(11);
             IDTV.setTextColor(Color.BLACK);
@@ -416,8 +332,8 @@ public class TransactionsActivity extends AppCompatActivity {
         newll.addView(paymentMethodTV);
         newll.addView(tranPriceTV);
 
-        if (language.isLTR())
-            UIService.reverseLinearLayout(newll);
+//        if (language.isLTR())
+//            UIService.reverseLinearLayout(newll);
         ll.addView(newll);
 
         if (isHeaderLine == true)
@@ -425,10 +341,10 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void setTransactionsInGui(String catName, String sortBy, char ascOrDesc) {
-        ((TextView) findViewById(R.id.textViewTotalTransactions)).setText(String.valueOf(0));
+    public void setTransactionsInGui(String catName, Integer sortBy, char ascOrDesc) {
+        ((TextView) findViewById(R.id.textViewTotalTransactions)).setText(getString(R.string.zero));
         Boolean isIncludeCategory = false;
-        if (catName.equals(language.all))
+        if (catName.equals(getString(R.string.all)))
             isIncludeCategory = true;
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         String catId = isIncludeCategory ? null : dbService.getCategoryByName(currentRefMonth, catName).getId();
@@ -451,7 +367,7 @@ public class TransactionsActivity extends AppCompatActivity {
         }
         if (transactions.size() > 0) {
             tranSum = Math.round(tranSum * 100.d) / 100.0d;
-            addCategoryRow(null, language.totalName, "", "", "", "", String.valueOf(tranSum), isIncludeCategory, false);
+            addCategoryRow(null, getString(R.string.total), "", "", "", "", String.valueOf(tranSum), isIncludeCategory, false);
             ((TextView) findViewById(R.id.textViewTotalTransactions)).setText(String.valueOf(tranSum));
         }
     }
@@ -489,44 +405,36 @@ public class TransactionsActivity extends AppCompatActivity {
     }*/
 
 
-    public void setSpinnersAllignment() {
-        ArrayAdapter<String> adapter;
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
-        List<String> allCategories = dbService.getCategoriesNames(currentRefMonth);
-        allCategories.add(0, language.all);
-        if (language.isLTR()) {
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner_eng, allCategories);
-            categoriesSpinner.setAdapter(adapter);
-        } else if (!language.isLTR()) {
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner, allCategories);
-            categoriesSpinner.setAdapter(adapter);
-        }
-    }
+//    public void setSpinnersAllignment() {
+//        ArrayAdapter<String> adapter;
+//        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
+//        List<String> allCategories = dbService.getCategoriesNames(currentRefMonth);
+//        allCategories.add(0, language.all);
+//        if (language.isLTR()) {
+//            adapter = new ArrayAdapter<String>(this,
+//                    R.layout.custom_spinner_eng, allCategories);
+//            categoriesSpinner.setAdapter(adapter);
+//        } else if (!language.isLTR()) {
+//            adapter = new ArrayAdapter<String>(this,
+//                    R.layout.custom_spinner, allCategories);
+//            categoriesSpinner.setAdapter(adapter);
+//        }
+//    }
 
-    public void setButtonsNames() {
-        // Transactions window buttons
-        ((TextView) findViewById(R.id.textViewTotalTransactionsLabel)).setText(language.totalName);
-        ((TextView) findViewById(R.id.transactionsTitleLabel)).setText(language.transactionsName);
-//        if (month != null)
-//            setTitle(DateService.getYearMonth(month.getRefMonth(), Config.DATE_FORMAT_CHARACTER));
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void setLanguageConf() {
-        LinearLayout firstLL = (LinearLayout) findViewById(R.id.Cat_TotalLL);
-        for (int i = 0; i < firstLL.getChildCount(); i++) {
-            View v = firstLL.getChildAt(i);
-            v.setTextDirection(View.TEXT_DIRECTION_LTR);
-            v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            if (i == 3) {
-                v.setTextDirection(View.TEXT_DIRECTION_RTL);
-                v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            }
-        }
-        UIService.reverseLinearLayout(firstLL);
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+//    public void setLanguageConf() {
+//        LinearLayout firstLL = (LinearLayout) findViewById(R.id.Cat_TotalLL);
+//        for (int i = 0; i < firstLL.getChildCount(); i++) {
+//            View v = firstLL.getChildAt(i);
+//            v.setTextDirection(View.TEXT_DIRECTION_LTR);
+//            v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+//            if (i == 3) {
+//                v.setTextDirection(View.TEXT_DIRECTION_RTL);
+//                v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+//            }
+//        }
+//        UIService.reverseLinearLayout(firstLL);
+//    }
 
     public void clearLayout() {
         if (ll.getChildCount() > 0) {
@@ -546,28 +454,13 @@ public class TransactionsActivity extends AppCompatActivity {
 
     public void setTextViewsHeader() {
         LinearLayout rowLL = (LinearLayout) ll.getChildAt(0);//textViews.get(0);
-        ((TextView) rowLL.getChildAt(0)).setText(language.IDName);
-        ((TextView) rowLL.getChildAt(1)).setText(language.categoryName);
-        ((TextView) rowLL.getChildAt(2)).setText(language.shopName);
-        ((TextView) rowLL.getChildAt(3)).setText(language.chargeDateName);
-        ((TextView) rowLL.getChildAt(4)).setText(language.paymentMethodName);
-        ((TextView) rowLL.getChildAt(5)).setText(language.sumName);
-        if (!language.isLTR()) {
-            ((TextView) rowLL.getChildAt(0)).setText(language.IDName);
-            ((TextView) rowLL.getChildAt(1)).setText(language.categoryName);
-            ((TextView) rowLL.getChildAt(2)).setText(language.shopName);
-            ((TextView) rowLL.getChildAt(3)).setText(language.chargeDateName);
-            ((TextView) rowLL.getChildAt(4)).setText(language.paymentMethodName);
-            ((TextView) rowLL.getChildAt(5)).setText(language.sumName);
-        } else {
-            //ViewCompat.setLayoutDirection(rowLL.getChildAt(0), View.LAYOUT_DIRECTION_LTR);
-            ((TextView) rowLL.getChildAt(0)).setText(TextService.getSentenceCapitalLetter(language.sumName, '.'));
-            ((TextView) rowLL.getChildAt(1)).setText(TextService.getSentenceCapitalLetter(language.paymentMethodName, '.'));
-            ((TextView) rowLL.getChildAt(2)).setText(TextService.getSentenceCapitalLetter(language.chargeDateName, '.'));
-            ((TextView) rowLL.getChildAt(3)).setText(TextService.getSentenceCapitalLetter(language.shopName, '.'));
-            ((TextView) rowLL.getChildAt(4)).setText(TextService.getSentenceCapitalLetter(language.categoryName, '.'));
-            ((TextView) rowLL.getChildAt(5)).setText(TextService.getSentenceCapitalLetter(language.IDName, '.'));
-        }
+        ((TextView) rowLL.getChildAt(0)).setText(getString(R.string.id));
+        ((TextView) rowLL.getChildAt(1)).setText(getString(R.string.category));
+        ((TextView) rowLL.getChildAt(2)).setText(getString(R.string.store));
+        ((TextView) rowLL.getChildAt(3)).setText(getString(R.string.charge_date));
+        ((TextView) rowLL.getChildAt(4)).setText(getString(R.string.payment_method));
+        ((TextView) rowLL.getChildAt(5)).setText(getString(R.string.sum));
+//bu
 
         for (int i = 0; i < 6; i++)
             ((TextView) rowLL.getChildAt(i)).setTextColor(Color.BLACK);
@@ -595,6 +488,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     String allText = headerTV.getText().toString();
                     char ascOrDesc = allText.charAt(allText.length() - 1);
                     String text = "";
+                    int sortBY = Definition.SORT_BY_ID;
                     if (ascOrDesc != Definition.ARROW_UP && ascOrDesc != Definition.ARROW_DOWN) {
                         ascOrDesc = 'X';
                         text = allText;
@@ -626,12 +520,29 @@ public class TransactionsActivity extends AppCompatActivity {
                         }
                     }
                     clearRowsExeptHaeder();
-                    //addCategoryRow(null, language.IDName,language.categoryName, language.paymentMethodName, language.shopName, language.chargeDateName, language.sumName,true, true);
-                    setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), text, ascOrDesc);
+                    sortBY = getSortBy(text);
+                    setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), sortBY, ascOrDesc);
                     //setCloseButton();
                 }
             });
         }
+    }
+
+    public int getSortBy(String header) {
+        if (header.equals(getString(R.string.id)))
+            return Definition.SORT_BY_ID;
+        else if (header.equals(getString(R.string.category)))
+            return Definition.SORT_BY_CATEGORY;
+        if (header.equals(getString(R.string.payment_method)))
+            return Definition.SORT_BY_PAYMRNT_METHOD;
+        else if (header.equals(getString(R.string.store)))
+            return Definition.SORT_BY_STORE;
+        if (header.equals(getString(R.string.charge_date)))
+            return Definition.SORT_BY_CHARGE_DATE;
+        else if (header.equals(getString(R.string.sum)))
+            return Definition.SORT_BY_SUM;
+        else
+            return Definition.SORT_BY_ID;
     }
 
     public void clearRowsExeptHaeder() {

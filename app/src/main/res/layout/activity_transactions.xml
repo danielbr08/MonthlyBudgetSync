@@ -8,8 +8,13 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp">
         <LinearLayout
             android:id="@+id/LLMainTransactions"
             android:layout_width="match_parent"
@@ -26,7 +31,7 @@
                     android:id="@+id/transactionsTitleLabel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="עסקאות"
+                    android:text="@string/transactions"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
@@ -64,7 +69,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.05"
-                        android:text='סה"כ'
+                        android:text='@string/total'
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
                         android:textSize="12dp"

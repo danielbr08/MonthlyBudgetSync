@@ -520,7 +520,7 @@ public final class DBService {
 
     public void startApp(Activity activity) {
         Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
-        mainActivityIntent.putExtra(activity.getString(R.string.user), userKey);
+        mainActivityIntent.putExtra(Definition.USER, userKey);
         activity.startActivity(mainActivityIntent);
         ((UserStartApp) activity).getProgressBar().setVisibility(View.GONE);
         activity.finish();

@@ -42,7 +42,7 @@
                     android:id="@+id/inserTransactionLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="הכנסת עסקה"
+                    android:text="@string/insert_transaction"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
                     android:orientation="vertical"
-                    android:text="קטגוריה"
+                    android:text="@string/category"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:textSize="16sp" />
@@ -85,18 +85,18 @@
 
                 <TextView
                     android:id="@+id/choosePaymenMethodtLabel"
-                    android:layout_width="match_parent"
+                    android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
                     android:orientation="vertical"
-                    android:text="אמצעי תשלום"
+                    android:text="@string/payment_method"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/paymentMethodSpinner"
-                    android:layout_width="match_parent"
+                    android:layout_width="301dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
                     android:orientation="vertical" />
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
                     android:orientation="vertical"
-                    android:text="תאריך תשלום"
+                    android:text="@string/charge_date"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:textSize="16sp" />
@@ -148,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
                     android:orientation="vertical"
-                    android:text="חנות"
+                    android:text="@string/store"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:textSize="16sp" />
@@ -178,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
                     android:orientation="vertical"
-                    android:text="סכום עסקה"
+                    android:text="@string/price"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:textSize="16sp" />
@@ -206,7 +206,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="הכנס"
+                    android:text="@string/insert"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:textSize="24sp" />

@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import android.app.Activity;
 import android.graphics.*;
 import android.os.Build;
 import android.text.InputType;
@@ -67,15 +68,15 @@ public final class UIService {
         widgets.get(i).setLayoutParams(new LinearLayout.LayoutParams((int) Math.floor(screenWidthReduceButtonSize * Config.PAY_DATE_TITLE_WIDTH_PERCENT), wrapContent));
     }
 
-    public static void setTextTitleWidgets(List<View> widgets) {
+    public static void setTextTitleWidgets(List<View> widgets, List<String> titlesNames) {
         // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
         Language language = new Language(Config.DEFAULT_LANGUAGE);//todo dynamic
         int i = 0;
-        ((TextView) widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.categoryName));
-        ((TextView) widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.budgetName));
-        ((TextView) widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.constantDate));
-        ((TextView) widgets.get(i++)).setText(TextService.getWordCapitalLetter(language.shopName));
-        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(language.chargeDay));
+        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i)));
     }
 
     public static void setTitleStyle(List<TextView> titlesTV) {//}, LinearLayout titleLL) {

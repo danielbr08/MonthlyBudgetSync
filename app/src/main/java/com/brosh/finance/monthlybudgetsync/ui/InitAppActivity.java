@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
@@ -31,8 +32,8 @@ public class InitAppActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_app);
         dbService = DBService.getInstance();
-        User user = (User) getIntent().getSerializableExtra(getString(R.string.user));
-        isNewUser = (boolean) getIntent().getExtras().get(getString(R.string.isNewUser));
+        User user = (User) getIntent().getSerializableExtra(Definition.USER);
+        isNewUser = (boolean) getIntent().getExtras().get("isNewUser");
         language = new Language(Config.DEFAULT_LANGUAGE);
 //        if(user.getOwner() != null){
 //            showQuestionChangeDB(language.questionChangeDB);

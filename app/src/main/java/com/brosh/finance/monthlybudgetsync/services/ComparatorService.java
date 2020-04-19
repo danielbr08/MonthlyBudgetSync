@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 
@@ -34,7 +35,7 @@ public class ComparatorService {
         }
     };
 
-    public static Comparator<Transaction> COMPARE_BY_SHOP = new Comparator<Transaction>() {
+    public static Comparator<Transaction> COMPARE_BY_STORE = new Comparator<Transaction>() {
         public int compare(Transaction one, Transaction other) {
             return one.getShop().compareToIgnoreCase(other.getShop());
         }
@@ -71,38 +72,38 @@ public class ComparatorService {
         }
     };
 
-    public static void sort(List<Transaction> transactions, String sortBy, char ascOrDesc) {
-        if (sortBy.equals("מזהה")) {
+    public static void sort(List<Transaction> transactions, int sortBy, char ascOrDesc) {
+        if (sortBy == Definition.SORT_BY_ID) {
             if (ascOrDesc == Config.UP_ARROW)
                 Collections.sort(transactions, COMPARE_BY_ID);
             else if (ascOrDesc == Config.DOWN_ARROW)
                 Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_ID));
-        } else if (sortBy.equals(TextService.getWordCapitalLetter("קטגוריה"))) {
+        } else if (sortBy == Definition.SORT_BY_CATEGORY) {
             if (ascOrDesc == Config.UP_ARROW)
                 Collections.sort(transactions, COMPARE_BY_CATEGORY);
             else if (ascOrDesc == Config.DOWN_ARROW)
                 Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_CATEGORY));
-        } else if (sortBy.equals(TextService.getSentenceCapitalLetter("א.תשלום", '.'))) {
+        } else if (sortBy == Definition.SORT_BY_PAYMRNT_METHOD) {
             if (ascOrDesc == Config.UP_ARROW)
                 Collections.sort(transactions, COMPARE_BY_PAYMENT_METHOD);
             else if (ascOrDesc == Config.DOWN_ARROW)
                 Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_PAYMENT_METHOD));
-        } else if (sortBy.equals(TextService.getWordCapitalLetter("חנות"))) {
+        } else if (sortBy == Definition.SORT_BY_STORE) {
             if (ascOrDesc == Config.UP_ARROW)
-                Collections.sort(transactions, COMPARE_BY_SHOP);
+                Collections.sort(transactions, COMPARE_BY_STORE);
             else if (ascOrDesc == Config.DOWN_ARROW)
-                Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_SHOP));
-        } else if (sortBy.equals(TextService.getSentenceCapitalLetter("ת.עסקה", '.'))) {
+                Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_STORE));
+        } else if (sortBy == Definition.SORT_BY_CHARGE_DATE) {
             if (ascOrDesc == Config.UP_ARROW)
                 Collections.sort(transactions, COMPARE_BY_TRANSACTION_DATE);
             else if (ascOrDesc == Config.DOWN_ARROW)
                 Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_TRANSACTION_DATE));
-        } else if (sortBy.equals(TextService.getWordCapitalLetter("סכום"))) {
+        } else if (sortBy == Definition.SORT_BY_SUM) {
             if (ascOrDesc == Config.UP_ARROW)
                 Collections.sort(transactions, COMPARE_BY_PRICE);
             else if (ascOrDesc == Config.DOWN_ARROW)
                 Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_PRICE));
-        } else if (sortBy.equals(TextService.getSentenceCapitalLetter("ת.רישום", '.'))) {
+        } else if (sortBy == Definition.SORT_BY_REGISTRATION_DATE) {
             if (ascOrDesc == Config.UP_ARROW)
                 Collections.sort(transactions, COMPARE_BY_REGISTRATION_DATE);
             else if (ascOrDesc == Config.DOWN_ARROW)

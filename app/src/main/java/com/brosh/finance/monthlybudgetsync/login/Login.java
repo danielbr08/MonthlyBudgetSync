@@ -79,7 +79,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     saveLoginPreferences(email, password);
-                    TextService.showMessage("Logged in Successfully", Toast.LENGTH_SHORT, currentActivity);
+                    TextService.showMessage(getString(R.string.logged_in_successfully), Toast.LENGTH_SHORT, currentActivity);
                     userDBKey = email.replace(Definition.DOT, Definition.COMMA);
                     setUserStartApp(null);
 //                            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);

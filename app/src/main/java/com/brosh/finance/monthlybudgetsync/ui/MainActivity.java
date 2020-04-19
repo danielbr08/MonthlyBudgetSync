@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedpreference;
     private Intent budgetScreen, transactionsScreen, insertTransactionScreen, createBudgetScreen;
-    private Spinner refMonthSpinner, languageSpinner;
+    private Spinner refMonthSpinner;
     private Button insertTransactionButton;
     private Button budgetButton;
     private Button transactionsButton;
@@ -62,17 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private Button closeMainButton;
     private boolean touched = false; // Indicate for language spinner
     private Month month;
-
-    public void initLanguageSpinner() {
-        List<String> allMonths = new ArrayList<>();
-        allMonths.add(getString(R.string.hebrew));
-        allMonths.add(getString(R.string.english));
-
-        ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>(this,
-                R.layout.custom_spinner, allMonths);
-        languageSpinner.setAdapter(adapter);
-    }
 
     public void changeTouchValue(boolean touched) {
         this.touched = touched;
@@ -140,29 +129,6 @@ public class MainActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.createBudgetLabel)).setText(language.createBudgetName);*/
     }
 
-    public void setSpinnerAllignment(boolean isFirstTime) {
-        String lang = languageSpinner.getSelectedItem().toString();
-        if (isFirstTime)
-            lang = Config.DEFAULT_LANGUAGE;
-        ArrayAdapter<String> adapter;
-        ArrayList<String> allMonths = new ArrayList();
-        allMonths.add(getString((R.string.hebrew)));
-        allMonths.add(getString((R.string.english)));
-        if (lang.equals(getString((R.string.hebrew)))) {
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner, allMonths);
-            adapter.setDropDownViewResource(R.layout.custom_spinner);
-            languageSpinner.setAdapter(adapter);
-            languageSpinner.setSelection(0, true);
-        } else if (lang.equals(getString((R.string.english)))) {
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner_eng, allMonths);
-            adapter.setDropDownViewResource(R.layout.custom_spinner_eng);
-            languageSpinner.setAdapter(adapter);
-            languageSpinner.setSelection(1, true);
-        }
-    }
-
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -171,19 +137,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         language = new Language(Config.DEFAULT_LANGUAGE);
-        userKey = getIntent().getExtras().getString(getString(R.string.user), getString(R.string.empty));
+        userKey = getIntent().getExtras().getString(Definition.USER, getString(R.string.empty));
         dbService = DBService.getInstance();
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
         DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference(getString(R.string.shares));
 
         refMonthSpinner = (Spinner) findViewById(R.id.monthSpinner);
-        languageSpinner = (Spinner) findViewById(R.id.languageSpinner);
-        initLanguageSpinner();
-
-
-        setSpinnerAllignment(true);
-        setButtonsNames();
 
         budgetScreen = null;
         transactionsScreen = null;
@@ -277,48 +237,6 @@ public class MainActivity extends AppCompatActivity {
                 // finish();
                 // System.exit(0);
                 // finish();
-            }
-        });
-
-        languageSpinner.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                changeTouchValue(true);
-                return false;
-            }
-        });
-
-        languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (!touched)
-                    return;
-                String lang = languageSpinner.getSelectedItem().toString();
-                language.setLanguage(lang);
-
-//                if (lang.equals(getString(R.string.hebrew))) { // todo set default language in user object
-//
-//                    language = new Language(getString(R.string.hebrew));
-//                    sharedpreference.edit().putString("default_language",getString(R.string.hebrew)).apply();
-//                    sharedpreference.edit().commit();
-//
-//                }
-//                else if (lang.equals(getString(R.string.english))) {
-//                    language = new Language(getString(R.string.english));
-//                    sharedpreference.edit().putString("default_language",getString(R.string.english)).apply();
-//                    sharedpreference.edit().commit();
-//                }
-
-                setSpinnerAllignment(false);
-                setButtonsNames();
-                changeTouchValue(false);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
             }
         });
 
@@ -437,9 +355,9 @@ public class MainActivity extends AppCompatActivity {
 ////    }
 
     public void addParametersToActivity(Intent activity) {
-        activity.putExtra(getString(R.string.language), language.getLanguage());
-        activity.putExtra(getString(R.string.user), userKey);
-        activity.putExtra(getString(R.string.month), month == null ? month : month.getYearMonth());
+        activity.putExtra(Definition.LANGUAGE, language.getLanguage());
+        activity.putExtra(Definition.USER, userKey);
+        activity.putExtra(Definition.MONTH, month == null ? month : month.getYearMonth());
     }
 
     @Override

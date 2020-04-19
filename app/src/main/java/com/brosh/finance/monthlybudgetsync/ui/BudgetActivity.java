@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
@@ -43,13 +44,12 @@ public class BudgetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_budget);
 
         Bundle extras = getIntent().getExtras();
-        String selectedLanguage = extras.getString(getString(R.string.language), getString(R.string.english));
-        String refMonth = extras.getString(getString(R.string.month), null);
+        String selectedLanguage = extras.getString(Definition.LANGUAGE, getString(R.string.english));
+        String refMonth = extras.getString(Definition.MONTH, null);
         language = new Language(selectedLanguage);
-        userKey = extras.getString(getString(R.string.user), getString(R.string.empty));
+        userKey = extras.getString(Definition.USER, getString(R.string.empty));
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
-        setButtonsNames();
 //        setTitle(getYearMonth(month.getMonth(), '.'));
 
         ll = (LinearLayout) findViewById(R.id.LLBudget);

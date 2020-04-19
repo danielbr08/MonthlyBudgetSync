@@ -7,6 +7,7 @@ public class Definition {
     private static final Language language = new Language(Config.DEFAULT_LANGUAGE);
     public static final String BUDGETS = "Budget";// todo replace name to Budgets
     public static final String MONTHS = "Months";
+    public static final String MONTH = "Month";
     public static final String SHOPS = "Shops";
     public static final String ZERO = "0";
     public static final String DOT = ".";
