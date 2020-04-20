@@ -31,7 +31,6 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.google.firebase.database.DatabaseReference;
 
@@ -55,7 +54,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private Button btnClose;
     private EditText payDateEditText;
 
-    private Language language;// todo init those fieds using put extra
     private DBService dbService;
     private String userKey;
     private Month month;
@@ -85,30 +83,15 @@ public class InsertTransactionActivity extends AppCompatActivity {
 //    }
 
     public void setSpinnersAllignment() {
-        ArrayAdapter<String> adapter;
+        ArrayAdapter<String> namesAdapter, PaymentMethodAdapter;
         List<String> categoriesNames = dbService.getCategoriesNames(month.getYearMonth());
         List<String> paymentMethod = getPaymentMethodList();
-        if (language.isLTR()) {
-            //global.setCatArrayHebNames();
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner_eng, categoriesNames);
-            //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categoriesSpinner.setAdapter(adapter);
-
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner_eng, paymentMethod);
-            paymentTypeSpinner.setAdapter(adapter);
-        } else if (!language.isLTR()) {
-            //global.setCatArrayHebNames();
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner, categoriesNames);
-            //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categoriesSpinner.setAdapter(adapter);
-
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner, paymentMethod);
-            paymentTypeSpinner.setAdapter(adapter);
-        }
+        namesAdapter = new ArrayAdapter<String>(this,
+                R.layout.custom_spinner, categoriesNames);
+        PaymentMethodAdapter = new ArrayAdapter<String>(this,
+                R.layout.custom_spinner, paymentMethod);
+        categoriesSpinner.setAdapter(namesAdapter);
+        paymentTypeSpinner.setAdapter(PaymentMethodAdapter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -142,82 +125,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
         return (day + "/" + month + "/" + mYear);
     }
 
-    @SuppressLint("WrongConstant")
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void setButtonsNames() {
-        // Main window buttons
-        ((TextView) findViewById(R.id.chooseCategoryLabel)).setText(TextService.getSentenceCapitalLetter(language.categoryName, '.'));
-        ((TextView) findViewById(R.id.choosePaymenMethodtLabel)).setText(TextService.getSentenceCapitalLetter(language.paymentMethodName, '.'));
-        ((TextView) findViewById(R.id.shopLabel)).setText(TextService.getSentenceCapitalLetter(language.shopName, '.'));
-        ((TextView) findViewById(R.id.payDateLabel)).setText(TextService.getSentenceCapitalLetter(language.chargeDateName, '.'));
-        ((TextView) findViewById(R.id.transactionPriceLabel)).setText(TextService.getSentenceCapitalLetter(language.transactionPrice, '.'));
-        ((TextView) findViewById(R.id.sendTransactionButton)).setText(TextService.getSentenceCapitalLetter(language.insert, '.'));
-        ((TextView) findViewById(R.id.inserTransactionLabel)).setText(TextService.getSentenceCapitalLetter(language.insertTransactionButtonName, '.'));
-
-        if (language.isLTR()) {
-            LinearLayout llMain = (LinearLayout) findViewById(R.id.LLMainInsertTranssaction);
-            for (int i = 1; i < llMain.getChildCount() - 1; i++) {
-                LinearLayout currentLL = (LinearLayout) llMain.getChildAt(i);
-                //llMain.removeViewAt(i);
-                View v1 = currentLL.getChildAt(0);
-                View v2 = currentLL.getChildAt(1);
-                int v1ID = v1.getId(), v2ID = v2.getId();
-                currentLL.removeAllViews();
-                currentLL.addView(v2);
-                currentLL.addView(v1);
-                //llMain.addView(currentLL,i);
-            }
-            TextView categoryTV = ((TextView) findViewById(R.id.chooseCategoryLabel));
-            TextView paymentmethodTV = ((TextView) findViewById(R.id.choosePaymenMethodtLabel));
-            TextView shopTV = ((TextView) findViewById(R.id.shopLabel));
-            TextView payDateTV = ((TextView) findViewById(R.id.payDateLabel));
-            TextView priceTV = ((TextView) findViewById(R.id.transactionPriceLabel));
-            TextView sendTransactionTV = ((TextView) findViewById(R.id.sendTransactionButton));
-
-            Spinner categorySpinner = ((Spinner) findViewById(R.id.categorySpinner));
-            Spinner paymentMethodSpinner = ((Spinner) findViewById(R.id.paymentMethodSpinner));
-            TextView shopET = ((TextView) findViewById(R.id.shopAutoCompleteTextView));
-            TextView payDateET = ((TextView) findViewById(R.id.payDatePlainText));
-            TextView priceET = ((TextView) findViewById(R.id.transactionPricePlainText));
-
-            ArrayAdapter<String> adapter;
-            adapter = new ArrayAdapter<String>(this,
-                    R.layout.custom_spinner_eng, dbService.getCategoriesNames(month.getYearMonth()));
-            adapter.setDropDownViewResource(R.layout.custom_spinner_eng);
-
-            categorySpinner.setAdapter(adapter);
-/*            categoryTV.setTextDirection(View.TEXT_DIRECTION_LTR);
-            paymentmethodTV.setTextDirection(View.TEXT_DIRECTION_LTR);
-            shopTV.setTextDirection(View.TEXT_DIRECTION_LTR);
-            payDateTV.setTextDirection(View.TEXT_DIRECTION_LTR);
-            priceTV.setTextDirection(View.TEXT_DIRECTION_LTR);
-            sendTransactionTV.setTextDirection(View.TEXT_DIRECTION_LTR);*/
-
-            categorySpinner.setTextDirection(View.LAYOUT_DIRECTION_LTR);
-            paymentMethodSpinner.setTextDirection(View.TEXT_DIRECTION_LTR);
-            shopET.setTextDirection(View.TEXT_DIRECTION_LTR);
-            payDateET.setTextDirection(View.TEXT_DIRECTION_LTR);
-            priceET.setTextDirection(View.TEXT_DIRECTION_LTR);
-
-            categoryTV.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            paymentmethodTV.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            shopTV.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            payDateTV.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            priceTV.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            //sendTransactionTV.setTextDirection(View.TEXT_DIRECTION_LTR);
-            //TextView balanceTV = ((TextView) findViewById(R.id.inserTransactionLabel));
-
-            //categorySpinner.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            //paymentMethodSpinner.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            shopET.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            payDateET.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            priceET.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        }
-
-//        if(month != null)
-//            setTitle(getYearMonth(month.getMonth(), '.'));
-    }
-
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -226,26 +133,20 @@ public class InsertTransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_insert_transaction);
 
         Bundle extras = getIntent().getExtras();
-        String selectedLanguage = extras.getString(Definition.LANGUAGE, getString(R.string.english));
         String refMonth = extras.getString(Definition.MONTH, null);
-        language = new Language(selectedLanguage);
         userKey = extras.getString(Definition.USER, getString(R.string.empty));
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
 
-//        setButtonsNames();
         shopsSet = dbService.getShopsSet();
 //        setTitle( getYearMonth(month.getMonth(),'.'));
         categoriesSpinner = (Spinner) findViewById(R.id.categorySpinner);
         paymentTypeSpinner = (Spinner) findViewById(R.id.paymentMethodSpinner);
         btnSendTransaction = (Button) findViewById(R.id.sendTransactionButton);
-        //btnClose = (Button) findViewById(R.id.closeInsertTransactionButton);
         init();
 
         payDateEditText = (EditText) findViewById(R.id.payDatePlainText);
         payDateEditText.setText(getCurrentDate());
-
-        //payDateEditText.setEnabled(false);
 
         payDateEditText.setOnClickListener(new View.OnClickListener() {
 
@@ -276,7 +177,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
                         payDateEditText.setError(null);
                     }
                 }, mYear, mMonth, mDay);
-                mDatePicker.setTitle(language.selectingDate);
+                mDatePicker.setTitle(getString(R.string.selecting_date));
                 mDatePicker.show();
             }
         });
@@ -371,23 +272,9 @@ public class InsertTransactionActivity extends AppCompatActivity {
         });
     }
 
-    public void showMessage(String message)//View view)
-    {
-        AlertDialog.Builder myAlert = new AlertDialog.Builder(this);
-        myAlert.setMessage(message).setPositiveButton(language.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-            }
-        }).setTitle(language.messageName)
-                .create();
-        myAlert.show();
-    }
-
     public boolean setErrorEditText(EditText et) {
         if (et.length() == 0) {
-            et.setError(language.requiredField);
+            et.setError(getString(R.string.requiredField));
             return true;
         }
         return false;
@@ -411,10 +298,10 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
     private List<String> getPaymentMethodList() {
         List<String> paymentMethodList = new ArrayList<>();
-        paymentMethodList.add(language.creditCardName);
-        paymentMethodList.add(language.cashName);
-        paymentMethodList.add(language.checkName);
-        paymentMethodList.add(language.bankTransferName);
+        paymentMethodList.add(getString(R.string.credit_card));
+        paymentMethodList.add(getString(R.string.cash));
+        paymentMethodList.add(getString(R.string.chek));
+        paymentMethodList.add(getString(R.string.bank_transfer));
 
         return paymentMethodList;
     }

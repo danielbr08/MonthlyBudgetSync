@@ -58,4 +58,11 @@
     <string name="budget_created_successfully">Budget created successfully!</string>
     <string name="logged_in_successfully">logged in successfully!</string>
     <string name="insert">Insert</string>
+    <string name="selecting_date">Selecting Date</string>
+    <string name="transaction_inserted_successfully">Transaction inserted successfully!</string>
+    <string name="requiredField">Required field!</string>
+    <string name="credit_card">Credit Card</string>
+    <string name="cash">Cash</string>
+    <string name="chek">Check</string>
+    <string name="bank_transfer">Bank Ttransfer</string>
 </resources>

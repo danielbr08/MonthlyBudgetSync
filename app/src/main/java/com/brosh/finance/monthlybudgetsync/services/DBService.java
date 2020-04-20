@@ -2,13 +2,13 @@ package com.brosh.finance.monthlybudgetsync.services;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.login.Login;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
@@ -62,8 +62,6 @@ public final class DBService {
     private Set<String> shopsSet = new HashSet<String>();
 //    private Map<String,String> sharesMap = new HashMap<>();
 
-    private Language language = new Language(Config.DEFAULT_LANGUAGE);
-
     private String userKey;
     private User user;
 
@@ -105,14 +103,6 @@ public final class DBService {
 
     public void setUserKey(String userKey) {
         this.userKey = userKey;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
     }
 
     public Month getMonth(String refMonth) {
@@ -661,7 +651,7 @@ public final class DBService {
         Category cat = new Category(catId, budget.getCategoryName(), budget.getValue(), budget.getValue());
         Map<String, Transaction> transactions = new HashMap();
         if (isFrqTran(budget)) {
-            String paymentMethod = language.creditCardName;
+            String paymentMethod = Resources.getSystem().getString(R.string.payment_method);
             Date payDate = DateService.getCurrentDate(budget.getChargeDay());
             String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR);
             String tranId = getDBTransactionsPath(yearMonth, catId).push().getKey();
@@ -843,7 +833,7 @@ public final class DBService {
 
 //    private Transaction createTransactionByBudget(Budget bgt, String catId) {
 //        int idPerMonth = 0;
-//        String paymentMethod = language.creditCardName;
+//        String paymentMethod = getString(R.string.credit_card);
 //        Date payDate = DateService.getCurrentDate(bgt.getChargeDay());
 //        return new Transaction(idPerMonth, bgt.getCategoryName(), paymentMethod, bgt.getShop(), payDate, bgt.getValue());
 //    }

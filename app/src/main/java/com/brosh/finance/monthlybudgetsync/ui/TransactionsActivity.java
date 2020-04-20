@@ -28,8 +28,6 @@ import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.ComparatorService;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.config.Language;
-import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
 
 import java.util.ArrayList;
@@ -64,9 +62,6 @@ public class TransactionsActivity extends AppCompatActivity {
         month = dbService.getMonth(refMonth);
 //        setTitle( getYearMonth(month.getMonth(),'.'));
         //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//Rotate the screen to to be on landspace moade only
-
-//        if (language.isLTR())
-//            setLanguageConf();//send ll parameter to static method like this method
 
         textViews.clear();
         DisplayMetrics dm = new DisplayMetrics();

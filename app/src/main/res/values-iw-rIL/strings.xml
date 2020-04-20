@@ -59,4 +59,11 @@
     <string name="budget_created_successfully">תקציב נוצר בהצלחה!</string>
     <string name="logged_in_successfully">התחברת בהצלחה!</string>
     <string name="insert">הכנס</string>
+    <string name="selecting_date">בחירת תאריך</string>
+    <string name="transaction_inserted_successfully">העסקה הוכנסה בהצלחה!</string>
+    <string name="requiredField">שדה חובה!</string>
+    <string name="credit_card">כרטיס אשראי</string>
+    <string name="cash">מזומן</string>
+    <string name="chek">צ\'ק</string>
+    <string name="bank_transfer">העברה בנקאית</string>
 </resources>

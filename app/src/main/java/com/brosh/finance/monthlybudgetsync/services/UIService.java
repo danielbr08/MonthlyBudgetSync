@@ -12,7 +12,6 @@ import android.widget.*;
 import androidx.annotation.RequiresApi;
 
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Language;
 
 import java.util.List;
 
@@ -32,16 +31,6 @@ public final class UIService {
             linearLayout.removeViewAt(i);
             linearLayout.addView(item);
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public static void setLanguageConf(LinearLayout l) {
-        for (int i = 0; i < l.getChildCount(); i++) {
-            View v = l.getChildAt(i);
-            v.setTextDirection(View.TEXT_DIRECTION_LTR);
-            v.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        }
-        reverseLinearLayout(l);
     }
 
     public static void strikeThroughText(TextView tv) {
@@ -70,7 +59,6 @@ public final class UIService {
 
     public static void setTextTitleWidgets(List<View> widgets, List<String> titlesNames) {
         // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
-        Language language = new Language(Config.DEFAULT_LANGUAGE);//todo dynamic
         int i = 0;
         ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
         ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));

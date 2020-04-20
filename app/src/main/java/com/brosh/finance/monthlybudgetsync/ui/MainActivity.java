@@ -34,7 +34,6 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private DatabaseReference DatabaseReferenceShares;
     private DBService dbService;
-    private Language language;
     private String userKey;
 
     private SharedPreferences sharedpreference;
@@ -97,37 +95,13 @@ public class MainActivity extends AppCompatActivity {
 //        tv.setTypeface(null, Typeface.BOLD);
 //        tv.setTextColor(Color.WHITE);
 //        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//        tv.setText(language.appName + "\n"  + refMonth);
+//        tv.setText(getString(R.string.appName) + "\n"  + refMonth);
 //        tv.setTextSize(18);
 //
 //        ab.setCustomView(tv);
 //        ab.setDisplayShowCustomEnabled(true); //show custom title
 //        ab.setDisplayShowTitleEnabled(false); //hide the default title
 //    }
-
-    public void setButtonsNames() {
-        // Main window buttons
-//        ((TextView) findViewById(R.id.monthLabel)).setText(language.monthName);
-        ((Button) findViewById(R.id.budgetButton)).setText(language.budgetButtonName);
-        ((Button) findViewById(R.id.transactionsButton)).setText(language.transactionsButtonName);
-        ((Button) findViewById(R.id.insertTransactionButton)).setText(language.insertTransactionButtonName);
-        ((Button) findViewById(R.id.createBudgetButton)).setText(language.createBudgetButtonName);
-        ((Button) findViewById(R.id.closeMainButton)).setText(language.close);
-//        if(month != null)
-//            setTitle(getYearMonth(month.getMonth(), '.'));
-/*
-        // Budget window buttons
-        ((TextView)findViewById(R.id.budgetLabel)).setText(language.budgetTitleName);
-        ((TextView)findViewById(R.id.categoryLabel)).setText(language.categoryName);
-        ((TextView)findViewById(R.id.budgetLabel)).setText(language.budgetName);
-        ((TextView)findViewById(R.id.balanceLabel)).setText(language.balanceName);
-
-        // Transactions window buttons
-        ((TextView)findViewById(R.id.textViewTotalTransactions)).setText(language.totalName);
-
-        // Transactions window buttons
-        ((TextView)findViewById(R.id.createBudgetLabel)).setText(language.createBudgetName);*/
-    }
 
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -136,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        language = new Language(Config.DEFAULT_LANGUAGE);
         userKey = getIntent().getExtras().getString(Definition.USER, getString(R.string.empty));
         dbService = DBService.getInstance();
 
@@ -291,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 //            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 //                String emailText = emailInput.getText().toString();
 //                if (dbService.isEmailAlreadyShared(emailText)) {
-//                    emailInput.setError(language.emailAlreadyshared);
+//                    emailInput.setError(getString(R.string.emailAlreadyshared));
 //                } else {
 //                    emailInput.setError(null);
 //                }
@@ -355,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
 ////    }
 
     public void addParametersToActivity(Intent activity) {
-        activity.putExtra(Definition.LANGUAGE, language.getLanguage());
         activity.putExtra(Definition.USER, userKey);
         activity.putExtra(Definition.MONTH, month == null ? month : month.getYearMonth());
     }

@@ -42,7 +42,6 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
-import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -65,7 +64,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private Month month;
-//    private Language language;
 
     TextView emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV;
 
@@ -107,7 +105,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         allCategories = new ArrayList<>();
         setTitle(getString(R.string.app_name));
         dfaultBackground = new View(this).getBackground();
-//        setButtonsNames();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
         display = getWindowManager().getDefaultDisplay();
@@ -116,23 +113,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         addCategoryButton = new Button(Create_Budget_Activity.this);
         OKButton = new Button(Create_Budget_Activity.this);
 
-//        try {
         setBudgetGui();
-//        } catch (Exception e) {
-//            String s = e.getMessage();
-//            s = s;
-//        }
-//        if (language.isEn()) {
-/*            for (int i=1;i<LLMain.getChildCount() - 1;i++)
-            {
-                //LinearLayout currentLL = (LinearLayout) LLMain.getChildAt(i);
-                //for (int j = 0; j < currentLL.getChildCount(); j++)
-
-                setLanguageConf((LinearLayout) LLMain.getChildAt(i));
-            }*/
-        //UIService.setLanguageConf((LinearLayout) LLMain.getChildAt(1));
-        //setLanguageConf((LinearLayout) LLMain.getChildAt(lastRowIndex));
-//        }
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -153,8 +134,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
             public void onClick(View view) {
                 int budgetSize = LLBudgets.getChildCount() - 1;
                 LinearLayout lastBudgetRow = (LinearLayout) LLBudgets.getChildAt(budgetSize);
-//                int categoryNameIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 2 : 1;
-//                int categoryValueIndex = language.isLTR() ? lastBudgetRow.getChildCount() - 3 : 2;
                 int categoryNameIndex = 1;
                 int categoryValueIndex = 2;
                 EditText categoryNameET = (EditText) lastBudgetRow.getChildAt(categoryNameIndex);
@@ -192,8 +171,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(addRowButton);//,lp);
         newll.addView(deleteRowsButton);
         newll.addView(emptyTV);
-//        if (language.isEn())
-//            UIService.setLanguageConf(newll);
         LLMain.addView(newll);
     }
 
@@ -257,8 +234,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
             EditText categoryET, valueET, shopET;
             CheckBox constPaymentCB;
             Spinner chargeDaySP;
-//            int firstViewIndex = language.isEn() ? 5 : 0;
-//            int addToNextIndex = language.isEn() ? -1 : 1;
+
             int firstViewIndex = 0;
             int addToNextIndex = 1;
             int addToNextIndexCounter = 1;
@@ -335,13 +311,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
             setErrorEditText(valueET, getString(R.string.please_insert_value));
             isInputValid = false;
         }
-
-/*        if(constPayment && shop.length() == 0 && chargeDayStr.length()  == 0)
-        {
-            setErrorEditText(shopET, "נא להזין חנות!");
-            setErrorEditText(chargeDayET, "נא להזין יום לחיוב!");
-            isInputValid = false;
-        }*/
 
         if (constPayment && shop.length() == 0) {
             setErrorEditText(shopET, getString(R.string.please_insert_store));
@@ -506,19 +475,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
         final LinearLayout titleLL = new LinearLayout(Create_Budget_Activity.this);
         initTitlesTv();
 
-        //int screenHeight = display.getHeight();
-        //categoryNameLabel.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4 , ViewGroup.LayoutParams.WRAP_CONTENT));
-        //categoryFamilyEditText.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 3 ,ViewGroup.LayoutParams.WRAP_CONTENT));
-        //categoryValueLabel.setLayoutParams(new LinearLayout.LayoutParams(screenWidth / 4 ,ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        //categoryValueEditText.setTextSize(18);
-        //LinearLayout.LayoutParams lp =  new LinearLayout.LayoutParams(screenWidth / 4,categoryNameEditText.getHeight());
-
         ArrayList<TextView> titlesTV = new ArrayList<>(Arrays.asList(emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV));
         setTitleStyle(titlesTV, titleLL);
 
-//        newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//        newll.setOrientation(LinearLayout.HORIZONTAL);
         LLMain.addView(titleLL);
     }
 
@@ -613,8 +572,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         deleteRowButton.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
         deleteRowButton.setAdjustViewBounds(true);
 
-//        if(language.isHeb()) {
-
         newll.addView(deleteRowButton);
 
         if (!constPaymentCB.isChecked()) {
@@ -627,27 +584,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         newll.addView(constPaymentCB);
         newll.addView(shopET);
         newll.addView(optionalDaysSpinner);
-//        if (language.isLTR())
-//            UIService.setLanguageConf(newll);
-//        }
-/*        else if(language.isEn())
-        {
-            newll.addView(optionalDaysSpinner);
-            //newll.addView(chargeDayET);
-            if (!constPaymentCB.isChecked()) {
-                shopET.setVisibility(View.INVISIBLE);
-                //chargeDayET.setVisibility(View.INVISIBLE);
-                optionalDaysSpinner.setVisibility(View.INVISIBLE);
-            }
-            newll.addView(shopET);
-            newll.addView(constPaymentCB);
-            newll.addView(categoryValueET);
-            newll.addView(categoryNameET);
 
-
-            newll.addView(deleteRowButton);
-
-        }*/
         LLBudgets.addView(newll);
     }
 
@@ -677,28 +614,15 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @SuppressLint("NewApi")
     public void setSpinnerOptionalDays(Spinner OptionalDaysSP) {
         List<Integer> daysInMonth = new ArrayList<>();
-//        int i = 1;
-//        while (i <= 31)
-//            daysInMonth.add(String.valueOf(i++));
+
         daysInMonth = IntStream.range(1, 31).boxed().collect(Collectors.toList());
         ArrayAdapter<Integer> adapter;
         adapter = new ArrayAdapter<Integer>(this,
                 R.layout.custom_spinner, daysInMonth);
-//        if (!language.isLTR())
-//            adapter = new ArrayAdapter<Integer>(this,
-//                    R.layout.custom_spinner, daysInMonth);
-//        else
-//            adapter = new ArrayAdapter<Integer>(this,
-//                    R.layout.custom_spinner_eng, daysInMonth);
+
         OptionalDaysSP.setAdapter(adapter);
         OptionalDaysSP.setSelection(1, true);
         OptionalDaysSP.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if (myAlert != null)
-//            myAlert.create().dismiss();
-//    }
 }

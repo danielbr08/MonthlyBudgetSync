@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
-import com.brosh.finance.monthlybudgetsync.config.Language;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +22,6 @@ public class InitAppActivity extends AppCompatActivity {
     private DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private DBService dbService;
     private User user;
-    private Language language;
     private boolean isNewUser;
     private RelativeLayout loadingPanel;
 
@@ -34,7 +32,6 @@ public class InitAppActivity extends AppCompatActivity {
         dbService = DBService.getInstance();
         User user = (User) getIntent().getSerializableExtra(Definition.USER);
         isNewUser = (boolean) getIntent().getExtras().get("isNewUser");
-        language = new Language(Config.DEFAULT_LANGUAGE);
 //        if(user.getOwner() != null){
 //            showQuestionChangeDB(language.questionChangeDB);
 //        }
@@ -73,7 +70,7 @@ public class InitAppActivity extends AppCompatActivity {
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message).setPositiveButton(language.yes, dialogClickListener)
-                .setNegativeButton(language.no, dialogClickListener).show();
+        builder.setMessage(message).setPositiveButton(getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.no), dialogClickListener).show();
     }
 }
