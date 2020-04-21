@@ -34,7 +34,7 @@
     <string name="insert_transaction">INSERT TRANSACTION</string>
     <string name="close">CLOSE</string>
     <string name="remember_me">remember me</string>
-    <string name="balance">balance</string>
+    <string name="balance">Balance</string>
     <string name="total">Total</string>
     <string name="payment_method">P. Method</string>
     <string name="charge_date">C. Date</string>
