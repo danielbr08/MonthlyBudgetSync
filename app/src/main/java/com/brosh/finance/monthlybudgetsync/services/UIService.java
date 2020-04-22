@@ -1,18 +1,11 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
-import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.*;
-import android.os.Build;
 import android.text.InputType;
 import android.text.util.Linkify;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 
-import androidx.annotation.RequiresApi;
-
-import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 
 import java.util.List;
@@ -138,12 +131,18 @@ public final class UIService {
         TextView balance = totalBudgerRow.get(i);
         category.setTypeface(null, Typeface.BOLD);
         category.setTextSize(13);
-        category.setTextColor(Color.BLACK);
         budget.setTypeface(null, Typeface.BOLD);
         budget.setTextSize(13);
-        budget.setTextColor(Color.BLACK);
         balance.setTypeface(null, Typeface.BOLD);
         balance.setTextSize(13);
-        balance.setTextColor(Color.BLACK);
+        setTextViewColor(totalBudgerRow, Color.BLACK);
     }
+
+    public static void setTextViewColor(List<TextView> textViews, int color) {
+        for (TextView tv : textViews) {
+            tv.setTextColor(color);
+        }
+    }
+
+
 }

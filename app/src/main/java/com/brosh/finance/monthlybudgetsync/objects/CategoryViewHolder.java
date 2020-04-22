@@ -34,11 +34,8 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
         this.balance.setText(decim.format(category.getBalance()));
         this.budget.setText(decim.format(category.getBudget()));
 
-        if (category.getBalance() < 0) {
-            this.category.setTextColor(Color.RED);
-            this.budget.setTextColor(Color.RED);
-            this.balance.setTextColor(Color.RED);
-        }
+        if (category.getBalance() < 0)
+            UIService.setTextViewColor(Arrays.asList(this.category, this.budget, this.balance), Color.RED);
         if (category.getId() == null)
             UIService.setTotalBudgetRow(Arrays.asList(this.category, this.budget, this.balance));
     }
