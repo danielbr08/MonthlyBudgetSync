@@ -29,6 +29,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 
+
 import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity {
@@ -167,33 +168,33 @@ public class BudgetActivity extends AppCompatActivity {
     public void setCategoriesInGui() {
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<Category> categories = dbService.getCategoriesByPriority(currentRefMonth);
+
+        int totalBudget = 0;
+        double totalBalance = 0;
+        boolean isExceptionFromBudget = false;
+
+        for (Category category : categories) {
+            String categoryName = category.getName();
+            double balance = category.getBalance();
+            balance = Math.round(balance * 100.d) / 100.0d;
+            int budget = category.getBudget();
+            if (balance < 0)
+                isExceptionFromBudget = true;
+//            addCategoryRow(categoryName, String.valueOf(budget), String.valueOf(balance), isExceptionFromBudget);
+
+            totalBudget += budget;
+            totalBalance += balance;
+            isExceptionFromBudget = false;
+        }
+        totalBalance = Math.round(totalBalance * 100.d) / 100.0d;
+        if (totalBalance < 0)
+            isExceptionFromBudget = true;
+//        addCategoryRow(getString(R.string.total), String.valueOf(totalBudget), String.valueOf(totalBalance), isExceptionFromBudget);
+        Category fictiveCategory = new Category(null, getString(R.string.total), totalBalance, totalBudget);// Total(last) row
+        categories.add(fictiveCategory);
         CategoriesViewAdapter adapter = new CategoriesViewAdapter(this, categories);
         RecyclerView categories_rows = (RecyclerView) findViewById(R.id.categories_rows);
         categories_rows.setAdapter(adapter);
         categories_rows.setLayoutManager(new LinearLayoutManager(this));
-
-//        int totalBudget = 0;
-//        double totalBalance = 0;
-//        boolean isExceptionFromBudget = false;
-//
-//        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
-//        for (Category category : dbService.getCategoriesByPriority(currentRefMonth)) {
-//            String categoryName = category.getName();
-//            double balance = category.getBalance();
-//            balance = Math.round(balance * 100.d) / 100.0d;
-//            int budget = category.getBudget();
-//            if (balance < 0)
-//                isExceptionFromBudget = true;
-//            addCategoryRow(categoryName, String.valueOf(budget), String.valueOf(balance), isExceptionFromBudget);
-//
-//            totalBudget += budget;
-//            totalBalance += balance;
-//            isExceptionFromBudget = false;
-//        }
-//        totalBalance = Math.round(totalBalance * 100.d) / 100.0d;
-//        if (totalBalance < 0)
-//            isExceptionFromBudget = true;
-//        addCategoryRow(getString(R.string.total), String.valueOf(totalBudget), String.valueOf(totalBalance), isExceptionFromBudget);
-
     }
 }

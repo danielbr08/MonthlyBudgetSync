@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
         <TextView
@@ -9,9 +9,7 @@
             android:padding="8dp"
             android:layout_weight="1"
             android:background="@drawable/border_style"
-            android:text="@string/category"
-            android:textColor="@android:color/black"
-            android:gravity="start" />
+            android:text="@string/category" />
 
         <TextView
             android:id="@+id/budgetLabel"
@@ -19,9 +17,9 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:layout_weight="1"
+            android:background="@drawable/border_style"
             android:text="@string/budget"
-            android:textColor="@android:color/black"
-            android:gravity="center_horizontal" />
+            android:textDirection="ltr" />
 
         <TextView
             android:id="@+id/balanceLabel"
@@ -29,9 +27,8 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:layout_weight="1"
+            android:background="@drawable/border_style"
             android:text="@string/balance"
-            android:textColor="@android:color/black"
+            android:textDirection="ltr" />
 
-            android:gravity="end" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

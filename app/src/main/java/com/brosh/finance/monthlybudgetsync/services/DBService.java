@@ -526,7 +526,7 @@ public final class DBService {
         ValueEventListener event = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Long value = (Long) dataSnapshot.getValue();
+                Object value = (Object) dataSnapshot.getValue();
                 if (value != null) {
                     Category currentCategory = monthDBHM.get(refMonthKey).getCategories().get(catId);
                     double balance = Double.valueOf(value.toString());

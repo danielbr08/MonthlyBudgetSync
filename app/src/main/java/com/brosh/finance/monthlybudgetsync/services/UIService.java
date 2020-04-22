@@ -1,6 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.*;
 import android.os.Build;
 import android.text.InputType;
@@ -11,6 +12,7 @@ import android.widget.*;
 
 import androidx.annotation.RequiresApi;
 
+import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 
 import java.util.List;
@@ -127,5 +129,21 @@ public final class UIService {
 
     public static void setInputFocus(View view) {
         view.requestFocus();
+    }
+
+    public static void setTotalBudgetRow(List<TextView> totalBudgerRow) {
+        int i = 0;
+        TextView category = totalBudgerRow.get(i++);
+        TextView budget = totalBudgerRow.get(i++);
+        TextView balance = totalBudgerRow.get(i);
+        category.setTypeface(null, Typeface.BOLD);
+        category.setTextSize(13);
+        category.setTextColor(Color.BLACK);
+        budget.setTypeface(null, Typeface.BOLD);
+        budget.setTextSize(13);
+        budget.setTextColor(Color.BLACK);
+        balance.setTypeface(null, Typeface.BOLD);
+        balance.setTextSize(13);
+        balance.setTextColor(Color.BLACK);
     }
 }
