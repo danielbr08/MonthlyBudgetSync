@@ -499,7 +499,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     private void setTitleStyle(ArrayList<TextView> titlesTV, LinearLayout titleLL) {
         for (TextView titletv : titlesTV) {
-            UIService.setHeaderProperties(titletv);
+            UIService.setHeaderProperties(titletv, 15, true);
             titleLL.addView(titletv);
         }
     }

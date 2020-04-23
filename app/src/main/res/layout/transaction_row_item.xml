@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1"
+    android:padding="@dimen/padding_4"
+    >
+
+    <TextView
+        android:id="@+id/trn_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_4"
+        android:text="@string/id"
+        android:textSize="@dimen/transaction_text_size"
+        android:layout_weight="0.10"
+        android:background="@drawable/border_style"
+        />
+
+    <TextView
+        android:id="@+id/trn_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_4"
+        android:text="@string/category"
+        android:textSize="@dimen/transaction_text_size"
+        android:layout_weight="0.16"
+        android:background="@drawable/border_style"
+        />
+
+    <TextView
+        android:id="@+id/trn_store"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_4"
+        android:text="@string/store"
+        android:textSize="@dimen/transaction_text_size"
+        android:layout_weight="0.2"
+        android:background="@drawable/border_style"
+        />
+
+    <TextView
+        android:id="@+id/trn_charge_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_4"
+        android:text="@string/charge_date"
+        android:textSize="@dimen/transaction_text_size"
+        android:layout_weight="0.19"
+        android:background="@drawable/border_style"
+        />
+
+    <TextView
+        android:id="@+id/trn_payment_method"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_4"
+        android:text="@string/payment_method"
+        android:textSize="@dimen/transaction_text_size"
+        android:layout_weight="0.2"
+        android:background="@drawable/border_style"
+        />
+
+    <TextView
+        android:id="@+id/trn_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_4"
+        android:text="@string/price"
+        android:textSize="@dimen/transaction_text_size"
+        android:textDirection="ltr"
+        android:layout_weight="0.15"
+        android:background="@drawable/border_style"
+        />
+
+</LinearLayout>

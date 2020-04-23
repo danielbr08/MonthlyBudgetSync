@@ -2,6 +2,8 @@ package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -25,6 +27,7 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
+import com.brosh.finance.monthlybudgetsync.objects.TransactionsViewAdapter;
 import com.brosh.finance.monthlybudgetsync.services.ComparatorService;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
@@ -71,60 +74,62 @@ public class TransactionsActivity extends AppCompatActivity {
         ll = (LinearLayout) findViewById(R.id.LLTransactions);
         categoriesSpinner = (Spinner) findViewById(R.id.categorySpinnerTransactions);
         init();
-        addCategoryRow(null, getString(R.string.id), getString(R.string.category), getString(R.string.payment_method), getString(R.string.store), getString(R.string.charge_date), getString(R.string.sum), true, true);
+        setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definition.SORT_BY_ID, Definition.ARROW_UP);
+
+//        addCategoryRow(null, getString(R.string.id), getString(R.string.category), getString(R.string.payment_method), getString(R.string.store), getString(R.string.charge_date), getString(R.string.sum), true, true);
 //        setTransactionsInGui(getString(R.string.all), Definition.SORT_BY_ID, Definition.ARROW_UP); // This call is not needed because its will call inside the onItemSelected of categoriesSpinner.
 
         categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String categoryName = categoriesSpinner.getSelectedItem().toString();
-                //clearLayout();
-                clearRowsExeptHaeder();
-                //addCategoryRow(null, language.IDName,language.categoryName, language.paymentMethodName, language.shopName, language.chargeDateName, language.sumName,true, true);
-                setTextViewsHeader();
-
-                LinearLayout llTitleTrans = ((LinearLayout) ll.getChildAt(0));
-
-                TextView IDTV = (TextView) llTitleTrans.getChildAt(0);
-                TextView catNameTV = (TextView) llTitleTrans.getChildAt(1);
-                TextView shopTV = (TextView) llTitleTrans.getChildAt(2);
-                TextView tranDateTV = (TextView) llTitleTrans.getChildAt(3);
-                TextView paymentMethodTV = (TextView) llTitleTrans.getChildAt(4);
-                TextView tranPriceTV = (TextView) llTitleTrans.getChildAt(5);
-
-                //Except category
-                if (categoryName != getString(R.string.all)) {
-                    LinearLayout headerRowLL = (LinearLayout) ll.getChildAt(0);
-                    catNameTV.setVisibility(View.GONE);
-                    setTVLayoutParams(IDTV, widthDisplay * 16 / 100);
-                    setTVLayoutParams(shopTV, widthDisplay * 19 / 100);
-                    setTVLayoutParams(tranDateTV, widthDisplay * 23 / 100);
-                    setTVLayoutParams(paymentMethodTV, widthDisplay * 24 / 100);//replace 20 in 25
-                    setTVLayoutParams(tranPriceTV, widthDisplay * 18 / 100);
-                }
-                // addCategoryRow(null, "מזהה" ,"קטגוריה","חנות", "תאריך", "סכום",true, true);
-                else {
-                    catNameTV.setVisibility(View.VISIBLE);
-                    setTVLayoutParams(IDTV, widthDisplay * 12 / 100);
-                    setTVLayoutParams(catNameTV, widthDisplay * 20 / 100);
-                    setTVLayoutParams(shopTV, widthDisplay * 15 / 100);
-                    setTVLayoutParams(tranDateTV, widthDisplay * 19 / 100);
-                    setTVLayoutParams(paymentMethodTV, widthDisplay * 20 / 100);//replac e 20 in 25
-                    setTVLayoutParams(tranPriceTV, widthDisplay * 14 / 100);
-                }
-                //Not include category
-                // addCategoryRow(null, "מזהה" ,"categoryName","חנות", "תאריך", "סכום",false, true);
-                setTransactionsInGui(categoryName, Definition.SORT_BY_ID, Definition.ARROW_UP);
-
-                if (ll.getChildCount() == 1)//if no transactions and only header in layout
-                {
-                    TextView messageTV = new TextView(TransactionsActivity.this);
-                    messageTV.setText(getString(R.string.no_transactions_exists));
-                    messageTV.setTextSize(24);
-                    messageTV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    //messageTV.setLayoutParams(paramsTV);
-                    ll.addView(messageTV);
-                }
+//                //clearLayout();
+//                clearRowsExeptHaeder();
+//                //addCategoryRow(null, language.IDName,language.categoryName, language.paymentMethodName, language.shopName, language.chargeDateName, language.sumName,true, true);
+////                setTextViewsHeader();
+//
+//                LinearLayout llTitleTrans = ((LinearLayout) ll.getChildAt(0));
+//
+//                TextView IDTV = (TextView) llTitleTrans.getChildAt(0);
+//                TextView catNameTV = (TextView) llTitleTrans.getChildAt(1);
+//                TextView shopTV = (TextView) llTitleTrans.getChildAt(2);
+//                TextView tranDateTV = (TextView) llTitleTrans.getChildAt(3);
+//                TextView paymentMethodTV = (TextView) llTitleTrans.getChildAt(4);
+//                TextView tranPriceTV = (TextView) llTitleTrans.getChildAt(5);
+//
+//                //Except category
+//                if (categoryName != getString(R.string.all)) {
+//                    LinearLayout headerRowLL = (LinearLayout) ll.getChildAt(0);
+//                    catNameTV.setVisibility(View.GONE);
+//                    setTVLayoutParams(IDTV, widthDisplay * 16 / 100);
+//                    setTVLayoutParams(shopTV, widthDisplay * 19 / 100);
+//                    setTVLayoutParams(tranDateTV, widthDisplay * 23 / 100);
+//                    setTVLayoutParams(paymentMethodTV, widthDisplay * 24 / 100);//replace 20 in 25
+//                    setTVLayoutParams(tranPriceTV, widthDisplay * 18 / 100);
+//                }
+//                // addCategoryRow(null, "מזהה" ,"קטגוריה","חנות", "תאריך", "סכום",true, true);
+//                else {
+//                    catNameTV.setVisibility(View.VISIBLE);
+//                    setTVLayoutParams(IDTV, widthDisplay * 12 / 100);
+//                    setTVLayoutParams(catNameTV, widthDisplay * 20 / 100);
+//                    setTVLayoutParams(shopTV, widthDisplay * 15 / 100);
+//                    setTVLayoutParams(tranDateTV, widthDisplay * 19 / 100);
+//                    setTVLayoutParams(paymentMethodTV, widthDisplay * 20 / 100);//replac e 20 in 25
+//                    setTVLayoutParams(tranPriceTV, widthDisplay * 14 / 100);
+//                }
+//                //Not include category
+//                // addCategoryRow(null, "מזהה" ,"categoryName","חנות", "תאריך", "סכום",false, true);
+//                setTransactionsInGui(categoryName, Definition.SORT_BY_ID, Definition.ARROW_UP);
+//
+//                if (ll.getChildCount() == 1)//if no transactions and only header in layout
+//                {
+//                    TextView messageTV = new TextView(TransactionsActivity.this);
+//                    messageTV.setText(getString(R.string.no_transactions_exists));
+//                    messageTV.setTextSize(24);
+//                    messageTV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+//                    //messageTV.setLayoutParams(paramsTV);
+//                    ll.addView(messageTV);
+//                }
                 //setCloseButton();
             }
 
@@ -341,6 +346,7 @@ public class TransactionsActivity extends AppCompatActivity {
         Boolean isIncludeCategory = false;
         if (catName.equals(getString(R.string.all)))
             isIncludeCategory = true;
+
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         String catId = isIncludeCategory ? null : dbService.getCategoryByName(currentRefMonth, catName).getId();
         List<Transaction> transactions = dbService.getTransactions(currentRefMonth, catId);
@@ -358,13 +364,20 @@ public class TransactionsActivity extends AppCompatActivity {
             double transactionPrice = tran.getPrice();
             tranSum += transactionPrice;
             transactionPrice = Math.round(transactionPrice * 100.d) / 100.0d;
-            addCategoryRow(tran, String.valueOf(ID), categoryName, paymentMethod, shop, DateService.convertDateToString(payDate, Config.DATE_FORMAT), String.valueOf(transactionPrice), isIncludeCategory, false);
+//            addCategoryRow(tran, String.valueOf(ID), categoryName, paymentMethod, shop, DateService.convertDateToString(payDate, Config.DATE_FORMAT), String.valueOf(transactionPrice), isIncludeCategory, false);
         }
         if (transactions.size() > 0) {
             tranSum = Math.round(tranSum * 100.d) / 100.0d;
-            addCategoryRow(null, getString(R.string.total), "", "", "", "", String.valueOf(tranSum), isIncludeCategory, false);
+//            addCategoryRow(null, getString(R.string.total), "", "", "", "", String.valueOf(tranSum), isIncludeCategory, false);
             ((TextView) findViewById(R.id.textViewTotalTransactions)).setText(String.valueOf(tranSum));
         }
+        Transaction fictiveTransaction = new Transaction(null, 0, getString(R.string.total), getString(R.string.empty), getString(R.string.empty), null, tranSum);
+        transactions.add(fictiveTransaction);
+        RecyclerView transactions_rows = findViewById(R.id.transactions_rows);
+        TransactionsViewAdapter adapter = new TransactionsViewAdapter(this, transactions, isIncludeCategory);
+        transactions_rows.setAdapter(adapter);
+        transactions_rows.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
 //    public void setCloseButton() {
@@ -490,7 +503,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     } else
                         text = new String(allText.substring(0, allText.length() - 1));
 
-                    setTextViewsHeader();
+//                    setTextViewsHeader();
                     switch (ascOrDesc) {
                         case ('ꜜ'): {
                             //sort(text,upArrow);

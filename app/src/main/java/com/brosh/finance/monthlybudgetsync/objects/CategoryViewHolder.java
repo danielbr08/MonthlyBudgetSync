@@ -26,11 +26,9 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void onBindViewHolder(Category category) {
-        this.category.setText(category.getName());
-        this.budget.setText(String.valueOf(category.getBudget()));
-        this.balance.setText(String.valueOf(category.getBalance()));
-
         DecimalFormat decim = new DecimalFormat("#,###.##");
+
+        this.category.setText(category.getName());
         this.balance.setText(decim.format(category.getBalance()));
         this.budget.setText(decim.format(category.getBudget()));
 

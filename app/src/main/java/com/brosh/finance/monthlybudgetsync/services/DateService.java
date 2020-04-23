@@ -122,6 +122,13 @@ public final class DateService {
         return date;
     }
 
+    public static Date changeDateFormat(Date date, String format) {
+        Date newDate = (Date) date.clone();
+        java.text.DateFormat df = new SimpleDateFormat(format, Locale.US);
+        df.format(newDate);
+        return newDate;
+    }
+
     public static boolean isSameYearMonth(Date d1, Date d2) {
         return d1.getYear() == d2.getYear() && d1.getMonth() == d2.getMonth();
     }

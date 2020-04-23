@@ -12,12 +12,19 @@ import java.util.List;
 
 public final class UIService {
 
-    public static void setHeaderProperties(TextView tv) {
+    public static void setHeaderProperties(TextView tv, int textSize, boolean clickable) {
         tv.setTypeface(null, Typeface.BOLD);
         tv.setTextColor(Color.BLACK);
-        tv.setTextSize(15);
-        tv.setClickable(true);
-        Linkify.addLinks(tv, Linkify.ALL);
+        tv.setTextSize(textSize);
+        tv.setClickable(clickable);
+        if (clickable)
+            Linkify.addLinks(tv, Linkify.ALL);
+    }
+
+    public static void setHeaderProperties(List<TextView> textViews, int textSize, boolean clickable) {
+        for (TextView tv : textViews) {
+            setHeaderProperties(tv, textSize, clickable);
+        }
     }
 
     public static void reverseLinearLayout(LinearLayout linearLayout) {
@@ -30,6 +37,12 @@ public final class UIService {
 
     public static void strikeThroughText(TextView tv) {
         tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+    }
+
+    public static void strikeThroughText(List<TextView> textViews) {
+        for (TextView tv : textViews) {
+            strikeThroughText(tv);
+        }
     }
 
     public static void setWidthCreateBudgetPageDataWidgets(List<View> widgets, int screenWidthReduceButtonSize, int wrapContent) {
@@ -64,7 +77,7 @@ public final class UIService {
 
     public static void setTitleStyle(List<TextView> titlesTV) {//}, LinearLayout titleLL) {
         for (TextView titletv : titlesTV) {
-            setHeaderProperties(titletv);
+            setHeaderProperties(titletv, 15, true);
 //            titleLL.addView(titletv);
         }
     }

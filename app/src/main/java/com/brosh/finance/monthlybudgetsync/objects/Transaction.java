@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
+import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 
@@ -19,6 +20,15 @@ public class Transaction implements Serializable {
     private int stornoOf;
 
     public Transaction() {
+    }
+
+    private void postConstructor() {
+        this.formatDateFields();
+    }
+
+    public void formatDateFields() {
+        this.registrationDate = this.registrationDate != null ? DateService.changeDateFormat(this.registrationDate, Config.DATE_FORMAT) : this.registrationDate;
+        this.payDate = this.payDate != null ? DateService.changeDateFormat(this.payDate, Config.DATE_FORMAT) : this.payDate;
     }
 
     //    public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate, boolean isStorno, int stornoOf) {
@@ -57,6 +67,7 @@ public class Transaction implements Serializable {
         this.registrationDate = DateService.getTodayDate();
         this.isStorno = false;
         this.stornoOf = -1;
+        postConstructor();
     }
 
     public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price) {
@@ -70,6 +81,7 @@ public class Transaction implements Serializable {
         this.registrationDate = DateService.getTodayDate();
         this.isStorno = false;
         this.stornoOf = -1;
+        postConstructor();
     }
 
     public String getId() {
