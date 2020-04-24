@@ -34,6 +34,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
@@ -42,6 +43,8 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -616,10 +619,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
         List<Integer> daysInMonth = new ArrayList<>();
 
         daysInMonth = IntStream.range(1, 31).boxed().collect(Collectors.toList());
-        ArrayAdapter<Integer> adapter;
-        adapter = new ArrayAdapter<Integer>(this,
-                R.layout.custom_spinner, daysInMonth);
+        List<String> daysInMonthStringList = Lists.transform(daysInMonth, Functions.toStringFunction());
 
+        SpinnerAdapter adapter = new SpinnerAdapter(daysInMonthStringList, this);
         OptionalDaysSP.setAdapter(adapter);
         OptionalDaysSP.setSelection(1, true);
         OptionalDaysSP.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

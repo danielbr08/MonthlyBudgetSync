@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync.objects;
+package com.brosh.finance.monthlybudgetsync.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.objects.Category;
 
 import java.util.List;
 

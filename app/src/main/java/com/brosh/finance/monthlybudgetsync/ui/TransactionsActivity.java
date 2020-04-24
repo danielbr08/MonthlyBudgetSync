@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -16,18 +15,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
-import com.brosh.finance.monthlybudgetsync.objects.TransactionsViewAdapter;
+import com.brosh.finance.monthlybudgetsync.adapters.TransactionsViewAdapter;
 import com.brosh.finance.monthlybudgetsync.services.ComparatorService;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
@@ -192,8 +191,7 @@ public class TransactionsActivity extends AppCompatActivity {
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<String> monthCategories = new ArrayList<String>(dbService.getCategoriesNames(currentRefMonth));
         monthCategories.add(0, getString(R.string.all));
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.custom_spinner, monthCategories);
+        SpinnerAdapter adapter = new SpinnerAdapter(monthCategories, this);
         categoriesSpinner.setAdapter(adapter);
     }
 

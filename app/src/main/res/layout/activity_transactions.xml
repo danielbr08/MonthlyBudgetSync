@@ -48,19 +48,14 @@
 
                 <Spinner
                     android:id="@+id/categorySpinnerTransactions"
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5" />
-
-                <TextView
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.35"
-                    android:text='' />
+                    android:minWidth="120dp"
+                    android:theme="@style/AppTheme.Spinner"/>
 
                 <TextView
                     android:id="@+id/textViewTotalTransactionsLabel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.05"
                     android:text='@string/total'

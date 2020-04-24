@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync.objects;
+package com.brosh.finance.monthlybudgetsync.adapters;
 
 import android.graphics.Color;
 import android.view.View;
@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
 
 import java.text.DecimalFormat;

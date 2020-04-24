@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync.objects;
+package com.brosh.finance.monthlybudgetsync.adapters;
 
 import android.view.View;
 import android.widget.TextView;
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
 
