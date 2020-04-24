@@ -13,15 +13,14 @@
         <activity android:name=".ui.TransactionsActivity" />
         <activity android:name=".ui.BudgetActivity" />
         <activity android:name=".ui.InitAppActivity" />
-        <activity android:name=".login.Login" />
-        <activity android:name=".ui.Create_Budget_Activity" />
-        <activity android:name=".login.Register">
+        <activity android:name=".login.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.Create_Budget_Activity" />
+        <activity android:name=".login.Register"/>
         <activity android:name=".ui.MainActivity" />
     </application>
 

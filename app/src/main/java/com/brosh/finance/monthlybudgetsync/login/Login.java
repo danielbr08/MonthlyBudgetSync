@@ -179,6 +179,9 @@ public class Login extends AppCompatActivity implements UserStartApp {
         if (rememberMe.equals("true")) {
             String email = preferences.getString("email", "");
             String password = preferences.getString("password", "");
+            rememberMeCB.setChecked(true);
+            mEmail.setText(email);
+            mPassword.setText(password);
             login(email, password);
         }
     }
