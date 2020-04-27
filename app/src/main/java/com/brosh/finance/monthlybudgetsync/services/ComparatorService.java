@@ -10,7 +10,6 @@ import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -98,7 +97,7 @@ public class ComparatorService {
                 Collections.sort(transactions, COMPARE_BY_TRANSACTION_DATE);
             else if (ascOrDesc == Config.DOWN_ARROW)
                 Collections.sort(transactions, Collections.reverseOrder(COMPARE_BY_TRANSACTION_DATE));
-        } else if (sortBy == Definition.SORT_BY_SUM) {
+        } else if (sortBy == Definition.SORT_BY_PRICE) {
             if (ascOrDesc == Config.UP_ARROW)
                 Collections.sort(transactions, COMPARE_BY_PRICE);
             else if (ascOrDesc == Config.DOWN_ARROW)

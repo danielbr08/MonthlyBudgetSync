@@ -1,14 +1,23 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
+import android.app.Activity;
 import android.graphics.*;
+import android.os.Build;
 import android.text.InputType;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.*;
 
+import androidx.annotation.RequiresApi;
+
+import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class UIService {
 
@@ -157,5 +166,13 @@ public final class UIService {
         }
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void setDaysInMonthSpinner(Spinner spinner, Activity activity) {
+        List<Integer> daysInMonth = IntStream.range(1, 31).boxed().collect(Collectors.toList());
+        List<String> daysInMonthStringList = Lists.transform(daysInMonth, Functions.toStringFunction());
+        SpinnerAdapter adapter = new SpinnerAdapter(daysInMonthStringList, activity);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(1, true);
+        spinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+    }
 }

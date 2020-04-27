@@ -40,7 +40,7 @@
     <string name="charge_date">C. Date</string>
     <string name="price">Price</string>
     <string name="store">Store</string>
-    <string name="all">all</string>
+    <string name="all">All</string>
     <string name="sum">sum</string>
     <string name="no_transactions_exists">No transactions found!</string>
     <string name="constant_date">fixed</string>

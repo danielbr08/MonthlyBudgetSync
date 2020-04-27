@@ -6,74 +6,74 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:weightSum="1"
-    android:padding="@dimen/padding_4"
-    >
+    android:padding="10dp"
+    android:background="@drawable/border_style"
+    android:gravity="center_vertical"
+    android:minHeight="70dp">
 
     <TextView
         android:id="@+id/trn_id"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_4"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_2"
         android:text="@string/id"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.10"
-        android:background="@drawable/border_style"
-        />
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/trn_category"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_4"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_2"
         android:text="@string/category"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.16"
-        android:background="@drawable/border_style"
-        />
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/trn_store"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_4"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_2"
         android:text="@string/store"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.2"
-        android:background="@drawable/border_style"
-        />
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/trn_charge_date"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_4"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_2"
         android:text="@string/charge_date"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.19"
-        android:background="@drawable/border_style"
-        />
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/trn_payment_method"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_4"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_2"
         android:text="@string/payment_method"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.2"
-        android:background="@drawable/border_style"
-        />
+        android:gravity="center_vertical"
+        android:textAlignment="center"
+        tools:ignore="RtlCompat" />
 
     <TextView
         android:id="@+id/trn_price"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_4"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/padding_2"
         android:text="@string/price"
         android:textSize="@dimen/transaction_text_size"
         android:textDirection="ltr"
+        android:textAlignment="viewEnd"
         android:layout_weight="0.15"
-        android:background="@drawable/border_style"
-        />
+        android:gravity="center_vertical"
+        tools:ignore="RtlCompat" />
 
 </LinearLayout>

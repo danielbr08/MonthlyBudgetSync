@@ -42,12 +42,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-<!--            <Button-->
-<!--                android:id="@+id/shareButton"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:onClick="openShareDialog"-->
-<!--                android:text="@string/Share" />-->
+            <!--            <Button-->
+            <!--                android:id="@+id/shareButton"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:onClick="openShareDialog"-->
+            <!--                android:text="@string/Share" />-->
 
             <Spinner
                 android:id="@+id/monthSpinner"
@@ -59,12 +59,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!--            <TextView-->
-<!--                android:id="@+id/monthLabel"-->
-<!--                android:layout_width="90dp"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_weight="0.35"-->
-<!--                android:text='""'-->
-<!--                android:textSize="18sp" />-->
+            <!--                android:id="@+id/monthLabel"-->
+            <!--                android:layout_width="90dp"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:layout_weight="0.35"-->
+            <!--                android:text='""'-->
+            <!--                android:textSize="18sp" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

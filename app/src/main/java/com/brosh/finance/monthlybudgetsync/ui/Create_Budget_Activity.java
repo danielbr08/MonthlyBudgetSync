@@ -1,6 +1,5 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -30,11 +28,15 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
-import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
+import com.brosh.finance.monthlybudgetsync.adapters.CreateBudgetViewAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
@@ -43,8 +45,6 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
-import com.google.common.base.Functions;
-import com.google.common.collect.Lists;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -53,8 +53,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 //import android.support.annotation.RequiresApi;
 //import android.support.v7.app.AlertDialog;
@@ -73,6 +71,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     AlertDialog.Builder myAlert;
     private List<Budget> allBudgets;
+    private List<Budget> budgets;
     private ArrayList<String> allCategories;
     private boolean isInputValid;
     private Display display;
@@ -80,6 +79,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private int buttonSize = 120;
 
     private Drawable dfaultBackground;
+
+    CreateBudgetViewAdapter adapter;
+    RecyclerView budgetsRowsRecycler;
 
     private LinearLayout LLMain;
     private LinearLayout LLBudgets;
@@ -94,19 +96,23 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_budget);
+
         String userKey = getIntent().getExtras().getString(Definition.USER, "");
         String refMonth = getIntent().getExtras().getString(Definition.MONTH);
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
 
+        adapter = new CreateBudgetViewAdapter(this, budgets);
+        budgetsRowsRecycler = findViewById(R.id.budgets_rows);
+
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
-        setContentView(R.layout.activity_create_budget);
         LLMain = (LinearLayout) findViewById(R.id.LLMainCreateBudget);
         LLBudgets = new LinearLayout(this);
         LLBudgets.setOrientation(LinearLayout.VERTICAL);
         allBudgets = new ArrayList<>();
         allCategories = new ArrayList<>();
-        setTitle(getString(R.string.app_name));
+//        setTitle(getString(R.string.app_name));
         dfaultBackground = new View(this).getBackground();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
@@ -507,19 +513,25 @@ public class Create_Budget_Activity extends AppCompatActivity {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    //    @TargetApi(Build.VERSION_CODES.O)
+//    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setBudgetGui() {
-        setTitleRow(); // index 1
-        LLMain.addView(LLBudgets);
-        allBudgets = dbService.getBudgetDataFromDB(dbService.getMaxBudgetNumber());
-        for (Budget budget : allBudgets) {
-            add_New_row(budget.getCategoryName(), budget.getValue(), budget.isConstPayment(), budget.getShop(), budget.getChargeDay());
-        }
-        if (allBudgets.size() == 0) // No any budget exists
-            add_New_row("", 0, false, "", 2);
-        setAddAndDeleteButton(); // add row and clean buttons
-        setCloseButton();// Adding close button (last index)
+        this.budgets = new ArrayList<>(dbService.getBudgetDataFromDB(dbService.getMaxBudgetNumber()));
+        this.adapter = new CreateBudgetViewAdapter(this, budgets);
+        this.budgetsRowsRecycler = findViewById(R.id.budgets_rows);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(budgetsRowsRecycler);
+        budgetsRowsRecycler.setAdapter(adapter);
+        budgetsRowsRecycler.setLayoutManager(new LinearLayoutManager(this));
+//        setTitleRow(); // index 1
+//        LLMain.addView(LLBudgets);
+//        allBudgets = dbService.getBudgetDataFromDB(dbService.getMaxBudgetNumber());
+//        for (Budget budget : allBudgets) {
+//            add_New_row(budget.getCategoryName(), budget.getValue(), budget.isConstPayment(), budget.getShop(), budget.getChargeDay());
+//        }
+//        if (allBudgets.size() == 0) // No any budget exists
+//            add_New_row("", 0, false, "", 2);
+//        setAddAndDeleteButton(); // add row and clean buttons
+//        setCloseButton();// Adding close button (last index)
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -542,7 +554,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         UIService.setTxtSize(rowViews, 12);
         setViewsInput(textInputType, numberInputType);
         UIService.setInputFocus(categoryNameET);
-        setSpinnerOptionalDays(optionalDaysSpinner);
+        UIService.setDaysInMonthSpinner(optionalDaysSpinner, this);
 
         UIService.setWidthCreateBudgetPageDataWidgets(rowViews, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
         setConstPaymentCBOnCheckChangedListner(constPaymentCB, shopET, optionalDaysSpinner);
@@ -614,17 +626,25 @@ public class Create_Budget_Activity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("NewApi")
-    public void setSpinnerOptionalDays(Spinner OptionalDaysSP) {
-        List<Integer> daysInMonth = new ArrayList<>();
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            return makeMovementFlags(dragFlags, swipeFlags);
+        }
 
-        daysInMonth = IntStream.range(1, 31).boxed().collect(Collectors.toList());
-        List<String> daysInMonthStringList = Lists.transform(daysInMonth, Functions.toStringFunction());
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            adapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            return true;
+        }
 
-        SpinnerAdapter adapter = new SpinnerAdapter(daysInMonthStringList, this);
-        OptionalDaysSP.setAdapter(adapter);
-        OptionalDaysSP.setSelection(1, true);
-        OptionalDaysSP.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-    }
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            budgets.remove(viewHolder.getAdapterPosition());
+            adapter.notifyDataSetChanged();
+        }
+    };
 
 }

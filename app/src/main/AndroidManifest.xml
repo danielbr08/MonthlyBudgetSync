@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.Create_Budget_Activity" />
-        <activity android:name=".login.Register"/>
+        <activity android:name=".login.Register" />
         <activity android:name=".ui.MainActivity" />
     </application>
 

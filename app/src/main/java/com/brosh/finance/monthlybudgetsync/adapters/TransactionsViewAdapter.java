@@ -27,7 +27,8 @@ public class TransactionsViewAdapter extends RecyclerView.Adapter<TransactionVie
     @NonNull
     @Override
     public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int transactionLayout = this.showCategory ? R.layout.transaction_row_item : R.layout.transaction_row_item_no_category;
+//        int transactionLayout = this.showCategory ? R.layout.transaction_row_item : R.layout.transaction_row_item_no_category;
+        int transactionLayout = R.layout.transaction_row_item;
         View view = this.mInflater.inflate(transactionLayout, parent, false);
         return new TransactionViewHolder(view, this.showCategory);
     }
