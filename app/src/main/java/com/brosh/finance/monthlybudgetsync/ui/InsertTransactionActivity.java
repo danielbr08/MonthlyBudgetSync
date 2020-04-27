@@ -3,12 +3,10 @@ package com.brosh.finance.monthlybudgetsync.ui;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -83,13 +81,10 @@ public class InsertTransactionActivity extends AppCompatActivity {
 //    }
 
     public void setSpinnersAllignment() {
-        ArrayAdapter<String> namesAdapter, PaymentMethodAdapter;
         List<String> categoriesNames = dbService.getCategoriesNames(month.getYearMonth());
         List<String> paymentMethod = getPaymentMethodList();
-        namesAdapter = new ArrayAdapter<String>(this,
-                R.layout.custom_spinner, categoriesNames);
-        PaymentMethodAdapter = new ArrayAdapter<String>(this,
-                R.layout.custom_spinner, paymentMethod);
+        SpinnerAdapter namesAdapter = new SpinnerAdapter(categoriesNames, this);
+        SpinnerAdapter PaymentMethodAdapter = new SpinnerAdapter(paymentMethod, this);
         categoriesSpinner.setAdapter(namesAdapter);
         paymentTypeSpinner.setAdapter(PaymentMethodAdapter);
     }
