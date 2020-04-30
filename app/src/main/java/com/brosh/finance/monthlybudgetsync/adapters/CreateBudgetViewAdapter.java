@@ -5,12 +5,17 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 
 import java.util.List;
@@ -32,7 +37,26 @@ public class CreateBudgetViewAdapter extends RecyclerView.Adapter<CreateBudgetVi
     @Override
     public CreateBudgetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = this.mInflater.inflate(R.layout.create_budget_row, parent, false);
-        return new CreateBudgetViewHolder(view, context);
+
+        CreateBudgetViewHolder holder = new CreateBudgetViewHolder(view, context);
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                int i = 0;
+                String category = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim();
+                String value = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim().replace(Definition.COMMA, "");
+                boolean constPayment = ((CheckBox) ((LinearLayout) v).getChildAt(i++)).isChecked();
+                String shop = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim();
+                int chargeDay = Integer.valueOf(((Spinner) ((LinearLayout) v).getChildAt(i)).getSelectedItem().toString().trim());
+
+                int val = value != "" ? Integer.valueOf(value) : 0;
+                int index = holder.getPosition();
+                budgets.add(index + 1, new Budget(category, val, constPayment, shop, chargeDay, budgets.size() + 1));
+                notifyDataSetChanged();
+                return true;
+            }
+        });
+        return holder;
     }
 
     @Override

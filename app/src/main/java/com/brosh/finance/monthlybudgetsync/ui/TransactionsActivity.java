@@ -61,13 +61,14 @@ public class TransactionsActivity extends AppCompatActivity {
         userKey = extras.getString(Definition.USER, getString(R.string.empty));
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
+        String selectedCategory = extras.containsKey("categoryName") ? extras.getString("categoryName") : null;
 
         this.transactions = dbService.getTransactions(refMonth);
         this.defaultTextTVHeaders = Arrays.asList(getString(R.string.id), getString(R.string.category), getString(R.string.store), getString(R.string.charge_date), getString(R.string.payment_method), getString(R.string.price));
 //        setTitle( getYearMonth(month.getMonth(),'.'));
         //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//Rotate the screen to to be on landspace moade only
         categoriesSpinner = (Spinner) findViewById(R.id.categorySpinnerTransactions);
-        init();
+        init(selectedCategory);
         setOnClickTextViews();
         setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definition.SORT_BY_ID, Definition.ARROW_UP);
 
@@ -85,12 +86,14 @@ public class TransactionsActivity extends AppCompatActivity {
         });
     }
 
-    public void init() {
+    public void init(String selectedCategory) {
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<String> monthCategories = new ArrayList<String>(dbService.getCategoriesNames(currentRefMonth));
         monthCategories.add(0, getString(R.string.all));
         SpinnerAdapter adapter = new SpinnerAdapter(monthCategories, this);
         categoriesSpinner.setAdapter(adapter);
+        if (selectedCategory != null)
+            categoriesSpinner.setSelection(monthCategories.indexOf(selectedCategory));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

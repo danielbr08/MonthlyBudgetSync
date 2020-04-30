@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -37,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.adapters.CreateBudgetViewAdapter;
+import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
@@ -238,23 +240,21 @@ public class Create_Budget_Activity extends AppCompatActivity {
     public void setBudgets() {
         allCategories.clear();
         allBudgets.clear();
+        RecyclerView LLBudgets = findViewById(R.id.budgets_rows);
         int catPriority = 1;
-        for (int i = 0; i < LLBudgets.getChildCount(); i++) {
+        for (int i = 0; i < budgetsRowsRecycler.getChildCount(); i++) {
             EditText categoryET, valueET, shopET;
             CheckBox constPaymentCB;
             Spinner chargeDaySP;
-
-            int firstViewIndex = 0;
-            int addToNextIndex = 1;
-            int addToNextIndexCounter = 1;
-            categoryET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));// todo this expression generc
-            valueET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));
-            constPaymentCB = ((CheckBox) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));
-            shopET = ((EditText) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter++ * addToNextIndex)));
-            chargeDaySP = ((Spinner) ((LinearLayout) LLBudgets.getChildAt(i)).getChildAt(firstViewIndex + (addToNextIndexCounter * addToNextIndex)));
+            int j = 0;
+            categoryET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));// todo this expression generc
+            valueET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
+            constPaymentCB = ((CheckBox) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
+            shopET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
+            chargeDaySP = ((Spinner) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
 
             String category = categoryET.getText().toString().trim();
-            String valueStr = valueET.getText().toString().trim();
+            String valueStr = valueET.getText().toString().trim().replace(Definition.COMMA, "");
             boolean constPayment = constPaymentCB.isChecked();
             String shop = shopET.getText().toString().trim();
             String chargeDayStr = chargeDaySP.getSelectedItem().toString().trim();
@@ -281,6 +281,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
                 return;
             }
         }
+        budgets = allBudgets;
     }
 
     public void verifyBudgetInput(EditText categoryET, EditText valueET, CheckBox constPaymentCB, EditText shopET, Spinner chargeDaySP) {//EditText chargeDayET) {
@@ -642,9 +643,43 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            if (budgets.size() < 2)
+                return;
             budgets.remove(viewHolder.getAdapterPosition());
             adapter.notifyDataSetChanged();
         }
     };
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void onCreateBudgetClicked(View view) {
+        {
+            setBudgets();
+            if (allBudgets.size() == 0) {// Nothing needed to do
+                showMessageNoButton(getString(R.string.please_insert_budget));
+                return;
+            }
+            int budgetNumber = dbService.getMaxBudgetNumber();
+            ArrayList<Budget> newBudgets = getAddedBudgets(budgetNumber);
+            boolean isOriginContentBudgetChanged = isOriginBudgetChanged(budgetNumber);
+            boolean isBudgetChange = isBudgetChange(budgetNumber);
+            boolean isAddedBudgetsExists = newBudgets.size() > 0;
+            if (!isInputValid || !isBudgetChange)
+                return;
+            if (month == null)
+                createBudget(Definition.CREATE_CODE);// First time create budget
+            else if (isOriginContentBudgetChanged) {// Rewriting of monthly budget needed
+                if (dbService.isCurrentRefMonthExists())
+                    showQuestionDeleteCurrentMonth(getString(R.string.create_budget_question));
+                return;
+            } else if (isAddedBudgetsExists)// Insert the added budgets needed only
+                createBudget(Definition.ADD_CODE);// Values of old budget updated only
+        }
+    }
+
+    public void addInputRow(View view) {
+        Budget budget = new Budget("", 0, false, "", 2, budgets.size() + 1);
+        budgets.add(budget);
+        this.adapter.notifyDataSetChanged();
+    }
 
 }

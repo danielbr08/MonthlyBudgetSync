@@ -29,6 +29,7 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity {
@@ -177,8 +178,8 @@ public class BudgetActivity extends AppCompatActivity {
             double balance = category.getBalance();
             balance = Math.round(balance * 100.d) / 100.0d;
             int budget = category.getBudget();
-            if (balance < 0)
-                isExceptionFromBudget = true;
+//            if (balance < 0)
+            isExceptionFromBudget = true;
 //            addCategoryRow(categoryName, String.valueOf(budget), String.valueOf(balance), isExceptionFromBudget);
 
             totalBudget += budget;
@@ -186,14 +187,25 @@ public class BudgetActivity extends AppCompatActivity {
             isExceptionFromBudget = false;
         }
         totalBalance = Math.round(totalBalance * 100.d) / 100.0d;
-        if (totalBalance < 0)
-            isExceptionFromBudget = true;
+//        if (totalBalance < 0)
+//            isExceptionFromBudget = true;
 //        addCategoryRow(getString(R.string.total), String.valueOf(totalBudget), String.valueOf(totalBalance), isExceptionFromBudget);
-        Category fictiveCategory = new Category(null, getString(R.string.total), totalBalance, totalBudget);// Total(last) row
-        categories.add(fictiveCategory);
+//        Category fictiveCategory = new Category(null, getString(R.string.total), totalBalance, totalBudget);// Total(last) row
+//        categories.add(fictiveCategory);
+        DecimalFormat decim = new DecimalFormat("#,###.##");
+        ((TextView) findViewById(R.id.totalBalance)).setText(decim.format(totalBalance));
+        ((TextView) findViewById(R.id.totalBudget)).setText(decim.format(totalBudget));
         CategoriesViewAdapter adapter = new CategoriesViewAdapter(this, categories);
         RecyclerView categories_rows = (RecyclerView) findViewById(R.id.categories_rows);
         categories_rows.setAdapter(adapter);
         categories_rows.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public Month getMonth() {
+        return month;
+    }
+
+    public String getUserKey() {
+        return userKey;
     }
 }

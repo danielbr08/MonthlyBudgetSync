@@ -45,7 +45,7 @@
     <string name="no_transactions_exists">No transactions found!</string>
     <string name="constant_date">fixed</string>
     <string name="charge_day">charge day</string>
-    <string name="create">create</string>
+    <string name="create">Create</string>
     <string name="please_insert_budget">please insert budget!</string>
     <string name="create_budget_question">Creating a new budget will delete the current month\'s data, continue?</string>
     <string name="duplicate_category">Duplicate category!</string>

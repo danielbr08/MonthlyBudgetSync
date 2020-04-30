@@ -121,9 +121,7 @@
                 android:id="@+id/budgets_rows"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true" />
+                android:orientation="vertical" />
             <!--            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -186,6 +184,29 @@
                     android:textStyle="bold" />
 
             </LinearLayout>-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@android:drawable/ic_input_add"
+                    android:onClick="addInputRow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/create"
+                    android:onClick="onCreateBudgetClicked" />
+
+            </LinearLayout>
 
 
         </LinearLayout>
