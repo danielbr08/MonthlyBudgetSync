@@ -1,6 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.view.View;
@@ -64,6 +65,7 @@ public final class DBService {
 
     private String userKey;
     private User user;
+    private Context context;
 
     public ValueEventListener getRootEventListener() {
         return rootEventListener;
@@ -209,6 +211,7 @@ public final class DBService {
 
         this.userKey = user.getDbKey();
         this.user = user;
+        this.context = activity;
         DatabaseReference databaseReference = Config.DatabaseReferenceMonthlyBudget.child(userKey);
 
         rootEventListener = new ValueEventListener() {
@@ -651,7 +654,7 @@ public final class DBService {
         Category cat = new Category(catId, budget.getCategoryName(), budget.getValue(), budget.getValue());
         Map<String, Transaction> transactions = new HashMap();
         if (isFrqTran(budget)) {
-            String paymentMethod = Resources.getSystem().getString(R.string.payment_method);
+            String paymentMethod = context.getString(R.string.payment_method);
             Date payDate = DateService.getCurrentDate(budget.getChargeDay());
             String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR);
             String tranId = getDBTransactionsPath(yearMonth, catId).push().getKey();

@@ -277,7 +277,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
             if (isInputValid)
                 allBudgets.add(new Budget(category, value, constPayment, shop, chargeDay, catPriority++));
             else {
-                allBudgets.clear();
+//                allBudgets.clear();
                 return;
             }
         }
@@ -287,7 +287,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     public void verifyBudgetInput(EditText categoryET, EditText valueET, CheckBox constPaymentCB, EditText shopET, Spinner chargeDaySP) {//EditText chargeDayET) {
         isInputValid = true;
         String category = categoryET.getText().toString().trim();
-        String valueStr = valueET.getText().toString().trim();
+        String valueStr = valueET.getText().toString().trim().replace(Definition.COMMA, getString(R.string.empty));
         boolean constPayment = constPaymentCB.isChecked();
         String shop = shopET.getText().toString().trim();
         String chargeDayStr = chargeDaySP.getSelectedItem().toString().trim();
@@ -518,6 +518,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
 //    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setBudgetGui() {
         this.budgets = new ArrayList<>(dbService.getBudgetDataFromDB(dbService.getMaxBudgetNumber()));
+        if (this.budgets.size() == 0)
+            this.budgets.add(new Budget("", 0, false, "", 2, budgets.size() + 1));
         this.adapter = new CreateBudgetViewAdapter(this, budgets);
         this.budgetsRowsRecycler = findViewById(R.id.budgets_rows);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(budgetsRowsRecycler);
