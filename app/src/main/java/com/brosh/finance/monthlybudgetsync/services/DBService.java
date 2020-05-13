@@ -463,6 +463,8 @@ public final class DBService {
                 String tranId = dataSnapshot.getKey();
                 Transaction tran = dataSnapshot.getValue(Transaction.class);
                 DBService.getInstance().getCategoryById(refMonth, catId).getTransactions().put(tranId, tran);
+                double newBalance = DBService.getInstance().getTotalTransactionsSum(refMonth, catId);
+                DBService.getInstance().getCategoryById(refMonth, catId).setBalance(newBalance);
                 setTransactionFieldsEventUpdateValue(dataSnapshot, refMonth, catId);
             }
 
@@ -495,6 +497,15 @@ public final class DBService {
         }
     }
 
+    private double getTotalTransactionsSum(String refMonth, String catId) {
+        List<Transaction> catTrans = this.getTransactions(refMonth, catId);
+        double sum = 0;
+        for (Transaction trn : catTrans) {
+            sum += trn.getPrice();
+        }
+        return sum;
+    }
+
     private boolean isTranExists(String refMonth, String catId, String tranId) {
         if (isCatExists(refMonth, catId))
             return getTransactions(refMonth).contains(tranId);
@@ -521,7 +532,7 @@ public final class DBService {
 
     private void setCategoryFieldsEventUpdateValue(final DataSnapshot categoryDBDataSnapshot, String refMonthKey) {
         String catId = categoryDBDataSnapshot.getKey();
-        setCategoryBalanceEventUpdateValue(categoryDBDataSnapshot.child(Definition.BALANCE), refMonthKey, catId);
+//        setCategoryBalanceEventUpdateValue(categoryDBDataSnapshot.child(Definition.BALANCE), refMonthKey, catId);
         setAddChildTransactionEvent(categoryDBDataSnapshot.child(Definition.TRANSACTIONS), refMonthKey, catId);
     }
 
