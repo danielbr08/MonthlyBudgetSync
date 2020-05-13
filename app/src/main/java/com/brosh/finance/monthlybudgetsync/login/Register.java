@@ -121,7 +121,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                TextService.showMessage("User Created.", Toast.LENGTH_SHORT, currentActivity);
+                                TextService.showMessage(getString(R.string.user_created), Toast.LENGTH_SHORT, currentActivity);
                                 userID = fAuth.getCurrentUser().getUid();
                                 DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userID);
                                 final Map<String, Object> userFS = new HashMap<>();
