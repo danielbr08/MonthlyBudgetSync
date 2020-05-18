@@ -1,9 +1,12 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -17,20 +20,23 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
-import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -198,59 +204,99 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
         btnSendTransaction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                EditText shopET = ((EditText) findViewById(R.id.shopAutoCompleteTextView));
-                EditText payDateET = ((EditText) findViewById(R.id.payDatePlainText));
-                EditText transactionPriceET = ((EditText) findViewById(R.id.transactionPricePlainText));
-                if (setErrorEditText(payDateET) || setErrorEditText(transactionPriceET))
-                    return;
-                //Insert data
-                String categoryName = categoriesSpinner.getSelectedItem().toString();
+                insertTransaction(refMonth);
+            }
+        });
+    }
 
-                String paymentMethod = paymentTypeSpinner.getSelectedItem().toString();
-                //String category = getCategoryName(categoryHeb);
-                String shop = shopET.getText().toString();
-                Date payDate = DateService.convertStringToDate(payDateET.getText().toString(), Config.DATE_FORMAT);
-                double transactionPrice = Double.valueOf(transactionPriceET.getText().toString());
-                int idPerMonth = dbService.getMaxIdPerMonth(month.getYearMonth(), categoryName) + 1;
-                //TRAN_ID_PER_MONTH_NUMERATOR = idPerMonth;
-                //init on create
-                //int idPerMonth = monthlyBudgetDB.getMaxIDPerMonthTRN(month.getMonth()) + 1;
-                //long transID = monthlyBudgetDB.getMaxIDTRN() + 1;
-                Transaction transaction = new Transaction(idPerMonth, categoryName, paymentMethod, shop, payDate, transactionPrice);
-                boolean isStorno = false;
-                int stornoOf = -1;
+    public void tryInsertTransactionAgain(String refMonth) {
+        try {
+            Thread.sleep(1000);
+            insertTransaction(refMonth);
+        } catch (Exception e) {
+        }
+    }
 
-                for (Category cat : month.getCategories().values()) {
-                    if (categoryName.equals(cat.getName())) {
-                        cat.withdrawal(transactionPrice);
-                        List<Transaction> catTrans = dbService.getTransactions(month.getYearMonth(), cat.getId());
-                        for (Transaction tran : catTrans) {
-                            isStorno = tran.isStorno(transaction);
-                            if (isStorno == true) {
-                                stornoOf = tran.getIdPerMonth();
-                                tran.setIsStorno(true);
-                                tran.setStornoOf(transaction.getIdPerMonth());
-                                break;
-                            }
-                        }
-                        transaction.setIsStorno(isStorno);
-                        transaction.setStornoOf(stornoOf);
-                        cat.addTransaction(transaction);
+    public void insertTransaction(String refMonth) {
+        EditText shopET = ((EditText) findViewById(R.id.shopAutoCompleteTextView));
+        EditText payDateET = ((EditText) findViewById(R.id.payDatePlainText));
+        EditText transactionPriceET = ((EditText) findViewById(R.id.transactionPricePlainText));
+        if (setErrorEditText(payDateET) || setErrorEditText(transactionPriceET))
+            return;
+        int idPerMonth = month.getTranIdNumerator() + 1;
+
+        DatabaseReference monthDB = dbService.getDBMonthPath(refMonth);
+        final Context context = this;
+
+        //Insert data
+        String categoryName = categoriesSpinner.getSelectedItem().toString();
+        String paymentMethod = paymentTypeSpinner.getSelectedItem().toString();
+        //String category = getCategoryName(categoryHeb);
+        String shop = shopET.getText().toString();
+        Date payDate = DateService.convertStringToDate(payDateET.getText().toString(), Config.DATE_FORMAT);
+        double transactionPrice = Double.valueOf(transactionPriceET.getText().toString());
+        //init on create
+        String catId = dbService.getCategoryByName(month.getYearMonth(), categoryName).getId();
+        DatabaseReference transactionsNode = dbService.getDBTransactionsPath(month.getYearMonth(), catId);
+        String tranId = transactionsNode.push().getKey();
+        com.brosh.finance.monthlybudgetsync.objects.Transaction transaction = new com.brosh.finance.monthlybudgetsync.objects.Transaction(tranId, idPerMonth, categoryName, paymentMethod, shop, payDate, transactionPrice);
+        boolean isStorno = false;
+        int stornoOf = -1;
+
+        for (Category cat : month.getCategories().values()) {
+            if (categoryName.equals(cat.getName())) {
+                cat.withdrawal(transactionPrice);
+                List<com.brosh.finance.monthlybudgetsync.objects.Transaction> catTrans = dbService.getTransactions(month.getYearMonth(), cat.getId());
+                for (com.brosh.finance.monthlybudgetsync.objects.Transaction tran : catTrans) {
+                    isStorno = tran.isStorno(transaction);
+                    if (isStorno == true) {
+                        stornoOf = tran.getIdPerMonth();
+                        tran.setIsStorno(true);
+                        tran.setStornoOf(transaction.getIdPerMonth());
                         break;
                     }
                 }
-                String catId = dbService.getCategoryByName(month.getYearMonth(), categoryName).getId();
-                DatabaseReference transactionsNode = dbService.getDBUserTransactionsPath(month.getYearMonth(), catId);
-                String tranId = transactionsNode.push().getKey();
-                transaction.setId(tranId);
-                transactionsNode.child(catId).setValue(transaction); // todo check if event listener call
-                shopsSet.add(shop); // todo check if event listener call
-                dbService.writeNewShopFB(shop);
-                // send message and close window
-                //showMessage("העסקה הוכנסה בהצלחה!");
-                showMessageNoButton(language.transactionInsertedSuccessfully);
+                transaction.setIsStorno(isStorno);
+                transaction.setStornoOf(stornoOf);
+                cat.addTransaction(transaction);
+                month.setTranIdNumerator(idPerMonth);
+                break;
+            }
+        }
+        shopsSet.add(shop); // todo check if event listener call
+        dbService.writeNewShopFB(shop);
+        Category category = dbService.getCategoryById(refMonth, catId);
+//                    monthDB.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
+//                categoriesDB.child(Definition.BALANCE)
+        monthDB.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                Object trnNumeratorFB = mutableData.child(Definition.TRAN_ID_NUMERATOR).getValue();
+                int idPerMonth =Integer.valueOf(trnNumeratorFB.toString()) + 1;
+                transaction.setIdPerMonth(idPerMonth);
+                mutableData.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mutableData.child(Definition.BALANCE).setValue(category.getBalance());
+                mutableData.child(Definition.CATEGORIES).child(category.getId()).child(Definition.TRANSACTIONS).child(tranId).setValue(transaction); // todo check if event listener call
+                return Transaction.success(mutableData);
+            }
 
-                //finish();
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                // send message and close window
+                String message = databaseError != null ? "Error" : getString(R.string.transaction_inserted_successfully);
+                try {
+                    TextService.showMessage(getString(R.string.transaction_inserted_successfully), Toast.LENGTH_LONG, context);
+                    ((Activity)context).finish();
+                } catch (Exception e) {
+                    String s = e.getMessage();
+                    s = s;
+                }
             }
         });
     }
