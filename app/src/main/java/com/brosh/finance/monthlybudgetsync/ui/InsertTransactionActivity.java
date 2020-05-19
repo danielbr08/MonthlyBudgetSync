@@ -342,7 +342,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         paymentMethodList.add(getString(R.string.credit_card));
         paymentMethodList.add(getString(R.string.cash));
         paymentMethodList.add(getString(R.string.chek));
-        paymentMethodList.add(getString(R.string.bank_transfer));
+        paymentMethodList.add(getString(R.string.bank_wired));
 
         return paymentMethodList;
     }

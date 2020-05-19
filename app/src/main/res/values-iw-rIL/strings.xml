@@ -65,6 +65,6 @@
     <string name="credit_card">כרטיס אשראי</string>
     <string name="cash">מזומן</string>
     <string name="chek">צ\'ק</string>
-    <string name="bank_transfer">העברה בנקאית</string>
+    <string name="bank_wired">העברה בנקאית</string>
     <string name="user_created">משתמש נוצר.</string>
 </resources>

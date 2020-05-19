@@ -64,6 +64,6 @@
     <string name="credit_card">Credit Card</string>
     <string name="cash">Cash</string>
     <string name="chek">Check</string>
-    <string name="bank_transfer">Bank Ttransfer</string>
+    <string name="bank_wired">Bank Ttransfer</string>
     <string name="user_created">User Created.</string>
 </resources>
