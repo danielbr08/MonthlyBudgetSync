@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -54,6 +55,10 @@ public class Register extends AppCompatActivity implements UserStartApp {
     FirebaseFirestore fStore;
     String userID;
     private DBService dbService;
+    private Activity currentActivity;
+    private DatabaseReference DatabaseReferenceUsers;
+    private DatabaseReference DatabaseReferenceRoot;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
