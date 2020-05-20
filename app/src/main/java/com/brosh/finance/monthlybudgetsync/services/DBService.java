@@ -228,17 +228,29 @@ public final class DBService {
                 }
                 for (DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
                     String keyNode = myDataSnapshot.getKey();
+                    Object value = myDataSnapshot.getValue();
+                    boolean hasData = !(value instanceof String && value.equals(""));
                     switch (keyNode) {
                         case Definition.BUDGETS: {
-                            setBudgetDB(myDataSnapshot);
+                            if (hasData) {
+                                setBudgetDB(myDataSnapshot);
+                            }
+                            // Set event add child
+                            setAddChildBudgetsEvent(myDataSnapshot);
                             break;
                         }
                         case Definition.MONTHS: {
-                            setMonthsDB(myDataSnapshot);
+                            if (hasData) {
+                                setMonthsDB(myDataSnapshot);
+                            }
+                            // Set event add child
+                            setAddChildMonthEvent(myDataSnapshot);
                             break;
                         }
                         case Definition.SHOPS: {
-                            setShopsDB(myDataSnapshot);
+                            if (hasData) {
+                                setShopsDB(myDataSnapshot);
+                            }
                             break;
                         }
 //                        case Definition.SHARES: {
@@ -272,8 +284,6 @@ public final class DBService {
             }
             setAddChildBudgetNumberEvent(budgetSnapshot, budgetNumber);
         }
-        // Set event add child
-        setAddChildBudgetsEvent(budgetsSnapshot);
     }
 
     public void setMonthsDB(DataSnapshot monthsSnapshot) {
@@ -284,9 +294,6 @@ public final class DBService {
             month.setIsActive();
             updateSpecificMonth(refMonthKey, month);
         }
-
-        // Set event add child
-        setAddChildMonthEvent(monthsSnapshot);
     }
 
     public void setShopsDB(DataSnapshot shopsSnapshot) {

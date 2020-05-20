@@ -199,6 +199,9 @@ public class Register extends AppCompatActivity implements UserStartApp {
                         return;
                     } else {
                         DatabaseReferenceUsers.child(user.getDbKey()).setValue(user);
+                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definition.BUDGETS).setValue("");
+                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definition.MONTHS).setValue("");
+                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definition.SHOPS).setValue("");
                     }
 //                    user.setOwner(ownerDBKey);
                 } else { // Already registered
