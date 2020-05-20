@@ -67,6 +67,10 @@ public final class DBService {
     private User user;
     private Context context;
 
+    public void clear() {
+        instance = new DBService();
+    }
+
     public ValueEventListener getRootEventListener() {
         return rootEventListener;
     }

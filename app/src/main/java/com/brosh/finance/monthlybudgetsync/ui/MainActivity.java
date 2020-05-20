@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         FirebaseAuth.getInstance().signOut();//logout
+        DBService.getInstance().clear();
         startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
