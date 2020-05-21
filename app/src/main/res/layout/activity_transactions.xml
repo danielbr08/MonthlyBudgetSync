@@ -200,6 +200,22 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_no_trans_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="@string/no_transactions_exists"
+                    android:gravity="center_horizontal">
+                </TextView>
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

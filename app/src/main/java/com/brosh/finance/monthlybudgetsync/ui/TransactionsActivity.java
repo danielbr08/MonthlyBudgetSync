@@ -64,6 +64,10 @@ public class TransactionsActivity extends AppCompatActivity {
         String selectedCategory = extras.containsKey("categoryName") ? extras.getString("categoryName") : null;
 
         this.transactions = dbService.getTransactions(refMonth);
+        LinearLayout llNoTransMessage = findViewById(R.id.ll_no_trans_message);
+        int noTransMessageVisibility = (this.transactions == null || this.transactions.size() == 0) ? View.GONE : View.VISIBLE;
+        llNoTransMessage.setVisibility(noTransMessageVisibility);
+
         this.defaultTextTVHeaders = Arrays.asList(getString(R.string.id), getString(R.string.category), getString(R.string.store), getString(R.string.charge_date), getString(R.string.payment_method), getString(R.string.price));
 //        setTitle( getYearMonth(month.getMonth(),'.'));
         //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//Rotate the screen to to be on landspace moade only

@@ -959,10 +959,9 @@ public final class DBService {
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {
-                };
+                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {};
                 String budgetNumber = dataSnapshot.getKey();
-                Map<String, Budget> budgets = (Map<String, Budget>) dataSnapshot.getValue(genericTypeIndicator);
+                Map<String, Budget> budgets = dataSnapshot.getValue(genericTypeIndicator);
                 DBService.getInstance().budgetDBHM.put(budgetNumber, budgets);
             }
 
