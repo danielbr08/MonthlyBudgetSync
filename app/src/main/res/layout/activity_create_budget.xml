@@ -10,7 +10,7 @@
     tools:context=".ui.Create_Budget_Activity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh"
+        android:id="@+id/refresh_layout_create_budget"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

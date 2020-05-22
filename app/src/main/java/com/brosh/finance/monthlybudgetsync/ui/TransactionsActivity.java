@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -49,6 +50,7 @@ public class TransactionsActivity extends AppCompatActivity {
     private DBService dbService;
     private String userKey;
 
+    private SwipeRefreshLayout refreshLayout;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -88,6 +90,7 @@ public class TransactionsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
+        setRefreshListener();
     }
 
     public void init(String selectedCategory) {
@@ -211,5 +214,17 @@ public class TransactionsActivity extends AppCompatActivity {
                 currentTV.setTextColor(Color.BLACK);
             }
         }
+    }
+
+    private void setRefreshListener() {
+        refreshLayout = findViewById(R.id.refresh_layout_transactions);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onRefresh() {
+                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definition.SORT_BY_ID, Definition.ARROW_UP);
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 }

@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -39,7 +38,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.adapters.CreateBudgetViewAdapter;
-import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
@@ -132,11 +130,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
     }
 
     private void setRefreshListener() {
-        refreshLayout = findViewById(R.id.refresh);
+        refreshLayout = findViewById(R.id.refresh_layout_create_budget);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 setBudgetGui();
+                refreshLayout.setRefreshing(false);
             }
         });
     }

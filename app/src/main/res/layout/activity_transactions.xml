@@ -6,220 +6,226 @@
     android:layout_height="match_parent"
     tools:context=".ui.TransactionsActivity">
 
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout_transactions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/LLMainTransactions"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp">
 
             <LinearLayout
+                android:id="@+id/LLMainTransactions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/transactionsTitleLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/transactions"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:gravity="center_horizontal" />
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Cat_TotalLL"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_4">
-
-                <Spinner
-                    android:id="@+id/categorySpinnerTransactions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="120dp"
-                    android:theme="@style/AppTheme.Spinner"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.05"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
 
                     <TextView
-                        android:id="@+id/textViewTotalTransactionsLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text='@string/total'
+                        android:id="@+id/transactionsTitleLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/transactions"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/transaction_text_size"
+                        android:textSize="24sp"
                         android:textStyle="bold"
-                        android:gravity="center_horizontal"
-                        android:layout_marginRight="@dimen/padding_8"
-                        android:layout_marginLeft="@dimen/padding_8" />
-
-                    <TextView
-                        android:id="@+id/tv_total_transactions_top"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="0"
-                        android:textColor="@android:color/black"
-                        android:textDirection="ltr"
-                        android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold"
-                        android:layout_marginRight="@dimen/padding_8"
-                        android:layout_marginLeft="@dimen/padding_8" />
+                        android:gravity="center_horizontal" />
                 </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/headersTV"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="1"
-                android:padding="8dp"
-                android:background="@drawable/border_style"
-                android:minHeight="50dp">
-
-                <TextView
-                    android:id="@+id/trn_id"
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/Cat_TotalLL"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_2"
-                    android:text="@string/id"
-                    android:textSize="@dimen/transaction_text_size"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_weight="0.10"
-                    android:gravity="center_vertical" />
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_4">
 
-                <TextView
-                    android:id="@+id/trn_category"
-                    android:layout_width="0dp"
+                    <Spinner
+                        android:id="@+id/categorySpinnerTransactions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="120dp"
+                        android:theme="@style/AppTheme.Spinner"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.05"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/textViewTotalTransactionsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text='@string/total'
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/transaction_text_size"
+                            android:textStyle="bold"
+                            android:gravity="center_horizontal"
+                            android:layout_marginRight="@dimen/padding_8"
+                            android:layout_marginLeft="@dimen/padding_8" />
+
+                        <TextView
+                            android:id="@+id/tv_total_transactions_top"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="0"
+                            android:textColor="@android:color/black"
+                            android:textDirection="ltr"
+                            android:textSize="@dimen/transaction_text_size"
+                            android:textStyle="bold"
+                            android:layout_marginRight="@dimen/padding_8"
+                            android:layout_marginLeft="@dimen/padding_8" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/headersTV"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_2"
-                    android:text="@string/category"
-                    android:textSize="@dimen/transaction_text_size"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_weight="0.16"
-                    android:gravity="center_vertical" />
+                    android:orientation="horizontal"
+                    android:weightSum="1"
+                    android:padding="8dp"
+                    android:background="@drawable/border_style"
+                    android:minHeight="50dp">
 
-                <TextView
-                    android:id="@+id/trn_store"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_2"
-                    android:text="@string/store"
-                    android:textSize="@dimen/transaction_text_size"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_weight="0.2"
-                    android:gravity="center_vertical" />
+                    <TextView
+                        android:id="@+id/trn_id"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/padding_2"
+                        android:text="@string/id"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="0.10"
+                        android:gravity="center_vertical" />
 
-                <TextView
-                    android:id="@+id/trn_charge_date"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_2"
-                    android:text="@string/charge_date"
-                    android:textSize="@dimen/transaction_text_size"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_weight="0.19"
-                    android:gravity="center_vertical" />
+                    <TextView
+                        android:id="@+id/trn_category"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/padding_2"
+                        android:text="@string/category"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="0.16"
+                        android:gravity="center_vertical" />
 
-                <TextView
-                    android:id="@+id/trn_payment_method"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_2"
-                    android:text="@string/payment_method"
-                    android:textSize="@dimen/transaction_text_size"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_weight="0.2"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical"
-                    tools:ignore="RtlCompat" />
+                    <TextView
+                        android:id="@+id/trn_store"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/padding_2"
+                        android:text="@string/store"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="0.2"
+                        android:gravity="center_vertical" />
 
-                <TextView
-                    android:id="@+id/trn_price"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/padding_2"
-                    android:text="@string/price"
-                    android:textSize="@dimen/transaction_text_size"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    android:layout_weight="0.15"
-                    android:gravity="center_vertical"
-                    android:textAlignment="viewEnd"
-                    tools:ignore="RtlCompat" />
+                    <TextView
+                        android:id="@+id/trn_charge_date"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/padding_2"
+                        android:text="@string/charge_date"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="0.19"
+                        android:gravity="center_vertical" />
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/trn_payment_method"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/padding_2"
+                        android:text="@string/payment_method"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="0.2"
+                        android:textAlignment="center"
+                        android:gravity="center_vertical"
+                        tools:ignore="RtlCompat" />
 
-            <LinearLayout
-                android:id="@+id/LLTransactions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:weightSum="1">
+                    <TextView
+                        android:id="@+id/trn_price"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/padding_2"
+                        android:text="@string/price"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="0.15"
+                        android:gravity="center_vertical"
+                        android:textAlignment="viewEnd"
+                        tools:ignore="RtlCompat" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/transactions_rows"
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLTransactions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_weight="1" />
+                    android:weightSum="1">
 
-            </LinearLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/transactions_rows"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_weight="1" />
 
-            <LinearLayout
-                android:id="@+id/ll_no_trans_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:orientation="horizontal">
-                <TextView
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_no_trans_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:text="@string/no_transactions_exists"
-                    android:gravity="center_horizontal"
-                    android:textColor="@android:color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="@string/no_transactions_exists"
+                        android:gravity="center_horizontal"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"></TextView>
+
+                </LinearLayout>
 
             </LinearLayout>
-
         </LinearLayout>
-    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,45 +2,32 @@ package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.login.Login;
-import com.brosh.finance.monthlybudgetsync.objects.Budget;
-import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Button closeMainButton;
     private boolean touched = false; // Indicate for language spinner
     private Month month;
+    private SwipeRefreshLayout refreshLayout;
 
     public void changeTouchValue(boolean touched) {
         this.touched = touched;
@@ -129,24 +117,8 @@ public class MainActivity extends AppCompatActivity {
         transactionsButton = (Button) findViewById(R.id.transactionsButton);
         createBudgetButton = (Button) findViewById(R.id.createBudgetButton);
         closeMainButton = (Button) findViewById(R.id.closeMainButton);
-
-        if (!dbService.isAnyBudgetExists()) {
-            budgetButton.setEnabled(false);
-            transactionsButton.setEnabled(false);
-            insertTransactionButton.setEnabled(false);
-            month = null;
-        } else {
-            if (!dbService.isCurrentRefMonthExists()) {
-                createNewMonth(new Date());
-            }
-            month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
-            Date nextRefMonth = DateService.getNextRefMonth(month.getRefMonth());
-            if (new Date().after(nextRefMonth)) {
-                createNewMonth(nextRefMonth);
-            }
-//            setTitle(getYearMonth(month.getMonth(), '.'));
-            initRefMonthSpinner();
-        }
+        refresh();
+        setRefreshListener();
 
         //month = new Month(getTodayDate());
         //setTitle(month.getYearMonth(month.getMonth(), '.'));
@@ -156,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         budgetButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting a new Intent
+                //Starting refresh new Intent
                 if (budgetScreen == null)
                     budgetScreen = new Intent(getApplicationContext(), BudgetActivity.class);
                 addParametersToActivity(budgetScreen);
@@ -168,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         insertTransactionButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting a new Intent
+                //Starting refresh new Intent
                 if (insertTransactionScreen == null)
                     insertTransactionScreen = new Intent(getApplicationContext(), InsertTransactionActivity.class);
                 addParametersToActivity(insertTransactionScreen);
@@ -181,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         transactionsButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting a new Intent
+                //Starting refresh new Intent
                 if (transactionsScreen == null)
                     transactionsScreen = new Intent(getApplicationContext(), TransactionsActivity.class);
                 addParametersToActivity(transactionsScreen);
@@ -193,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         createBudgetButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting a new Intent
+                //Starting refresh new Intent
                 if (createBudgetScreen == null)
                     createBudgetScreen = new Intent(getApplicationContext(), Create_Budget_Activity.class);
                 //initRefMonthSpinner();
@@ -366,5 +338,37 @@ public class MainActivity extends AppCompatActivity {
         if (rootEventListener != null) {
             Config.DatabaseReferenceMonthlyBudget.child(userKey).removeEventListener(rootEventListener);
         }
+    }
+
+    private void refresh() {
+        if (!dbService.isAnyBudgetExists()) {
+            budgetButton.setEnabled(false);
+            transactionsButton.setEnabled(false);
+            insertTransactionButton.setEnabled(false);
+            month = null;
+        } else {
+            if (!dbService.isCurrentRefMonthExists()) {
+                createNewMonth(new Date());
+            }
+            month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
+            Date nextRefMonth = DateService.getNextRefMonth(month.getRefMonth());
+            if (new Date().after(nextRefMonth)) {
+                createNewMonth(nextRefMonth);
+            }
+//            setTitle(getYearMonth(month.getMonth(), '.'));
+            initRefMonthSpinner();
+        }
+    }
+
+    private void setRefreshListener() {
+        refreshLayout = findViewById(R.id.refresh_layout_main);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onRefresh() {
+                refresh();
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 }

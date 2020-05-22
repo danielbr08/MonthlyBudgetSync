@@ -473,8 +473,9 @@ public final class DBService {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String tranId = dataSnapshot.getKey();
                 Transaction tran = dataSnapshot.getValue(Transaction.class);
-                DBService.getInstance().getCategoryById(refMonth, catId).getTransactions().put(tranId, tran);
-                double newBalance = DBService.getInstance().getTotalTransactionsSum(refMonth, catId);
+                Category cat = DBService.getInstance().getCategoryById(refMonth, catId);
+                cat.getTransactions().put(tranId, tran);
+                double newBalance = cat.getBudget() - DBService.getInstance().getTotalTransactionsSum(refMonth, catId);
                 DBService.getInstance().getCategoryById(refMonth, catId).setBalance(newBalance);
                 setTransactionFieldsEventUpdateValue(dataSnapshot, refMonth, catId);
             }
@@ -959,7 +960,8 @@ public final class DBService {
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {};
+                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {
+                };
                 String budgetNumber = dataSnapshot.getKey();
                 Map<String, Budget> budgets = dataSnapshot.getValue(genericTypeIndicator);
                 DBService.getInstance().budgetDBHM.put(budgetNumber, budgets);

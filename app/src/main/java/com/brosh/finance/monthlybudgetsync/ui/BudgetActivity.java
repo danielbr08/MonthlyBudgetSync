@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -41,6 +42,8 @@ public class BudgetActivity extends AppCompatActivity {
     private DBService dbService;
     private String userKey;
 
+    private SwipeRefreshLayout refreshLayout;
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,8 @@ public class BudgetActivity extends AppCompatActivity {
 
         ll = (LinearLayout) findViewById(R.id.LLBudget);
         setCategoriesInGui();
+        setRefreshListener();
+
         //setCloseButton();
     }
 //        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -199,6 +204,18 @@ public class BudgetActivity extends AppCompatActivity {
         RecyclerView categories_rows = (RecyclerView) findViewById(R.id.categories_rows);
         categories_rows.setAdapter(adapter);
         categories_rows.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void setRefreshListener() {
+        refreshLayout = findViewById(R.id.refresh_layout_budgets);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onRefresh() {
+                setCategoriesInGui();
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     public Month getMonth() {
