@@ -35,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.adapters.CreateBudgetViewAdapter;
@@ -90,6 +91,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
     //Button to add a row
     private Button addCategoryButton;
 
+    private SwipeRefreshLayout refreshLayout;
+
     //Button to write all the inserted categories to budget file
     private Button OKButton;
 
@@ -124,7 +127,18 @@ public class Create_Budget_Activity extends AppCompatActivity {
         addCategoryButton = new Button(Create_Budget_Activity.this);
         OKButton = new Button(Create_Budget_Activity.this);
 
+        setRefreshListener();
         setBudgetGui();
+    }
+
+    private void setRefreshListener() {
+        refreshLayout = findViewById(R.id.refresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setBudgetGui();
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.O)
