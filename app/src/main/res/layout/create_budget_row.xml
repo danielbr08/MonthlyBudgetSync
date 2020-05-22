@@ -24,6 +24,7 @@
 
         android:padding="@dimen/padding_2"
         android:text="@string/budget"
+        android:inputType="number"
         android:textDirection="ltr" />
 
     <CheckBox

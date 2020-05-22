@@ -247,7 +247,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
             CheckBox constPaymentCB;
             Spinner chargeDaySP;
             int j = 0;
-            categoryET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));// todo this expression generc
+            categoryET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));// todo this expression generic
             valueET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
             constPaymentCB = ((CheckBox) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
             shopET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
@@ -632,8 +632,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
         @Override
         public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            int position = viewHolder.getAdapterPosition();
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            final int swipeFlags = position == 0 ? 0 : ItemTouchHelper.START | ItemTouchHelper.END;
             return makeMovementFlags(dragFlags, swipeFlags);
         }
 
@@ -648,8 +649,9 @@ public class Create_Budget_Activity extends AppCompatActivity {
             if (budgets.size() < 2)
                 return;
             budgets.remove(viewHolder.getAdapterPosition());
-            adapter.notifyDataSetChanged();
+            adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
         }
+
     };
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -681,7 +683,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     public void addInputRow(View view) {
         Budget budget = new Budget("", 0, false, "", 2, budgets.size() + 1);
         budgets.add(budget);
-        this.adapter.notifyDataSetChanged();
+        this.adapter.notifyItemInserted(budgets.size() - 1);
     }
 
 }

@@ -52,7 +52,7 @@ public class CreateBudgetViewAdapter extends RecyclerView.Adapter<CreateBudgetVi
                 int val = value != "" ? Integer.valueOf(value) : 0;
                 int index = holder.getPosition();
                 budgets.add(index + 1, new Budget(category, val, constPayment, shop, chargeDay, budgets.size() + 1));
-                notifyDataSetChanged();
+                notifyItemInserted(index + 1);
                 return true;
             }
         });
