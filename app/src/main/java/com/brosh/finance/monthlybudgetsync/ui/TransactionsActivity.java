@@ -65,7 +65,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
         this.transactions = dbService.getTransactions(refMonth);
         LinearLayout llNoTransMessage = findViewById(R.id.ll_no_trans_message);
-        int noTransMessageVisibility = (this.transactions == null || this.transactions.size() == 0) ? View.GONE : View.VISIBLE;
+        int noTransMessageVisibility = (this.transactions == null || this.transactions.size() == 0) ? View.VISIBLE : View.GONE;
         llNoTransMessage.setVisibility(noTransMessageVisibility);
 
         this.defaultTextTVHeaders = Arrays.asList(getString(R.string.id), getString(R.string.category), getString(R.string.store), getString(R.string.charge_date), getString(R.string.payment_method), getString(R.string.price));
