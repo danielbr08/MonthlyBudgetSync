@@ -369,16 +369,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (!dbService.isCurrentRefMonthExists()) {
                 createNewMonth(new Date());
-                budgetButton.setEnabled(true);
-                transactionsButton.setEnabled(true);
                 insertTransactionButton.setEnabled(true);
             }
+            budgetButton.setEnabled(true);
+            transactionsButton.setEnabled(true);
             month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
             Date nextRefMonth = DateService.getNextRefMonth(month.getRefMonth());
             if (new Date().after(nextRefMonth)) {
                 createNewMonth(nextRefMonth);
+                insertTransactionButton.setEnabled(true);
             }
-//            setTitle(getYearMonth(month.getMonth(), '.'));
             initRefMonthSpinner();
         }
     }
