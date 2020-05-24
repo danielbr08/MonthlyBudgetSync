@@ -536,7 +536,7 @@ public final class DBService {
 
     public void startApp(Activity activity) {
         Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
-        mainActivityIntent.putExtra(Definition.USER, userKey);
+        mainActivityIntent.putExtra(Definition.USER, user);
         activity.startActivity(mainActivityIntent);
         ((UserStartApp) activity).getProgressBar().setVisibility(View.GONE);
         activity.finish();
@@ -677,7 +677,7 @@ public final class DBService {
         Category cat = new Category(catId, budget.getCategoryName(), budget.getValue(), budget.getValue());
         Map<String, Transaction> transactions = new HashMap();
         if (isFrqTran(budget)) {
-            String paymentMethod = context.getString(R.string.payment_method);
+            String paymentMethod = context.getString(R.string.credit_card);
             Date payDate = DateService.getCurrentDate(budget.getChargeDay());
             String yearMonth = DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR);
             String tranId = getDBTransactionsPath(yearMonth, catId).push().getKey();

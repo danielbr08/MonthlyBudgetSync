@@ -42,6 +42,7 @@ import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
+import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
@@ -101,7 +102,8 @@ public class Create_Budget_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
 
-        String userKey = getIntent().getExtras().getString(Definition.USER, "");
+        User user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        String userKey = user.getDbKey();
         String refMonth = getIntent().getExtras().getString(Definition.MONTH);
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);

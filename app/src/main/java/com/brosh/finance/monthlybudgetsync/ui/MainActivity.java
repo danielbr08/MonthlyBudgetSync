@@ -14,12 +14,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.login.Login;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
+import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference DatabaseReferenceShares;
     private DBService dbService;
     private String userKey;
+    private User user;
 
     private SharedPreferences sharedpreference;
     private Intent budgetScreen, transactionsScreen, insertTransactionScreen, createBudgetScreen;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean touched = false; // Indicate for language spinner
     private Month month;
     private SwipeRefreshLayout refreshLayout;
+    private TextView userLogeedInTV;
 
     public void changeTouchValue(boolean touched) {
         this.touched = touched;
@@ -97,12 +101,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        userKey = getIntent().getExtras().getString(Definition.USER, getString(R.string.empty));
+        user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        userKey = user.getDbKey();
+        userLogeedInTV = (TextView) findViewById(R.id.tv_user_logeed_in);
+        userLogeedInTV.setText(user.getName());
         dbService = DBService.getInstance();
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
-        DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference(getString(R.string.shares));
+//        DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference(getString(R.string.shares));
 
         refMonthSpinner = (Spinner) findViewById(R.id.monthSpinner);
 
@@ -301,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
 ////    }
 
     public void addParametersToActivity(Intent activity) {
-        activity.putExtra(Definition.USER, userKey);
+        activity.putExtra(Definition.USER, user);
         activity.putExtra(Definition.MONTH, month == null ? month : month.getYearMonth());
     }
 

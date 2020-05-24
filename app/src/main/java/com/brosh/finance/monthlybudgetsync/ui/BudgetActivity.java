@@ -26,6 +26,7 @@ import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.adapters.CategoriesViewAdapter;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
+import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 
@@ -41,6 +42,7 @@ public class BudgetActivity extends AppCompatActivity {
     private Month month;
     private DBService dbService;
     private String userKey;
+    private User user;
 
     private SwipeRefreshLayout refreshLayout;
 
@@ -52,7 +54,8 @@ public class BudgetActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
-        userKey = extras.getString(Definition.USER, getString(R.string.empty));
+        user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        userKey = user.getDbKey();
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
 //        setTitle(getYearMonth(month.getMonth(), '.'));

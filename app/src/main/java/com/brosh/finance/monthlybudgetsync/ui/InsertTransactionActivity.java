@@ -29,6 +29,7 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
+import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
@@ -60,6 +61,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
     private DBService dbService;
     private String userKey;
+    private User user;
     private Month month;
 
     private Set<String> shopsSet;
@@ -135,7 +137,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
-        userKey = extras.getString(Definition.USER, getString(R.string.empty));
+        user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        userKey = user.getDbKey();
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
 
@@ -273,7 +276,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 Object trnNumeratorFB = mutableData.child(Definition.TRAN_ID_NUMERATOR).getValue();
-                int idPerMonth =Integer.valueOf(trnNumeratorFB.toString()) + 1;
+                int idPerMonth = Integer.valueOf(trnNumeratorFB.toString()) + 1;
                 transaction.setIdPerMonth(idPerMonth);
                 mutableData.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
                 try {
@@ -292,7 +295,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 String message = databaseError != null ? "Error" : getString(R.string.transaction_inserted_successfully);
                 try {
                     TextService.showMessage(getString(R.string.transaction_inserted_successfully), Toast.LENGTH_LONG, context);
-                    ((Activity)context).finish();
+                    ((Activity) context).finish();
                 } catch (Exception e) {
                     String s = e.getMessage();
                     s = s;
