@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -69,6 +70,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
 
         DatabaseReferenceRoot = Config.DatabaseReferenceRoot;
         DatabaseReferenceUsers = Config.DatabaseReferenceUsers;
+        setToolbar();
 
         FirebaseAuth.getInstance().signOut();//logout
 
@@ -237,6 +239,18 @@ public class Register extends AppCompatActivity implements UserStartApp {
     private void startLoginActivity() {
         startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
+    }
+
+    private void setTitleText() {
+        String title = getString(R.string.app_name);
+        TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setText(title);
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
+        setTitleText();
     }
 
 }

@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -107,6 +108,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         String refMonth = getIntent().getExtras().getString(Definition.MONTH);
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
+        setToolbar();
 
         adapter = new CreateBudgetViewAdapter(this, budgets);
         budgetsRowsRecycler = findViewById(R.id.budgets_rows);
@@ -699,6 +701,19 @@ public class Create_Budget_Activity extends AppCompatActivity {
         Budget budget = new Budget("", 0, false, "", 2, budgets.size() + 1);
         budgets.add(budget);
         this.adapter.notifyItemInserted(budgets.size() - 1);
+    }
+
+    private void setTitleText() {
+        String title = getString(R.string.app_name);
+//        title += month != null ? "\n" + month.getYearMonth() : "";
+        TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setText(title);
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
+        setTitleText();
     }
 
 }

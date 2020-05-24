@@ -3,6 +3,7 @@ package com.brosh.finance.monthlybudgetsync.ui;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.TargetApi;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -141,6 +143,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         userKey = user.getDbKey();
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
+        setToolbar();
 
         shopsSet = dbService.getShopsSet();
 //        setTitle( getYearMonth(month.getMonth(),'.'));
@@ -279,11 +282,11 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 int idPerMonth = Integer.valueOf(trnNumeratorFB.toString()) + 1;
                 transaction.setIdPerMonth(idPerMonth);
                 mutableData.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 mutableData.child(Definition.BALANCE).setValue(category.getBalance());
                 mutableData.child(Definition.CATEGORIES).child(category.getId()).child(Definition.TRANSACTIONS).child(tranId).setValue(transaction); // todo check if event listener call
                 return Transaction.success(mutableData);
@@ -348,5 +351,18 @@ public class InsertTransactionActivity extends AppCompatActivity {
         paymentMethodList.add(getString(R.string.bank_wired));
 
         return paymentMethodList;
+    }
+
+    private void setTitleText() {
+        String title = getString(R.string.app_name);
+        title += month != null ? "\n" + month.getYearMonth() : "";
+        TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setText(title);
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
+        setTitleText();
     }
 }

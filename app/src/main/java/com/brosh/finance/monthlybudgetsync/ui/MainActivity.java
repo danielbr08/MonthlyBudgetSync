@@ -1,6 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
         userKey = user.getDbKey();
         userLogeedInTV = (TextView) findViewById(R.id.tv_user_logeed_in);
-        userLogeedInTV.setText(user.getName());
+        userLogeedInTV.setText(String.format("%s %s", user.getName(), getString(R.string.logged_in)));
         dbService = DBService.getInstance();
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
@@ -125,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
         closeMainButton = (Button) findViewById(R.id.closeMainButton);
         refresh();
         setRefreshListener();
+        setToolbar();
 
         //month = new Month(getTodayDate());
-        //setTitle(month.getYearMonth(month.getMonth(), '.'));
         //initRefMonthSpinner();
 
         //Listening to button event
@@ -202,11 +203,10 @@ public class MainActivity extends AppCompatActivity {
 //                refMonth = DateService.getYearMonth(selectedDate, Config.DATE_FORMAT_CHARACTER);
                 month = dbService.getMonth(refMonth);
                 boolean isActive = month != null && month.isActive();
-//                if(month != null)
-//                setTitle(DateService.getYearMonth(month.getMonth(), '.'));
 
                 insertTransactionButton.setEnabled(isActive);
                 createBudgetButton.setEnabled(isActive);
+                setTitleText();
             }
 
             @Override
@@ -214,6 +214,19 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void setTitleText() {
+        String title = getString(R.string.app_name);
+        title += month != null ? "\n" + month.getYearMonth() : "";
+        TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setText(title);
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
+        setTitleText();
     }
 
     public void logout(View view) {
@@ -228,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseAuth.getInstance().signOut();//logout
         DBService.getInstance().clear();
+        userLogeedInTV.setText(getString(R.string.empty));
         startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
@@ -355,6 +369,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (!dbService.isCurrentRefMonthExists()) {
                 createNewMonth(new Date());
+                budgetButton.setEnabled(true);
+                transactionsButton.setEnabled(true);
+                insertTransactionButton.setEnabled(true);
             }
             month = dbService.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
             Date nextRefMonth = DateService.getNextRefMonth(month.getRefMonth());

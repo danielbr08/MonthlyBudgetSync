@@ -1,6 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,7 +59,7 @@ public class BudgetActivity extends AppCompatActivity {
         userKey = user.getDbKey();
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
-//        setTitle(getYearMonth(month.getMonth(), '.'));
+        setToolbar();
 
         ll = (LinearLayout) findViewById(R.id.LLBudget);
         setCategoriesInGui();
@@ -66,26 +67,6 @@ public class BudgetActivity extends AppCompatActivity {
 
         //setCloseButton();
     }
-//        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-//        public void setTitle(String refMonth) {
-//            //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-//            android.support.v7.app.ActionBar ab = getSupportActionBar();
-//            TextView tv = new TextView(getApplicationContext());
-//
-//            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-//                    ActionBar.LayoutParams.MATCH_PARENT, // Width of TextView
-//                    ActionBar.LayoutParams.WRAP_CONTENT);
-//            tv.setLayoutParams(lp);
-//            tv.setTypeface(null, Typeface.BOLD);
-//            tv.setTextColor(Color.WHITE);
-//            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//            tv.setText(LANGUAGE.appName + "\n" + refMonth);
-//            tv.setTextSize(18);
-//
-//            ab.setCustomView(tv);
-//            ab.setDisplayShowCustomEnabled(true); //show custom title
-//            ab.setDisplayShowTitleEnabled(false); //hide the default title
-//        }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void addCategoryRow(String categoryName, String Budget, String balance, boolean isExceptionFromBudget)//Bundle savedInstanceState)
@@ -219,6 +200,19 @@ public class BudgetActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    private void setTitleText() {
+        String title = getString(R.string.app_name);
+        title += month != null ? "\n" + month.getYearMonth() : "";
+        TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setText(title);
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
+        setTitleText();
     }
 
     public Month getMonth() {

@@ -66,5 +66,6 @@
     <string name="cash">מזומן</string>
     <string name="chek">צ\'ק</string>
     <string name="bank_wired">העברה בנקאית</string>
-    <string name="user_created">משתמש נוצר.</string>
+    <string name="user_created">משתמש נוצר</string>
+    <string name="logged_in">מחובר </string>
 </resources>

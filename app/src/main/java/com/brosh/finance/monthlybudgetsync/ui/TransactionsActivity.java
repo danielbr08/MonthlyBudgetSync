@@ -2,6 +2,7 @@ package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,6 +67,7 @@ public class TransactionsActivity extends AppCompatActivity {
         userKey = user.getDbKey();
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);
+        setToolbar();
         String selectedCategory = extras.containsKey("categoryName") ? extras.getString("categoryName") : null;
 
         this.transactions = dbService.getTransactions(refMonth);
@@ -229,5 +231,18 @@ public class TransactionsActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    private void setTitleText() {
+        String title = getString(R.string.app_name);
+        title += month != null ? "\n" + month.getYearMonth() : "";
+        TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setText(title);
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
+        setTitleText();
     }
 }
