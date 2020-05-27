@@ -15,7 +15,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="new_here_create_account">New Here ? Create Account</string>
-    <string name="logout">Logout</string>
+    <string name="logout">(Logout)</string>
     <string name="your_profile">Your Profile</string>
     <string name="your_name">Your Name</string>
     <string name="your_email_address">Your Email Address</string>
@@ -66,5 +66,5 @@
     <string name="chek">Check</string>
     <string name="bank_wired">Bank Ttransfer</string>
     <string name="user_created">User Created</string>
-    <string name="logged_in">logged in</string>
+    <string name="logged_as">logged as: </string>
 </resources>

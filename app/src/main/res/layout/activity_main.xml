@@ -47,20 +47,21 @@
                     android:id="@+id/tv_user_logeed_in"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:padding="@dimen/padding_8"
+                    android:padding="@dimen/padding_2"
                     android:text=""
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/logoutButton"
+                <TextView
+                    android:id="@+id/logoutTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="logout"
-                    android:padding="8dp"
+                    android:padding="@dimen/padding_2"
                     android:text="@string/logout"
+                    android:textColor="@color/colorBlue"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tv_user_logeed_in"
                     app:layout_constraintTop_toTopOf="parent" />

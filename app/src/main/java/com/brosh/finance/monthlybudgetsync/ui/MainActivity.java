@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
         userKey = user.getDbKey();
         userLogeedInTV = (TextView) findViewById(R.id.tv_user_logeed_in);
-        userLogeedInTV.setText(String.format("%s %s", user.getName(), getString(R.string.logged_in)));
+        userLogeedInTV.setText(String.format("%s%s", user.getName(), getString(R.string.logged_as)));
         dbService = DBService.getInstance();
 
         DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
