@@ -161,7 +161,10 @@ public class InsertTransactionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //To show current date in the datepicker
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                View focusedView = getCurrentFocus();
+                if(focusedView != null){
+                    imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+                }
                 Calendar mcurrentDate = Calendar.getInstance();
                 int mYear = mcurrentDate.get(Calendar.YEAR);
                 int mMonth = mcurrentDate.get(Calendar.MONTH);
