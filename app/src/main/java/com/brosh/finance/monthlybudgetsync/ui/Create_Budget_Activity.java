@@ -48,6 +48,12 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -102,6 +108,18 @@ public class Create_Budget_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdView adView = new AdView(this);
+        adView.setAdSize(AdSize.SMART_BANNER);
+//        adView.setAdUnitId("ca-app-pub-9791546601159997/6363000976");
+        adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         User user = (User) getIntent().getExtras().getSerializable(Definition.USER);
         String userKey = user.getDbKey();
