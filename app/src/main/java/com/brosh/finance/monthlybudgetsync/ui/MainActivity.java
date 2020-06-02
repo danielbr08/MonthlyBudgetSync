@@ -26,6 +26,12 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 //import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private Button budgetButton;
     private Button transactionsButton;
     private Button createBudgetButton;
-    private Button closeMainButton;
     private boolean touched = false; // Indicate for language spinner
     private Month month;
     private SwipeRefreshLayout refreshLayout;
@@ -102,6 +107,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdView adView = new AdView(this);
+        adView.setAdSize(AdSize.SMART_BANNER);
+//        adView.setAdUnitId("ca-app-pub-9791546601159997/6363000976");
+        adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
         userKey = user.getDbKey();
         userLogeedInTV = findViewById(R.id.tv_user_logeed_in);
@@ -123,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         budgetButton = (Button) findViewById(R.id.budgetButton);
         transactionsButton = (Button) findViewById(R.id.transactionsButton);
         createBudgetButton = (Button) findViewById(R.id.createBudgetButton);
-        closeMainButton = (Button) findViewById(R.id.closeMainButton);
         refresh();
         setRefreshListener();
         setToolbar();
@@ -178,17 +195,6 @@ public class MainActivity extends AppCompatActivity {
                 //initRefMonthSpinner();
                 addParametersToActivity(createBudgetScreen);
                 startActivity(createBudgetScreen);
-            }
-        });
-
-        //Listening to button event
-        closeMainButton.setOnClickListener(new View.OnClickListener() {
-
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            public void onClick(View arg0) {
-                // finish();
-                // System.exit(0);
-                // finish();
             }
         });
 
