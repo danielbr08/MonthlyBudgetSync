@@ -35,6 +35,7 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
+import com.brosh.finance.monthlybudgetsync.services.UIService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,28 +68,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private Month month;
 
     private Set<String> shopsSet;
-
-//    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-//    public void setTitle(String refMonth)
-//    {
-//        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-//        android.support.v7.app.ActionBar ab = getSupportActionBar();
-//        TextView tv = new TextView(getApplicationContext());
-//
-//        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-//                ActionBar.LayoutParams.MATCH_PARENT, // Width of TextView
-//                ActionBar.LayoutParams.WRAP_CONTENT);
-//        tv.setLayoutParams(lp);
-//        tv.setTypeface(null, Typeface.BOLD);
-//        tv.setTextColor(Color.WHITE);
-//        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//        tv.setText(language.appName + "\n"  + refMonth);
-//        tv.setTextSize(18);
-//
-//        ab.setCustomView(tv);
-//        ab.setDisplayShowCustomEnabled(true); //show custom title
-//        ab.setDisplayShowTitleEnabled(false); //hide the default title
-//    }
 
     public void setSpinnersAllignment() {
         List<String> categoriesNames = dbService.getCategoriesNames(month.getYearMonth());
@@ -136,6 +115,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_transaction);
+        UIService.addAdvertiseToActivity(this);
 
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
@@ -162,7 +142,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 //To show current date in the datepicker
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
-                if(focusedView != null){
+                if (focusedView != null) {
                     imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
                 }
                 Calendar mcurrentDate = Calendar.getInstance();

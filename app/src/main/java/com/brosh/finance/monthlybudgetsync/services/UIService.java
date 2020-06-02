@@ -1,6 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.services;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.*;
 import android.os.Build;
 import android.text.InputType;
@@ -10,8 +11,15 @@ import android.widget.*;
 
 import androidx.annotation.RequiresApi;
 
+import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Config;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 
@@ -174,5 +182,19 @@ public final class UIService {
         spinner.setAdapter(adapter);
         spinner.setSelection(1, true);
         spinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+    }
+
+    public static void addAdvertiseToActivity(Context context) {
+        MobileAds.initialize(context, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdView adView = new AdView(context);
+        adView.setAdSize(AdSize.SMART_BANNER);
+//        adView.setAdUnitId("ca-app-pub-9791546601159997/6363000976");
+        adView = ((Activity) context).findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 }

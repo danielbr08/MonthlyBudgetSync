@@ -108,18 +108,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-        AdView adView = new AdView(this);
-        adView.setAdSize(AdSize.SMART_BANNER);
-//        adView.setAdUnitId("ca-app-pub-9791546601159997/6363000976");
-        adView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        UIService.addAdvertiseToActivity(this);
 
         User user = (User) getIntent().getExtras().getSerializable(Definition.USER);
         String userKey = user.getDbKey();

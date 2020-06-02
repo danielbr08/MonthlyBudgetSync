@@ -31,6 +31,7 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.services.ComparatorService;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
+import com.brosh.finance.monthlybudgetsync.services.UIService;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class TransactionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
+        UIService.addAdvertiseToActivity(this);
 
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
