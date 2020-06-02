@@ -61,11 +61,15 @@ public class TransactionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
-        UIService.addAdvertiseToActivity(this);
 
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        if (user.getUsserConfig().isAdEnabled()) {
+            UIService.addAdvertiseToActivity(this);
+        } else {
+            findViewById(R.id.adView).setVisibility(View.GONE);
+        }
         userKey = user.getDbKey();
         dbService = DBService.getInstance();
         month = dbService.getMonth(refMonth);

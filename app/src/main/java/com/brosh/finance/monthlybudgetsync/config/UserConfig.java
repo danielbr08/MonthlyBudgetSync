@@ -12,6 +12,8 @@ public class UserConfig implements Serializable {
     }
 
     public UserConfig() {
+        this.chargeDay = 1;
+        this.isAdEnabled = true;
     }
 
     public int getChargeDay() {

@@ -48,12 +48,6 @@ import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 import com.brosh.finance.monthlybudgetsync.services.UIService;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -62,11 +56,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-//import android.support.annotation.RequiresApi;
-//import android.support.v7.app.AlertDialog;
-//import android.support.v7.app.AppCompatActivity;
-//import com.brosh.finance.monthlybudgetsync.services.NetworkService;
 
 public class Create_Budget_Activity extends AppCompatActivity {
 
@@ -94,13 +83,10 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     private LinearLayout LLMain;
     private LinearLayout LLBudgets;
-    //Button to add a row
-    private Button addCategoryButton;
+    private User user;
 
     private SwipeRefreshLayout refreshLayout;
 
-    //Button to write all the inserted categories to budget file
-    private Button OKButton;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -108,9 +94,13 @@ public class Create_Budget_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
-        UIService.addAdvertiseToActivity(this);
 
-        User user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        if (user.getUsserConfig().isAdEnabled()) {
+            UIService.addAdvertiseToActivity(this);
+        } else {
+            findViewById(R.id.adView).setVisibility(View.GONE);
+        }
         String userKey = user.getDbKey();
         String refMonth = getIntent().getExtras().getString(Definition.MONTH);
         dbService = DBService.getInstance();
@@ -132,9 +122,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
         display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
-
-        addCategoryButton = new Button(Create_Budget_Activity.this);
-        OKButton = new Button(Create_Budget_Activity.this);
 
         setRefreshListener();
         setBudgetGui();

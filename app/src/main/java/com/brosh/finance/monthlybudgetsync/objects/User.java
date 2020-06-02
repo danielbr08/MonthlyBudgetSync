@@ -78,6 +78,7 @@ public class User implements Serializable {
         this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
         this.password = password;
         this.owner = null;
+        this.usserConfig = new UserConfig();
     }
 
     public User(String name, String email, String phone, String dbKey) {

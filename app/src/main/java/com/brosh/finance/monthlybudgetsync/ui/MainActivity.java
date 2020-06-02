@@ -101,9 +101,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        UIService.addAdvertiseToActivity(this);
 
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        if (user.getUsserConfig().isAdEnabled()) {
+            UIService.addAdvertiseToActivity(this);
+        } else {
+            findViewById(R.id.adView).setVisibility(View.GONE);
+        }
         userKey = user.getDbKey();
         userLogeedInTV = findViewById(R.id.tv_user_logeed_in);
         userLogeedInTV.setText(String.format("%s %s", getString(R.string.logged_as), user.getName()));
