@@ -122,26 +122,38 @@
 
                 </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/budgets_rows"
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                    <Button
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@android:drawable/ic_input_add"
-                        android:onClick="addInputRow" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/budgets_rows"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <Button
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@android:drawable/ic_input_add"
+                                android:onClick="addInputRow" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
 
             </LinearLayout>
         </LinearLayout>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <LinearLayout
