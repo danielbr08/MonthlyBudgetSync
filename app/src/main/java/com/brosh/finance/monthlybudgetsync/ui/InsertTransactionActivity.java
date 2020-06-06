@@ -190,8 +190,9 @@ public class InsertTransactionActivity extends AppCompatActivity {
 //        });
 
         btnSendTransaction.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
+            public void onClick(View view) {
                 insertTransaction(refMonth);
+                view.setEnabled(false);
             }
         });
     }

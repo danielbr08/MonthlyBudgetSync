@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,24 +9,22 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_transactions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:background="@drawable/red_border_style"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginBottom="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/LLMainTransactions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="4dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -39,12 +37,12 @@
                         android:id="@+id/transactionsTitleLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
                         android:text="@string/transactions"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
                         android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:gravity="center_horizontal" />
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -68,110 +66,109 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1.05"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:id="@+id/textViewTotalTransactionsLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/padding_8"
+                            android:layout_marginRight="@dimen/padding_8"
+                            android:gravity="center_horizontal"
                             android:text='@string/total'
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
-                            android:gravity="center_horizontal"
-                            android:layout_marginRight="@dimen/padding_8"
-                            android:layout_marginLeft="@dimen/padding_8" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_total_transactions_top"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="@dimen/padding_8"
+                            android:layout_marginRight="@dimen/padding_8"
                             android:text="0"
                             android:textColor="@android:color/black"
                             android:textDirection="ltr"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold"
-                            android:layout_marginRight="@dimen/padding_8"
-                            android:layout_marginLeft="@dimen/padding_8" />
+                            tools:targetApi="jelly_bean_mr1" />
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    xmlns:tools="http://schemas.android.com/tools"
+                <LinearLayout
                     android:id="@+id/headersTV"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:weightSum="1"
-                    android:padding="8dp"
                     android:background="@drawable/border_style"
-                    android:minHeight="50dp">
+                    android:minHeight="50dp"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:weightSum="1">
 
                     <TextView
                         android:id="@+id/trn_id"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:text="@string/id"
-                        android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
                         android:layout_weight="0.10"
-                        android:gravity="center_vertical" />
+                        android:gravity="center_vertical"
+                        android:text="@string/id"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/trn_category"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:text="@string/category"
-                        android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
                         android:layout_weight="0.15"
-                        android:gravity="center_vertical" />
+                        android:gravity="center_vertical"
+                        android:text="@string/category"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/trn_store"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:text="@string/store"
-                        android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
                         android:layout_weight="0.2"
-                        android:gravity="center_vertical" />
+                        android:gravity="center_vertical"
+                        android:text="@string/store"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/trn_charge_date"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:text="@string/charge_date"
-                        android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
                         android:layout_weight="0.2"
-                        android:gravity="center_vertical" />
+                        android:gravity="center_vertical"
+                        android:text="@string/charge_date"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/trn_payment_method"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
+                        android:layout_weight="0.2"
+                        android:gravity="center_vertical"
                         android:text="@string/payment_method"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:layout_weight="0.2"
-                        android:textAlignment="center"
-                        android:gravity="center_vertical"
                         tools:ignore="RtlCompat" />
 
                     <TextView
@@ -179,13 +176,13 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:text="@string/price"
-                        android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
                         android:layout_weight="0.15"
                         android:gravity="center_vertical"
+                        android:text="@string/price"
                         android:textAlignment="viewEnd"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/transaction_text_size"
+                        android:textStyle="bold"
                         tools:ignore="RtlCompat" />
 
                 </LinearLayout>
@@ -200,9 +197,9 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/transactions_rows"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="1" />
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical" />
 
                 </LinearLayout>
 
@@ -210,26 +207,22 @@
                     android:id="@+id/ll_no_trans_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:text="@string/no_transactions_exists"
                         android:gravity="center_horizontal"
+                        android:text="@string/no_transactions_exists"
+                        android:textAlignment="center"
                         android:textColor="@android:color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"></TextView>
 
                 </LinearLayout>
-
-
             </LinearLayout>
-
-        </LinearLayout>
-
+        </ScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -244,10 +237,8 @@
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             ads:adSize="SMART_BANNER"
             ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
     </LinearLayout>
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

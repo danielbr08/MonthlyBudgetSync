@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,38 +11,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="1">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/BudgetTitleLabel"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@string/budget"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:padding="8dp" />
-            </LinearLayout>
+                    android:weightSum="1">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/BudgetTitleLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:padding="8dp"
+                        android:text="@string/budget"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/LLBudget"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
 
                     android:layout_weight="1"
                     android:orientation="vertical">
@@ -60,40 +60,40 @@
                             android:id="@+id/categoryLabel"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:padding="8dp"
                             android:layout_weight="1"
+                            android:padding="8dp"
                             android:text="@string/category"
-                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
                             android:textAlignment="viewStart"
                             android:textColor="@android:color/black"
+                            android:textSize="@dimen/transaction_text_size"
+                            android:textStyle="bold"
                             tools:ignore="RtlCompat" />
 
                         <TextView
                             android:id="@+id/budgetLabel"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:padding="8dp"
                             android:layout_weight="1"
-                            android:text="@string/budget"
-                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
-                            android:textAlignment="center"
                             android:gravity="center_horizontal"
-                            android:textColor="@android:color/black" />
+                            android:padding="8dp"
+                            android:text="@string/budget"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/transaction_text_size"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/balanceLabel"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:padding="8dp"
                             android:layout_weight="1"
+                            android:gravity="end"
+                            android:padding="8dp"
                             android:text="@string/balance"
-                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
-                            android:textColor="@android:color/black"
                             android:textAlignment="viewEnd"
-                            android:gravity="end" />
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/transaction_text_size"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -102,7 +102,7 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical" />
 
-                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/border_style"
@@ -113,51 +113,48 @@
                             android:id="@+id/totalLabel"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:padding="8dp"
                             android:layout_weight="1"
+                            android:padding="8dp"
                             android:text="@string/total"
+                            android:textColor="@android:color/black"
                             android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
-                            android:textColor="@android:color/black" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/totalBudget"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:padding="8dp"
                             android:layout_weight="1"
-                            android:text=""
-                            android:textDirection="ltr"
-                            android:textAlignment="center"
                             android:gravity="center_horizontal"
+                            android:padding="8dp"
+                            android:text=""
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold"
-                            android:textColor="@android:color/black" />
+                            tools:targetApi="jelly_bean_mr1" />
 
                         <TextView
                             android:id="@+id/totalBalance"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:padding="8dp"
                             android:layout_weight="1"
-                            android:text=""
-                            android:textDirection="ltr"
-                            android:textAlignment="viewEnd"
                             android:gravity="end"
+                            android:padding="8dp"
+                            android:text=""
+                            android:textAlignment="viewEnd"
+                            android:textColor="@android:color/black"
+                            android:textDirection="ltr"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold"
-                            android:textColor="@android:color/black" />
+                            tools:targetApi="jelly_bean_mr1" />
 
                     </LinearLayout>
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"></LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+        </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <LinearLayout
@@ -171,10 +168,8 @@
             android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             ads:adSize="SMART_BANNER"
             ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
     </LinearLayout>
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
