@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/border_style"
@@ -23,7 +24,8 @@
         android:text="@string/budget"
         android:textDirection="ltr"
         android:textAlignment="center"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/balanceLabel"
@@ -34,6 +36,7 @@
         android:text="@string/balance"
         android:textDirection="ltr"
         android:textAlignment="viewEnd"
-        android:gravity="end" />
+        android:gravity="end"
+        tools:targetApi="jelly_bean_mr1" />
 
 </LinearLayout>

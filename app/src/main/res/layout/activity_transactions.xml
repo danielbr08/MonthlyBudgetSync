@@ -89,7 +89,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="@dimen/padding_8"
                             android:layout_marginRight="@dimen/padding_8"
-                            android:text="0"
+                            android:text="@string/zero"
                             android:textColor="@android:color/black"
                             android:textDirection="ltr"
                             android:textSize="@dimen/transaction_text_size"

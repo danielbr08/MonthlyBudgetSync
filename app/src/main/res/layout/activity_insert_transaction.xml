@@ -131,10 +131,12 @@
                     android:clickable="true"
 
                     android:ems="10"
-                    android:focusable="false"
+                    android:focusable="true"
 
                     android:inputType="date"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:autofillHints=""
+                    tools:targetApi="o" />
 
             </LinearLayout>
 
@@ -194,7 +196,9 @@
                     android:ems="10"
                     android:inputType="numberSigned|numberDecimal|textMultiLine"
                     android:orientation="vertical"
-                    android:textDirection="ltr" />
+                    android:textDirection="ltr"
+                    tools:targetApi="jelly_bean_mr1"
+                    android:importantForAutofill="no" />
 
             </LinearLayout>
 
@@ -219,8 +223,6 @@
                 android:id="@+id/adView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
                 ads:adSize="SMART_BANNER"
                 ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
 
