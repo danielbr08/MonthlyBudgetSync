@@ -21,6 +21,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private Button btnSendTransaction;
     private Button btnClose;
     private EditText payDateEditText;
+    private ProgressBar progressBar;
 
     private DBService dbService;
     private String userKey;
@@ -110,6 +112,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_transaction);
 
+        progressBar = findViewById(R.id.progress_circular);
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
@@ -191,6 +194,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
         btnSendTransaction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 insertTransaction(refMonth);
                 view.setEnabled(false);
             }
@@ -282,6 +286,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
                     TextService.showMessage(getString(R.string.transaction_inserted_successfully), Toast.LENGTH_LONG, context);
                     ((Activity) context).finish();
                 } catch (Exception e) {
+                    progressBar.setVisibility(View.GONE);
                     String s = e.getMessage();
                     s = s;
                 }

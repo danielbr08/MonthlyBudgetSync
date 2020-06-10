@@ -164,12 +164,12 @@
         app:layout_constraintBottom_toBottomOf="@+id/refresh_layout_budgets"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+            android:layout_height="wrap_content"
+            app:adSize="SMART_BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
