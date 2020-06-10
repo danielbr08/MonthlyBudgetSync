@@ -1,7 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.brosh.finance.monthlybudgetsync.config.UserConfig;
-import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
 
 import java.io.Serializable;
@@ -14,7 +13,7 @@ public class User implements Serializable {
     private String dbKey;
     private String owner; // if he is the owner of the DB
 
-    private UserConfig usserConfig;
+    private UserConfig userConfig;
     //private String groupID;
 
     public String getEmail() {
@@ -78,7 +77,7 @@ public class User implements Serializable {
         this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
         this.password = password;
         this.owner = null;
-        this.usserConfig = new UserConfig();
+        this.userConfig = new UserConfig();
     }
 
     public User(String name, String email, String phone, String dbKey) {
@@ -113,11 +112,11 @@ public class User implements Serializable {
         this.owner = owner;
     }
 
-    public UserConfig getUsserConfig() {
-        return usserConfig;
+    public UserConfig getUserConfig() {
+        return userConfig;
     }
 
-    public void setUsserConfig(UserConfig usserConfig) {
-        this.usserConfig = usserConfig;
+    public void setUserConfig(UserConfig userConfig) {
+        this.userConfig = userConfig;
     }
 }

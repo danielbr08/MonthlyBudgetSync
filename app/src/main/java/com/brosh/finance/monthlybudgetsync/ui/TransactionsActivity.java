@@ -1,19 +1,15 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -65,7 +61,7 @@ public class TransactionsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
-        if (user.getUsserConfig().isAdEnabled()) {
+        if (user.getUserConfig().isAdEnabled()) {
             UIService.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);

@@ -96,7 +96,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_create_budget);
 
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
-        if (user.getUsserConfig().isAdEnabled()) {
+        if (user.getUserConfig().isAdEnabled()) {
             UIService.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);

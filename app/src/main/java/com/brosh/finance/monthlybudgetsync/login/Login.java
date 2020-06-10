@@ -26,7 +26,6 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.TextService;
-import com.brosh.finance.monthlybudgetsync.ui.InitAppActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -158,8 +157,8 @@ public class Login extends AppCompatActivity implements UserStartApp {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 User user = snapshot.child(Definition.USERS).child(userDBKey).getValue(User.class);
-                if (user.getUsserConfig() == null) { // todo remove after add config object for all users
-                    user.setUsserConfig(new UserConfig());
+                if (user.getUserConfig() == null) { // todo remove after add config object for all users
+                    user.setUserConfig(new UserConfig());
                     snapshot.child(Definition.USERS).child(userDBKey).getRef().setValue(user);
                 }
                 //                String ownerDBKey = null;

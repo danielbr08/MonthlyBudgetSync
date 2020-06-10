@@ -113,7 +113,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definition.MONTH, null);
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
-        if (user.getUsserConfig().isAdEnabled()) {
+        if (user.getUserConfig().isAdEnabled()) {
             UIService.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
