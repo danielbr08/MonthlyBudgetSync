@@ -285,7 +285,9 @@ public class TransactionsActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             Transaction tran = transactions.get(position);
+            String catId = DBService.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId();
             DBService.getInstance().markAsDeleteTransaction(refMonth, tran);
+            DBService.getInstance().updateCategoryBudgetValue(refMonth, catId);
             transactions.remove(position);
             adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
         }

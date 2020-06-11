@@ -396,7 +396,7 @@ public final class DBService {
                 String refMonth = dataSnapshot.getKey();
                 Month month = dataSnapshot.getValue(Month.class);
                 month.setIsActive();
-                DBService.getInstance().monthDBHM.put(refMonth, month);
+                monthDBHM.put(refMonth, month);
                 DataSnapshot categoriesDBSnapShot = dataSnapshot.child(Definition.CATEGORIES);
                 if (categoriesDBSnapShot.exists()) {
                     setAddChildCategoryEvent(categoriesDBSnapShot, refMonth);
@@ -437,7 +437,7 @@ public final class DBService {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Category cat = dataSnapshot.getValue(Category.class);
-                DBService.getInstance().getCategories(refMonth).put(cat.getId(), cat);
+                getCategories(refMonth).put(cat.getId(), cat);
                 setCategoryFieldsEventUpdateValue(dataSnapshot, refMonth);
             }
 
@@ -448,7 +448,7 @@ public final class DBService {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String catId = dataSnapshot.getKey();
-                DBService.getInstance().getCategories(refMonth).remove(catId);
+                getCategories(refMonth).remove(catId);
                 deleteEventsListener(dataSnapshot.getRef());
             }
 
@@ -474,10 +474,10 @@ public final class DBService {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String tranId = dataSnapshot.getKey();
                 Transaction tran = dataSnapshot.getValue(Transaction.class);
-                Category cat = DBService.getInstance().getCategoryById(refMonth, catId);
+                Category cat = getCategoryById(refMonth, catId);
                 cat.getTransactions().put(tranId, tran);
-                double newBalance = cat.getBudget() - DBService.getInstance().getTotalTransactionsSum(refMonth, catId);
-                DBService.getInstance().getCategoryById(refMonth, catId).setBalance(newBalance);
+                double newBalance = cat.getBudget() - getTotalTransactionsSum(refMonth, catId, true);
+                getCategoryById(refMonth, catId).setBalance(newBalance);
                 setTransactionFieldsEventUpdateValue(dataSnapshot, refMonth, catId);
             }
 
@@ -489,7 +489,7 @@ public final class DBService {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String tranId = dataSnapshot.getKey();
                 if (isTranExists(refMonth, catId, tranId)) { // todo for all child removed event
-                    DBService.getInstance().getTransactions(refMonth, catId).remove(tranId);
+                    getTransactions(refMonth, catId).remove(tranId);
                     deleteEventsListener(dataSnapshot.getRef());// todo delete anyway (method need to support case of have no event listener for this node)
                 }
             }
@@ -510,10 +510,12 @@ public final class DBService {
         }
     }
 
-    private double getTotalTransactionsSum(String refMonth, String catId) {
+    private double getTotalTransactionsSum(String refMonth, String catId, boolean onlyActive) {
         List<Transaction> catTrans = this.getTransactions(refMonth, catId);
         double sum = 0;
         for (Transaction trn : catTrans) {
+            if (onlyActive && (trn.isStorno() || trn.isDeleted()))
+                continue;
             sum += trn.getPrice();
         }
         return sum;
@@ -945,7 +947,7 @@ public final class DBService {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Budget budget = dataSnapshot.getValue(Budget.class);
-                DBService.getInstance().updateSpecificBudget(budgetNumber, budget);
+                updateSpecificBudget(budgetNumber, budget);
             }
 
             @Override
@@ -981,7 +983,7 @@ public final class DBService {
                 };
                 String budgetNumber = dataSnapshot.getKey();
                 Map<String, Budget> budgets = dataSnapshot.getValue(genericTypeIndicator);
-                DBService.getInstance().budgetDBHM.put(budgetNumber, budgets);
+                budgetDBHM.put(budgetNumber, budgets);
             }
 
             @Override
@@ -992,7 +994,7 @@ public final class DBService {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String budgetNumber = dataSnapshot.getKey();
-                DBService.getInstance().budgetDBHM.remove(budgetNumber);
+                budgetDBHM.remove(budgetNumber);
                 deleteEventsListener(dataSnapshot.getRef());
             }
 
@@ -1034,12 +1036,29 @@ public final class DBService {
 
     public void markAsDeleteTransaction(String refMonth, Transaction tran) {
         tran.setDeleted(true);
-        String catId = DBService.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId();
+        String catId = getCategoryByName(refMonth, tran.getCategory()).getId();
         getDBTransactionsPath(refMonth, catId).runTransaction(new com.google.firebase.database.Transaction.Handler() {
             @NonNull
             @Override
             public com.google.firebase.database.Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 mutableData.child(tran.getId()).child(Definition.DELETED).setValue(tran.isDeleted());
+                return com.google.firebase.database.Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    public void updateCategoryBudgetValue(String refMonth, String catId) {
+        Double balance = getTotalTransactionsSum(refMonth, catId, true);
+        getDBCategoriesPath(refMonth).runTransaction(new com.google.firebase.database.Transaction.Handler() {
+            @NonNull
+            @Override
+            public com.google.firebase.database.Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                mutableData.child(catId).child(Definition.BALANCE).setValue(balance);
                 return com.google.firebase.database.Transaction.success(mutableData);
             }
 
