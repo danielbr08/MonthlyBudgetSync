@@ -9,7 +9,7 @@
     android:padding="10dp"
     android:background="@drawable/border_style"
     android:gravity="center_vertical"
-    android:minHeight="70dp">
+    android:minHeight="50dp">
 
     <TextView
         android:id="@+id/trn_id"
