@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -576,7 +577,7 @@ public final class DBService {
 
     private void setTransactionFieldsEventUpdateValue(final DataSnapshot transactionDBDataSnapshot, String refMonth, String catId) {
         String tranId = transactionDBDataSnapshot.getKey();
-        List<String> transactionFields = Arrays.asList(Definition.IS_STORNO, Definition.STORNO_OF);
+        List<String> transactionFields = Arrays.asList(Definition.IS_STORNO, Definition.STORNO_OF, Definition.DELETED);
         for (String transactionField : transactionFields) {
             DataSnapshot transactionFieldDataBaseReference = transactionDBDataSnapshot.child(transactionField);
             setTransactionFieldEventUpdateValue(transactionFieldDataBaseReference, refMonth, catId, tranId);
@@ -599,6 +600,9 @@ public final class DBService {
                         case Definition.STORNO_OF:
                             int stornoOf = Integer.valueOf(dataSnapshot.getValue().toString());
                             currentTransaction.setStornoOf(stornoOf);
+                        case Definition.DELETED:
+                            boolean deleted = Boolean.valueOf(dataSnapshot.getValue().toString());
+                            currentTransaction.setDeleted(deleted);
                     }
                 }
             }
@@ -832,7 +836,7 @@ public final class DBService {
         if (onlyActive) {
             List<Transaction> activeTtransactions = new ArrayList<>();
             for (Transaction tran : getTransactions(refMonth, catId)) {
-                if (!tran.getIsStorno()) {
+                if (!tran.getIsStorno() && !tran.isDeleted()) {
                     activeTtransactions.add(tran);
                 }
             }
@@ -1026,6 +1030,24 @@ public final class DBService {
     public void updateShopsFB() {
         List<String> shops = new ArrayList<>(shopsSet);
         getDBShopsPath().setValue(shops);
+    }
+
+    public void markAsDeleteTransaction(String refMonth, Transaction tran) {
+        tran.setDeleted(true);
+        String catId = DBService.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId();
+        getDBTransactionsPath(refMonth, catId).runTransaction(new com.google.firebase.database.Transaction.Handler() {
+            @NonNull
+            @Override
+            public com.google.firebase.database.Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                mutableData.child(tran.getId()).child(Definition.DELETED).setValue(tran.isDeleted());
+                return com.google.firebase.database.Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 
 //    public void share(String emailToShare) throws Exception {

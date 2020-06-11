@@ -263,7 +263,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
 //                    monthDB.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
 //                categoriesDB.child(Definition.BALANCE)
         final com.brosh.finance.monthlybudgetsync.objects.Transaction finalStornoTransaction = stornoTransaction;
-        monthDB.runTransaction(new Transaction.Handler() {
+        monthDB.runTransaction(new Transaction.Handler() { // todo move to DBService
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {

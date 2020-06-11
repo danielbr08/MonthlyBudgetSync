@@ -18,6 +18,7 @@ public class Transaction implements Serializable {
     private Date registrationDate;
     private boolean isStorno;
     private int stornoOf;
+    private boolean deleted;
 
     public Transaction() {
     }
@@ -162,6 +163,22 @@ public class Transaction implements Serializable {
 
     public void setStornoOf(int stornoOf) {
         this.stornoOf = stornoOf;
+    }
+
+    public boolean isStorno() {
+        return isStorno;
+    }
+
+    public void setStorno(boolean storno) {
+        isStorno = storno;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public boolean isStorno(Transaction tran) {

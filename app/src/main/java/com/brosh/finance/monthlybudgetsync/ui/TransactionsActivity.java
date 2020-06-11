@@ -1,8 +1,10 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -39,18 +41,21 @@ import java.util.List;
 
 public class TransactionsActivity extends AppCompatActivity {
 
-    Spinner categoriesSpinner;
-    List<TextView[]> textViews = new ArrayList<TextView[]>();
+    private Spinner categoriesSpinner;
+    private List<TextView[]> textViews = new ArrayList<TextView[]>();
 
-    int widthDisplay;
-    List<Transaction> transactions;
-    List<String> defaultTextTVHeaders;
+    private int widthDisplay;
+    private List<Transaction> transactions;
+    private List<String> defaultTextTVHeaders;
+    private RecyclerView transactions_rows;
+    private TransactionsViewAdapter adapter;
 
     //todo get thos fields from caller intent
     private Month month;
     private DBService dbService;
     private String userKey;
     private User user;
+    private String refMonth;
 
     private SwipeRefreshLayout refreshLayout;
     private CheckBox transactionsActiveFilterCB;
@@ -61,8 +66,10 @@ public class TransactionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
 
+        transactions_rows = findViewById(R.id.transactions_rows);
+        adapter = null;
         Bundle extras = getIntent().getExtras();
-        String refMonth = extras.getString(Definition.MONTH, null);
+        refMonth = extras.getString(Definition.MONTH, null);
         user = (User) getIntent().getExtras().getSerializable(Definition.USER);
         if (user.getUserConfig().isAdEnabled()) {
             UIService.addAdvertiseToActivity(this);
@@ -147,8 +154,9 @@ public class TransactionsActivity extends AppCompatActivity {
             DecimalFormat decim = new DecimalFormat("#,###.##");
             ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(decim.format(tranSum));
         }
-        RecyclerView transactions_rows = findViewById(R.id.transactions_rows);
-        TransactionsViewAdapter adapter = new TransactionsViewAdapter(this, transactions, isIncludeCategory);
+        transactions_rows = findViewById(R.id.transactions_rows);
+        adapter = new TransactionsViewAdapter(this, transactions, isIncludeCategory);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(transactions_rows);
         transactions_rows.setAdapter(adapter);
         transactions_rows.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -263,4 +271,28 @@ public class TransactionsActivity extends AppCompatActivity {
             }
         });
     }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            return makeMovementFlags(dragFlags, swipeFlags);
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            adapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            Transaction tran = transactions.get(position);
+            DBService.getInstance().markAsDeleteTransaction(refMonth, tran);
+            transactions.remove(position);
+            adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+        }
+    };
 }

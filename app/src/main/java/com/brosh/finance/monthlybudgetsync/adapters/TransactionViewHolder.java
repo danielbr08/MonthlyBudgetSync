@@ -58,7 +58,7 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
             this.price.setText(decim.format(transaction.getPrice()));
         }
 
-        if (transaction.getIsStorno())
+        if (transaction.getIsStorno() || transaction.isDeleted())
 //            if (showCategory)
 //                UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
 //            else
