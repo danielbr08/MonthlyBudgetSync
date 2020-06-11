@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.InsertTransactionActivity"
-    android:weightSum="1">
+    android:weightSum="1"
+    tools:context=".ui.InsertTransactionActivity">
 
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="0.8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -24,8 +25,7 @@
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1"
-        android:layout_weight="0.8">
+        tools:layout_constraintTop_creator="1">
 
         <LinearLayout
             android:id="@+id/LLMainInsertTranssaction"
@@ -44,12 +44,12 @@
                     android:id="@+id/inserTransactionLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:text="@string/insert_transaction"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:gravity="center_horizontal" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -67,8 +67,8 @@
                     android:orientation="vertical"
                     android:text="@string/category"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/categorySpinner"
@@ -120,8 +120,8 @@
                     android:orientation="vertical"
                     android:text="@string/charge_date"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/payDatePlainText"
@@ -129,13 +129,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
                     android:clickable="true"
-
                     android:ems="10"
-                    android:focusable="true"
 
+                    android:focusable="false"
                     android:inputType="date"
                     android:orientation="vertical"
-                    android:autofillHints=""
                     tools:targetApi="o" />
 
             </LinearLayout>
@@ -155,19 +153,19 @@
                     android:orientation="vertical"
                     android:text="@string/store"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <AutoCompleteTextView
                     android:id="@+id/shopAutoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:inputType="text"
-                    android:imeOptions="actionNext"
-                    android:maxLines="1"
                     android:layout_weight=".3"
-                    android:orientation="vertical" />
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:orientation="vertical"
+                    android:singleLine="true" />
 
             </LinearLayout>
 
@@ -185,8 +183,8 @@
                     android:orientation="vertical"
                     android:text="@string/price"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/transactionPricePlainText"
@@ -194,11 +192,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
                     android:ems="10"
+                    android:importantForAutofill="no"
                     android:inputType="numberSigned|numberDecimal|textMultiLine"
                     android:orientation="vertical"
                     android:textDirection="ltr"
-                    tools:targetApi="jelly_bean_mr1"
-                    android:importantForAutofill="no" />
+                    tools:targetApi="jelly_bean_mr1" />
 
             </LinearLayout>
 
@@ -233,8 +231,8 @@
                     android:layout_weight="1"
                     android:text="@string/insert"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <com.google.android.gms.ads.AdView
