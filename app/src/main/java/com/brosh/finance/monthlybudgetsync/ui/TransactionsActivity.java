@@ -134,25 +134,20 @@ public class TransactionsActivity extends AppCompatActivity {
         String catId = isIncludeCategory ? null : dbService.getCategoryByName(currentRefMonth, catName).getId();
         boolean onlyActive = transactionsActiveFilterCB.isChecked();
         this.transactions = dbService.getTransactions(currentRefMonth, catId, onlyActive);
-        if (transactions == null || transactions.size() == 0)
-            return;
-        if (sortBy != null)
-            ComparatorService.sort(transactions, sortBy, ascOrDesc);
-        double tranSum = 0;
-        for (Transaction tran : transactions) {
-            long ID = tran.getIdPerMonth();
-            String categoryName = tran.getCategory();
-            String paymentMethod = tran.getPaymentMethod();
-            String shop = tran.getShop();
-            Date payDate = tran.getPayDate();
-            double transactionPrice = tran.getPrice();
-            tranSum += transactionPrice;
-            transactionPrice = Math.round(transactionPrice * 100.d) / 100.0d;
-        }
-        if (transactions.size() > 0) {
+        LinearLayout noTranMessageLL = findViewById(R.id.ll_no_trans_message);
+        if (transactions == null || transactions.size() == 0) {
+            noTranMessageLL.setVisibility(View.VISIBLE);
+        } else {
+            if (sortBy != null)
+                ComparatorService.sort(transactions, sortBy, ascOrDesc);
+            double tranSum = 0;
+            for (Transaction tran : transactions) {
+                tranSum += tran.getPrice();
+            }
             tranSum = Math.round(tranSum * 100.d) / 100.0d;
             DecimalFormat decim = new DecimalFormat("#,###.##");
             ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(decim.format(tranSum));
+            noTranMessageLL.setVisibility(View.GONE);
         }
         transactions_rows = findViewById(R.id.transactions_rows);
         adapter = new TransactionsViewAdapter(this, transactions, isIncludeCategory);
