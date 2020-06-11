@@ -47,9 +47,9 @@ public class CategoriesViewAdapter extends RecyclerView.Adapter<CategoryViewHold
                 Intent intent = new Intent(context, TransactionsActivity.class);
                 Month month = ((BudgetActivity) context).getMonth();
                 intent.putExtra("categoryName", category);
-                intent.putExtra(Definition.USER, ((BudgetActivity) context).getUserKey());
+                intent.putExtra(Definition.USER, ((BudgetActivity) context).getUser());
                 intent.putExtra(Definition.MONTH, month == null ? month : month.getYearMonth());
-                ((BudgetActivity) context).startActivity(intent);
+                context.startActivity(intent);
                 return true;
             }
         });
