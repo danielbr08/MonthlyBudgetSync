@@ -67,4 +67,5 @@
     <string name="bank_wired">Bank Ttransfer</string>
     <string name="user_created">User Created</string>
     <string name="logged_as">logged as: </string>
+    <string name="active_transactions">active</string>
 </resources>

@@ -63,6 +63,26 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
+                        android:id="@+id/stornoFilterLL"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@+id/categorySpinnerTransactions"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:layout_editor_absoluteY="8dp">
+
+                        <CheckBox
+                            android:id="@+id/transactionsFilterCB"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/active_transactions"
+                            android:checked="true" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/totalLL"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1.05"

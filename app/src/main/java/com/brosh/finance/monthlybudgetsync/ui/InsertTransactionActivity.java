@@ -234,6 +234,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         com.brosh.finance.monthlybudgetsync.objects.Transaction transaction = new com.brosh.finance.monthlybudgetsync.objects.Transaction(tranId, idPerMonth, categoryName, paymentMethod, shop, payDate, transactionPrice);
         boolean isStorno = false;
         int stornoOf = -1;
+        com.brosh.finance.monthlybudgetsync.objects.Transaction stornoTransaction = null;
 
         for (Category cat : month.getCategories().values()) {
             if (categoryName.equals(cat.getName())) {
@@ -242,9 +243,10 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 for (com.brosh.finance.monthlybudgetsync.objects.Transaction tran : catTrans) {
                     isStorno = tran.isStorno(transaction);
                     if (isStorno == true) {
-                        stornoOf = tran.getIdPerMonth();
-                        tran.setIsStorno(true);
-                        tran.setStornoOf(transaction.getIdPerMonth());
+                        stornoTransaction = tran;
+                        stornoOf = stornoTransaction.getIdPerMonth();
+                        stornoTransaction.setIsStorno(true);
+                        stornoTransaction.setStornoOf(transaction.getIdPerMonth());
                         break;
                     }
                 }
@@ -260,6 +262,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         Category category = dbService.getCategoryById(refMonth, catId);
 //                    monthDB.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
 //                categoriesDB.child(Definition.BALANCE)
+        final com.brosh.finance.monthlybudgetsync.objects.Transaction finalStornoTransaction = stornoTransaction;
         monthDB.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
@@ -275,11 +278,15 @@ public class InsertTransactionActivity extends AppCompatActivity {
 //                }
                 mutableData.child(Definition.BALANCE).setValue(category.getBalance());
                 mutableData.child(Definition.CATEGORIES).child(category.getId()).child(Definition.TRANSACTIONS).child(tranId).setValue(transaction); // todo check if event listener call
+                if (finalStornoTransaction != null) {
+                    mutableData.child(Definition.CATEGORIES).child(category.getId()).child(Definition.TRANSACTIONS).child(finalStornoTransaction.getId()).setValue(finalStornoTransaction); // todo check if event listener call
+                }
                 return Transaction.success(mutableData);
             }
 
             @Override
-            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b,
+                                   @Nullable DataSnapshot dataSnapshot) {
                 // send message and close window
                 String message = databaseError != null ? "Error" : getString(R.string.transaction_inserted_successfully);
                 try {

@@ -828,6 +828,19 @@ public final class DBService {
         return transactions;
     }
 
+    public List<Transaction> getTransactions(String refMonth, String catId, boolean onlyActive) {
+        if (onlyActive) {
+            List<Transaction> activeTtransactions = new ArrayList<>();
+            for (Transaction tran : getTransactions(refMonth, catId)) {
+                if (!tran.getIsStorno()) {
+                    activeTtransactions.add(tran);
+                }
+            }
+            return activeTtransactions;
+        }
+        return getTransactions(refMonth, catId);
+    }
+
     public Category getCategoryByName(String refMonth, String catName) {
         Map<String, Category> categoriesHM = getCategories(refMonth);
         for (Category cat : categoriesHM.values()) {

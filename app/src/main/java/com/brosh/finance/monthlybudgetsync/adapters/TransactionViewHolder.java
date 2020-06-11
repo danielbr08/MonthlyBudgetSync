@@ -62,7 +62,8 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
 //            if (showCategory)
 //                UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
 //            else
-            UIService.strikeThroughText(Arrays.asList(this.id, this.paymentMethod, this.store, this.chargeDate, this.price));
+//            UIService.strikeThroughText(Arrays.asList(this.id, this.paymentMethod, this.store, this.chargeDate, this.price));
+            UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
 
         if (transaction.getId() == null) {
 //           if (showCategory)

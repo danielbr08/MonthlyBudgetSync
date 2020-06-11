@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,6 +53,7 @@ public class TransactionsActivity extends AppCompatActivity {
     private User user;
 
     private SwipeRefreshLayout refreshLayout;
+    private CheckBox transactionsActiveFilterCB;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -72,6 +75,9 @@ public class TransactionsActivity extends AppCompatActivity {
         setToolbar();
         String selectedCategory = extras.containsKey("categoryName") ? extras.getString("categoryName") : null;
 
+        transactionsActiveFilterCB = findViewById(R.id.transactionsFilterCB);
+        transactionsActiveFilterCB.setChecked(true); // todo this by user choice
+        setActiveTransactionListener();
         this.transactions = dbService.getTransactions(refMonth);
         LinearLayout llNoTransMessage = findViewById(R.id.ll_no_trans_message);
         int noTransMessageVisibility = (this.transactions == null || this.transactions.size() == 0) ? View.VISIBLE : View.GONE;
@@ -119,7 +125,8 @@ public class TransactionsActivity extends AppCompatActivity {
 
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         String catId = isIncludeCategory ? null : dbService.getCategoryByName(currentRefMonth, catName).getId();
-        this.transactions = dbService.getTransactions(currentRefMonth, catId);
+        boolean onlyActive = transactionsActiveFilterCB.isChecked();
+        this.transactions = dbService.getTransactions(currentRefMonth, catId, onlyActive);
         if (transactions == null || transactions.size() == 0)
             return;
         if (sortBy != null)
@@ -144,7 +151,6 @@ public class TransactionsActivity extends AppCompatActivity {
         TransactionsViewAdapter adapter = new TransactionsViewAdapter(this, transactions, isIncludeCategory);
         transactions_rows.setAdapter(adapter);
         transactions_rows.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     public void setOnClickTextViews() {
@@ -246,5 +252,15 @@ public class TransactionsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar_layout);
         setTitleText();
+    }
+
+    public void setActiveTransactionListener() {
+        transactionsActiveFilterCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definition.SORT_BY_ID, Definition.ARROW_UP);
+            }
+        });
     }
 }
