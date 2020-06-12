@@ -70,4 +70,6 @@
     <string name="logged_as">מחובר כ: </string>
     <string name="active_transactions">פעיל</string>
     <string name="error">שגיאה!</string>
+    <string name="network_error">שגיאת רשת!</string>
+    <string name="are_you_sure_you_want_to_exit">האם אתה בטוח שברצונך לצאת?</string>
 </resources>

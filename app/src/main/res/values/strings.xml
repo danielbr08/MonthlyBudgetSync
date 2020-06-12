@@ -69,4 +69,6 @@
     <string name="logged_as">logged as: </string>
     <string name="active_transactions">active</string>
     <string name="error">error!</string>
+    <string name="network_error">Network error!</string>
+    <string name="are_you_sure_you_want_to_exit">Are you sure you want to exit?</string>
 </resources>

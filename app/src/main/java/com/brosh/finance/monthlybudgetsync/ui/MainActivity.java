@@ -2,10 +2,12 @@ package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -386,5 +388,20 @@ public class MainActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // todo check for better solution for buttons order
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.are_you_sure_you_want_to_exit)
+                .setCancelable(false)
+                .setNegativeButton(getString(R.string.yes), new DialogInterface.OnClickListener() { // Negative is actually positive
+                    public void onClick(DialogInterface dialog, int id) {
+                        MainActivity.super.onBackPressed();
+                    }
+                })
+                .setPositiveButton(getString(R.string.no), null) // Positive is actually negative
+                .show();
     }
 }

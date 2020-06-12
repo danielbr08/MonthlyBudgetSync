@@ -251,7 +251,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="@+id/refresh_layout_transactions"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone">
+        <!--&lt;!&ndash;&ndash;&gt;  todo change visibilty of adView -->
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
