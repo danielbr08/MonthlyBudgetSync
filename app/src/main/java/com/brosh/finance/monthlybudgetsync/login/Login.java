@@ -88,7 +88,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
 //                            startActivity(initAppActivity);
 //                            dbService.initDB(userDBKey, currentActivity);
                 } else {
-                    TextService.showMessage(task.getException().getMessage(), Toast.LENGTH_SHORT, currentActivity);
+                    TextService.showMessage(task.getException().getMessage(), Toast.LENGTH_SHORT, currentActivity);  // todo tell real specific exception
                     progressBar.setVisibility(View.GONE);
                 }
 

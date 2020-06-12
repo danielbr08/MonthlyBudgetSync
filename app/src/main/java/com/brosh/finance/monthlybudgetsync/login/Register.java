@@ -158,7 +158,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                                 }
 
                             } else {
-                                TextService.showMessage("Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT, currentActivity);
+                                TextService.showMessage(getString(R.string.error) + task.getException().getMessage(), Toast.LENGTH_SHORT, currentActivity); // todo tell real specific exception
                                 progressBar.setVisibility(View.GONE);
                             }
                         }

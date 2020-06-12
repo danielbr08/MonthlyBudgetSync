@@ -69,4 +69,5 @@
     <string name="user_created">משתמש נוצר</string>
     <string name="logged_as">מחובר כ: </string>
     <string name="active_transactions">פעיל</string>
+    <string name="error">שגיאה!</string>
 </resources>
