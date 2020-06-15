@@ -194,7 +194,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
         btnSendTransaction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
                 insertTransaction(refMonth);
                 view.setEnabled(false);
             }
@@ -216,6 +215,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         if (setErrorEditText(payDateET) || setErrorEditText(transactionPriceET))
             return;
         int idPerMonth = month.getTranIdNumerator() + 1;
+        progressBar.setVisibility(View.VISIBLE);
 
         DatabaseReference monthDB = dbService.getDBMonthPath(refMonth);
         final Context context = this;
