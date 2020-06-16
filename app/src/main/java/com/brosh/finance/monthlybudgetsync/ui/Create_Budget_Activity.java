@@ -442,30 +442,30 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createBudget(String operation) {
-            int budgetNumber = dbService.getMaxBudgetNumber() + 1;
-            ArrayList<Budget> addedBudgets = new ArrayList<>();
-            if (operation.equals(Definition.ADD_CODE))
-                addedBudgets = getAddedBudgets(budgetNumber - 1);
-            else if (operation.equals(Definition.DELETE_CODE))
-                dbService.deleteDataRefMonth(month.getYearMonth());
+        int budgetNumber = dbService.getMaxBudgetNumber() + 1;
+        ArrayList<Budget> addedBudgets = new ArrayList<>();
+        if (operation.equals(Definition.ADD_CODE))
+            addedBudgets = getAddedBudgets(budgetNumber - 1);
+        else if (operation.equals(Definition.DELETE_CODE))
+            dbService.deleteDataRefMonth(month.getYearMonth());
 
-            String refMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.seperator));
-            writeBudget(budgetNumber, allBudgets);
-            writeBudgetsToTreeFB(budgetNumber);
+        String refMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.seperator));
+        writeBudget(budgetNumber, allBudgets);
+        writeBudgetsToTreeFB(budgetNumber);
 
-            if (operation.equals(Definition.ADD_CODE)) {
-                dbService.updateBudgetNumber(refMonth, budgetNumber);
-                dbService.addNewCategoriesToExistingMonth(refMonth, budgetNumber, addedBudgets);
-                dbService.updateBudgetNumberFB(refMonth, budgetNumber);
-                dbService.updateShopsFB();
+        if (operation.equals(Definition.ADD_CODE)) {
+            dbService.updateBudgetNumber(refMonth, budgetNumber);
+            dbService.addNewCategoriesToExistingMonth(refMonth, budgetNumber, addedBudgets);
+            dbService.updateBudgetNumberFB(refMonth, budgetNumber);
+            dbService.updateShopsFB();
 
-            } else
-                dbService.createNewMonth(budgetNumber, refMonth);
+        } else
+            dbService.createNewMonth(budgetNumber, refMonth);
 
-            //deleteCurrentMonth();
+        //deleteCurrentMonth();
 //        month = null;
-            TextService.showMessage(getString(R.string.budget_created_successfully), Toast.LENGTH_LONG, getApplicationContext());
-            finish();
+        TextService.showMessage(getString(R.string.budget_created_successfully), Toast.LENGTH_LONG, getApplicationContext());
+        finish();
     }
 
     private List<Category> budgetToCategories(List<Budget> budgets) {

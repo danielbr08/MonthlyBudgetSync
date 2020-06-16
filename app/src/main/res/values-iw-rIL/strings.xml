@@ -36,7 +36,7 @@
     <string name="close">סגור</string>
     <string name="remember_me">זכור אותי</string>
     <string name="balance">יתרה</string>
-    <string name="total">סה\"כ</string>
+    <string name="total">סה\"כ:</string>
     <string name="payment_method">א. תשלום</string>
     <string name="charge_date">ת. תשלום</string>
     <string name="price">מחיר</string>

@@ -64,6 +64,7 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         this.constDate.setChecked(budget.isConstPayment());
         this.store.setText(store);
         this.chargeDay.setSelection(budget.getChargeDay() - 1);
+        this.catName.requestFocus();
 
 //        if(position%2 != 0)
 //            itemView.setBackgroundColor(Color.LTGRAY);
