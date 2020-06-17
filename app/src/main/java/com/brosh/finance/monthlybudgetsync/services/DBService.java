@@ -1034,7 +1034,7 @@ public final class DBService {
         getDBShopsPath().setValue(shops);
     }
 
-    public void markAsDeleteTransaction(String refMonth, Transaction tran) {
+    public void markDeleteTransaction(String refMonth, Transaction tran) {
         tran.setDeleted(true);
         String catId = getCategoryByName(refMonth, tran.getCategory()).getId();
         getDBTransactionsPath(refMonth, catId).runTransaction(new com.google.firebase.database.Transaction.Handler() {

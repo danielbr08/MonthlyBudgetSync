@@ -36,7 +36,6 @@ import com.brosh.finance.monthlybudgetsync.services.UIService;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class TransactionsActivity extends AppCompatActivity {
@@ -285,11 +284,26 @@ public class TransactionsActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             Transaction tran = transactions.get(position);
-            String catId = DBService.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId();
-            DBService.getInstance().markAsDeleteTransaction(refMonth, tran);
-            DBService.getInstance().updateCategoryBudgetValue(refMonth, catId);
-            transactions.remove(position);
-            adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            if (ItemTouchHelper.START == direction) {
+                if (tran.isDeleted()) {
+                    return;
+                }
+                tran.setDeleted(true);
+            } else if (ItemTouchHelper.END == direction) {
+                if (!tran.isDeleted()) {
+                    return;
+                }
+                tran.setDeleted(false);
+            }
+//            String catId = DBService.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId(); // todo uncomment
+//            DBService.getInstance().markDeleteTransaction(refMonth, tran);
+//            DBService.getInstance().updateCategoryBudgetValue(refMonth, catId);
+            if (ItemTouchHelper.START == direction) {
+                transactions.remove(position);
+                adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            } else if (ItemTouchHelper.END == direction) {
+                adapter.notifyDataSetChanged();// todo UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
+            }
         }
     };
 }
