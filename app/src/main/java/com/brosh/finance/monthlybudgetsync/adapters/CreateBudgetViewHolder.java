@@ -49,8 +49,8 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         catName.setOnLongClickListener(eventLongClick);
         budget.setOnLongClickListener(eventLongClick);
         store.setOnLongClickListener(eventLongClick);
-        constDate.setOnLongClickListener(eventLongClick);
-        chargeDay.setOnLongClickListener(eventLongClick);
+//        constDate.setOnLongClickListener(eventLongClick);
+//        chargeDay.setOnLongClickListener(eventLongClick);
 
         final EditText store = this.store;
         final Spinner chargeDay = this.chargeDay;
