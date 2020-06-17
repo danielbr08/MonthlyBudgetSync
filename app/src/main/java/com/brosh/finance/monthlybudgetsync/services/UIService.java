@@ -55,10 +55,18 @@ public final class UIService {
     public static void strikeThroughText(TextView tv) {
         tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
+    public static void unStrikeThroughText(TextView tv) {
+        tv.setPaintFlags(tv.getPaintFlags() | Paint.ANTI_ALIAS_FLAG);
+    }
 
-    public static void strikeThroughText(List<TextView> textViews) {
+    public static void strikeThroughText(List<TextView> textViews, boolean enabled) {
         for (TextView tv : textViews) {
-            strikeThroughText(tv);
+            if(enabled) {
+                strikeThroughText(tv);
+            }
+            else{
+                unStrikeThroughText(tv);
+            }
         }
     }
 

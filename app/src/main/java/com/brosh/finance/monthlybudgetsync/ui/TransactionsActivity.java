@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
+import com.brosh.finance.monthlybudgetsync.adapters.TransactionViewHolder;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
@@ -302,7 +303,9 @@ public class TransactionsActivity extends AppCompatActivity {
                 transactions.remove(position);
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
             } else if (ItemTouchHelper.END == direction) {
-                adapter.notifyDataSetChanged();// todo UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
+                ((TransactionViewHolder)viewHolder).setStrikeThroughText(false);
+//                adapter.notifyDataSetChanged();
+                // todo UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
             }
         }
     };
