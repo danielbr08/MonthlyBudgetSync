@@ -2,10 +2,8 @@ package com.brosh.finance.monthlybudgetsync.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -33,11 +31,26 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
     public CreateBudgetViewHolder(@NonNull View itemView, Context context) {
         super(itemView);
 
-        this.catName = itemView.findViewById(R.id.bgt_category);
-        this.budget = itemView.findViewById(R.id.bgt_budget);
-        this.constDate = itemView.findViewById(R.id.bgt_constant_date);
-        this.store = itemView.findViewById(R.id.bgt_store);
-        this.chargeDay = itemView.findViewById(R.id.bgt_charge_day);
+        catName = itemView.findViewById(R.id.bgt_category);
+        budget = itemView.findViewById(R.id.bgt_budget);
+        constDate = itemView.findViewById(R.id.bgt_constant_date);
+        store = itemView.findViewById(R.id.bgt_store);
+        chargeDay = itemView.findViewById(R.id.bgt_charge_day);
+
+        View.OnLongClickListener eventLongClick = new View.OnLongClickListener() { // todo take it outside to external file( eventListener file)
+            @Override
+            public boolean onLongClick(View v) {
+                View parent = (View) v.getParent();
+                parent.performLongClick();
+                return false;
+            }
+        };
+
+        catName.setOnLongClickListener(eventLongClick);
+        budget.setOnLongClickListener(eventLongClick);
+        store.setOnLongClickListener(eventLongClick);
+        constDate.setOnLongClickListener(eventLongClick);
+        chargeDay.setOnLongClickListener(eventLongClick);
 
         final EditText store = this.store;
         final Spinner chargeDay = this.chargeDay;
@@ -50,7 +63,6 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
                 chargeDay.setVisibility(visibilty);
             }
         });
-
         UIService.setDaysInMonthSpinner(this.chargeDay, (Activity) context);
     }
 
