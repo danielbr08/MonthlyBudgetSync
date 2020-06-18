@@ -58,24 +58,15 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
             this.price.setText(decim.format(transaction.getPrice()));
         }
 
-        if (transaction.getIsStorno() || transaction.isDeleted())
-//            if (showCategory)
-//                UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
-//            else
-//            UIService.strikeThroughText(Arrays.asList(this.id, this.paymentMethod, this.store, this.chargeDate, this.price));
-            setStrikeThroughText(true);
+        boolean strikeThroughTextEnable = transaction.getIsStorno() || transaction.isDeleted() ? true : false;
+        setStrikeThroughText(strikeThroughTextEnable);
 
         if (transaction.getId() == null) {
-//           if (showCategory)
-//                UIService.strikeThroughText(Arrays.asList(this.id, this.paymentMethod, this.store, this.chargeDate, this.price));
-//            else
             UIService.setHeaderProperties(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), 12, false);
         }
     }
 
-    public void setStrikeThroughText(boolean enabled){
-        if(enabled){
-            UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price),enabled);
-        }
+    public void setStrikeThroughText(boolean enabled) {
+        UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), enabled);
     }
 }

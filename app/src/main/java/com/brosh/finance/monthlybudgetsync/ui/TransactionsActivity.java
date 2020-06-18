@@ -268,12 +268,6 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
-        @Override
-        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-            final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-            return makeMovementFlags(dragFlags, swipeFlags);
-        }
 
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -285,27 +279,29 @@ public class TransactionsActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             Transaction tran = transactions.get(position);
-            if (ItemTouchHelper.START == direction) {
-                if (tran.isDeleted()) {
-                    return;
-                }
-                tran.setDeleted(true);
-            } else if (ItemTouchHelper.END == direction) {
+            boolean update = false;
+            if (ItemTouchHelper.RIGHT == direction) {
                 if (!tran.isDeleted()) {
-                    return;
+                    tran.setDeleted(true);
+                    update = true;
                 }
-                tran.setDeleted(false);
+            } else if (ItemTouchHelper.LEFT == direction) {
+                if (tran.isDeleted()) {
+                    tran.setDeleted(false);
+                    update = true;
+                }
             }
-//            String catId = DBService.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId(); // todo uncomment
-//            DBService.getInstance().markDeleteTransaction(refMonth, tran);
-//            DBService.getInstance().updateCategoryBudgetValue(refMonth, catId);
-            if (ItemTouchHelper.START == direction) {
-                transactions.remove(position);
-                adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-            } else if (ItemTouchHelper.END == direction) {
-                ((TransactionViewHolder)viewHolder).setStrikeThroughText(false);
-//                adapter.notifyDataSetChanged();
-                // todo UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price));
+            if (update) {
+                String catId = DBService.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId();
+                DBService.getInstance().markDeleteTransaction(refMonth, tran);
+                DBService.getInstance().updateCategoryBudgetValue(refMonth, catId);
+            }
+            transactions.remove(position);
+            adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            boolean onlyActive = ((CheckBox) findViewById(R.id.transactionsFilterCB)).isChecked();
+            if (!tran.isDeleted() || !onlyActive) {
+                transactions.add(position, tran);
+                adapter.notifyItemInserted(position);
             }
         }
     };

@@ -1035,7 +1035,6 @@ public final class DBService {
     }
 
     public void markDeleteTransaction(String refMonth, Transaction tran) {
-        tran.setDeleted(true);
         String catId = getCategoryByName(refMonth, tran.getCategory()).getId();
         getDBTransactionsPath(refMonth, catId).runTransaction(new com.google.firebase.database.Transaction.Handler() {
             @NonNull
