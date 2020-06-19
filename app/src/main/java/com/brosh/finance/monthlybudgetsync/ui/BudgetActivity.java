@@ -14,14 +14,14 @@ import android.widget.TextView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.adapters.CategoriesViewAdapter;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBService;
+import com.brosh.finance.monthlybudgetsync.services.DBUtil;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.brosh.finance.monthlybudgetsync.services.UiUtil;
 
 
 import java.text.DecimalFormat;
@@ -30,7 +30,7 @@ import java.util.List;
 public class BudgetActivity extends AppCompatActivity {
 
     private Month month;
-    private DBService dbService;
+    private DBUtil dbUtil;
     private String userKey;
     private User user;
 
@@ -43,16 +43,16 @@ public class BudgetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_budget);
 
         Bundle extras = getIntent().getExtras();
-        String refMonth = extras.getString(Definition.MONTH, null);
-        user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        String refMonth = extras.getString(Definitions.MONTH, null);
+        user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
         if (user.getUserConfig().isAdEnabled()) {
-            UIService.addAdvertiseToActivity(this);
+            UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
         userKey = user.getDbKey();
-        dbService = DBService.getInstance();
-        month = dbService.getMonth(refMonth);
+        dbUtil = DBUtil.getInstance();
+        month = dbUtil.getMonth(refMonth);
         setToolbar();
 
         setCategoriesInGui();
@@ -67,7 +67,7 @@ public class BudgetActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setCategoriesInGui() {
         String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
-        List<Category> categories = dbService.getCategoriesByPriority(currentRefMonth);
+        List<Category> categories = dbUtil.getCategoriesByPriority(currentRefMonth);
 
         int totalBudget = 0;
         double totalBalance = 0;

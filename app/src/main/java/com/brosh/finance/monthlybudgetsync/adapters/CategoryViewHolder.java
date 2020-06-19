@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
-import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.brosh.finance.monthlybudgetsync.services.UiUtil;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -34,8 +34,8 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
         this.budget.setText(decim.format(category.getBudget()));
 
         if (category.getBalance() < 0)
-            UIService.setTextViewColor(Arrays.asList(this.category, this.budget, this.balance), Color.RED);
+            UiUtil.setTextViewColor(Arrays.asList(this.category, this.budget, this.balance), Color.RED);
         if (category.getId() == null)
-            UIService.setTotalBudgetRow(Arrays.asList(this.category, this.budget, this.balance));
+            UiUtil.setTotalBudgetRow(Arrays.asList(this.category, this.budget, this.balance));
     }
 }

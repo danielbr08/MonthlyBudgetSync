@@ -15,7 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class CreateBudgetViewAdapter extends RecyclerView.Adapter<CreateBudgetVi
             public boolean onLongClick(View v) {
                 int i = 0;
                 String category = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim();
-                String value = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim().replace(Definition.COMMA, "");
+                String value = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim().replace(Definitions.COMMA, "");
                 boolean constPayment = ((CheckBox) ((LinearLayout) v).getChildAt(i++)).isChecked();
                 String shop = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim();
                 int chargeDay = Integer.valueOf(((Spinner) ((LinearLayout) v).getChildAt(i)).getSelectedItem().toString().trim());

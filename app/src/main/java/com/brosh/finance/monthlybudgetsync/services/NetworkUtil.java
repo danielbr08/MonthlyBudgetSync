@@ -1,14 +1,14 @@
 //package com.brosh.finance.monthlybudgetsync.services;
 //
 //import androidx.annotation.NonNull;
-//import com.brosh.finance.monthlybudgetsync.*;
+//
 //import com.brosh.finance.monthlybudgetsync.Transaction;
 //import com.google.firebase.database.*;
 //
 //import java.util.HashMap;
 //import java.util.Map;
 //
-//public class NetworkService {
+//public class NetworkUtil {
 //    private DatabaseReference budgetDB;
 //    private DatabaseReference databaseReference;
 //    private DatabaseReference transactionDB;
@@ -26,14 +26,14 @@
 //        this.month = month;
 //    }
 //
-//    private static NetworkService networkService = null;
+//    private static NetworkUtil networkService = null;
 //
-//    private NetworkService() {
+//    private NetworkUtil() {
 //    }
 //
-//    public static NetworkService getInstance(){
+//    public static NetworkUtil getInstance(){
 //        if(networkService == null) {
-//            networkService = new NetworkService();
+//            networkService = new NetworkUtil();
 //        }
 //        return networkService;
 //    }

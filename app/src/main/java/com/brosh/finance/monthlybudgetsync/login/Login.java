@@ -20,12 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.config.UserConfig;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
-import com.brosh.finance.monthlybudgetsync.services.DBService;
-import com.brosh.finance.monthlybudgetsync.services.TextService;
+import com.brosh.finance.monthlybudgetsync.services.DBUtil;
+import com.brosh.finance.monthlybudgetsync.services.TextUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -41,7 +41,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
     TextView mCreateBtn;
     private ProgressBar progressBar;
     FirebaseAuth fAuth;
-    private DBService dbService;
+    private DBUtil dbUtil;
     private Activity currentActivity;
     private DatabaseReference DatabaseReferenceRoot;
     private DatabaseReference DatabaseReferenceUsers;
@@ -57,38 +57,33 @@ public class Login extends AppCompatActivity implements UserStartApp {
 
     private void login(String email, String password) {
         if (TextUtils.isEmpty(email)) {
-            mEmail.setError("Email is Required.");
+            mEmail.setError(getString(R.string.email_is_required));
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            mPassword.setError("Password is Required.");
+            mPassword.setError(getString(R.string.password_is_required));
             return;
         }
 
         if (password.length() < 6) {
-            mPassword.setError("Password Must be >= 6 Characters");
+            mPassword.setError(getString(R.string.password_length_must_be_at_least_6));
             return;
         }
 
         progressBar.setVisibility(View.VISIBLE);
 
         // authenticate the user
-
         fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     saveLoginPreferences(email, password);
-                    TextService.showMessage(getString(R.string.logged_in_successfully), Toast.LENGTH_SHORT, currentActivity);
-                    userDBKey = email.replace(Definition.DOT, Definition.COMMA);
+                    TextUtil.showMessage(getString(R.string.logged_in_successfully), Toast.LENGTH_SHORT, currentActivity);
+                    userDBKey = email.replace(Definitions.DOT, Definitions.COMMA);
                     setUserStartApp(null);
-//                            Intent initAppActivity = new Intent(getApplicationContext(), InitAppActivity.class);
-//                            initAppActivity.putExtra(getString(R.string.user),emailKeyDotsReplacedInComma);
-//                            startActivity(initAppActivity);
-//                            dbService.initDB(userDBKey, currentActivity);
                 } else {
-                    TextService.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
+                    TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
                     progressBar.setVisibility(View.GONE);
                 }
 
@@ -103,7 +98,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
         setContentView(R.layout.activity_login);
         setToolbar();
         currentActivity = this;
-        dbService = DBService.getInstance();
+        dbUtil = DBUtil.getInstance();
         DatabaseReferenceRoot = Config.DatabaseReferenceRoot;
         DatabaseReferenceUsers = Config.DatabaseReferenceUsers;
         rememberMeCB = findViewById(R.id.rememberMeCheckBox);
@@ -156,10 +151,10 @@ public class Login extends AppCompatActivity implements UserStartApp {
         DatabaseReferenceRoot.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                User user = snapshot.child(Definition.USERS).child(userDBKey).getValue(User.class);
+                User user = snapshot.child(Definitions.USERS).child(userDBKey).getValue(User.class);
                 if (user.getUserConfig() == null) { // todo remove after add config object for all users
                     user.setUserConfig(new UserConfig());
-                    snapshot.child(Definition.USERS).child(userDBKey).getRef().setValue(user);
+                    snapshot.child(Definitions.USERS).child(userDBKey).getRef().setValue(user);
                 }
                 //                String ownerDBKey = null;
 //                if (snapshot.child(Definition.SHARES).hasChild(userDBKey)) {
@@ -171,7 +166,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
 //                intent.putExtra(getString(R.string.isNewUser), false);
 //                currentActivity.startActivity(intent);
 //                currentActivity.finish();
-                dbService.initDB(user, currentActivity);
+                dbUtil.initDB(user, currentActivity);
             }
 
             @Override

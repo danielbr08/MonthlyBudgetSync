@@ -10,7 +10,7 @@ import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.brosh.finance.monthlybudgetsync.services.UiUtil;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -62,11 +62,11 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
         setStrikeThroughText(strikeThroughTextEnable);
 
         if (transaction.getId() == null) {
-            UIService.setHeaderProperties(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), 12, false);
+            UiUtil.setHeaderProperties(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), 12, false);
         }
     }
 
     public void setStrikeThroughText(boolean enabled) {
-        UIService.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), enabled);
+        UiUtil.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), enabled);
     }
 }

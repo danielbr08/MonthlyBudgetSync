@@ -3,9 +3,9 @@ package com.brosh.finance.monthlybudgetsync.services;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 
-public final class TextService {
+public final class TextUtil {
     public static String getSentenceCapitalLetter(String sentence, char separator) {
         if (sentence.indexOf(separator) == -1)
             return getWordCapitalLetter(sentence);
@@ -20,7 +20,7 @@ public final class TextService {
     }
 
     public static String getSeperator() {
-        return Definition.ARROW_RIGHT;
+        return Definitions.ARROW_RIGHT;
     }
 
     public static void showMessage(String message, int duration, Context context) {
@@ -33,6 +33,6 @@ public final class TextService {
     }
 
     public static String getEmailComma(String email) {
-        return email.trim().replace(Definition.DOT, Definition.COMMA);
+        return email.trim().replace(Definitions.DOT, Definitions.COMMA);
     }
 }

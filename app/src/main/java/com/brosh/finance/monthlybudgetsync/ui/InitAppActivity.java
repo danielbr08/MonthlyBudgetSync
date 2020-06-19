@@ -12,15 +12,14 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.brosh.finance.monthlybudgetsync.R;
-import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBService;
+import com.brosh.finance.monthlybudgetsync.services.DBUtil;
 import com.google.firebase.database.DatabaseReference;
 
 public class InitAppActivity extends AppCompatActivity {
     private DatabaseReference DatabaseReferenceUserMonthlyBudget;
-    private DBService dbService;
+    private DBUtil dbUtil;
     private User user;
     private boolean isNewUser;
     private RelativeLayout loadingPanel;
@@ -29,8 +28,8 @@ public class InitAppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_app);
-        dbService = DBService.getInstance();
-        User user = (User) getIntent().getSerializableExtra(Definition.USER);
+        dbUtil = DBUtil.getInstance();
+        User user = (User) getIntent().getSerializableExtra(Definitions.USER);
         isNewUser = (boolean) getIntent().getExtras().get("isNewUser");
 //        if(user.getOwner() != null){
 //            showQuestionChangeDB(language.questionChangeDB);
@@ -39,7 +38,7 @@ public class InitAppActivity extends AppCompatActivity {
         loadingPanel = findViewById(R.id.loadingPanel);
         loadingPanel.setVisibility(View.VISIBLE);
 
-        dbService.initDB(user, this);
+        dbUtil.initDB(user, this);
 //        }
     }
 
@@ -66,7 +65,7 @@ public class InitAppActivity extends AppCompatActivity {
                         removeOwner();
                         break;
                 }
-                dbService.initDB(user, currentActivity);
+                dbUtil.initDB(user, currentActivity);
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

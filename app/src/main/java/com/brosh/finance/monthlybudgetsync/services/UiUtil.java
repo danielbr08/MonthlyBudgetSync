@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class UIService {
+public final class UiUtil {
 
     public static void setHeaderProperties(TextView tv, int textSize, boolean clickable) {
         tv.setTypeface(null, Typeface.BOLD);
@@ -93,11 +93,11 @@ public final class UIService {
     public static void setTextTitleWidgets(List<View> widgets, List<String> titlesNames) {
         // Widgets are order by : categoryNameET, categoryValueET, constPaymentCB, shopET, payDateTV
         int i = 0;
-        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
-        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
-        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
-        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i++)));
-        ((TextView) widgets.get(i)).setText(TextService.getWordCapitalLetter(titlesNames.get(i)));
+        ((TextView) widgets.get(i)).setText(TextUtil.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextUtil.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextUtil.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextUtil.getWordCapitalLetter(titlesNames.get(i++)));
+        ((TextView) widgets.get(i)).setText(TextUtil.getWordCapitalLetter(titlesNames.get(i)));
     }
 
     public static void setTitleStyle(List<TextView> titlesTV) {//}, LinearLayout titleLL) {

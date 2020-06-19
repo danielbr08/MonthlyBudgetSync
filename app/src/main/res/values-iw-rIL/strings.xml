@@ -72,4 +72,7 @@
     <string name="error">שגיאה!</string>
     <string name="network_error">שגיאת רשת!</string>
     <string name="are_you_sure_you_want_to_exit">האם אתה בטוח שברצונך לצאת?</string>
+    <string name="email_is_required">אימייל הוא שדה חובה</string>
+    <string name="password_is_required">סיסמה היא שדה חובה</string>
+    <string name="password_length_must_be_at_least_6">הסיסמה חייבת להיות לפחות באורך 6</string>
 </resources>

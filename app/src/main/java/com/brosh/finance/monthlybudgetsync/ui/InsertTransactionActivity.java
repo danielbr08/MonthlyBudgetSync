@@ -29,14 +29,14 @@ import android.widget.Toast;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBService;
+import com.brosh.finance.monthlybudgetsync.services.DBUtil;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.TextService;
-import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.brosh.finance.monthlybudgetsync.services.TextUtil;
+import com.brosh.finance.monthlybudgetsync.services.UiUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,11 +54,10 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private Spinner categoriesSpinner;
     private Spinner paymentTypeSpinner;
     private Button btnSendTransaction;
-    private Button btnClose;
     private EditText payDateEditText;
     private ProgressBar progressBar;
 
-    private DBService dbService;
+    private DBUtil dbUtil;
     private String userKey;
     private User user;
     private Month month;
@@ -66,7 +65,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private Set<String> shopsSet;
 
     public void setSpinnersAllignment() {
-        List<String> categoriesNames = dbService.getCategoriesNames(month.getYearMonth());
+        List<String> categoriesNames = dbUtil.getCategoriesNames(month.getYearMonth());
         List<String> paymentMethod = getPaymentMethodList();
         SpinnerAdapter namesAdapter = new SpinnerAdapter(categoriesNames, this);
         SpinnerAdapter PaymentMethodAdapter = new SpinnerAdapter(paymentMethod, this);
@@ -114,26 +113,26 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress_circular);
         Bundle extras = getIntent().getExtras();
-        String refMonth = extras.getString(Definition.MONTH, null);
-        user = (User) getIntent().getExtras().getSerializable(Definition.USER);
+        String refMonth = extras.getString(Definitions.MONTH, null);
+        user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
         if (user.getUserConfig().isAdEnabled()) {
-            UIService.addAdvertiseToActivity(this);
+            UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
         userKey = user.getDbKey();
-        dbService = DBService.getInstance();
-        month = dbService.getMonth(refMonth);
+        dbUtil = DBUtil.getInstance();
+        month = dbUtil.getMonth(refMonth);
         setToolbar();
 
-        shopsSet = dbService.getShopsSet();
+        shopsSet = dbUtil.getShopsSet();
 //        setTitle( getYearMonth(month.getMonth(),'.'));
-        categoriesSpinner = (Spinner) findViewById(R.id.categorySpinner);
-        paymentTypeSpinner = (Spinner) findViewById(R.id.paymentMethodSpinner);
-        btnSendTransaction = (Button) findViewById(R.id.sendTransactionButton);
+        categoriesSpinner = findViewById(R.id.categorySpinner);
+        paymentTypeSpinner = findViewById(R.id.paymentMethodSpinner);
+        btnSendTransaction = findViewById(R.id.sendTransactionButton);
         init();
 
-        payDateEditText = (EditText) findViewById(R.id.payDatePlainText);
+        payDateEditText = findViewById(R.id.payDatePlainText);
         payDateEditText.setText(getCurrentDate());
 
         payDateEditText.setOnClickListener(new View.OnClickListener() {
@@ -153,8 +152,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
                 DatePickerDialog mDatePicker = new DatePickerDialog(InsertTransactionActivity.this, new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                        // TODO Auto-generated method stub
-                        /*      Your code   to get date and time    */
                         String day, month;
                         if (selectedday < 10)
                             day = "0" + selectedday;
@@ -172,25 +169,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 mDatePicker.show();
             }
         });
-
-
-        //Intent i = getIntent();
-        // Receiving the Data
-        //String name = i.getStringExtra("name");
-        // String email = i.getStringExtra("email");
-
-        // Displaying Received data
-        //txtName.setText(name);
-        //txtEmail.setText(email);
-
-        // Binding Click event to Button
-//        btnClose.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View arg0) {
-//                //Closing SecondScreen Activity
-//                finish();
-//            }
-//        });
 
         btnSendTransaction.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -217,7 +195,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         int idPerMonth = month.getTranIdNumerator() + 1;
         progressBar.setVisibility(View.VISIBLE);
 
-        DatabaseReference monthDB = dbService.getDBMonthPath(refMonth);
+        DatabaseReference monthDB = dbUtil.getDBMonthPath(refMonth);
         final Context context = this;
 
         //Insert data
@@ -228,8 +206,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
         Date payDate = DateService.convertStringToDate(payDateET.getText().toString(), Config.DATE_FORMAT);
         double transactionPrice = Double.valueOf(transactionPriceET.getText().toString());
         //init on create
-        String catId = dbService.getCategoryByName(month.getYearMonth(), categoryName).getId();
-        DatabaseReference transactionsNode = dbService.getDBTransactionsPath(month.getYearMonth(), catId);
+        String catId = dbUtil.getCategoryByName(month.getYearMonth(), categoryName).getId();
+        DatabaseReference transactionsNode = dbUtil.getDBTransactionsPath(month.getYearMonth(), catId);
         String tranId = transactionsNode.push().getKey();
         com.brosh.finance.monthlybudgetsync.objects.Transaction transaction = new com.brosh.finance.monthlybudgetsync.objects.Transaction(tranId, idPerMonth, categoryName, paymentMethod, shop, payDate, transactionPrice);
         boolean isStorno = false;
@@ -239,7 +217,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         for (Category cat : month.getCategories().values()) {
             if (categoryName.equals(cat.getName())) {
                 cat.withdrawal(transactionPrice);
-                List<com.brosh.finance.monthlybudgetsync.objects.Transaction> catTrans = dbService.getTransactions(month.getYearMonth(), cat.getId());
+                List<com.brosh.finance.monthlybudgetsync.objects.Transaction> catTrans = dbUtil.getTransactions(month.getYearMonth(), cat.getId());
                 for (com.brosh.finance.monthlybudgetsync.objects.Transaction tran : catTrans) {
                     isStorno = tran.isStorno(transaction);
                     if (isStorno == true) {
@@ -258,8 +236,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
             }
         }
         shopsSet.add(shop); // todo check if event listener call
-        dbService.writeNewShopFB(shop);
-        Category category = dbService.getCategoryById(refMonth, catId);
+        dbUtil.writeNewShopFB(shop);
+        Category category = dbUtil.getCategoryById(refMonth, catId);
 //                    monthDB.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
 //                categoriesDB.child(Definition.BALANCE)
         final com.brosh.finance.monthlybudgetsync.objects.Transaction finalStornoTransaction = stornoTransaction;
@@ -267,19 +245,19 @@ public class InsertTransactionActivity extends AppCompatActivity {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                Object trnNumeratorFB = mutableData.child(Definition.TRAN_ID_NUMERATOR).getValue();
+                Object trnNumeratorFB = mutableData.child(Definitions.TRAN_ID_NUMERATOR).getValue();
                 int idPerMonth = Integer.valueOf(trnNumeratorFB.toString()) + 1;
                 transaction.setIdPerMonth(idPerMonth);
-                mutableData.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
+                mutableData.child(Definitions.TRAN_ID_NUMERATOR).setValue(idPerMonth);
 //                try {
 //                    Thread.sleep(1000);
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-                mutableData.child(Definition.BALANCE).setValue(category.getBalance());
-                mutableData.child(Definition.CATEGORIES).child(category.getId()).child(Definition.TRANSACTIONS).child(tranId).setValue(transaction); // todo check if event listener call
+                mutableData.child(Definitions.BALANCE).setValue(category.getBalance());
+                mutableData.child(Definitions.CATEGORIES).child(category.getId()).child(Definitions.TRANSACTIONS).child(tranId).setValue(transaction); // todo check if event listener call
                 if (finalStornoTransaction != null) {
-                    mutableData.child(Definition.CATEGORIES).child(category.getId()).child(Definition.TRANSACTIONS).child(finalStornoTransaction.getId()).setValue(finalStornoTransaction); // todo check if event listener call
+                    mutableData.child(Definitions.CATEGORIES).child(category.getId()).child(Definitions.TRANSACTIONS).child(finalStornoTransaction.getId()).setValue(finalStornoTransaction); // todo check if event listener call
                 }
                 return Transaction.success(mutableData);
             }
@@ -290,7 +268,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 // send message and close window
                 String message = databaseError != null ? "Error" : getString(R.string.transaction_inserted_successfully);
                 try {
-                    TextService.showMessage(getString(R.string.transaction_inserted_successfully), Toast.LENGTH_LONG, context);
+                    TextUtil.showMessage(getString(R.string.transaction_inserted_successfully), Toast.LENGTH_LONG, context);
                     ((Activity) context).finish();
                 } catch (Exception e) {
                     progressBar.setVisibility(View.GONE);

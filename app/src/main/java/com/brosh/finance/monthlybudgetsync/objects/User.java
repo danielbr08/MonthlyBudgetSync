@@ -1,7 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.brosh.finance.monthlybudgetsync.config.UserConfig;
-import com.brosh.finance.monthlybudgetsync.services.TextService;
+import com.brosh.finance.monthlybudgetsync.services.TextUtil;
 
 import java.io.Serializable;
 
@@ -66,7 +66,7 @@ public class User implements Serializable {
         this.email = email;
         this.phone = phone;
         this.password = password;
-        this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
+        this.dbKey = dbKey != null ? dbKey : TextUtil.getEmailComma(email);
         this.owner = owner;
     }
 
@@ -74,7 +74,7 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
+        this.dbKey = dbKey != null ? dbKey : TextUtil.getEmailComma(email);
         this.password = password;
         this.owner = null;
         this.userConfig = new UserConfig();
@@ -84,7 +84,7 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.dbKey = dbKey != null ? dbKey : TextService.getEmailComma(email);
+        this.dbKey = dbKey != null ? dbKey : TextUtil.getEmailComma(email);
         this.owner = null;
     }
 

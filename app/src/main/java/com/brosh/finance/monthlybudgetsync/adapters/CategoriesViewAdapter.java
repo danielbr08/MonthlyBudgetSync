@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.ui.BudgetActivity;
@@ -47,8 +46,8 @@ public class CategoriesViewAdapter extends RecyclerView.Adapter<CategoryViewHold
                 Intent intent = new Intent(context, TransactionsActivity.class);
                 Month month = ((BudgetActivity) context).getMonth();
                 intent.putExtra("categoryName", category);
-                intent.putExtra(Definition.USER, ((BudgetActivity) context).getUser());
-                intent.putExtra(Definition.MONTH, month == null ? month : month.getYearMonth());
+                intent.putExtra(Definitions.USER, ((BudgetActivity) context).getUser());
+                intent.putExtra(Definitions.MONTH, month == null ? month : month.getYearMonth());
                 context.startActivity(intent);
                 return true;
             }

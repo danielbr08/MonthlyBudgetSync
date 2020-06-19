@@ -1,14 +1,11 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
-import com.brosh.finance.monthlybudgetsync.services.DBService;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Month implements Serializable {
@@ -24,7 +21,7 @@ public class Month implements Serializable {
     private long budgetNumber;
 
     public Month() {
-        categories = new HashMap<String, Category>();
+        categories = new HashMap<>();
     }
 
     //    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
@@ -36,7 +33,7 @@ public class Month implements Serializable {
         this.chargeDay = chargeDay;
         this.id = yearMonth;
         this.budgetNumber = budgetNumber;
-        this.categories = new HashMap<String, Category>();
+        this.categories = new HashMap<>();
         this.refMonth = DateService.setDayToDate(DateService.getDate(yearMonth), chargeDay);
         this.yearMonth = yearMonth;
         this.tranIdNumerator = 1;
@@ -120,12 +117,5 @@ public class Month implements Serializable {
 
     public void setActive(boolean active) {
         isActive = active;
-    }
-
-    public void initCategories() {
-//        if(!this.dbService.isCurrentMBExists()) {
-//            this.dbService.writeMBFromBudget(this.refMonth);
-//        }
-//        categories = getCategoriesFromDB();
     }
 }

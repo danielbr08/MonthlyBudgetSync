@@ -1,7 +1,5 @@
 package com.brosh.finance.monthlybudgetsync.config;
 
-import com.brosh.finance.monthlybudgetsync.R;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 

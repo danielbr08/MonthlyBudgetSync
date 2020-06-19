@@ -2,7 +2,6 @@ package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
 
 import java.io.Serializable;
 import java.util.Date;

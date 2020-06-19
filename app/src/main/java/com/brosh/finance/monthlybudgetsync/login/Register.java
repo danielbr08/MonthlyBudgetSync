@@ -19,15 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
-import com.brosh.finance.monthlybudgetsync.objects.Month;
-import com.brosh.finance.monthlybudgetsync.objects.Share;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
-import com.brosh.finance.monthlybudgetsync.services.DBService;
-import com.brosh.finance.monthlybudgetsync.services.TextService;
-import com.brosh.finance.monthlybudgetsync.ui.InitAppActivity;
-import com.brosh.finance.monthlybudgetsync.ui.MainActivity;
+import com.brosh.finance.monthlybudgetsync.services.DBUtil;
+import com.brosh.finance.monthlybudgetsync.services.TextUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -37,7 +33,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,7 +50,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
     ProgressBar progressBar;
     FirebaseFirestore fStore;
     String userID;
-    private DBService dbService;
+    private DBUtil dbUtil;
     private Activity currentActivity;
     private DatabaseReference DatabaseReferenceUsers;
     private DatabaseReference DatabaseReferenceRoot;
@@ -65,7 +60,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        dbService = DBService.getInstance();
+        dbUtil = DBUtil.getInstance();
         currentActivity = this;
 
         DatabaseReferenceRoot = Config.DatabaseReferenceRoot;
@@ -89,7 +84,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
         tryTologinByPreferences();
 
         if (fAuth.getCurrentUser() != null) {
-            userDBKey = fAuth.getCurrentUser().getEmail().trim().replace(Definition.DOT, Definition.COMMA);
+            userDBKey = fAuth.getCurrentUser().getEmail().trim().replace(Definitions.DOT, Definitions.COMMA);
             setUserStartApp(null);
 //            dbService.initDB(userDBKey, this);
             return;
@@ -105,17 +100,17 @@ public class Register extends AppCompatActivity implements UserStartApp {
                 final String phone = mPhone.getText().toString();
 
                 if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required.");
+                    mEmail.setError(getString(R.string.email_is_required));
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is Required.");
+                    mPassword.setError(getString(R.string.password_is_required));
                     return;
                 }
 
                 if (password.length() < 6) {
-                    mPassword.setError("Password Must be >= 6 Characters");
+                    mPassword.setError(getString(R.string.password_length_must_be_at_least_6));
                     return;
                 }
 
@@ -128,7 +123,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                TextService.showMessage(getString(R.string.user_created), Toast.LENGTH_SHORT, currentActivity);
+                                TextUtil.showMessage(getString(R.string.user_created), Toast.LENGTH_SHORT, currentActivity);
                                 userID = fAuth.getCurrentUser().getUid();
                                 DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userID);
                                 final Map<String, Object> userFS = new HashMap<>();
@@ -147,9 +142,6 @@ public class Register extends AppCompatActivity implements UserStartApp {
                                     }
                                 });
                                 try {
-//                                user.put("fName",fullName);
-//                                user.put("email",email);
-//                                user.put("phone",phone);
                                     final User user = new User(fullName, email, phone, password, userDBKey);
                                     setUserStartApp(user);
                                 } catch (Exception e) {
@@ -158,7 +150,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                                 }
 
                             } else {
-                                TextService.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
+                                TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
                                 progressBar.setVisibility(View.GONE);
                             }
                         }
@@ -197,26 +189,19 @@ public class Register extends AppCompatActivity implements UserStartApp {
 //                    ownerDBKey = share.getOwner();
 //                }
                 if (user != null) { // New user case
-                    if (snapshot.child(Definition.USERS).hasChild(user.getDbKey())) { // User already exists - cannot create user(duplicate)
+                    if (snapshot.child(Definitions.USERS).hasChild(user.getDbKey())) { // User already exists - cannot create user(duplicate)
                         return;
                     } else {
                         DatabaseReferenceUsers.child(user.getDbKey()).setValue(user);
-                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definition.BUDGETS).setValue("");
-                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definition.MONTHS).setValue("");
-                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definition.SHOPS).setValue("");
+                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definitions.BUDGETS).setValue("");
+                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definitions.MONTHS).setValue("");
+                        Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definitions.SHOPS).setValue("");
                     }
 //                    user.setOwner(ownerDBKey);
                 } else { // Already registered
-                    user = snapshot.child(Definition.USERS).child(userDBKey).getValue(User.class);//
+                    user = snapshot.child(Definitions.USERS).child(userDBKey).getValue(User.class);//
                 }
-//                if (ownerDBKey != null)
-//                    user.setOwner(ownerDBKey);
-//                Intent intent = new Intent(getApplicationContext(), InitAppActivity.class);
-//                intent.putExtra(getString(R.string.user), user);
-//                intent.putExtra(getString(R.string.isNewUser), isNewUser);
-//                currentActivity.startActivity(intent);
-//                currentActivity.finish();
-                dbService.initDB(user, currentActivity);
+                dbUtil.initDB(user, currentActivity);
             }
 
             @Override

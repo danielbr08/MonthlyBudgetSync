@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
-import com.brosh.finance.monthlybudgetsync.services.UIService;
+import com.brosh.finance.monthlybudgetsync.services.UiUtil;
 
 import java.text.DecimalFormat;
 
@@ -63,7 +63,7 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
                 chargeDay.setVisibility(visibilty);
             }
         });
-        UIService.setDaysInMonthSpinner(this.chargeDay, (Activity) context);
+        UiUtil.setDaysInMonthSpinner(this.chargeDay, (Activity) context);
     }
 
     public void onBindViewHolder(Budget budget, int position) {

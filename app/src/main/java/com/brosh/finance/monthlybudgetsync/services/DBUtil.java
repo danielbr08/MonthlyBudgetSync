@@ -3,20 +3,17 @@ package com.brosh.finance.monthlybudgetsync.services;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.view.View;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.brosh.finance.monthlybudgetsync.login.Login;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.ChildEventListenerMap;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.config.Definition;
+import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.objects.User;
@@ -36,24 +33,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class DBService {
+public final class DBUtil {
 
-    private static DBService instance;
+    private static DBUtil instance;
 
-    private DBService() {
+    private DBUtil() {
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
-    public static DBService getInstance() {
+    public static DBUtil getInstance() {
         if (instance == null)
-            instance = new DBService();
+            instance = new DBUtil();
         return instance;
     }
 
@@ -69,7 +65,7 @@ public final class DBService {
     private Context context;
 
     public void clear() {
-        instance = new DBService();
+        instance = new DBUtil();
     }
 
     public ValueEventListener getRootEventListener() {
@@ -134,7 +130,7 @@ public final class DBService {
 
     public void updateSpecificCategory(String refMonthKey, int budgetNumber, Category categoryObj) {
         if (monthDBHM.get(refMonthKey) == null) {
-            int chargeDay = 1; //todo dynamic
+            int chargeDay = user.getUserConfig().getChargeDay();
             monthDBHM.put(refMonthKey, new Month(refMonthKey, budgetNumber, chargeDay));
         }
         monthDBHM.get(refMonthKey).addCategory(categoryObj.getId(), categoryObj);
@@ -148,7 +144,7 @@ public final class DBService {
 
     public void updateSpecificBudget(String budgetNumber, Budget budgetObj) {
         if (budgetDBHM.get(budgetNumber) == null)
-            budgetDBHM.put(budgetNumber, new HashMap<String, Budget>());
+            budgetDBHM.put(budgetNumber, new HashMap<>());
         budgetDBHM.get(budgetNumber).put(budgetObj.getId(), budgetObj);
     }
 
@@ -173,9 +169,9 @@ public final class DBService {
         List<Budget> budgets = new ArrayList<>();
         if (!budgetDBHM.containsKey(String.valueOf(budgetNumber)))
             return budgets;
-        budgets = new ArrayList<Budget>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
+        budgets = new ArrayList<>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
         try {
-            Collections.sort(budgets, ComparatorService.COMPARE_BY_CATEGORY_PRIORITY);
+            Collections.sort(budgets, ComparatorUtil.COMPARE_BY_CATEGORY_PRIORITY);
         } catch (Exception e) {
             String s = e.getMessage();
             s = s;
@@ -184,7 +180,7 @@ public final class DBService {
     }
 
     public boolean isCurrentRefMonthExists() {
-        String currentRefMonth = DateService.getYearMonth(DateService.getTodayDate(), Definition.DASH);
+        String currentRefMonth = DateService.getYearMonth(DateService.getTodayDate(), Definitions.DASH);
         return (monthDBHM.get(currentRefMonth) != null && monthDBHM.get(currentRefMonth).getCategories().size() > 0);
     }
 
@@ -232,7 +228,7 @@ public final class DBService {
                     Object value = myDataSnapshot.getValue();
                     boolean hasData = !(value instanceof String && value.equals(""));
                     switch (keyNode) {
-                        case Definition.BUDGETS: {
+                        case Definitions.BUDGETS: {
                             if (hasData) {
                                 setBudgetDB(myDataSnapshot);
                             }
@@ -240,7 +236,7 @@ public final class DBService {
                             setAddChildBudgetsEvent(myDataSnapshot);
                             break;
                         }
-                        case Definition.MONTHS: {
+                        case Definitions.MONTHS: {
                             if (hasData) {
                                 setMonthsDB(myDataSnapshot);
                             }
@@ -248,7 +244,7 @@ public final class DBService {
                             setAddChildMonthEvent(myDataSnapshot);
                             break;
                         }
-                        case Definition.SHOPS: {
+                        case Definitions.SHOPS: {
                             if (hasData) {
                                 setShopsDB(myDataSnapshot);
                             }
@@ -397,12 +393,12 @@ public final class DBService {
                 Month month = dataSnapshot.getValue(Month.class);
                 month.setIsActive();
                 monthDBHM.put(refMonth, month);
-                DataSnapshot categoriesDBSnapShot = dataSnapshot.child(Definition.CATEGORIES);
+                DataSnapshot categoriesDBSnapShot = dataSnapshot.child(Definitions.CATEGORIES);
                 if (categoriesDBSnapShot.exists()) {
                     setAddChildCategoryEvent(categoriesDBSnapShot, refMonth);
                 }
-                setTranIdNumeratorEventUpdateValue(dataSnapshot.child(Definition.TRAN_ID_NUMERATOR), refMonth); // todo check why fired twice(next line also)
-                setBudgetNumberEventUpdateValue(dataSnapshot.child(Definition.BUDGET_NUMBER), refMonth);
+                setTranIdNumeratorEventUpdateValue(dataSnapshot.child(Definitions.TRAN_ID_NUMERATOR), refMonth); // todo check why fired twice(next line also)
+                setBudgetNumberEventUpdateValue(dataSnapshot.child(Definitions.BUDGET_NUMBER), refMonth);
             }
 
             @Override
@@ -496,12 +492,10 @@ public final class DBService {
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         };
         if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(transactionDataSnapshot.getRef())) {
@@ -539,7 +533,7 @@ public final class DBService {
 
     public void startApp(Activity activity) {
         Intent mainActivityIntent = new Intent(activity.getApplicationContext(), MainActivity.class);
-        mainActivityIntent.putExtra(Definition.USER, user);
+        mainActivityIntent.putExtra(Definitions.USER, user);
         activity.startActivity(mainActivityIntent);
         ((UserStartApp) activity).getProgressBar().setVisibility(View.GONE);
         activity.finish();
@@ -548,7 +542,7 @@ public final class DBService {
     private void setCategoryFieldsEventUpdateValue(final DataSnapshot categoryDBDataSnapshot, String refMonthKey) {
         String catId = categoryDBDataSnapshot.getKey();
 //        setCategoryBalanceEventUpdateValue(categoryDBDataSnapshot.child(Definition.BALANCE), refMonthKey, catId);
-        setAddChildTransactionEvent(categoryDBDataSnapshot.child(Definition.TRANSACTIONS), refMonthKey, catId);
+        setAddChildTransactionEvent(categoryDBDataSnapshot.child(Definitions.TRANSACTIONS), refMonthKey, catId);
     }
 
     private void setCategoryBalanceEventUpdateValue(DataSnapshot categoryBalanceDBDataSnapshot, String refMonthKey, String catId) {
@@ -579,7 +573,7 @@ public final class DBService {
 
     private void setTransactionFieldsEventUpdateValue(final DataSnapshot transactionDBDataSnapshot, String refMonth, String catId) {
         String tranId = transactionDBDataSnapshot.getKey();
-        List<String> transactionFields = Arrays.asList(Definition.IS_STORNO, Definition.STORNO_OF, Definition.DELETED);
+        List<String> transactionFields = Arrays.asList(Definitions.IS_STORNO, Definitions.STORNO_OF, Definitions.DELETED);
         for (String transactionField : transactionFields) {
             DataSnapshot transactionFieldDataBaseReference = transactionDBDataSnapshot.child(transactionField);
             setTransactionFieldEventUpdateValue(transactionFieldDataBaseReference, refMonth, catId, tranId);
@@ -595,14 +589,14 @@ public final class DBService {
                 if (value != null) {
                     Transaction currentTransaction = monthDBHM.get(refMonthKey).getCategories().get(catId).getTransactions().get(tranId);
                     switch (fieldName) {
-                        case Definition.IS_STORNO:
+                        case Definitions.IS_STORNO:
                             boolean isStorno = Boolean.valueOf(dataSnapshot.getValue().toString());
                             currentTransaction.setIsStorno(isStorno);
                             break;
-                        case Definition.STORNO_OF:
+                        case Definitions.STORNO_OF:
                             int stornoOf = Integer.valueOf(dataSnapshot.getValue().toString());
                             currentTransaction.setStornoOf(stornoOf);
-                        case Definition.DELETED:
+                        case Definitions.DELETED:
                             boolean deleted = Boolean.valueOf(dataSnapshot.getValue().toString());
                             currentTransaction.setDeleted(deleted);
                     }
@@ -703,7 +697,7 @@ public final class DBService {
     public void createNewMonth(int budgetNumber, String refMonth) {
         List<Budget> budgetsToConvert = getBudgetDataFromDB(budgetNumber);
         writeCategoriesByBudgets(refMonth, budgetNumber, budgetsToConvert);
-        Month newMonth = getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
+        Month newMonth = getMonth(refMonth);
 
         getDBMonthPath(refMonth).setValue(newMonth);
         updateShopsFB();
@@ -715,15 +709,15 @@ public final class DBService {
     }
 
     public DatabaseReference getDBUserRootPath() {
-        return FirebaseDatabase.getInstance().getReference(Definition.MONTHLY_BUDGET).child(userKey);
+        return FirebaseDatabase.getInstance().getReference(Definitions.MONTHLY_BUDGET).child(userKey);
     }
 
     public DatabaseReference getDBBudgetsPath() {
-        return getDBUserRootPath().child(Definition.BUDGETS);
+        return getDBUserRootPath().child(Definitions.BUDGETS);
     }
 
     public DatabaseReference getDBMonthsPath() {
-        return getDBUserRootPath().child(Definition.MONTHS);
+        return getDBUserRootPath().child(Definitions.MONTHS);
     }
 
     public DatabaseReference getDBMonthPath(String refMonth) {
@@ -731,19 +725,19 @@ public final class DBService {
     }
 
     public DatabaseReference getDBCategoriesPath(String refMonth) {
-        return getDBMonthsPath().child(refMonth).child(Definition.CATEGORIES);
+        return getDBMonthsPath().child(refMonth).child(Definitions.CATEGORIES);
     }
 
     public DatabaseReference getDBTransactionsPath(String refMonth, String catId) {
-        return getDBCategoriesPath(refMonth).child(catId).child(Definition.TRANSACTIONS);
+        return getDBCategoriesPath(refMonth).child(catId).child(Definitions.TRANSACTIONS);
     }
 
     public DatabaseReference getDBShopsPath() {
-        return getDBUserRootPath().child(Definition.SHOPS);
+        return getDBUserRootPath().child(Definitions.SHOPS);
     }
 
     public DatabaseReference getDBSaresPath() {
-        return getDBUserRootPath().child(Definition.SHARES);
+        return getDBUserRootPath().child(Definitions.SHARES);
     }
 
     public Map<String, Budget> getBudget(String budgetNumber) {
@@ -821,7 +815,7 @@ public final class DBService {
         }
         Category category = getCategoryById(refMonth, catId);
         if (category.getTransactions() != null)
-            return new ArrayList<Transaction>(category.getTransactions().values());
+            return new ArrayList<>(category.getTransactions().values());
         return null;
     }
 
@@ -1015,7 +1009,7 @@ public final class DBService {
     }
 
     public void updateBudgetNumberFB(String refMonth, int budgetNumber) {
-        getDBMonthPath(refMonth).child(Definition.BUDGET_NUMBER).setValue(budgetNumber);
+        getDBMonthPath(refMonth).child(Definitions.BUDGET_NUMBER).setValue(budgetNumber);
     }
 
     public void updateBudgetNumber(String refMonth, int budgetNumber) {
@@ -1040,7 +1034,7 @@ public final class DBService {
             @NonNull
             @Override
             public com.google.firebase.database.Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                mutableData.child(tran.getId()).child(Definition.DELETED).setValue(tran.isDeleted());
+                mutableData.child(tran.getId()).child(Definitions.DELETED).setValue(tran.isDeleted());
                 return com.google.firebase.database.Transaction.success(mutableData);
             }
 
@@ -1057,7 +1051,7 @@ public final class DBService {
             @NonNull
             @Override
             public com.google.firebase.database.Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                mutableData.child(catId).child(Definition.BALANCE).setValue(balance);
+                mutableData.child(catId).child(Definitions.BALANCE).setValue(balance);
                 return com.google.firebase.database.Transaction.success(mutableData);
             }
 

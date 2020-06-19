@@ -71,4 +71,7 @@
     <string name="error">error!</string>
     <string name="network_error">Network error!</string>
     <string name="are_you_sure_you_want_to_exit">Are you sure you want to exit?</string>
+    <string name="email_is_required">Email is Required.</string>
+    <string name="password_is_required">Password is Required.</string>
+    <string name="password_length_must_be_at_least_6">Password Must be >= 6 Characters</string>
 </resources>
