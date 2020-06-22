@@ -1,6 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
-import com.brosh.finance.monthlybudgetsync.services.DateService;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
@@ -24,21 +24,16 @@ public class Month implements Serializable {
         categories = new HashMap<>();
     }
 
-    //    public Month(DBService dbService, DateService dateService, String id, Date refMonth)
-
     public Month(String yearMonth, long budgetNumber, int chargeDay) {
-//        this.dateService = dateService;
-//        this.dbService = dbService;
 
         this.chargeDay = chargeDay;
         this.id = yearMonth;
         this.budgetNumber = budgetNumber;
         this.categories = new HashMap<>();
-        this.refMonth = DateService.setDayToDate(DateService.getDate(yearMonth), chargeDay);
+        this.refMonth = DateUtil.setDayToDate(DateUtil.getDate(yearMonth), chargeDay);
         this.yearMonth = yearMonth;
         this.tranIdNumerator = 1;
         setIsActive();
-//        initCategories();
     }
 
     public int getChargeDay() {
@@ -79,8 +74,8 @@ public class Month implements Serializable {
     }
 
     public void setIsActive() {
-        Date today = DateService.getTodayDate();
-        isActive = DateService.isSameYearMonth(refMonth, today);
+        Date today = DateUtil.getTodayDate();
+        isActive = DateUtil.isSameYearMonth(refMonth, today);
     }
 
     public int getTranIdNumerator() {

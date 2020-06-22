@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.google.firebase.database.DatabaseReference;
 
 public class InitAppActivity extends AppCompatActivity {

@@ -25,9 +25,9 @@ import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.login.Login;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
-import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,13 +37,12 @@ import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private DatabaseReference DatabaseReferenceUserMonthlyBudget;
-    private DatabaseReference DatabaseReferenceShares;
+    private static final String TAG = "MainActivity";
+
     private DBUtil dbUtil;
     private String userKey;
     private User user;
 
-    private SharedPreferences sharedpreference;
     private Intent budgetScreen, transactionsScreen, insertTransactionScreen, createBudgetScreen;
     private Spinner refMonthSpinner;
     private Button insertTransactionButton;
@@ -70,28 +69,6 @@ public class MainActivity extends AppCompatActivity {
         refMonthSpinner.setAdapter(adapter);
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-//    public void setTitle(String refMonth)
-//    {
-//        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-//        android.support.v7.app.ActionBar ab = getSupportActionBar();
-//        TextView tv = new TextView(getApplicationContext());
-//
-//        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-//                ActionBar.LayoutParams.MATCH_PARENT, // Width of TextView
-//                ActionBar.LayoutParams.WRAP_CONTENT);
-//        tv.setLayoutParams(lp);
-//        tv.setTypeface(null, Typeface.BOLD);
-//        tv.setTextColor(Color.WHITE);
-//        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//        tv.setText(getString(R.string.appName) + "\n"  + refMonth);
-//        tv.setTextSize(18);
-//
-//        ab.setCustomView(tv);
-//        ab.setDisplayShowCustomEnabled(true); //show custom title
-//        ab.setDisplayShowTitleEnabled(false); //hide the default title
-//    }
-
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -110,10 +87,7 @@ public class MainActivity extends AppCompatActivity {
         userLogeedInTV.setText(String.format("%s %s", getString(R.string.logged_as), user.getName()));
         dbUtil = DBUtil.getInstance();
 
-        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(getString(R.string.monthly_budget)).child(userKey);
-//        DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference(getString(R.string.shares));
-
-        refMonthSpinner = (Spinner) findViewById(R.id.monthSpinner);
+        refMonthSpinner = findViewById(R.id.monthSpinner);
 
         budgetScreen = null;
         transactionsScreen = null;
@@ -129,14 +103,9 @@ public class MainActivity extends AppCompatActivity {
         setRefreshListener();
         setToolbar();
 
-        //month = new Month(getTodayDate());
-        //initRefMonthSpinner();
-
-        //Listening to button event
         budgetButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting refresh new Intent
                 if (budgetScreen == null)
                     budgetScreen = new Intent(getApplicationContext(), BudgetActivity.class);
                 addParametersToActivity(budgetScreen);
@@ -144,11 +113,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Listening to button event
         insertTransactionButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting refresh new Intent
                 if (insertTransactionScreen == null)
                     insertTransactionScreen = new Intent(getApplicationContext(), InsertTransactionActivity.class);
                 addParametersToActivity(insertTransactionScreen);
@@ -157,11 +124,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Listening to button event
         transactionsButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting refresh new Intent
                 if (transactionsScreen == null)
                     transactionsScreen = new Intent(getApplicationContext(), TransactionsActivity.class);
                 addParametersToActivity(transactionsScreen);
@@ -169,14 +134,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Listening to button event
         createBudgetButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-                //Starting refresh new Intent
                 if (createBudgetScreen == null)
-                    createBudgetScreen = new Intent(getApplicationContext(), Create_Budget_Activity.class);
-                //initRefMonthSpinner();
+                    createBudgetScreen = new Intent(getApplicationContext(), CreateBudgetActivity.class);
                 addParametersToActivity(createBudgetScreen);
                 startActivity(createBudgetScreen);
             }
@@ -186,14 +148,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String refMonth = refMonthSpinner.getSelectedItem().toString();
-//                refMonth = (refMonth + ".01");
-//                refMonth = DateService.reverseDateString(refMonth,"\\.");
-//                refMonth = refMonth.replace('.', '/');
-//                Date selectedDate = DateService.convertStringToDate(refMonth, Config.DATE_FORMAT);
-//                refMonth = DateService.getYearMonth(selectedDate, Config.DATE_FORMAT_CHARACTER);
                 month = dbUtil.getMonth(refMonth);
                 boolean isActive = month != null && month.isActive();
-
                 insertTransactionButton.setEnabled(isActive);
                 createBudgetButton.setEnabled(isActive);
                 setTitleText();
@@ -291,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     private void createNewMonth(Date refMonthDate) {
-        String refMonth = DateService.getYearMonth(refMonthDate, Config.SEPARATOR);
+        String refMonth = DateUtil.getYearMonth(refMonthDate, Config.SEPARATOR);
         int budgetNumber = dbUtil.getMaxBudgetNumber();
         dbUtil.createNewMonth(budgetNumber, refMonth);
     }
@@ -327,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (month == null) { // After create budget first time
                 if (dbUtil.isCurrentRefMonthExists()) {
-                    month = dbUtil.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
+                    month = dbUtil.getMonth(DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR));
                     initRefMonthSpinner();
                     budgetButton.setEnabled(true);
                     transactionsButton.setEnabled(true);
@@ -362,8 +318,8 @@ public class MainActivity extends AppCompatActivity {
             }
             budgetButton.setEnabled(true);
             transactionsButton.setEnabled(true);
-            month = dbUtil.getMonth(DateService.getYearMonth(DateService.getTodayDate(), Config.SEPARATOR));
-            Date nextRefMonth = DateService.getNextRefMonth(month.getRefMonth());
+            month = dbUtil.getMonth(DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR));
+            Date nextRefMonth = DateUtil.getNextRefMonth(month.getRefMonth());
             if (new Date().after(nextRefMonth)) {
                 createNewMonth(nextRefMonth);
                 insertTransactionButton.setEnabled(true);

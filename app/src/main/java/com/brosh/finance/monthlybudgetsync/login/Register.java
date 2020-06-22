@@ -22,8 +22,8 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
-import com.brosh.finance.monthlybudgetsync.services.TextUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Register extends AppCompatActivity implements UserStartApp {
-    public static final String TAG = "TAG";
+    public static final String TAG = "Register";
     EditText mFullName, mEmail, mPassword, mPhone;
     private String userDBKey;
     Button mRegisterBtn;
@@ -147,11 +147,13 @@ public class Register extends AppCompatActivity implements UserStartApp {
                                 } catch (Exception e) {
                                     String s = e.getMessage().toString();
                                     s = s;
+                                    Log.e(TAG, e.getMessage() + "\nuser id: " + userID);
                                 }
 
                             } else {
                                 TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
                                 progressBar.setVisibility(View.GONE);
+                                Log.e(TAG, task.getException().getMessage());
                             }
                         }
                     });

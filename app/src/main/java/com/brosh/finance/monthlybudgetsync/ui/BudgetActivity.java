@@ -19,19 +19,19 @@ import com.brosh.finance.monthlybudgetsync.adapters.CategoriesViewAdapter;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
-import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity {
+    private static final String TAG = "BudgetActivity";
 
     private Month month;
     private DBUtil dbUtil;
-    private String userKey;
     private User user;
 
     private SwipeRefreshLayout refreshLayout;
@@ -50,7 +50,6 @@ public class BudgetActivity extends AppCompatActivity {
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
-        userKey = user.getDbKey();
         dbUtil = DBUtil.getInstance();
         month = dbUtil.getMonth(refMonth);
         setToolbar();
@@ -66,7 +65,7 @@ public class BudgetActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setCategoriesInGui() {
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
+        String currentRefMonth = DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<Category> categories = dbUtil.getCategoriesByPriority(currentRefMonth);
 
         int totalBudget = 0;

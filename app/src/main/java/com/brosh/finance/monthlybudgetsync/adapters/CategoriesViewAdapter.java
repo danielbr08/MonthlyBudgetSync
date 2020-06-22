@@ -2,6 +2,7 @@ package com.brosh.finance.monthlybudgetsync.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.brosh.finance.monthlybudgetsync.ui.TransactionsActivity;
 import java.util.List;
 
 public class CategoriesViewAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
+
     private LayoutInflater mInflater;
     private List<Category> categories;
     private Context context;

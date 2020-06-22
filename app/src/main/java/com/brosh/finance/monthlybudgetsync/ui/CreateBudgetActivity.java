@@ -44,10 +44,10 @@ import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
-import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.TextUtil;
-import com.brosh.finance.monthlybudgetsync.services.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -57,15 +57,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class Create_Budget_Activity extends AppCompatActivity {
+public class CreateBudgetActivity extends AppCompatActivity {
+    private static final String TAG = "CreateBudgetActivity";
 
     private DBUtil dbUtil;
-
     DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private Month month;
-
-    TextView emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV;
-
 
     AlertDialog.Builder myAlert;
     private List<Budget> allBudgets;
@@ -140,7 +137,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setAddAndDeleteButton() {
-        final LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
+        final LinearLayout newll = new LinearLayout(CreateBudgetActivity.this);
         newll.setOrientation(LinearLayout.HORIZONTAL);
 
         final ImageButton addRowButton = new ImageButton(this);
@@ -184,9 +181,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
         deleteRowsButton.setAdjustViewBounds(true);
 
         emptyTV.setLayoutParams(new LinearLayout.LayoutParams(screenWidth - 2 * buttonSize, buttonSize));
-        //LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(40, 40);
-
-        //addRowButton.setPadding();
         newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         newll.setOrientation(LinearLayout.HORIZONTAL);
         newll.addView(addRowButton);//,lp);
@@ -231,7 +225,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
         TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
 
-        LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
+        LinearLayout newll = new LinearLayout(CreateBudgetActivity.this);
 
         newll.setOrientation(LinearLayout.HORIZONTAL);
         newll.addView(closeButton, lp);
@@ -257,11 +251,12 @@ public class Create_Budget_Activity extends AppCompatActivity {
             CheckBox constPaymentCB;
             Spinner chargeDaySP;
             int j = 0;
-            categoryET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));// todo this expression generic
-            valueET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
-            constPaymentCB = ((CheckBox) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
-            shopET = ((EditText) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
-            chargeDaySP = ((Spinner) ((LinearLayout) budgetsRowsRecycler.getChildAt(i)).getChildAt(j++));
+            LinearLayout row = (LinearLayout) budgetsRowsRecycler.getChildAt(i);
+            categoryET = (EditText) row.getChildAt(j++);
+            valueET = (EditText) row.getChildAt(j++);
+            constPaymentCB = (CheckBox) row.getChildAt(j++);
+            shopET = (EditText) row.getChildAt(j++);
+            chargeDaySP = (Spinner) row.getChildAt(j);
 
             String category = categoryET.getText().toString().trim();
             String valueStr = valueET.getText().toString().trim().replace(Definitions.COMMA, "");
@@ -283,13 +278,11 @@ public class Create_Budget_Activity extends AppCompatActivity {
 
 
             allCategories.add(category);
-            verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET, chargeDaySP);// chargeDayET);
+            verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET, chargeDaySP);
             if (isInputValid)
                 allBudgets.add(new Budget(category, value, constPayment, shop, chargeDay, catPriority++));
-            else {
-//                allBudgets.clear();
+            else
                 return;
-            }
         }
         budgets = allBudgets;
     }
@@ -448,7 +441,7 @@ public class Create_Budget_Activity extends AppCompatActivity {
         else if (operation.equals(Definitions.DELETE_CODE))
             dbUtil.deleteDataRefMonth(month.getYearMonth());
 
-        String refMonth = DateService.getYearMonth(DateService.getTodayDate(), getString(R.string.seperator));
+        String refMonth = DateUtil.getYearMonth(DateUtil.getTodayDate(), getString(R.string.seperator));
         writeBudget(budgetNumber, allBudgets);
         writeBudgetsToTreeFB(budgetNumber);
 
@@ -485,47 +478,6 @@ public class Create_Budget_Activity extends AppCompatActivity {
     private void questionFalseAnswer() {
     }
 
-    public void setButtonsNames() {
-        // CreateBudget window buttons
-        ((TextView) findViewById(R.id.createBudgetLabel)).setText(getString(R.string.create_budget));
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void setTitleRow() {
-        final LinearLayout titleLL = new LinearLayout(Create_Budget_Activity.this);
-        initTitlesTv();
-
-        ArrayList<TextView> titlesTV = new ArrayList<>(Arrays.asList(emptyTV, categoryNameTV, categoryValueTV, constPaymentTV, shopTV, payDateTV));
-        setTitleStyle(titlesTV, titleLL);
-
-        LLMain.addView(titleLL);
-    }
-
-    private void initTitlesTv() {
-        emptyTV = new TextView(Create_Budget_Activity.this);
-        categoryNameTV = new TextView(Create_Budget_Activity.this);
-        categoryValueTV = new TextView(Create_Budget_Activity.this);
-        constPaymentTV = new TextView(Create_Budget_Activity.this);
-        shopTV = new TextView(Create_Budget_Activity.this);
-        payDateTV = new TextView(Create_Budget_Activity.this);
-        List<View> widgets = Arrays.asList((View) categoryNameTV, (View) categoryValueTV, (View) constPaymentTV, (View) shopTV, (View) payDateTV);
-
-        List<String> titles = Arrays.asList(getString(R.string.category), getString(R.string.budget), getString(R.string.constant_date), getString(R.string.store), getString(R.string.charge_day));
-        UiUtil.setTextTitleWidgets(widgets, titles);
-        int screenWidthReduceButtonSize = screenWidth - buttonSize;
-        UiUtil.setWidthCreateBudgetPageTitleWidgets(widgets, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
-        emptyTV.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
-    }
-
-    private void setTitleStyle(ArrayList<TextView> titlesTV, LinearLayout titleLL) {
-        for (TextView titletv : titlesTV) {
-            UiUtil.setHeaderProperties(titletv, 15, true);
-            titleLL.addView(titletv);
-        }
-    }
-
-    //    @TargetApi(Build.VERSION_CODES.O)
-//    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void setBudgetGui() {
         this.budgets = new ArrayList<>(dbUtil.getBudgetDataFromDB(dbUtil.getMaxBudgetNumber()));
         if (this.budgets.size() == 0)
@@ -535,27 +487,17 @@ public class Create_Budget_Activity extends AppCompatActivity {
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(budgetsRowsRecycler);
         budgetsRowsRecycler.setAdapter(adapter);
         budgetsRowsRecycler.setLayoutManager(new LinearLayoutManager(this));
-//        setTitleRow(); // index 1
-//        LLMain.addView(LLBudgets);
-//        allBudgets = dbService.getBudgetDataFromDB(dbService.getMaxBudgetNumber());
-//        for (Budget budget : allBudgets) {
-//            add_New_row(budget.getCategoryName(), budget.getValue(), budget.isConstPayment(), budget.getShop(), budget.getChargeDay());
-//        }
-//        if (allBudgets.size() == 0) // No any budget exists
-//            add_New_row("", 0, false, "", 2);
-//        setAddAndDeleteButton(); // add row and clean buttons
-//        setCloseButton();// Adding close button (last index)
     }
 
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void add_New_row(String categoryName, int categoryValue, boolean isConstPayment, String shop, int chargeDay) {
-        final LinearLayout newll = new LinearLayout(Create_Budget_Activity.this);
-        final EditText categoryNameET = new EditText(Create_Budget_Activity.this),
-                categoryValueET = new EditText(Create_Budget_Activity.this),
-                shopET = new EditText(Create_Budget_Activity.this);
-        final Spinner optionalDaysSpinner = new Spinner(Create_Budget_Activity.this);
-        final CheckBox constPaymentCB = new CheckBox(Create_Budget_Activity.this);
+        final LinearLayout newll = new LinearLayout(CreateBudgetActivity.this);
+        final EditText categoryNameET = new EditText(CreateBudgetActivity.this),
+                categoryValueET = new EditText(CreateBudgetActivity.this),
+                shopET = new EditText(CreateBudgetActivity.this);
+        final Spinner optionalDaysSpinner = new Spinner(CreateBudgetActivity.this);
+        final CheckBox constPaymentCB = new CheckBox(CreateBudgetActivity.this);
 
         // todo check the width of widgets
         int screenWidthReduceButtonSize = screenWidth - buttonSize;

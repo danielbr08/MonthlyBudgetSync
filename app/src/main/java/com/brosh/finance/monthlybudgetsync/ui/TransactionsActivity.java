@@ -28,10 +28,10 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.adapters.TransactionsViewAdapter;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.ComparatorUtil;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
-import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.ComparatorUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -39,20 +39,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TransactionsActivity extends AppCompatActivity {
+    private static final String TAG = "TransactionsActivity";
 
     private Spinner categoriesSpinner;
-    private List<TextView[]> textViews = new ArrayList<TextView[]>();
-
-    private int widthDisplay;
     private List<Transaction> transactions;
     private List<String> defaultTextTVHeaders;
     private RecyclerView transactions_rows;
     private TransactionsViewAdapter adapter;
 
-    //todo get thos fields from caller intent
     private Month month;
     private DBUtil dbUtil;
-    private String userKey;
     private User user;
     private String refMonth;
 
@@ -75,7 +71,6 @@ public class TransactionsActivity extends AppCompatActivity {
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
-        userKey = user.getDbKey();
         dbUtil = DBUtil.getInstance();
         month = dbUtil.getMonth(refMonth);
         setToolbar();
@@ -90,9 +85,8 @@ public class TransactionsActivity extends AppCompatActivity {
         llNoTransMessage.setVisibility(noTransMessageVisibility);
 
         this.defaultTextTVHeaders = Arrays.asList(getString(R.string.id), getString(R.string.category), getString(R.string.store), getString(R.string.charge_date), getString(R.string.payment_method), getString(R.string.price));
-//        setTitle( getYearMonth(month.getMonth(),'.'));
         //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//Rotate the screen to to be on landspace moade only
-        categoriesSpinner = (Spinner) findViewById(R.id.categorySpinnerTransactions);
+        categoriesSpinner = findViewById(R.id.categorySpinnerTransactions);
         init(selectedCategory);
         setOnClickTextViews();
         setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
@@ -113,7 +107,7 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     public void init(String selectedCategory) {
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
+        String currentRefMonth = DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<String> monthCategories = new ArrayList<String>(dbUtil.getCategoriesNames(currentRefMonth));
         monthCategories.add(0, getString(R.string.all));
         SpinnerAdapter adapter = new SpinnerAdapter(monthCategories, this);
@@ -129,7 +123,7 @@ public class TransactionsActivity extends AppCompatActivity {
         if (catName.equals(getString(R.string.all)))
             isIncludeCategory = true;
 
-        String currentRefMonth = DateService.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
+        String currentRefMonth = DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         String catId = isIncludeCategory ? null : dbUtil.getCategoryByName(currentRefMonth, catName).getId();
         boolean onlyActive = transactionsActiveFilterCB.isChecked();
         this.transactions = dbUtil.getTransactions(currentRefMonth, catId, onlyActive);
@@ -167,7 +161,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     String allText = headerTV.getText().toString();
                     char ascOrDesc = allText.charAt(allText.length() - 1);
                     String text = "";
-                    int sortBY = Definitions.SORT_BY_ID;
+                    int sortBY;
                     if (ascOrDesc != Definitions.ARROW_UP && ascOrDesc != Definitions.ARROW_DOWN) {
                         ascOrDesc = 'X';
                         text = allText;

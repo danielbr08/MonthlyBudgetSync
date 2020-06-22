@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync.config;
+package com.brosh.finance.monthlybudgetsync.objects;
 
 import java.io.Serializable;
 

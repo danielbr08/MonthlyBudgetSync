@@ -29,16 +29,6 @@ public class Category implements Serializable, Cloneable {
 
     }
 
-    public Category(String id, String name, double balance, int budget, Map<String, Transaction> transactions) {
-        // services
-
-        this.id = id;
-        this.name = name;
-        this.balance = balance;
-        this.budget = budget;
-        this.transactions = transactions;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -86,10 +76,6 @@ public class Category implements Serializable, Cloneable {
 
     public void withdrawal(double trnPrice) {
         this.balance -= trnPrice;
-    }
-
-    public void addTransaction(Transaction trn) {
-        this.transactions.put(trn.getId(), trn);
     }
 
 }

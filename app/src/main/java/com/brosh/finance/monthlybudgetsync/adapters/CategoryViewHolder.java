@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
-import com.brosh.finance.monthlybudgetsync.services.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;

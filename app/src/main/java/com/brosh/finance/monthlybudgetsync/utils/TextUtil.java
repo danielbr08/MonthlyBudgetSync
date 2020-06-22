@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync.services;
+package com.brosh.finance.monthlybudgetsync.utils;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -9,7 +9,7 @@ public final class TextUtil {
     public static String getSentenceCapitalLetter(String sentence, char separator) {
         if (sentence.indexOf(separator) == -1)
             return getWordCapitalLetter(sentence);
-        return new String(getWordCapitalLetter(sentence.substring(0, sentence.indexOf(separator) + 1)) + getSentenceCapitalLetter(sentence.substring(sentence.indexOf(separator) + 1), separator));
+        return getWordCapitalLetter(sentence.substring(0, sentence.indexOf(separator) + 1)) + getSentenceCapitalLetter(sentence.substring(sentence.indexOf(separator) + 1), separator);
     }
 
     public static String getWordCapitalLetter(String word) {

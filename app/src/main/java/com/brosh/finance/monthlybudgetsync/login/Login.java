@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,11 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
-import com.brosh.finance.monthlybudgetsync.config.UserConfig;
+import com.brosh.finance.monthlybudgetsync.objects.UserConfig;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
-import com.brosh.finance.monthlybudgetsync.services.TextUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -36,6 +37,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity implements UserStartApp {
+    private static final String TAG = "Login";
+
     EditText mEmail, mPassword;
     Button mLoginBtn;
     TextView mCreateBtn;
@@ -85,6 +88,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
                 } else {
                     TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
                     progressBar.setVisibility(View.GONE);
+                    Log.e(TAG, task.getException().getMessage());
                 }
 
             }

@@ -33,10 +33,10 @@ import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
-import com.brosh.finance.monthlybudgetsync.services.DBUtil;
-import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.TextUtil;
-import com.brosh.finance.monthlybudgetsync.services.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Set;
 
 public class InsertTransactionActivity extends AppCompatActivity {
+    private static final String TAG = "InsertTransactionActivity";
 
     private Spinner categoriesSpinner;
     private Spinner paymentTypeSpinner;
@@ -58,7 +59,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private DBUtil dbUtil;
-    private String userKey;
     private User user;
     private Month month;
 
@@ -86,24 +86,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
         shposAutoCompleteTextView.setThreshold(2);// Set auto complete from the first character
     }
 
-    public String getCurrentDate() {
-        Calendar mcurrentDate = Calendar.getInstance();
-        int mYear = mcurrentDate.get(Calendar.YEAR);
-        int mMonth = mcurrentDate.get(Calendar.MONTH);
-        int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
-        String day, month;
-        if (mDay < 10)
-            day = "0" + mDay;
-        else
-            day = String.valueOf(mDay);
-        if ((mMonth + 1) < 10)
-            month = "0" + (int) (mMonth + 1);
-        else
-            month = String.valueOf(mMonth + 1);
-        return (day + "/" + month + "/" + mYear);
-    }
-
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -120,20 +102,18 @@ public class InsertTransactionActivity extends AppCompatActivity {
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
-        userKey = user.getDbKey();
         dbUtil = DBUtil.getInstance();
         month = dbUtil.getMonth(refMonth);
         setToolbar();
 
         shopsSet = dbUtil.getShopsSet();
-//        setTitle( getYearMonth(month.getMonth(),'.'));
         categoriesSpinner = findViewById(R.id.categorySpinner);
         paymentTypeSpinner = findViewById(R.id.paymentMethodSpinner);
         btnSendTransaction = findViewById(R.id.sendTransactionButton);
         init();
 
         payDateEditText = findViewById(R.id.payDatePlainText);
-        payDateEditText.setText(getCurrentDate());
+        payDateEditText.setText(DateUtil.getCurrentDate(Config.DATE_FORMAT_CHARACTER));
 
         payDateEditText.setOnClickListener(new View.OnClickListener() {
 
@@ -153,14 +133,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 DatePickerDialog mDatePicker = new DatePickerDialog(InsertTransactionActivity.this, new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                         String day, month;
-                        if (selectedday < 10)
-                            day = "0" + selectedday;
-                        else
-                            day = String.valueOf(selectedday);
-                        if ((selectedmonth + 1) < 10)
-                            month = "0" + (int) (selectedmonth + 1);
-                        else
-                            month = String.valueOf(selectedmonth + 1);
+                        day = selectedday < 10 ? "0" + selectedday : String.valueOf(selectedday);
+                        month = (selectedmonth + 1) < 10 ? "0" + selectedmonth + 1 : String.valueOf(selectedmonth + 1);
                         payDateEditText.setText(day + "/" + month + "/" + selectedyear);
                         payDateEditText.setError(null);
                     }
@@ -194,7 +168,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         String categoryName = categoriesSpinner.getSelectedItem().toString();
         String paymentMethod = paymentTypeSpinner.getSelectedItem().toString();
         String shop = shopET.getText().toString();
-        Date payDate = DateService.convertStringToDate(payDateET.getText().toString(), Config.DATE_FORMAT);
+        Date payDate = DateUtil.convertStringToDate(payDateET.getText().toString(), Config.DATE_FORMAT);
         double transactionPrice = Double.valueOf(transactionPriceET.getText().toString());
         String catId = dbUtil.getCategoryByName(month.getYearMonth(), categoryName).getId();
         DatabaseReference transactionsNode = dbUtil.getDBTransactionsPath(month.getYearMonth(), catId);
@@ -204,8 +178,6 @@ public class InsertTransactionActivity extends AppCompatActivity {
         shopsSet.add(shop); // todo check if event listener call
         dbUtil.writeNewShopFB(shop);
         Category category = dbUtil.getCategoryById(refMonth, catId);
-//                    monthDB.child(Definition.TRAN_ID_NUMERATOR).setValue(idPerMonth);
-//                categoriesDB.child(Definition.BALANCE)
         monthDB.runTransaction(new Transaction.Handler() { // todo move to DBService
             @NonNull
             @Override
@@ -236,40 +208,12 @@ public class InsertTransactionActivity extends AppCompatActivity {
         });
     }
 
-    public void showMessageToast(String message, boolean isFinishNeeded) {
-        Context context = this;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                if (isFinishNeeded)
-                    finish();
-            }
-        });
-    }
-
     public boolean setErrorEditText(EditText et) {
         if (et.length() == 0) {
             et.setError(getString(R.string.requiredField));
             return true;
         }
         return false;
-    }
-
-    public void showMessageNoButton(String message)//View view)
-    {
-        final AlertDialog.Builder myAlert = new AlertDialog.Builder(this);
-        myAlert.setMessage(message);//.create()
-        myAlert.show();
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                myAlert.create().dismiss();
-                finish();
-            }
-        }, 1000); // 3000 milliseconds delay
-
     }
 
     private List<String> getPaymentMethodList() {

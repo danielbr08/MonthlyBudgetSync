@@ -1,7 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.brosh.finance.monthlybudgetsync.config.Config;
-import com.brosh.finance.monthlybudgetsync.services.DateService;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,41 +25,8 @@ public class Transaction implements Serializable {
     }
 
     public void formatDateFields() {
-        this.registrationDate = this.registrationDate != null ? DateService.changeDateFormat(this.registrationDate, Config.DATE_FORMAT) : this.registrationDate;
-        this.payDate = this.payDate != null ? DateService.changeDateFormat(this.payDate, Config.DATE_FORMAT) : this.payDate;
-    }
-
-    //    public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate) {
-//        this.id = id;
-//        this.idPerMonth = idPerMonth;
-//        this.category = category;
-//        this.paymentMethod = paymentMethod;
-//        this.shop = shop;
-//        this.payDate = payDate;
-//        this.price = price;
-//        this.registrationDate = registrationDate;
-//    }
-//
-//    public Transaction(int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price, Date registrationDate) {
-//        this.id = id;
-//        this.idPerMonth = idPerMonth;
-//        this.category = category;
-//        this.paymentMethod = paymentMethod;
-//        this.shop = shop;
-//        this.payDate = payDate;
-//        this.price = price;
-//        this.registrationDate = registrationDate;
-//    }
-
-    public Transaction(int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price) {
-        this.idPerMonth = idPerMonth;
-        this.category = category;
-        this.paymentMethod = paymentMethod;
-        this.shop = shop;
-        this.payDate = payDate;
-        this.price = price;
-        this.registrationDate = DateService.getTodayDate();
-        postConstructor();
+        this.registrationDate = this.registrationDate != null ? DateUtil.changeDateFormat(this.registrationDate, Config.DATE_FORMAT) : this.registrationDate;
+        this.payDate = this.payDate != null ? DateUtil.changeDateFormat(this.payDate, Config.DATE_FORMAT) : this.payDate;
     }
 
     public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price) {
@@ -70,7 +37,7 @@ public class Transaction implements Serializable {
         this.shop = shop;
         this.payDate = payDate;
         this.price = price;
-        this.registrationDate = DateService.getTodayDate();
+        this.registrationDate = DateUtil.getTodayDate();
 
         postConstructor();
     }

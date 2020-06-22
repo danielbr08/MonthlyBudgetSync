@@ -19,13 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Create_Budget_Activity" />
+        <activity android:name=".ui.CreateBudgetActivity" />
         <activity android:name=".login.Register" />
         <activity android:name=".ui.MainActivity" />
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9791546601159997~4083008913"/>
+            android:value="ca-app-pub-9791546601159997~4083008913" />
     </application>
 
 </manifest>

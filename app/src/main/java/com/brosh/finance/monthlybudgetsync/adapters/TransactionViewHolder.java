@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
-import com.brosh.finance.monthlybudgetsync.services.DateService;
-import com.brosh.finance.monthlybudgetsync.services.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
             this.catName.setText(transaction.getCategory());
             this.paymentMethod.setText(transaction.getPaymentMethod());
             this.store.setText(transaction.getShop());
-            this.chargeDate.setText(DateService.convertDateToString(transaction.getPayDate(), Config.DATE_FORMAT));
+            this.chargeDate.setText(DateUtil.convertDateToString(transaction.getPayDate(), Config.DATE_FORMAT));
             this.price.setText(decim.format(transaction.getPrice()));
         }
 

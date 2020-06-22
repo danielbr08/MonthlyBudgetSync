@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync.services;
+package com.brosh.finance.monthlybudgetsync.utils;
 
 import android.app.Activity;
 import android.content.Context;

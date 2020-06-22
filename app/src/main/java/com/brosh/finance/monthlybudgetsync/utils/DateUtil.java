@@ -1,4 +1,4 @@
-package com.brosh.finance.monthlybudgetsync.services;
+package com.brosh.finance.monthlybudgetsync.utils;
 
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
@@ -7,7 +7,25 @@ import java.text.*;
 import java.util.*;
 
 
-public final class DateService {
+public final class DateUtil {
+    public static String getCurrentDate(String seperator) {
+        Calendar currentDate = Calendar.getInstance();
+        int mYear = currentDate.get(Calendar.YEAR);
+        int mMonth = currentDate.get(Calendar.MONTH);
+        int mDay = currentDate.get(Calendar.DAY_OF_MONTH);
+
+        String day, month;
+        if (mDay < 10)
+            day = "0" + mDay;
+        else
+            day = String.valueOf(mDay);
+        if ((mMonth + 1) < 10)
+            month = "0" + (int) (mMonth + 1);
+        else
+            month = String.valueOf(mMonth + 1);
+        return (day + seperator + month + seperator + mYear);
+    }
+
     public static Date getTodayDate() {
         Calendar c = Calendar.getInstance();
 
@@ -91,7 +109,7 @@ public final class DateService {
         int lastDayInMonth = getLastDayCurrentMonth();
         if (day > lastDayInMonth)
             _day = lastDayInMonth;
-        Calendar c = DateService.getTodayCalendar();
+        Calendar c = DateUtil.getTodayCalendar();
         c.set(Calendar.DAY_OF_MONTH, _day);
         return c.getTime();
     }
