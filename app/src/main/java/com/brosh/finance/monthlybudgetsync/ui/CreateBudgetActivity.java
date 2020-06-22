@@ -189,49 +189,6 @@ public class CreateBudgetActivity extends AppCompatActivity {
         LLMain.addView(newll);
     }
 
-    public void setCloseButton() {
-        final Button closeButton = new Button(this);
-        int size = (150 * buttonSize) / 100;
-        closeButton.setHeight(size);
-        closeButton.setText(getString(R.string.create));
-        closeButton.setTextColor(Color.BLACK);
-        closeButton.setTypeface(null, Typeface.BOLD);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            public void onClick(View view) {
-                setBudgets();
-                if (allBudgets.size() == 0) {// Nothing needed to do
-                    showMessageNoButton(getString(R.string.please_insert_budget));
-                    return;
-                }
-                int budgetNumber = dbUtil.getMaxBudgetNumber();
-                ArrayList<Budget> newBudgets = getAddedBudgets(budgetNumber);
-                boolean isOriginContentBudgetChanged = isOriginBudgetChanged(budgetNumber);
-                boolean isBudgetChange = isBudgetChange(budgetNumber);
-                boolean isAddedBudgetsExists = newBudgets.size() > 0;
-                if (!isInputValid || !isBudgetChange)
-                    return;
-                if (month == null)
-                    createBudget(Definitions.CREATE_CODE);// First time create budget
-                else if (isOriginContentBudgetChanged) {// Rewriting of monthly budget needed
-                    if (dbUtil.isCurrentRefMonthExists())
-                        showQuestionDeleteCurrentMonth(getString(R.string.create_budget_question));
-                    return;
-                } else if (isAddedBudgetsExists)// Insert the added budgets needed only
-                    createBudget(Definitions.ADD_CODE);// Values of old budget updated only
-            }
-        });
-
-
-        TableLayout.LayoutParams lp = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
-
-        LinearLayout newll = new LinearLayout(CreateBudgetActivity.this);
-
-        newll.setOrientation(LinearLayout.HORIZONTAL);
-        newll.addView(closeButton, lp);
-        LLMain.addView(newll);
-    }
-
     public void writeBudget(int budgetNumber, final List<Budget> budgets) {
         String budgetNumberStr = String.valueOf(budgetNumber);
         for (Budget budget : budgets) {
@@ -244,7 +201,6 @@ public class CreateBudgetActivity extends AppCompatActivity {
     public void setBudgets() {
         allCategories.clear();
         allBudgets.clear();
-        RecyclerView LLBudgets = findViewById(R.id.budgets_rows);
         int catPriority = 1;
         for (int i = 0; i < budgetsRowsRecycler.getChildCount(); i++) {
             EditText categoryET, valueET, shopET;
@@ -271,12 +227,9 @@ public class CreateBudgetActivity extends AppCompatActivity {
                 chargeDayStr = getString(R.string.zero);
             }
             chargeDay = Integer.valueOf(chargeDayStr);
-
             if (valueStr.equals(getString(R.string.empty)))
                 valueStr = getString(R.string.zero);
             int value = Integer.valueOf(valueStr);
-
-
             allCategories.add(category);
             verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET, chargeDaySP);
             if (isInputValid)
@@ -293,11 +246,6 @@ public class CreateBudgetActivity extends AppCompatActivity {
         String valueStr = valueET.getText().toString().trim().replace(Definitions.COMMA, getString(R.string.empty));
         boolean constPayment = constPaymentCB.isChecked();
         String shop = shopET.getText().toString().trim();
-        String chargeDayStr = chargeDaySP.getSelectedItem().toString().trim();
-
-        if (chargeDayStr.equals(""))
-            chargeDayStr = getString(R.string.empty);
-        int chargeDay = Integer.valueOf(chargeDayStr);
 
         if (valueStr.equals(getString(R.string.empty)))
             valueStr = getString(R.string.zero);
@@ -336,8 +284,6 @@ public class CreateBudgetActivity extends AppCompatActivity {
             isInputValid = false;
         }
 
-        //allCategories.add(budget.getCategory());
-        // Need to reduce duplicates categories by define set of categories
         if (!isInputValid)
             return;
     }
