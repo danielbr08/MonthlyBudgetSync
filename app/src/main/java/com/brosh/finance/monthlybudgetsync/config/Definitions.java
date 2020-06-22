@@ -20,8 +20,6 @@ public class Definitions {
     public static final String BALANCE = "balance";
     public static final String BUDGET = "budget";
     public static final String NAME = "name";
-    public static final String IS_STORNO = "isStorno";
-    public static final String STORNO_OF = "stornoOf";
     public static final String DELETED = "deleted";
     public static final String BUDGET_NUMBER = "budgetNumber";
     public static final String TRAN_ID_NUMERATOR = "tranIdNumerator";

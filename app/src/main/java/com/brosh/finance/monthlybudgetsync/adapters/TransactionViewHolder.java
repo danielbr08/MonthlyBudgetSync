@@ -58,7 +58,7 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
             this.price.setText(decim.format(transaction.getPrice()));
         }
 
-        boolean strikeThroughTextEnable = transaction.getIsStorno() || transaction.isDeleted() ? true : false;
+        boolean strikeThroughTextEnable = transaction.isDeleted() ? true : false;
         setStrikeThroughText(strikeThroughTextEnable);
 
         if (transaction.getId() == null) {

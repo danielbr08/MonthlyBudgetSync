@@ -508,7 +508,7 @@ public final class DBUtil {
         List<Transaction> catTrans = this.getTransactions(refMonth, catId);
         double sum = 0;
         for (Transaction trn : catTrans) {
-            if (onlyActive && (trn.isStorno() || trn.isDeleted()))
+            if (onlyActive && trn.isDeleted())
                 continue;
             sum += trn.getPrice();
         }
@@ -573,7 +573,7 @@ public final class DBUtil {
 
     private void setTransactionFieldsEventUpdateValue(final DataSnapshot transactionDBDataSnapshot, String refMonth, String catId) {
         String tranId = transactionDBDataSnapshot.getKey();
-        List<String> transactionFields = Arrays.asList(Definitions.IS_STORNO, Definitions.STORNO_OF, Definitions.DELETED);
+        List<String> transactionFields = Arrays.asList(Definitions.DELETED);
         for (String transactionField : transactionFields) {
             DataSnapshot transactionFieldDataBaseReference = transactionDBDataSnapshot.child(transactionField);
             setTransactionFieldEventUpdateValue(transactionFieldDataBaseReference, refMonth, catId, tranId);
@@ -589,13 +589,6 @@ public final class DBUtil {
                 if (value != null) {
                     Transaction currentTransaction = monthDBHM.get(refMonthKey).getCategories().get(catId).getTransactions().get(tranId);
                     switch (fieldName) {
-                        case Definitions.IS_STORNO:
-                            boolean isStorno = Boolean.valueOf(dataSnapshot.getValue().toString());
-                            currentTransaction.setIsStorno(isStorno);
-                            break;
-                        case Definitions.STORNO_OF:
-                            int stornoOf = Integer.valueOf(dataSnapshot.getValue().toString());
-                            currentTransaction.setStornoOf(stornoOf);
                         case Definitions.DELETED:
                             boolean deleted = Boolean.valueOf(dataSnapshot.getValue().toString());
                             currentTransaction.setDeleted(deleted);
@@ -832,7 +825,7 @@ public final class DBUtil {
         if (onlyActive) {
             List<Transaction> activeTtransactions = new ArrayList<>();
             for (Transaction tran : getTransactions(refMonth, catId)) {
-                if (!tran.getIsStorno() && !tran.isDeleted()) {
+                if (!tran.isDeleted()) {
                     activeTtransactions.add(tran);
                 }
             }
@@ -1129,8 +1122,6 @@ public final class DBUtil {
 //
 //            //Insert data
 //            Transaction transaction = new Transaction("", getMaxIDPerMonthTRN(refMonth), categoryName,paymentMethod , shop, payDate, transactionPrice, new Date());
-//            transaction.setIsStorno(false);
-//            transaction.setStornoOf(-1);
 //
 //            for (Category cat : month.getCategories())
 //            {
