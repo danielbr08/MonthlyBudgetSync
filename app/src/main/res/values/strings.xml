@@ -30,7 +30,7 @@
     <string name="shares">Shares</string>
     <string name="users">users</string>
     <string name="first_name">fName</string>
-    <string name="Share">Share</string>
+    <string name="share">Share</string>
     <string name="insert_transaction">INSERT TRANSACTION</string>
     <string name="close">CLOSE</string>
     <string name="remember_me">remember me</string>
@@ -74,4 +74,6 @@
     <string name="email_is_required">Email is Required.</string>
     <string name="password_is_required">Password is Required.</string>
     <string name="password_length_must_be_at_least_6">Password Must be >= 6 Characters</string>
+    <string name="share_app">Share App</string>
+    <string name="settings">Settings</string>
 </resources>

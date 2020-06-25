@@ -13,6 +13,7 @@ public final class Config {
     public static final String SEPARATOR = "-";
     public static final char DOWN_ARROW = 'ꜜ';
     public static final char UP_ARROW = 'ꜛ';
+    public static final String APP_URL = "https://play.google.com/store/apps/details?id=monthlybudget.apps.danielbrosh.monthlybudget&gl=IL"; // todo fill real app url from google play
     public static double CATEGORY_NAME_ET_WIDTH_PERCENT = 27.0 / 100;
     public static double CATEGORY_VALUE_ET_WIDTH_PERCENT = 14.0 / 100;
     public static double CONST_PAYMENT_CB_WIDTH_PERCENT = 14.0 / 100;

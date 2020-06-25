@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -12,12 +13,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
@@ -29,8 +34,6 @@ import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
@@ -67,6 +70,45 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this,
                 R.layout.custom_spinner, allMonths);
         refMonthSpinner.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settingsItem:
+                Toast.makeText(this, "settings item selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.shareItem:
+                Toast.makeText(this, "share item", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item3:
+                Toast.makeText(this, "item 3 selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.subItem1:
+                Toast.makeText(this, "sub item 1 selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.subItem2:
+                Toast.makeText(this, "sub item 2 selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.shareAppItem:
+                Toast.makeText(this, "share app item", Toast.LENGTH_SHORT).show();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, Config.APP_URL);
+                sendIntent.setType("text/plain");
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     @TargetApi(Build.VERSION_CODES.O)

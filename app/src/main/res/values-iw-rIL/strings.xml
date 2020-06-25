@@ -31,7 +31,7 @@
     <string name="shares">שיתופים</string>
     <string name="users">משתמשים</string>
     <string name="first_name">שם פרטי</string>
-    <string name="Share">שיתוף</string>
+    <string name="share">שיתוף</string>
     <string name="insert_transaction">הכנסת עסקה</string>
     <string name="close">סגור</string>
     <string name="remember_me">זכור אותי</string>
@@ -75,4 +75,6 @@
     <string name="email_is_required">אימייל הוא שדה חובה</string>
     <string name="password_is_required">סיסמה היא שדה חובה</string>
     <string name="password_length_must_be_at_least_6">הסיסמה חייבת להיות לפחות באורך 6</string>
+    <string name="share_app">שיתוף האפליקציה</string>
+    <string name="settings">הגדרות</string>
 </resources>
