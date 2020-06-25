@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
+import com.brosh.finance.monthlybudgetsync.objects.Share;
 import com.brosh.finance.monthlybudgetsync.objects.UserConfig;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
@@ -160,11 +161,13 @@ public class Login extends AppCompatActivity implements UserStartApp {
                     user.setUserConfig(new UserConfig());
                     snapshot.child(Definitions.USERS).child(userDBKey).getRef().setValue(user);
                 }
+                DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
                 //                String ownerDBKey = null;
-//                if (snapshot.child(Definition.SHARES).hasChild(userDBKey)) {
-//                    ownerDBKey = snapshot.child(userDBKey).getValue().toString();
-//                    user.setOwner(ownerDBKey);
-//                }
+                if (snapshot.child(Definitions.SHARES).hasChild(userDBKey)) {
+                    String ownerDBKey = snapshot.child(Definitions.SHARES).child(userDBKey).getValue(Share.class).getDbKey();
+                    // todo ask user if he want to get the share if yes, update status to successfully else update to deny and save the share and user updated objects
+                    user.setDbKey(ownerDBKey);
+                }
 //                Intent intent = new Intent(getApplicationContext(), InitAppActivity.class);
 //                intent.putExtra(getString(R.string.user), user);
 //                intent.putExtra(getString(R.string.isNewUser), false);

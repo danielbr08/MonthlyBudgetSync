@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.ChildEventListenerMap;
+import com.brosh.finance.monthlybudgetsync.objects.Share;
+import com.brosh.finance.monthlybudgetsync.objects.ShareStatus;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
@@ -60,7 +62,7 @@ public final class DBUtil {
     private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private Map<String, Month> monthDBHM = new HashMap<>();
     private Set<String> shopsSet = new HashSet<String>();
-//    private Map<String,String> sharesMap = new HashMap<>();
+    private Map<String, Share> sharesMap = new HashMap<>();
 
     private String userKey;
     private User user;
@@ -78,13 +80,13 @@ public final class DBUtil {
         this.rootEventListener = rootEventListener;
     }
 
-//    public Map<String, String> getSharesMap() {
-//        return sharesMap;
-//    }
-//
-//    public void setSharesMap(Map<String, String> sharesMap) {
-//        this.sharesMap = sharesMap;
-//    }
+    public Map<String, Share> getSharesMap() {
+        return sharesMap;
+    }
+
+    public void setSharesMap(Map<String, Share> sharesMap) {
+        this.sharesMap = sharesMap;
+    }
 
     public Set<String> getShopsSet() {
         return shopsSet;
@@ -253,10 +255,6 @@ public final class DBUtil {
                             }
                             break;
                         }
-//                        case Definition.SHARES: {
-//                            setSharesDB(myDataSnapshot);
-//                            break;
-//                        }
                     }
                 }
                 try {
@@ -353,41 +351,39 @@ public final class DBUtil {
 //        }
     }
 
-//    public void setSharesDB(DataSnapshot shopsSnapshot) {
-//        ChildEventListener addChildEvent = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                String newUser = dataSnapshot.getKey();
-//                String owner = dataSnapshot.getValue().toString();
-//                sharesMap.put(newUser, owner);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                String key = dataSnapshot.getKey();
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//                String shop = dataSnapshot.getValue().toString();
-//                shopsSet.remove(shop);
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
-//        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
-//            shopsSnapshot.getRef().addChildEventListener(addChildEvent);
-//            addChildValueEventListener(shopsSnapshot.getRef(), addChildEvent);
-//        }
-//    }
+    public void setSharesDB(DataSnapshot shopsSnapshot) {
+        ChildEventListener addChildEvent = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String sharedUser = dataSnapshot.getKey();
+                Share share = dataSnapshot.getValue(Share.class);
+                sharesMap.put(sharedUser, share);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String key = dataSnapshot.getKey();
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
+            shopsSnapshot.getRef().addChildEventListener(addChildEvent);
+            addChildValueEventListener(shopsSnapshot.getRef(), addChildEvent);
+        }
+    }
 
     public void setAddChildMonthEvent(DataSnapshot MonthDataSnapshot) {
         ChildEventListener addChildEvent = new ChildEventListener() {
@@ -734,7 +730,7 @@ public final class DBUtil {
     }
 
     public DatabaseReference getDBSaresPath() {
-        return getDBUserRootPath().child(Definitions.SHARES);
+        return Config.DatabaseReferenceShares;
     }
 
     public Map<String, Budget> getBudget(String budgetNumber) {
@@ -1060,18 +1056,19 @@ public final class DBUtil {
         });
     }
 
-//    public void share(String emailToShare) throws Exception {
-//        if(isEmailAlreadyShared(emailToShare)){
-//            throw new Exception(language.emailAlreadyshared);
-//        }
-//        String emailCommaReplaced = emailToShare.replace(Definition.DOT, Definition.COMMA);
-//        getDBSaresPath().child(emailCommaReplaced).setValue(userKey);
-//    }
-//
-//    public boolean isEmailAlreadyShared(String emailToShare) {
-//        String emailCommaReplaced = emailToShare.replace(Definition.DOT, Definition.COMMA);
-//        return sharesMap.containsKey(emailCommaReplaced) ? true : false;
-//    }
+    public void share(String emailToShare) throws Exception {
+        if (isEmailAlreadyShared(emailToShare)) {
+            throw new Exception(Definitions.EMAIL_ALREADY_SHARED);
+        }
+        String emailCommaReplaced = emailToShare.replace(Definitions.DOT, Definitions.COMMA);
+        Share share = new Share(user.getEmail(), emailToShare, user.getDbKey(), ShareStatus.PENDING);
+        getDBSaresPath().child(emailCommaReplaced).setValue(share);
+    }
+
+    public boolean isEmailAlreadyShared(String emailToShare) {
+        String emailCommaReplaced = emailToShare.replace(Definitions.DOT, Definitions.COMMA);
+        return sharesMap.containsKey(emailCommaReplaced) ? true : false;
+    }
 
 
     //****************************************************************************************

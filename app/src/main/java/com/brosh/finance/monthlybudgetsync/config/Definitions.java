@@ -26,6 +26,7 @@ public class Definitions {
     public static final String SHARES = "Shares";
     public static final String USERS = "Users";
     public static final String USER = "User";
+    public static final String EMAIL_ALREADY_SHARED = "Email already shared";
     public static final String CREATE_CODE = "CRT";
     public static final String ADD_CODE = "ADD";
     public static final String DELETE_CODE = "DEL";

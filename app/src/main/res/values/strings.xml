@@ -76,4 +76,6 @@
     <string name="password_length_must_be_at_least_6">Password Must be >= 6 Characters</string>
     <string name="share_app">Share App</string>
     <string name="settings">Settings</string>
+    <string name="successfully_shared">successfully shared!</string>
+    <string name="cancel">Cancel</string>
 </resources>

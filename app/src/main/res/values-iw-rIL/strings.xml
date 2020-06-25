@@ -77,4 +77,6 @@
     <string name="password_length_must_be_at_least_6">הסיסמה חייבת להיות לפחות באורך 6</string>
     <string name="share_app">שיתוף האפליקציה</string>
     <string name="settings">הגדרות</string>
+    <string name="successfully_shared">שותף בהצלחה!</string>
+    <string name="cancel">בטל</string>
 </resources>

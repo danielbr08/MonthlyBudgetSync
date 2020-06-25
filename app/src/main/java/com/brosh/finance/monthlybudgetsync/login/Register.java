@@ -203,6 +203,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                 } else { // Already registered
                     user = snapshot.child(Definitions.USERS).child(userDBKey).getValue(User.class);//
                 }
+                DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
                 dbUtil.initDB(user, currentActivity);
             }
 

@@ -7,12 +7,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +25,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +38,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
@@ -79,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "settings item selected", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.shareItem:
-                Toast.makeText(this, "share item", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "share item", Toast.LENGTH_SHORT).show();
+                openShareDialog();
                 return true;
             case R.id.item3:
                 Toast.makeText(this, "item 3 selected", Toast.LENGTH_SHORT).show();
@@ -234,59 +242,60 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-//    public void openShareDialog() {
-//        final Context context = this;
-//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//        builder.setTitle(language.shareMonthlyBudget);
-//        final EditText emailInput = new EditText(this);
-//        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-//        emailInput.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                String emailText = emailInput.getText().toString();
-//                if (dbService.isEmailAlreadyShared(emailText)) {
+    public void openShareDialog() {
+        final Context context = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(R.string.share));
+        final EditText emailInput = new EditText(this);
+        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        emailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                String emailText = emailInput.getText().toString();
+//                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
 //                    emailInput.setError(getString(R.string.emailAlreadyshared));
 //                } else {
 //                    emailInput.setError(null);
 //                }
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                String emailText = emailInput.getText().toString();
-//                if (dbService.isEmailAlreadyShared(emailText)) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String emailText = emailInput.getText().toString();
+//                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
 //                    emailInput.setError(language.emailAlreadyshared);
 //                } else {
 //                    emailInput.setError(null);
 //                }
-//            }
-//        });
-//
-//        builder.setView(emailInput);
-//        builder.setPositiveButton(language.insert, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                String emailText = emailInput.getText().toString();
-//                try {
-//                    dbService.share(emailText);
-//                    TextService.showMessage(language.successfullyShared, Toast.LENGTH_LONG, context);
-//                } catch (Exception e) {
-//                    TextService.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
-//                }
-//            }
-//        });
-//        builder.setNegativeButton(language.cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-//        builder.show();
-//    }
+            }
+        });
+
+        builder.setView(emailInput);
+        builder.setPositiveButton(getString(R.string.insert), new DialogInterface.OnClickListener() {
+            @SuppressLint("StringFormatInvalid")
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String emailText = emailInput.getText().toString();
+                try {
+                    DBUtil.getInstance().share(emailText);
+                    TextUtil.showMessage(getString(R.string.successfully_shared), Toast.LENGTH_LONG, context);
+                } catch (Exception e) {
+                    TextUtil.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
+                }
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
 
     private void createNewMonth(Date refMonthDate) {
         String refMonth = DateUtil.getYearMonth(refMonthDate, Config.SEPARATOR);
