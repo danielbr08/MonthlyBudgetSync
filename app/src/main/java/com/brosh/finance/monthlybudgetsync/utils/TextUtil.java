@@ -35,4 +35,8 @@ public final class TextUtil {
     public static String getEmailComma(String email) {
         return email.trim().replace(Definitions.DOT, Definitions.COMMA);
     }
+
+    public static boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 }

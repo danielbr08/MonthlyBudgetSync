@@ -30,6 +30,7 @@ public class Definitions {
     public static final String CREATE_CODE = "CRT";
     public static final String ADD_CODE = "ADD";
     public static final String DELETE_CODE = "DEL";
+    public static String dbKey = "dbKey";
     public static final int SORT_BY_ID = 1;
     public static final int SORT_BY_CATEGORY = 2;
     public static final int SORT_BY_PAYMRNT_METHOD = 3;
@@ -37,6 +38,4 @@ public class Definitions {
     public static final int SORT_BY_CHARGE_DATE = 5;
     public static final int SORT_BY_PRICE = 6;
     public static final int SORT_BY_REGISTRATION_DATE = 7;
-
-
 }

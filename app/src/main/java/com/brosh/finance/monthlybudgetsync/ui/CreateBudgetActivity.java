@@ -107,7 +107,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         adapter = new CreateBudgetViewAdapter(this, budgets);
         budgetsRowsRecycler = findViewById(R.id.budgets_rows);
 
-        DatabaseReferenceUserMonthlyBudget = FirebaseDatabase.getInstance().getReference(Definitions.MONTHLY_BUDGET).child(userKey);
+        DatabaseReferenceUserMonthlyBudget = DBUtil.getDatabase().getReference(Definitions.MONTHLY_BUDGET).child(userKey);
         LLMain = findViewById(R.id.LLMainCreateBudget);
         LLBudgets = new LinearLayout(this);
         LLBudgets.setOrientation(LinearLayout.VERTICAL);

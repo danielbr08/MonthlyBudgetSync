@@ -242,21 +242,23 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void openShareDialog() {
         final Context context = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getString(R.string.share));
+        builder.setTitle(getString(R.string.share_budget));
         final EditText emailInput = new EditText(this);
+        emailInput.setHint(getString(R.string.please_enter_user_email));
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 String emailText = emailInput.getText().toString();
-//                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
-//                    emailInput.setError(getString(R.string.emailAlreadyshared));
-//                } else {
-//                    emailInput.setError(null);
-//                }
+                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
+                    emailInput.setError(getString(R.string.user_already_shared));
+                } else {
+                    emailInput.setError(null);
+                }
             }
 
             @Override
@@ -266,25 +268,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String emailText = emailInput.getText().toString();
-//                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
-//                    emailInput.setError(language.emailAlreadyshared);
-//                } else {
-//                    emailInput.setError(null);
-//                }
+                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
+                    emailInput.setError(getString(R.string.user_already_shared));
+                } else {
+                    emailInput.setError(null);
+                }
             }
         });
 
         builder.setView(emailInput);
-        builder.setPositiveButton(getString(R.string.insert), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.share), new DialogInterface.OnClickListener() {
             @SuppressLint("StringFormatInvalid")
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String emailText = emailInput.getText().toString();
-                try {
-                    DBUtil.getInstance().share(emailText);
-                    TextUtil.showMessage(getString(R.string.successfully_shared), Toast.LENGTH_LONG, context);
-                } catch (Exception e) {
-                    TextUtil.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
+                if (!TextUtil.isEmailValid(emailText)) {
+                    emailInput.setError(getString(R.string.invalid_email));
+                } else {
+                    try {
+                        DBUtil.getInstance().share(emailText);
+                        TextUtil.showMessage(getString(R.string.successfully_shared), Toast.LENGTH_LONG, context);
+                    } catch (Exception e) {
+                        TextUtil.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
+                    }
                 }
             }
         });

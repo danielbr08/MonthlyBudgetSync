@@ -46,15 +46,23 @@ public final class DBUtil {
     private static final String TAG = "DBUtil";
 
     private static DBUtil instance;
+    private static FirebaseDatabase database;
 
     private DBUtil() {
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
     public static DBUtil getInstance() {
         if (instance == null)
             instance = new DBUtil();
         return instance;
+    }
+
+    public static FirebaseDatabase getDatabase() {
+        if (database == null) {
+            database = FirebaseDatabase.getInstance();
+            database.setPersistenceEnabled(true);
+        }
+        return database;
     }
 
     private ValueEventListener rootEventListener;
@@ -702,7 +710,7 @@ public final class DBUtil {
     }
 
     public DatabaseReference getDBUserRootPath() {
-        return FirebaseDatabase.getInstance().getReference(Definitions.MONTHLY_BUDGET).child(userKey);
+        return getDatabase().getReference(Definitions.MONTHLY_BUDGET).child(userKey);
     }
 
     public DatabaseReference getDBBudgetsPath() {
@@ -1067,7 +1075,8 @@ public final class DBUtil {
 
     public boolean isEmailAlreadyShared(String emailToShare) {
         String emailCommaReplaced = emailToShare.replace(Definitions.DOT, Definitions.COMMA);
-        return sharesMap.containsKey(emailCommaReplaced) ? true : false;
+        Share share = sharesMap.containsKey(emailCommaReplaced) ? sharesMap.get(emailCommaReplaced) : null;
+        return share != null && share.getStatus() == ShareStatus.SUCCESSFULLY_SHARED ? true : false;
     }
 
 

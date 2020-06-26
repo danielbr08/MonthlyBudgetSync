@@ -31,7 +31,7 @@
     <string name="shares">שיתופים</string>
     <string name="users">משתמשים</string>
     <string name="first_name">שם פרטי</string>
-    <string name="share">שיתוף</string>
+    <string name="share">שתף</string>
     <string name="insert_transaction">הכנסת עסקה</string>
     <string name="close">סגור</string>
     <string name="remember_me">זכור אותי</string>
@@ -79,4 +79,9 @@
     <string name="settings">הגדרות</string>
     <string name="successfully_shared">שותף בהצלחה!</string>
     <string name="cancel">בטל</string>
+    <string name="share_budget">שיתוף תקציב</string>
+    <string name="user_already_shared">בוצע כבר שיתוף למשתמש זה!</string>
+    <string name="share_budget_question"> המשתמש \"%s\" שיתף איתך תקציב.\n האם ברצונך לקבל את השיתוף?\n שים לב, קבלת השיתוף תגרום לאיבוד המידע הקיים.</string>
+    <string name="please_enter_user_email">הכנס את מייל המשתמש כדי לשתף</string>
+    <string name="invalid_email">מייל שגוי!</string>
 </resources>

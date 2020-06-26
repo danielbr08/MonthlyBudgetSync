@@ -1,7 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.config;
 
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -30,10 +30,10 @@ public final class Config {
     public static Thread closeActivity;
     public static ArrayList<String> LOG_REPORT = new ArrayList<>();
 
-    public static final DatabaseReference DatabaseReferenceRoot = FirebaseDatabase.getInstance().getReference();
-    public static final DatabaseReference DatabaseReferenceUsers = FirebaseDatabase.getInstance().getReference("Users");
-    public static final DatabaseReference DatabaseReferenceShares = FirebaseDatabase.getInstance().getReference("Shares");
-    public static final DatabaseReference DatabaseReferenceMonthlyBudget = FirebaseDatabase.getInstance().getReference("Monthly Budget");
+    public static final DatabaseReference DatabaseReferenceRoot = DBUtil.getDatabase().getReference();
+    public static final DatabaseReference DatabaseReferenceUsers = DBUtil.getDatabase().getReference("Users");
+    public static final DatabaseReference DatabaseReferenceShares = DBUtil.getDatabase().getReference("Shares");
+    public static final DatabaseReference DatabaseReferenceMonthlyBudget = DBUtil.getDatabase().getReference("Monthly Budget");
 
 
 }

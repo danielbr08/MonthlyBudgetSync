@@ -78,4 +78,9 @@
     <string name="settings">Settings</string>
     <string name="successfully_shared">successfully shared!</string>
     <string name="cancel">Cancel</string>
+    <string name="share_budget_question">The user \"%s\" has shared a budget with you.\nDo you want to share?\nPlease note that receiving the sharing will lose existing information.</string>
+    <string name="share_budget">Share Monthly Budget</string>
+    <string name="user_already_shared">The user already shared!</string>
+    <string name="please_enter_user_email">Please enter the user\'s email to share</string>
+    <string name="invalid_email">Invalid email!</string>
 </resources>

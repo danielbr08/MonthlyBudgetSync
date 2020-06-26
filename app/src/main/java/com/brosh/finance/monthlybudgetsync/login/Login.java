@@ -1,8 +1,12 @@
 package com.brosh.finance.monthlybudgetsync.login;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,6 +28,7 @@ import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Share;
+import com.brosh.finance.monthlybudgetsync.objects.ShareStatus;
 import com.brosh.finance.monthlybudgetsync.objects.UserConfig;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
@@ -60,21 +66,25 @@ public class Login extends AppCompatActivity implements UserStartApp {
     }
 
     private void login(String email, String password) {
+        boolean hasError = false;
         if (TextUtils.isEmpty(email)) {
             mEmail.setError(getString(R.string.email_is_required));
-            return;
+            hasError = true;
         }
 
         if (TextUtils.isEmpty(password)) {
             mPassword.setError(getString(R.string.password_is_required));
-            return;
+            hasError = true;
         }
 
         if (password.length() < 6) {
             mPassword.setError(getString(R.string.password_length_must_be_at_least_6));
+            hasError = true;
+        }
+        if (hasError) {
+            mLoginBtn.setEnabled(true);
             return;
         }
-
         progressBar.setVisibility(View.VISIBLE);
 
         // authenticate the user
@@ -88,6 +98,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
                     setUserStartApp(null);
                 } else {
                     TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
+                    mLoginBtn.setEnabled(true);
                     progressBar.setVisibility(View.GONE);
                     Log.e(TAG, task.getException().getMessage());
                 }
@@ -137,7 +148,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
 
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
-
+                v.setEnabled(false);
                 login(email, password);
             }
         });
@@ -153,6 +164,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
     }
 
     public void setUserStartApp(User user) {
+        final Context context = this;
         DatabaseReferenceRoot.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -164,16 +176,44 @@ public class Login extends AppCompatActivity implements UserStartApp {
                 DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
                 //                String ownerDBKey = null;
                 if (snapshot.child(Definitions.SHARES).hasChild(userDBKey)) {
-                    String ownerDBKey = snapshot.child(Definitions.SHARES).child(userDBKey).getValue(Share.class).getDbKey();
-                    // todo ask user if he want to get the share if yes, update status to successfully else update to deny and save the share and user updated objects
-                    user.setDbKey(ownerDBKey);
+                    Share share = snapshot.child(Definitions.SHARES).child(userDBKey).getValue(Share.class);
+                    if (share.getStatus() == ShareStatus.PENDING) {
+                        String ownerDBKey = share.getDbKey();
+                        User ownerUser = snapshot.child(Definitions.USERS).child(ownerDBKey).getValue(User.class);
+                        String userName = ownerUser.getName();
+                        String question = String.format(getString(R.string.share_budget_question), userName);
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        //Yes button clicked
+                                        share.setStatus(ShareStatus.SUCCESSFULLY_SHARED);
+                                        user.setDbKey(ownerDBKey);
+                                        snapshot.child(Definitions.USERS).child(userDBKey).child(Definitions.dbKey).getRef().setValue(ownerDBKey);
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        share.setStatus(ShareStatus.DENY);
+                                        break;
+                                }
+                                snapshot.child(Definitions.SHARES).child(userDBKey).getRef().setValue(share);
+                                dbUtil.initDB(user, currentActivity);
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage(question).setPositiveButton(getString(R.string.yes), dialogClickListener)
+                                .setNegativeButton(getString(R.string.no), dialogClickListener).show();
+
+                    } else {
+                        dbUtil.initDB(user, currentActivity);
+                    }
+                } else {
+                    dbUtil.initDB(user, currentActivity);
                 }
-//                Intent intent = new Intent(getApplicationContext(), InitAppActivity.class);
-//                intent.putExtra(getString(R.string.user), user);
-//                intent.putExtra(getString(R.string.isNewUser), false);
-//                currentActivity.startActivity(intent);
-//                currentActivity.finish();
-                dbUtil.initDB(user, currentActivity);
             }
 
             @Override
@@ -190,6 +230,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
             rememberMeCB.setChecked(true);
             mEmail.setText(email);
             mPassword.setText(password);
+            mLoginBtn.setEnabled(false);
             login(email, password);
         }
     }
