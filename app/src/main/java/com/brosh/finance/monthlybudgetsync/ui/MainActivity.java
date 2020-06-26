@@ -79,33 +79,31 @@ public class MainActivity extends AppCompatActivity {
         refMonthSpinner.setAdapter(adapter);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settingsItem:
-                Toast.makeText(this, "settings item selected", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "settings item selected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.shareItem:
-//                Toast.makeText(this, "share item", Toast.LENGTH_SHORT).show();
                 openShareDialog();
                 return true;
-            case R.id.item3:
-                Toast.makeText(this, "item 3 selected", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.subItem1:
-                Toast.makeText(this, "sub item 1 selected", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.subItem2:
-                Toast.makeText(this, "sub item 2 selected", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.shareAppItem:
-                Toast.makeText(this, "share app item", Toast.LENGTH_SHORT).show();
+            case R.id.recommend_to_friend:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, Config.APP_URL);
                 sendIntent.setType("text/plain");
                 Intent shareIntent = Intent.createChooser(sendIntent, null);
                 startActivity(shareIntent);
+                return true;
+            case R.id.helpItem:
+                Toast.makeText(this, "help item selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.aboutItem:
+                Toast.makeText(this, "about item selected", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

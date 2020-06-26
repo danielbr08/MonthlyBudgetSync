@@ -1,0 +1,59 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/settings">
+
+        <!--        <EditTextPreference-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            app:key="currency"-->
+        <!--            app:title="@string/currency"-->
+        <!--            app:useSimpleSummaryProvider="true" />-->
+
+        <ListPreference
+            app:defaultValue="@string/default_currency"
+            app:entries="@array/currency_entries"
+            app:entryValues="@array/currency_values"
+            app:key="currency"
+            app:title="@string/currency"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:layout_height="match_parent"
+            app:key="autoComplete"
+            app:title="@string/auto_complete_length"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="defaultShowActiveOnly"
+            app:title="@string/default_show_active_only"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="2"
+            app:entries="@array/charge_day_entries"
+            app:entryValues="@array/charge_day_values"
+            app:key="chargeDay"
+            app:title="@string/charge_day"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/updates_and_notifications">
+
+        <SwitchPreferenceCompat
+            app:key="emailUpdates"
+            app:title="@string/email_updates" />
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="@string/notifications" />
+
+        <!--        <SwitchPreferenceCompat-->
+        <!--            app:dependency="sync"-->
+        <!--            app:key="attachment"-->
+        <!--            app:summaryOff="@string/attachment_summary_off"-->
+        <!--            app:summaryOn="@string/attachment_summary_on"-->
+        <!--            app:title="@string/attachment_title" />-->
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
