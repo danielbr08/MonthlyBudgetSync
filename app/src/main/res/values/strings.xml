@@ -99,5 +99,7 @@
     <string name="usd">USD</string>
     <string name="eur">EUR</string>
     <string name="skl">SKL</string>
+    <string name="select_charge_day">Select Charge Day</string>
+    <string name="one">1</string>
 
 </resources>

@@ -3,10 +3,12 @@ package com.brosh.finance.monthlybudgetsync.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.*;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.InputType;
 import android.text.util.Linkify;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.annotation.RequiresApi;
@@ -23,6 +25,7 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -204,5 +207,28 @@ public final class UiUtil {
         adView = ((Activity) context).findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+    }
+
+    public static List<View> findAllTextviews(ViewGroup viewGroup) {
+        List<View> textViews = new ArrayList<>();
+        int count = viewGroup.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View view = viewGroup.getChildAt(i);
+            if (view instanceof ViewGroup) {
+                List<View> temp = findAllTextviews((ViewGroup) view);
+                if (temp != null)
+                    textViews.addAll(temp);
+            } else if (view instanceof TextView) {
+                TextView textView = (TextView) view;
+                textViews.add(textView);
+            }
+        }
+        return textViews;
+    }
+
+    public static void restoreBackground(List<View> views, Drawable drawable) {
+        for (View v : views) {
+            v.setBackground(drawable);
+        }
     }
 }

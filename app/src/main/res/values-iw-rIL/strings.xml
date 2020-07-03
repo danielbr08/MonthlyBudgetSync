@@ -97,5 +97,7 @@
     <string name="usd">דולר</string>
     <string name="eur">יורו</string>
     <string name="skl">שקל</string>
+    <string name="select_charge_day">בחר יום לחיוב</string>
+    <string name="one">1</string>
 
 </resources>

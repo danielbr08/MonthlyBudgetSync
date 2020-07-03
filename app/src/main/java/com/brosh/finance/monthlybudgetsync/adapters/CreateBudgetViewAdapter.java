@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -47,7 +48,7 @@ public class CreateBudgetViewAdapter extends RecyclerView.Adapter<CreateBudgetVi
                 String value = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim().replace(Definitions.COMMA, "");
                 boolean constPayment = ((CheckBox) ((LinearLayout) v).getChildAt(i++)).isChecked();
                 String shop = ((EditText) ((LinearLayout) v).getChildAt(i++)).getText().toString().trim();
-                int chargeDay = Integer.valueOf(((Spinner) ((LinearLayout) v).getChildAt(i)).getSelectedItem().toString().trim());
+                int chargeDay = Integer.valueOf(((TextView) ((LinearLayout) v).getChildAt(i)).getText().toString().trim());
 
                 int val = value != "" ? Integer.valueOf(value) : 0;
                 int index = holder.getPosition();

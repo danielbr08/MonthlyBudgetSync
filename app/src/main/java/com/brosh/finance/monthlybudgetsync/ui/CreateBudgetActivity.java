@@ -205,33 +205,33 @@ public class CreateBudgetActivity extends AppCompatActivity {
         for (int i = 0; i < budgetsRowsRecycler.getChildCount(); i++) {
             EditText categoryET, valueET, shopET;
             CheckBox constPaymentCB;
-            Spinner chargeDaySP;
+            TextView chargeDayTV;
             int j = 0;
             LinearLayout row = (LinearLayout) budgetsRowsRecycler.getChildAt(i);
             categoryET = (EditText) row.getChildAt(j++);
             valueET = (EditText) row.getChildAt(j++);
             constPaymentCB = (CheckBox) row.getChildAt(j++);
             shopET = (EditText) row.getChildAt(j++);
-            chargeDaySP = (Spinner) row.getChildAt(j);
+            chargeDayTV = (TextView) row.getChildAt(j);
 
             String category = categoryET.getText().toString().trim();
             String valueStr = valueET.getText().toString().trim().replace(Definitions.COMMA, "");
             boolean constPayment = constPaymentCB.isChecked();
             String shop = shopET.getText().toString().trim();
-            String chargeDayStr = chargeDaySP.getSelectedItem().toString().trim();
-            int chargeDay = 0;
+            String chargeDayStr = chargeDayTV.getText().toString().trim();
+            int chargeDay = 1;
 
             if (!constPayment) {
                 shopET.setText(R.string.empty);
                 shop = null;
-                chargeDayStr = getString(R.string.zero);
+                chargeDayStr = getString(R.string.one);
             }
             chargeDay = Integer.valueOf(chargeDayStr);
             if (valueStr.equals(getString(R.string.empty)))
-                valueStr = getString(R.string.zero);
+                valueStr = getString(R.string.one);
             int value = Integer.valueOf(valueStr);
             allCategories.add(category);
-            verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET, chargeDaySP);
+            verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET, chargeDayTV);
             if (isInputValid)
                 allBudgets.add(new Budget(category, value, constPayment, shop, chargeDay, catPriority++));
             else
@@ -240,7 +240,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         budgets = allBudgets;
     }
 
-    public void verifyBudgetInput(EditText categoryET, EditText valueET, CheckBox constPaymentCB, EditText shopET, Spinner chargeDaySP) {//EditText chargeDayET) {
+    public void verifyBudgetInput(EditText categoryET, EditText valueET, CheckBox constPaymentCB, EditText shopET, TextView chargeDayTV) {//EditText chargeDayET) {
         isInputValid = true;
         String category = categoryET.getText().toString().trim();
         String valueStr = valueET.getText().toString().trim().replace(Definitions.COMMA, getString(R.string.empty));
