@@ -82,7 +82,7 @@
     <string name="share_budget">שיתוף תקציב</string>
     <string name="user_already_shared">בוצע כבר שיתוף למשתמש זה!</string>
     <string name="share_budget_question"> המשתמש \"%s\" שיתף איתך תקציב.\n האם ברצונך לקבל את השיתוף?\n שים לב, קבלת השיתוף תגרום לאיבוד המידע הקיים.</string>
-    <string name="please_enter_user_email">הכנס את מייל המשתמש כדי לשתף</string>
+    <string name="please_enter_user_email">הכנס את מייל המשתמש אותו תרצה לשתף</string>
     <string name="invalid_email">מייל שגוי!</string>
     <string name="help">עזרה</string>
     <string name="about">אודות</string>
@@ -99,5 +99,4 @@
     <string name="skl">שקל</string>
     <string name="select_charge_day">בחר יום לחיוב</string>
     <string name="one">1</string>
-
 </resources>
