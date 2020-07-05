@@ -52,6 +52,7 @@
         android:layout_weight="14"
         android:padding="@dimen/padding_4"
         android:text="1"
+        android:textColor="@color/colorBlue"
         android:gravity="center_vertical"
         android:textAlignment="center"
         tools:ignore="RtlCompat" />

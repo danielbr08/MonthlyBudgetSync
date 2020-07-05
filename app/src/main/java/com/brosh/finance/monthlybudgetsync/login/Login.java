@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.login;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,7 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -258,5 +262,76 @@ public class Login extends AppCompatActivity implements UserStartApp {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar_layout);
         setTitleText();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void openForgotPassword(View view) {
+        final Context context = this;
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
+        builder.setTitle(getString(R.string.reset_password));
+        final EditText emailInput = new EditText(this);
+        emailInput.setHint(getString(R.string.please_enter_user_email_to_reset_password));
+        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        emailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                String emailText = emailInput.getText().toString();
+                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
+                    emailInput.setError(getString(R.string.user_already_shared));
+                } else {
+                    emailInput.setError(null);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String emailText = emailInput.getText().toString();
+                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
+                    emailInput.setError(getString(R.string.user_already_shared));
+                } else {
+                    emailInput.setError(null);
+                }
+            }
+        });
+
+        builder.setView(emailInput);
+        builder.setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
+            @SuppressLint("StringFormatInvalid")
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String emailText = emailInput.getText().toString();
+                if (!TextUtil.isEmailValid(emailText)) {
+                    emailInput.setError(getString(R.string.invalid_email));
+                } else {
+                    try {
+                        FirebaseAuth auth = FirebaseAuth.getInstance();
+                        String emailAddress = emailText;
+
+                        auth.sendPasswordResetEmail(emailAddress)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            TextUtil.showMessage(getString(R.string.email_sent_to_you_to_reset_password), Toast.LENGTH_LONG, context);
+                                        }
+                                    }
+                                });
+                    } catch (Exception e) {
+                        TextUtil.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
+                    }
+                }
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 }

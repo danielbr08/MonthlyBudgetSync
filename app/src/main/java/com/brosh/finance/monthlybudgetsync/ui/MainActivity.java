@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(getString(R.string.share_budget));
         final EditText emailInput = new EditText(this);
-        emailInput.setHint(getString(R.string.please_enter_user_email));
+        emailInput.setHint(getString(R.string.please_enter_user_email_to_share));
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailInput.addTextChangedListener(new TextWatcher() {
             @Override
