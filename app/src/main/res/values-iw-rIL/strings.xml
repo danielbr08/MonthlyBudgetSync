@@ -93,10 +93,10 @@
     <string name="notifications">התראות</string>
     <string name="auto_complete_length">השלמה אוטומטית בתווים</string>
     <string name="default_show_active_only">הצג עסקאות פעילות בלבד כברירת מחדל</string>
-    <string name="default_currency">שקל</string>
-    <string name="usd">דולר</string>
-    <string name="eur">יורו</string>
-    <string name="skl">שקל</string>
+    <string name="default_currency">₪</string>
+    <string name="usd">$</string>
+    <string name="eur">€</string>
+    <string name="skl">₪</string>
     <string name="select_charge_day">בחר יום לחיוב</string>
     <string name="one">1</string>
     <string name="forgot_password">שכחת סיסמה?</string>
