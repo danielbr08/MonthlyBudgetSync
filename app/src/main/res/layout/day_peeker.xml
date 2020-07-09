@@ -30,8 +30,7 @@
                     android:layout_height="@dimen/height_day_peeker"
                     android:gravity="center"
                     android:layout_weight="1"
-                    android:text="1"
-                    android:background="@drawable/circle_style" />
+                    android:text="1" />
 
                 <TextView
                     android:id="@+id/tv2"

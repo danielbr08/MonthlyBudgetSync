@@ -39,7 +39,7 @@ public class CreateBudgetViewAdapter extends RecyclerView.Adapter<CreateBudgetVi
     public CreateBudgetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = this.mInflater.inflate(R.layout.create_budget_row, parent, false);
 
-        CreateBudgetViewHolder holder = new CreateBudgetViewHolder(view, context);
+        CreateBudgetViewHolder holder = new CreateBudgetViewHolder(view);
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -62,7 +62,7 @@ public class CreateBudgetViewAdapter extends RecyclerView.Adapter<CreateBudgetVi
 
     @Override
     public void onBindViewHolder(@NonNull CreateBudgetViewHolder holder, int position) {
-        holder.onBindViewHolder(budgets.get(position), position);
+        holder.onBindViewHolder(budgets.get(position), position, context);
     }
 
     @Override

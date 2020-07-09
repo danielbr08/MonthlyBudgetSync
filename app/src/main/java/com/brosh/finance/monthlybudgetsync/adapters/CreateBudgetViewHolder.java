@@ -3,6 +3,7 @@ package com.brosh.finance.monthlybudgetsync.adapters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 
 public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
@@ -31,7 +33,7 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
     private TextView chargeDay;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public CreateBudgetViewHolder(@NonNull View itemView, Context context) {
+    public CreateBudgetViewHolder(@NonNull View itemView) {
         super(itemView);
 
         catName = itemView.findViewById(R.id.bgt_category);
@@ -40,36 +42,12 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         store = itemView.findViewById(R.id.bgt_store);
         chargeDay = itemView.findViewById(R.id.bgt_charge_day);
 
-        View.OnLongClickListener eventLongClick = new View.OnLongClickListener() { // todo take it outside to external file( eventListener file)
-            @Override
-            public boolean onLongClick(View v) {
-                View parent = (View) v.getParent();
-                parent.performLongClick();
-                return false;
-            }
+        // todo take it outside to external file( eventListener file)
+        View.OnLongClickListener eventLongClick = v -> {
+            View parent = (View) v.getParent();
+            parent.performLongClick();
+            return false;
         };
-
-        chargeDay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                View view = ((Activity) context).getLayoutInflater().inflate(R.layout.day_peeker, null);
-                builder.setTitle(R.string.select_charge_day);
-                builder.setView(view);
-                AlertDialog alertDialog = builder.create();
-                List<View> textViews = UiUtil.findAllTextviews((ViewGroup) view);
-                for (View tv : textViews) {
-                    tv.setOnClickListener(tv1 -> {
-                        String daySelected1 = ((TextView) tv1).getText().toString();
-                        ((TextView) v).setText(daySelected1);
-                        UiUtil.restoreBackground(textViews, v.getBackground());
-                        tv1.setBackgroundResource(R.drawable.circle_style);
-                        alertDialog.dismiss();
-                    });
-                }
-                alertDialog.show();
-            }
-        });
 
         catName.setOnLongClickListener(eventLongClick);
         budget.setOnLongClickListener(eventLongClick);
@@ -88,10 +66,9 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
                 chargeDay.setVisibility(visibilty);
             }
         });
-//        UiUtil.setDaysInMonthSpinner(this.chargeDay, (Activity) context);
     }
 
-    public void onBindViewHolder(Budget budget, int position) {
+    public void onBindViewHolder(Budget budget, int position, Context context) {
         DecimalFormat decim = new DecimalFormat("#,###.##");
 
         int visibilty = budget.isConstPayment() ? View.VISIBLE : View.INVISIBLE;
@@ -111,5 +88,57 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
 
         this.store.setVisibility(visibilty);
         this.chargeDay.setVisibility(visibilty);
+
+
+        View dayPeekerView = ((Activity) context).getLayoutInflater().inflate(R.layout.day_peeker, null);
+        Integer defaultId = chargeDay.getText().toString() == null ? R.id.tv1 : UiUtil.getIdTVByName((ViewGroup) dayPeekerView, chargeDay.getText().toString()).get(0);
+        final TextView defaultSelectionTV[] = {dayPeekerView.findViewById(defaultId)};
+        defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_style);
+        final TextView selectedDay[] = {defaultSelectionTV[0]};
+        final TextView prevSelectedDay[] = {defaultSelectionTV[0]};
+
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    //Yes button clicked
+                    defaultSelectionTV[0] = selectedDay[0];
+                    String selectedDaytext = selectedDay[0].getText().toString();
+                    chargeDay.setText(selectedDaytext);
+                    dialog.dismiss();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked - rollback
+                    UiUtil.restoreBackground(Arrays.asList(selectedDay[0]), dayPeekerView.getBackground());
+                    defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_style);
+                    prevSelectedDay[0] = defaultSelectionTV[0];
+                    selectedDay[0] = defaultSelectionTV[0];
+
+            }
+        };
+
+        chargeDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.select_charge_day);
+                if (dayPeekerView.getParent() != null) {
+                    ((ViewGroup) dayPeekerView.getParent()).removeView(dayPeekerView);
+                }
+                builder.setView(dayPeekerView).setPositiveButton(R.string.select, dialogClickListener)
+                        .setNegativeButton(R.string.cancel, dialogClickListener);
+                AlertDialog alertDialog = builder.create();
+                List<View> textViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
+                for (View tv : textViews) {
+                    tv.setOnClickListener(tv1 -> {
+                        prevSelectedDay[0] = selectedDay[0];
+                        selectedDay[0] = (TextView) tv1;
+                        UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), v.getBackground());
+                        selectedDay[0].setBackgroundResource(R.drawable.circle_style);
+                    });
+                }
+                alertDialog.show();
+            }
+        });
     }
 }

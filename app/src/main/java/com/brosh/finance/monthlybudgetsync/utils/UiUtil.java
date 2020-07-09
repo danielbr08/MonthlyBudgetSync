@@ -211,8 +211,7 @@ public final class UiUtil {
 
     public static List<View> findAllTextviews(ViewGroup viewGroup) {
         List<View> textViews = new ArrayList<>();
-        int count = viewGroup.getChildCount();
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
             View view = viewGroup.getChildAt(i);
             if (view instanceof ViewGroup) {
                 List<View> temp = findAllTextviews((ViewGroup) view);
@@ -230,5 +229,22 @@ public final class UiUtil {
         for (View v : views) {
             v.setBackground(drawable);
         }
+    }
+
+    public static List<Integer> getIdTVByName(ViewGroup viewGroup, String keyName) {
+        List<Integer> textViewID = new ArrayList<>();
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View view = viewGroup.getChildAt(i);
+            if (view instanceof ViewGroup) {
+                List<Integer> temp = getIdTVByName((ViewGroup) view, keyName);
+                if (temp != null)
+                    textViewID.addAll(temp);
+            } else if (view instanceof TextView) {
+                if (((TextView) view).getText().toString().equals(keyName)) {
+                    textViewID.add(view.getId());
+                }
+            }
+        }
+        return textViewID;
     }
 }

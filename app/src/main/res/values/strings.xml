@@ -103,4 +103,5 @@
     <string name="send">send</string>
     <string name="email_sent_to_you_to_reset_password">email has sent to you to reset password!</string>
     <string name="please_enter_user_email_to_reset_password">Please enter user\'s email to reset password</string>
+    <string name="select">Select</string>
 </resources>
