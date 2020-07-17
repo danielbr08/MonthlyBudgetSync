@@ -30,6 +30,7 @@ public class Definitions {
     public static final String CREATE_CODE = "CRT";
     public static final String ADD_CODE = "ADD";
     public static final String DELETE_CODE = "DEL";
+    public static final String USER_SETTINGS = "userSettings";
     public static String dbKey = "dbKey";
     public static final int SORT_BY_ID = 1;
     public static final int SORT_BY_CATEGORY = 2;

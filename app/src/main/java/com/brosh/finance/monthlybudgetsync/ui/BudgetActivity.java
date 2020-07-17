@@ -45,7 +45,7 @@ public class BudgetActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definitions.MONTH, null);
         user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
-        if (user.getUserConfig().isAdEnabled()) {
+        if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);

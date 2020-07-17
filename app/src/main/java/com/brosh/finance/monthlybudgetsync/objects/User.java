@@ -12,7 +12,7 @@ public class User implements Serializable {
     private String dbKey;
     private String owner; // if he is the owner of the DB
 
-    private UserConfig userConfig;
+    private UserSettings userSettings;
     //private String groupID;
 
     public String getEmail() {
@@ -67,7 +67,7 @@ public class User implements Serializable {
         this.dbKey = dbKey != null ? dbKey : TextUtil.getEmailComma(email);
         this.password = password;
         this.owner = null;
-        this.userConfig = new UserConfig();
+        this.userSettings = new UserSettings();
     }
 
     public String getPassword() {
@@ -94,11 +94,11 @@ public class User implements Serializable {
         this.owner = owner;
     }
 
-    public UserConfig getUserConfig() {
-        return userConfig;
+    public UserSettings getUserSettings() {
+        return userSettings;
     }
 
-    public void setUserConfig(UserConfig userConfig) {
-        this.userConfig = userConfig;
+    public void setUserSettings(UserSettings userSettings) {
+        this.userSettings = userSettings;
     }
 }

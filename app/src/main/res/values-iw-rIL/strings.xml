@@ -92,7 +92,7 @@
     <string name="email_updates">עדכונים למייל</string>
     <string name="notifications">התראות</string>
     <string name="auto_complete_length">השלמה אוטומטית בתווים</string>
-    <string name="default_show_active_only">הצג עסקאות פעילות בלבד כברירת מחדל</string>
+    <string name="default_show_active_only">עסקאות פעילות בלבד כברירת מחדל</string>
     <string name="default_currency">₪</string>
     <string name="usd">$</string>
     <string name="eur">€</string>
@@ -105,5 +105,6 @@
     <string name="email_sent_to_you_to_reset_password">מייל נשלח אליך לאיפוס הסיסמה!</string>
     <string name="please_enter_user_email_to_reset_password">הכנס את מייל המשתמש לצורך איפוס סיסמה</string>
     <string name="select">בחר</string>
+    <string name="general">כללי</string>
 
 </resources>

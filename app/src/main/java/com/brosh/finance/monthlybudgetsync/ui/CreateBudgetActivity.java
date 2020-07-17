@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -24,7 +21,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +45,6 @@ import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +88,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_budget);
 
         user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
-        if (user.getUserConfig().isAdEnabled()) {
+        if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);

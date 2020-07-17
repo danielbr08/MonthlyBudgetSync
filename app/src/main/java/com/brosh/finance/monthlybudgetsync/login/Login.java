@@ -33,7 +33,7 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Share;
 import com.brosh.finance.monthlybudgetsync.objects.ShareStatus;
-import com.brosh.finance.monthlybudgetsync.objects.UserConfig;
+import com.brosh.finance.monthlybudgetsync.objects.UserSettings;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
@@ -173,8 +173,8 @@ public class Login extends AppCompatActivity implements UserStartApp {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 User user = snapshot.child(Definitions.USERS).child(userDBKey).getValue(User.class);
-                if (user.getUserConfig() == null) { // todo remove after add config object for all users
-                    user.setUserConfig(new UserConfig());
+                if (user.getUserSettings() == null) { // todo remove after add config object for all users
+                    user.setUserSettings(new UserSettings());
                     snapshot.child(Definitions.USERS).child(userDBKey).getRef().setValue(user);
                 }
                 DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));

@@ -139,6 +139,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         Log.d(TAG, "onFailure: " + e.toString());
+                                        return;// todo check it
                                     }
                                 });
                                 try {

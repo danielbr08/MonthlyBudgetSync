@@ -8,12 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -97,7 +95,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definitions.MONTH, null);
         user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
-        if (user.getUserConfig().isAdEnabled()) {
+        if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);

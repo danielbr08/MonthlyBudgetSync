@@ -142,7 +142,7 @@ public final class DBUtil {
 
     public void updateSpecificCategory(String refMonthKey, int budgetNumber, Category categoryObj) {
         if (monthDBHM.get(refMonthKey) == null) {
-            int chargeDay = user.getUserConfig().getChargeDay();
+            int chargeDay = user.getUserSettings().getChargeDay();
             monthDBHM.put(refMonthKey, new Month(refMonthKey, budgetNumber, chargeDay));
         }
         monthDBHM.get(refMonthKey).addCategory(categoryObj.getId(), categoryObj);
