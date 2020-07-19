@@ -53,7 +53,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        // Save user settings
         saveUserSettings();
     }
 
@@ -82,7 +81,6 @@ public class SettingsActivity extends AppCompatActivity {
             User user = DBUtil.getInstance().getUser();
             userSettings = user.getUserSettings();
 
-//            ListPreference currency = findPreference("currency");
             Preference chargeDayPref = findPreference("chargeDay");
             SeekBarPreference autoCompleteyPref = findPreference("autoComplete");
             SwitchPreferenceCompat activeTransactionsOnly = findPreference("defaultShowActiveOnly");
@@ -94,17 +92,10 @@ public class SettingsActivity extends AppCompatActivity {
             activeTransactionsOnly.setChecked(userSettings.isActiveTransactionsOnlyByDefault());
             emailUpdates.setChecked(userSettings.isEmailUpdates());
             notifications.setChecked(userSettings.isNotifications());
-//            prefs.edit().putString("autoComplete", String.valueOf(userSettings.getAutoCompleteFrom())).apply();
-//            prefs.edit().putString("defaultShowActiveOnly", String.valueOf(userSettings.isActiveTransactionsOnlyByDefault())).apply();
-//            prefs.edit().putString("emailUpdates", String.valueOf(userSettings.isEmailUpdates())).apply();
-//            prefs.edit().putString("notifications", String.valueOf(userSettings.isNotifications())).apply();
 
             chargeDayPref.setSummary(String.valueOf(userSettings.getChargeDay()));
             autoCompleteyPref.setValue(userSettings.getAutoCompleteFrom());
             autoCompleteyPref.setSummary(String.valueOf(userSettings.getAutoCompleteFrom()));
-//            activeTransactionsOnly.setPersistent(userSettings.isActiveTransactionsOnlyByDefault());
-//            emailUpdates.setPersistent(userSettings.isEmailUpdates());
-//            notifications.setPersistent(userSettings.isNotifications());
 
             if (user.getOwner() != null) {
                 chargeDayPref.setEnabled(false);
@@ -173,5 +164,4 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
     }
-
 }
