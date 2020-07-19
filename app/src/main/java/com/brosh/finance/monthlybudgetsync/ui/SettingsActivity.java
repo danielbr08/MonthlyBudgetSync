@@ -22,6 +22,7 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserSettings;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 import java.util.Arrays;
@@ -36,19 +37,16 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
-        PreferenceFragmentCompat settingsFragment = new SettingsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Definitions.USER, user);
-        settingsFragment.setArguments(bundle);
+        user = DBUtil.getInstance().getUser();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.settings, settingsFragment)
+                .replace(R.id.settings, new SettingsFragment())
                 .commit();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
     }
 
     @Override
@@ -62,12 +60,12 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveUserSettings() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         UserSettings userSettings = user.getUserSettings();
-        userSettings.setChargeDay(Integer.valueOf(prefs.getString("chargeDay", "1")));
-        userSettings.setCurrency(prefs.getString("currency", getString(R.string.currency)));
-        userSettings.setActiveTransactionsOnlyByDefault(prefs.getBoolean("defaultShowActiveOnly", true));
-        userSettings.setAutoCompleteFrom(prefs.getInt("autoComplete", 2));
-        userSettings.setEmailUpdates(prefs.getBoolean("emailUpdates", false));
-        userSettings.setNotifications(prefs.getBoolean("notifications", false));
+        userSettings.setChargeDay(Integer.valueOf(prefs.getString("chargeDay", String.valueOf(userSettings.getChargeDay()))));
+        userSettings.setCurrency(prefs.getString("currency", userSettings.getCurrency()));
+        userSettings.setActiveTransactionsOnlyByDefault(prefs.getBoolean("defaultShowActiveOnly", userSettings.isActiveTransactionsOnlyByDefault()));
+        userSettings.setAutoCompleteFrom(prefs.getInt("autoComplete", userSettings.getAutoCompleteFrom()));
+        userSettings.setEmailUpdates(prefs.getBoolean("emailUpdates", userSettings.isEmailUpdates()));
+        userSettings.setNotifications(prefs.getBoolean("notifications", userSettings.isNotifications()));
         Config.DatabaseReferenceUsers.child(user.getDbKey()).child(Definitions.USER_SETTINGS).setValue(userSettings);
     }
 
@@ -81,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             final Context context = this.getContext();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            User user = (User) getArguments().getSerializable(Definitions.USER);
+            User user = DBUtil.getInstance().getUser();
             userSettings = user.getUserSettings();
 
 //            ListPreference currency = findPreference("currency");
@@ -175,4 +173,5 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
     }
+
 }

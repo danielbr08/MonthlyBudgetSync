@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addParametersToActivity(Intent activity) {
         activity.putExtra(Definitions.USER, user);
-        activity.putExtra(Definitions.MONTH, month == null ? month : month.getYearMonth());
+        activity.putExtra(Definitions.MONTH, month == null ? null : month.getYearMonth());
     }
 
     @Override

@@ -76,6 +76,7 @@ public final class DBUtil {
     private User user;
     private Context context;
 
+
     public void clear() {
         instance = new DBUtil();
     }
