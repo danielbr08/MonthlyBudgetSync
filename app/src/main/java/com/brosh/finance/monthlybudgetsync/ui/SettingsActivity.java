@@ -127,8 +127,8 @@ public class SettingsActivity extends AppCompatActivity {
                         String selectedDaytext = selectedDay[0].getText().toString();
                         userSettings.setChargeDay(Integer.valueOf(selectedDaytext));
                         chargeDayPref.setSummary(selectedDaytext);
-                        prefs.edit().putString("chargeDay", selectedDaytext);
-                        user.getUserSettings().setChargeDay(Integer.valueOf(selectedDaytext));
+                        prefs.edit().putString("chargeDay", selectedDaytext).commit();
+                        userSettings.setChargeDay(Integer.valueOf(selectedDaytext));
                         dialog.dismiss();
                         break;
 
