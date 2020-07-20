@@ -39,4 +39,10 @@ public class Definitions {
     public static final int SORT_BY_CHARGE_DATE = 5;
     public static final int SORT_BY_PRICE = 6;
     public static final int SORT_BY_REGISTRATION_DATE = 7;
+    public static String CHARGE_DAY = "chargeDay";
+    public static String CURRENCY = "currency";
+    public static String DEFAULT_SHOW_ACTIVE_ONLY = "defaultShowActiveOnly";
+    public static String AUTO_COMPLETE = "autoComplete";
+    public static String EMAIL_UPDATES = "emailUpdates";
+    public static String NOTIFICATIONS = "notifications";
 }

@@ -59,12 +59,12 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveUserSettings() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         UserSettings userSettings = user.getUserSettings();
-        userSettings.setChargeDay(Integer.valueOf(prefs.getString("chargeDay", String.valueOf(userSettings.getChargeDay()))));
-        userSettings.setCurrency(prefs.getString("currency", userSettings.getCurrency()));
-        userSettings.setActiveTransactionsOnlyByDefault(prefs.getBoolean("defaultShowActiveOnly", userSettings.isActiveTransactionsOnlyByDefault()));
-        userSettings.setAutoCompleteFrom(prefs.getInt("autoComplete", userSettings.getAutoCompleteFrom()));
-        userSettings.setEmailUpdates(prefs.getBoolean("emailUpdates", userSettings.isEmailUpdates()));
-        userSettings.setNotifications(prefs.getBoolean("notifications", userSettings.isNotifications()));
+        userSettings.setChargeDay(Integer.valueOf(prefs.getString(Definitions.CHARGE_DAY, String.valueOf(userSettings.getChargeDay()))));
+        userSettings.setCurrency(prefs.getString(Definitions.CURRENCY, userSettings.getCurrency()));
+        userSettings.setActiveTransactionsOnlyByDefault(prefs.getBoolean(Definitions.DEFAULT_SHOW_ACTIVE_ONLY, userSettings.isActiveTransactionsOnlyByDefault()));
+        userSettings.setAutoCompleteFrom(prefs.getInt(Definitions.AUTO_COMPLETE, userSettings.getAutoCompleteFrom()));
+        userSettings.setEmailUpdates(prefs.getBoolean(Definitions.EMAIL_UPDATES, userSettings.isEmailUpdates()));
+        userSettings.setNotifications(prefs.getBoolean(Definitions.NOTIFICATIONS, userSettings.isNotifications()));
         Config.DatabaseReferenceUsers.child(user.getDbKey()).child(Definitions.USER_SETTINGS).setValue(userSettings);
     }
 
@@ -81,14 +81,14 @@ public class SettingsActivity extends AppCompatActivity {
             User user = DBUtil.getInstance().getUser();
             userSettings = user.getUserSettings();
 
-            Preference chargeDayPref = findPreference("chargeDay");
-            SeekBarPreference autoCompleteyPref = findPreference("autoComplete");
-            SwitchPreferenceCompat activeTransactionsOnly = findPreference("defaultShowActiveOnly");
-            SwitchPreferenceCompat emailUpdates = findPreference("emailUpdates");
-            SwitchPreferenceCompat notifications = findPreference("notifications");
+            Preference chargeDayPref = findPreference(Definitions.CHARGE_DAY);
+            SeekBarPreference autoCompleteyPref = findPreference(Definitions.AUTO_COMPLETE);
+            SwitchPreferenceCompat activeTransactionsOnly = findPreference(Definitions.DEFAULT_SHOW_ACTIVE_ONLY);
+            SwitchPreferenceCompat emailUpdates = findPreference(Definitions.EMAIL_UPDATES);
+            SwitchPreferenceCompat notifications = findPreference(Definitions.NOTIFICATIONS);
 
-            prefs.edit().putString("currency", userSettings.getCurrency()).commit();
-            prefs.edit().putString("chargeDay", String.valueOf(userSettings.getChargeDay())).commit();
+            prefs.edit().putString(Definitions.CURRENCY, userSettings.getCurrency()).commit();
+            prefs.edit().putString(Definitions.CHARGE_DAY, String.valueOf(userSettings.getChargeDay())).commit();
             activeTransactionsOnly.setChecked(userSettings.isActiveTransactionsOnlyByDefault());
             emailUpdates.setChecked(userSettings.isEmailUpdates());
             notifications.setChecked(userSettings.isNotifications());
@@ -127,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity {
                         String selectedDaytext = selectedDay[0].getText().toString();
                         userSettings.setChargeDay(Integer.valueOf(selectedDaytext));
                         chargeDayPref.setSummary(selectedDaytext);
-                        prefs.edit().putString("chargeDay", selectedDaytext).commit();
+                        prefs.edit().putString(Definitions.CHARGE_DAY, selectedDaytext).commit();
                         userSettings.setChargeDay(Integer.valueOf(selectedDaytext));
                         dialog.dismiss();
                         break;
