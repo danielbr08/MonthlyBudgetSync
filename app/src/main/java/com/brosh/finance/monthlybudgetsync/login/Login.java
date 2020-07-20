@@ -38,6 +38,7 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -116,7 +117,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        setToolbar();
+        UiUtil.setToolbar(this, null);
         currentActivity = this;
         dbUtil = DBUtil.getInstance();
         DatabaseReferenceRoot = Config.DatabaseReferenceRoot;
@@ -250,18 +251,6 @@ public class Login extends AppCompatActivity implements UserStartApp {
             editor.remove("password");
         }
         editor.apply();
-    }
-
-    private void setTitleText() {
-        String title = getString(R.string.app_name);
-        TextView tvTitle = findViewById(R.id.tv_title);
-        tvTitle.setText(title);
-    }
-
-    private void setToolbar() {
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
-        setTitleText();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -102,7 +102,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
         }
         dbUtil = DBUtil.getInstance();
         month = dbUtil.getMonth(refMonth);
-        setToolbar();
+        String yearMonth = month != null ? month.getYearMonth() : null;
+        UiUtil.setToolbar(this, yearMonth);
 
         shopsSet = dbUtil.getShopsSet();
         categoriesSpinner = findViewById(R.id.categorySpinner);
@@ -222,18 +223,5 @@ public class InsertTransactionActivity extends AppCompatActivity {
         paymentMethodList.add(getString(R.string.bank_wired));
 
         return paymentMethodList;
-    }
-
-    private void setTitleText() {
-        String title = getString(R.string.app_name);
-        title += month != null ? "\n" + month.getYearMonth() : "";
-        TextView tvTitle = findViewById(R.id.tv_title);
-        tvTitle.setText(title);
-    }
-
-    private void setToolbar() {
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
-        setTitleText();
     }
 }

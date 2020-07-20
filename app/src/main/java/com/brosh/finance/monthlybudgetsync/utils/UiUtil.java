@@ -3,6 +3,7 @@ package com.brosh.finance.monthlybudgetsync.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.*;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.InputType;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
@@ -246,5 +249,21 @@ public final class UiUtil {
             }
         }
         return textViewID;
+    }
+
+    public static void setToolbar(AppCompatActivity appCompatActivity, String yearMonth) {
+        ActionBar ActionBar = appCompatActivity.getSupportActionBar();
+        ActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        ActionBar.setCustomView(R.layout.action_bar_layout);
+        ActionBar.setBackgroundDrawable(new ColorDrawable(appCompatActivity.getResources().getColor(R.color.colorApp)));
+        ActionBar.setDisplayHomeAsUpEnabled(false);
+        setTitleText(appCompatActivity, yearMonth);
+    }
+
+    public static void setTitleText(AppCompatActivity appCompatActivity, String yearMonth) {
+        String title = appCompatActivity.getString(R.string.app_name);
+        title += yearMonth != null ? "\n" + yearMonth : "";
+        TextView tvTitle = appCompatActivity.findViewById(R.id.tv_title);
+        tvTitle.setText(title);
     }
 }

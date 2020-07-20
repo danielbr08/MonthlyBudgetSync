@@ -24,6 +24,7 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
+import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,7 +66,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
 
         DatabaseReferenceRoot = Config.DatabaseReferenceRoot;
         DatabaseReferenceUsers = Config.DatabaseReferenceUsers;
-        setToolbar();
+        UiUtil.setToolbar(this, null);
 
         FirebaseAuth.getInstance().signOut();//logout
 
@@ -228,18 +229,6 @@ public class Register extends AppCompatActivity implements UserStartApp {
     private void startLoginActivity() {
         startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
-    }
-
-    private void setTitleText() {
-        String title = getString(R.string.app_name);
-        TextView tvTitle = findViewById(R.id.tv_title);
-        tvTitle.setText(title);
-    }
-
-    private void setToolbar() {
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
-        setTitleText();
     }
 
 }
