@@ -232,41 +232,24 @@ public class MainActivity extends AppCompatActivity {
     public void openShareDialog() {
         final Context context = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getString(R.string.share_budget));
         final EditText emailInput = new EditText(this);
         emailInput.setHint(getString(R.string.please_enter_user_email_to_share));
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        emailInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                String emailText = emailInput.getText().toString();
-                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
-                    emailInput.setError(getString(R.string.user_already_shared));
-                } else {
-                    emailInput.setError(null);
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String emailText = emailInput.getText().toString();
-                if (DBUtil.getInstance().isEmailAlreadyShared(emailText)) {
-                    emailInput.setError(getString(R.string.user_already_shared));
-                } else {
-                    emailInput.setError(null);
-                }
-            }
-        });
+        builder.setTitle(getString(R.string.share_budget));
 
         builder.setView(emailInput);
-        builder.setPositiveButton(getString(R.string.share), new DialogInterface.OnClickListener() {
-            @SuppressLint("StringFormatInvalid")
+        builder.setPositiveButton(getString(R.string.share), null);
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 String emailText = emailInput.getText().toString();
                 if (!TextUtil.isEmailValid(emailText)) {
                     emailInput.setError(getString(R.string.invalid_email));
@@ -277,16 +260,10 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         TextUtil.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
                     }
+                    dialog.dismiss();
                 }
             }
         });
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
     }
 
     private void createNewMonth(Date refMonthDate) {

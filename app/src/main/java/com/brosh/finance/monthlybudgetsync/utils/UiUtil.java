@@ -2,6 +2,7 @@ package com.brosh.finance.monthlybudgetsync.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.*;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.widget.*;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -265,5 +267,22 @@ public final class UiUtil {
         title += yearMonth != null ? "\n" + yearMonth : "";
         TextView tvTitle = appCompatActivity.findViewById(R.id.tv_title);
         tvTitle.setText(title);
+    }
+
+    public static void openShareDialog(AlertDialog.Builder builder, AlertDialog dialog, Context context, String hint, String title, int inputType,final EditText editTextInput, String positiveText, String negativeText, View.OnClickListener onClickListener) {
+        editTextInput.setHint(hint);
+        editTextInput.setInputType(inputType);
+        builder.setTitle(title);
+
+        builder.setView(editTextInput);
+        builder.setPositiveButton(positiveText, null);
+        builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(onClickListener);
     }
 }
