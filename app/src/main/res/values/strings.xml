@@ -105,4 +105,9 @@
     <string name="please_enter_user_email_to_reset_password">Please enter user\'s email to reset password</string>
     <string name="select">Select</string>
     <string name="general">General</string>
+    <string name="error_weak_password">weak password</string>
+    <string name="error_invalid_email">invalid email</string>
+    <string name="error_email_already_in_use">email already in use</string>
+    <string name="user_not_ound">user not found</string>
+    <string name="error_invalid_password">invalid_password</string>
 </resources>

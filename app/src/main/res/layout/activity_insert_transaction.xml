@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
-    tools:context=".ui.InsertTransactionActivity">
+    tools:context=".ui.InsertTransactionActivity"
+    android:background="@color/colorLoginBackground">
 
 
     <RelativeLayout
@@ -35,9 +36,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.15"
+                android:layout_height="100dp"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:weightSum="1">
 
                 <TextView
@@ -47,26 +48,28 @@
                     android:gravity="center_horizontal"
                     android:text="@string/insert_transaction"
                     android:textAlignment="center"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorWhite"
                     android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight=".15"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:weightSum="1">
 
                 <TextView
                     android:id="@+id/chooseCategoryLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:layout_weight=".7"
                     android:orientation="vertical"
                     android:text="@string/category"
-                    android:textColor="@android:color/black"
+                    android:background="@color/colorLoginBackground"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -75,51 +78,60 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:backgroundTint="@color/colorWhite" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.15"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:weightSum="1">
 
                 <TextView
                     android:id="@+id/choosePaymenMethodtLabel"
-                    android:layout_width="230dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
                     android:orientation="vertical"
                     android:text="@string/payment_method"
-                    android:textColor="@android:color/black"
+                    android:background="@color/colorLoginBackground"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/paymentMethodSpinner"
-                    android:layout_width="301dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:backgroundTint="@color/colorWhite"/>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.15"
+                android:layout_height="50dp"
                 android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:weightSum="1">
 
                 <TextView
                     android:id="@+id/payDateLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
-                    android:orientation="vertical"
+                    android:gravity="center_vertical"
                     android:text="@string/charge_date"
-                    android:textColor="@android:color/black"
+                    android:background="@color/colorLoginBackground"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -130,29 +142,37 @@
                     android:layout_weight=".3"
                     android:clickable="true"
                     android:ems="10"
-
+                    android:background="@color/colorWhite"
+                    android:textColor="@color/colorLoginBackground"
                     android:focusable="false"
                     android:inputType="date"
                     android:orientation="vertical"
                     tools:targetApi="o" />
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.15"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
-                android:weightSum="1">
+                android:gravity="center_vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:weightSum="1">
 
                 <TextView
                     android:id="@+id/shopLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
-                    android:orientation="vertical"
+                    android:gravity="center_vertical"
                     android:text="@string/store"
-                    android:textColor="@android:color/black"
+                    android:background="@color/colorLoginBackground"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -165,24 +185,34 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:orientation="vertical"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:background="@color/colorWhite"
+                    android:textColor="@color/colorLoginBackground"/>
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.15"
-                android:orientation="horizontal">
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
                 <TextView
                     android:id="@+id/transactionPriceLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".7"
-                    android:orientation="vertical"
+                    android:gravity="center_vertical"
                     android:text="@string/price"
-                    android:textColor="@android:color/black"
+                    android:background="@color/colorLoginBackground"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -194,16 +224,18 @@
                     android:ems="10"
                     android:importantForAutofill="no"
                     android:inputType="numberSigned|numberDecimal|textMultiLine"
-                    android:orientation="vertical"
+                    android:gravity="center_vertical"
                     android:textDirection="ltr"
-                    tools:targetApi="jelly_bean_mr1" />
+                    tools:targetApi="jelly_bean_mr1"
+                    android:background="@color/colorWhite"
+                    android:textColor="@color/colorLoginBackground"/>
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.165"
+                android:layout_height="30dp"
                 android:orientation="horizontal">
 
                 <ProgressBar
@@ -212,7 +244,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/insert"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorWhite"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
@@ -220,27 +252,47 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.15"
-                android:orientation="horizontal">
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30px">
 
                 <Button
                     android:id="@+id/sendTransactionButton"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:text="@string/insert"
-                    android:textColor="@android:color/black"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:background="@color/colorWhite"
+                    android:textColor="@color/colorLoginBackground"/>
             </LinearLayout>
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:adSize="BANNER"
-                app:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:layout_weight="0.8">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".7"
+                    android:background="@drawable/budget"
+                    android:layout_marginBottom="20px"/>
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/adView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:adSize="BANNER"
+                    app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+                    android:background="@color/colorLoginBackground"
+                    android:layout_weight=".1" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -41,8 +41,14 @@ import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -82,10 +88,10 @@ public class Login extends AppCompatActivity implements UserStartApp {
             hasError = true;
         }
 
-        if (password.length() < 6) {
-            mPassword.setError(getString(R.string.password_length_must_be_at_least_6));
-            hasError = true;
-        }
+//        if (password.length() < 6) {
+//            mPassword.setError(getString(R.string.password_length_must_be_at_least_6));
+//            hasError = true;
+//        }
         if (hasError) {
             mLoginBtn.setEnabled(true);
             return;
@@ -102,12 +108,30 @@ public class Login extends AppCompatActivity implements UserStartApp {
                     userDBKey = email.replace(Definitions.DOT, Definitions.COMMA);
                     setUserStartApp(null);
                 } else {
-                    TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
-                    mLoginBtn.setEnabled(true);
+                    if(task.getException() instanceof  FirebaseNetworkException){
+                        TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
+                    }
+                    else if(task.getException() instanceof FirebaseAuthException) {
+                        String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+                        switch (errorCode) {
+                            case "ERROR_INVALID_EMAIL":
+                                mEmail.setError(getString(R.string.error_invalid_email));
+                                mEmail.requestFocus();
+                                break;
+                            case "ERROR_WRONG_PASSWORD":
+                                mPassword.setError(getString(R.string.error_invalid_password));
+                                mPassword.requestFocus();
+                                break;
+                            case "ERROR_USER_NOT_FOUND":
+                                mEmail.setError(getString(R.string.user_not_ound));
+                                mEmail.requestFocus();
+                                break;
+                        }
+                    }
                     progressBar.setVisibility(View.GONE);
+                    mLoginBtn.setEnabled(true);
                     Log.e(TAG, task.getException().getMessage());
                 }
-
             }
         });
 
@@ -253,12 +277,12 @@ public class Login extends AppCompatActivity implements UserStartApp {
         editor.apply();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    @SuppressLint("NewApi")
     public void openForgotPassword(View view) {
         final Context context = this;
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
         builder.setTitle(getString(R.string.reset_password));
-        final EditText emailInput = new EditText(this);
+        final EditText emailInput = new EditText(builder.getContext());
         emailInput.setHint(getString(R.string.please_enter_user_email_to_reset_password));
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         emailInput.addTextChangedListener(new TextWatcher() {
@@ -295,6 +319,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
                 String emailText = emailInput.getText().toString();
                 if (!TextUtil.isEmailValid(emailText)) {
                     emailInput.setError(getString(R.string.invalid_email));
+                    return;
                 } else {
                     try {
                         FirebaseAuth auth = FirebaseAuth.getInstance();

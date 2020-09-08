@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -29,8 +28,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -87,7 +91,6 @@ public class Register extends AppCompatActivity implements UserStartApp {
         if (fAuth.getCurrentUser() != null) {
             userDBKey = fAuth.getCurrentUser().getEmail().trim().replace(Definitions.DOT, Definitions.COMMA);
             setUserStartApp(null);
-//            dbService.initDB(userDBKey, this);
             return;
         }
 
@@ -116,53 +119,66 @@ public class Register extends AppCompatActivity implements UserStartApp {
                 }
 
                 progressBar.setVisibility(View.VISIBLE);
+                mLoginBtn.setEnabled(false);
 
                 // register the user in firebase
-
-                try {
-                    fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                TextUtil.showMessage(getString(R.string.user_created), Toast.LENGTH_SHORT, currentActivity);
-                                userID = fAuth.getCurrentUser().getUid();
-                                DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userID);
-                                final Map<String, Object> userFS = new HashMap<>();
-                                userFS.put(getString(R.string.first_name), fullName);
-                                userFS.put(getString(R.string.email), email);
-                                userFS.put(getString(R.string.phone), phone);
-                                documentReference.set(userFS).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "onSuccess: user Profile is created for " + userID);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "onFailure: " + e.toString());
-                                        return;// todo check it
-                                    }
-                                });
-                                try {
-                                    final User user = new User(fullName, email, phone, password, userDBKey);
-                                    setUserStartApp(user);
-                                } catch (Exception e) {
-                                    String s = e.getMessage().toString();
-                                    s = s;
-                                    Log.e(TAG, e.getMessage() + "\nuser id: " + userID);
+                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            TextUtil.showMessage(getString(R.string.user_created), Toast.LENGTH_SHORT, currentActivity);
+                            userID = fAuth.getCurrentUser().getUid();
+                            DocumentReference documentReference = fStore.collection(getString(R.string.users)).document(userID);
+                            final Map<String, Object> userFS = new HashMap<>();
+                            userFS.put(getString(R.string.first_name), fullName);
+                            userFS.put(getString(R.string.email), email);
+                            userFS.put(getString(R.string.phone), phone);
+                            documentReference.set(userFS).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "onSuccess: user Profile is created for " + userID);
                                 }
-
-                            } else {
-                                TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
-                                progressBar.setVisibility(View.GONE);
-                                Log.e(TAG, task.getException().getMessage());
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "onFailure: " + e.toString());
+                                    return;// todo check it
+                                }
+                            });
+                            try {
+                                final User user = new User(fullName, email, phone, password, userDBKey);
+                                setUserStartApp(user);
+                            } catch (Exception e) {
+                                String s = e.getMessage();
+                                Log.e(TAG, e.getMessage() + "\nuser id: " + userID);
                             }
+
+                        } else {
+                            if (task.getException() instanceof FirebaseNetworkException) {
+                                TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
+                            } else if (task.getException() instanceof FirebaseAuthException) {
+                                String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+                                switch (errorCode) {
+                                    case "ERROR_INVALID_EMAIL":
+                                        mEmail.setError(getString(R.string.error_invalid_email));
+                                        mEmail.requestFocus();
+                                        break;
+                                    case "ERROR_EMAIL_ALREADY_IN_USE":
+                                        mEmail.setError(getString(R.string.error_email_already_in_use));
+                                        mEmail.requestFocus();
+                                        break;
+                                    case "ERROR_WEAK_PASSWORD":
+                                        mPassword.setError(getString(R.string.error_weak_password));
+                                        mPassword.requestFocus();
+                                        break;
+                                }
+                            }
+                            progressBar.setVisibility(View.GONE);
+                            mRegisterBtn.setEnabled(true);
+                            Log.e(TAG, task.getException().getMessage());
                         }
-                    });
-                } catch (Exception e) {
-                    String s = e.getMessage();
-                    s = s;
-                }
+                    }
+                });
             }
         });
 

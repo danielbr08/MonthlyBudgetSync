@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.MainActivity"
+    android:background="@color/colorLoginBackground">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_main"
@@ -20,7 +21,6 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_weight="1"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -34,7 +34,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <!--            <Button-->
                 <!--                android:id="@+id/shareButton"-->
@@ -49,6 +50,7 @@
                     android:layout_height="match_parent"
                     android:padding="@dimen/padding_2"
                     android:text=""
+                    android:textColor="@color/colorWhite"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +63,7 @@
                     android:onClick="logout"
                     android:padding="@dimen/padding_2"
                     android:text="@string/logout"
-                    android:textColor="@color/colorBlue"
+                    android:textColor="@color/colorLink"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tv_user_logeed_in"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -70,10 +72,10 @@
                     android:id="@+id/monthSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:padding="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:backgroundTint="@color/colorWhite"/>
 
                 <!--            <TextView-->
                 <!--                android:id="@+id/monthLabel"-->
@@ -85,37 +87,77 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/budgetButton"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                android:text="@string/budget"
-                android:textSize="30sp" />
+                android:layout_height="0dp"
+                android:layout_marginTop="100dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/transactionsButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                android:text="@string/transactions"
-                android:textSize="30sp" />
+                <Button
+                    android:id="@+id/budgetButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/circle_pink_style"
+                    android:text="@string/budget"
+                    android:textColor="@color/colorLoginBackground"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/insertTransactionButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
-            <Button
-                android:id="@+id/insertTransactionButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                android:text="@string/insert_transaction"
-                android:textSize="30sp" />
+                <Button
+                    android:id="@+id/transactionsButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="start"
 
-            <Button
-                android:id="@+id/createBudgetButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                android:text="@string/create_budget"
-                android:textSize="30sp" />
+                    android:background="@drawable/circle_pink_style"
+                    android:text="@string/transactions"
+                    android:textColor="@color/colorLoginBackground"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@+id/insertTransactionButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.4"
+                    tools:ignore="RtlCompat"
+                    android:layout_marginEnd="30dp"/>
+
+                <Button
+                    android:id="@+id/insertTransactionButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="end"
+                    android:background="@drawable/circle_pink_style"
+                    android:text="@string/insert_transaction"
+                    android:textColor="@color/colorLoginBackground"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.4"
+                    tools:ignore="RtlCompat"
+                    android:layout_marginStart="30dp"/>
+
+                <Button
+                    android:id="@+id/createBudgetButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/circle_pink_style"
+                    android:text="@string/create_budget"
+                    android:textColor="@color/colorLoginBackground"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/insertTransactionButton"
+                    tools:ignore="RtlCompat" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"

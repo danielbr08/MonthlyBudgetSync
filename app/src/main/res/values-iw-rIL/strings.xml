@@ -103,8 +103,13 @@
     <string name="reset_password">איפוס סיסמה</string>
     <string name="send">שלח</string>
     <string name="email_sent_to_you_to_reset_password">מייל נשלח אליך לאיפוס הסיסמה!</string>
-    <string name="please_enter_user_email_to_reset_password">הכנס את מייל המשתמש לצורך איפוס סיסמה</string>
+    <string name="please_enter_user_email_to_reset_password">הכנס את מייל המשתמש לאיפוס סיסמה</string>
     <string name="select">בחר</string>
     <string name="general">כללי</string>
+    <string name="error_weak_password">סיסמה חלשה</string>
+    <string name="error_invalid_email">מייל שגוי</string>
+    <string name="error_email_already_in_use">המייל כבר בשימוש</string>
+    <string name="user_not_ound">משתמש לא קיים</string>
+    <string name="error_invalid_password">סיסמה שגויה</string>
 
 </resources>

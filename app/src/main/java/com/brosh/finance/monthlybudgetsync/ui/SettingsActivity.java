@@ -115,7 +115,7 @@ public class SettingsActivity extends AppCompatActivity {
             View dayPeekerView = this.getLayoutInflater().inflate(R.layout.day_peeker, null);
             Integer defaultId = UiUtil.getIdTVByName((ViewGroup) dayPeekerView, String.valueOf(userSettings.getChargeDay())).get(0);
             final TextView defaultSelectionTV[] = {dayPeekerView.findViewById(defaultId)};
-            defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_style);
+            defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
             final TextView selectedDay[] = {defaultSelectionTV[0]};
             final TextView prevSelectedDay[] = {defaultSelectionTV[0]};
 
@@ -135,7 +135,7 @@ public class SettingsActivity extends AppCompatActivity {
                     case DialogInterface.BUTTON_NEGATIVE:
                         //No button clicked - rollback
                         UiUtil.restoreBackground(Arrays.asList(selectedDay[0]), dayPeekerView.getBackground());
-                        defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_style);
+                        defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
                         prevSelectedDay[0] = defaultSelectionTV[0];
                         selectedDay[0] = defaultSelectionTV[0];
                 }
@@ -156,7 +156,7 @@ public class SettingsActivity extends AppCompatActivity {
                         prevSelectedDay[0] = selectedDay[0];
                         selectedDay[0] = (TextView) tv1;
                         UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), new TextView(context).getBackground());
-                        selectedDay[0].setBackgroundResource(R.drawable.circle_style);
+                        selectedDay[0].setBackgroundResource(R.drawable.circle_pink_style);
                     });
                 }
                 alertDialog.show();

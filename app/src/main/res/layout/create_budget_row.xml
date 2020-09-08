@@ -12,9 +12,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="28"
+        android:textSize="@dimen/transaction_text_size"
 
         android:padding="@dimen/padding_8"
         android:text="@string/category"
+        android:textColor="@color/colorWhite"
+        android:backgroundTint="@color/colorWhite"
         android:descendantFocusability="blocksDescendants" />
 
     <EditText
@@ -22,9 +25,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="18"
+        android:textSize="@dimen/transaction_text_size"
 
         android:padding="@dimen/padding_2"
         android:text="@string/budget"
+        android:textColor="@color/colorWhite"
+        android:backgroundTint="@color/colorWhite"
+
         android:inputType="number"
         android:textDirection="ltr" />
 
@@ -33,17 +40,22 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="12"
+        android:buttonTint="@color/colorWhite"
 
-        android:padding="@dimen/padding_2" />
+        android:padding="@dimen/padding_2"
+        android:gravity="center_vertical" />
 
     <EditText
         android:id="@+id/bgt_store"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="28"
+        android:textSize="@dimen/transaction_text_size"
 
         android:padding="@dimen/padding_2"
-        android:text="@string/store" />
+        android:text="@string/store"
+        android:textColor="@color/colorWhite"
+        android:backgroundTint="@color/colorWhite" />
 
     <TextView
         android:id="@+id/bgt_charge_day"
@@ -52,7 +64,7 @@
         android:layout_weight="14"
         android:padding="@dimen/padding_4"
         android:text="1"
-        android:textColor="@color/colorBlue"
+        android:textColor="@color/colorLink"
         android:gravity="center_vertical"
         android:textAlignment="center"
         tools:ignore="RtlCompat" />

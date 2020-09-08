@@ -6,11 +6,11 @@
     <!--            android:endColor="#ffffff"-->
     <!--            android:startColor="#ffffff" />-->
 
-    <solid android:color="#ff4979" />
+    <solid android:color="#ff5474" />
 
     <stroke
         android:width="0.5dp"
-        android:color="#ff4979" />
+        android:color="#ff5474" />
 
     <size
         android:width="35dp"

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.TransactionsActivity">
+    tools:context=".ui.TransactionsActivity"
+    android:background="@color/colorLoginBackground">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_transactions"
@@ -40,7 +41,7 @@
                         android:gravity="center_horizontal"
                         android:text="@string/transactions"
                         android:textAlignment="center"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -50,7 +51,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:padding="@dimen/padding_4">
+                    android:padding="@dimen/padding_4"
+                    android:background="@color/colorApp">
 
                     <Spinner
                         android:id="@+id/categorySpinnerTransactions"
@@ -58,6 +60,7 @@
                         android:layout_height="wrap_content"
                         android:minWidth="120dp"
                         android:theme="@style/AppTheme.Spinner"
+                        android:backgroundTint="@color/colorWhite"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +80,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/active_transactions"
-                            android:checked="true" />
+                            android:checked="true"
+                            android:textColor="@color/colorWhite"
+                            android:buttonTint="@color/colorWhite" />
 
                     </LinearLayout>
 
@@ -99,9 +104,9 @@
                             android:gravity="center_horizontal"
                             android:text='@string/total'
                             android:textAlignment="center"
-                            android:textColor="@android:color/black"
                             android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textColor="@color/colorWhite"/>
 
                         <TextView
                             android:id="@+id/tv_total_transactions_top"
@@ -110,11 +115,11 @@
                             android:layout_marginLeft="@dimen/padding_8"
                             android:layout_marginRight="@dimen/padding_8"
                             android:text="@string/zero"
-                            android:textColor="@android:color/black"
                             android:textDirection="ltr"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold"
-                            tools:targetApi="jelly_bean_mr1" />
+                            tools:targetApi="jelly_bean_mr1"
+                            android:textColor="@color/colorWhite"/>
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -134,10 +139,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:layout_weight="0.10"
+                        android:layout_weight="0.11"
                         android:gravity="center_vertical"
                         android:text="@string/id"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold" />
 
@@ -146,10 +151,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:layout_weight="0.15"
+                        android:layout_weight="0.16"
                         android:gravity="center_vertical"
                         android:text="@string/category"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold" />
 
@@ -158,10 +163,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.19"
                         android:gravity="center_vertical"
                         android:text="@string/store"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold" />
 
@@ -170,10 +175,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.21"
                         android:gravity="center_vertical"
                         android:text="@string/charge_date"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold" />
 
@@ -186,7 +191,7 @@
                         android:gravity="center_vertical"
                         android:text="@string/payment_method"
                         android:textAlignment="center"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold"
                         tools:ignore="RtlCompat" />
@@ -196,13 +201,13 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/padding_2"
-                        android:layout_weight="0.15"
+                        android:layout_weight="0.13"
                         android:gravity="center_vertical"
                         android:text="@string/price"
-                        android:textAlignment="viewEnd"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold"
+                        android:textAlignment="viewEnd"
                         tools:ignore="RtlCompat" />
 
                 </LinearLayout>
@@ -236,7 +241,7 @@
                         android:gravity="center_horizontal"
                         android:text="@string/no_transactions_exists"
                         android:textAlignment="center"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorWhite"
                         android:textSize="20sp"
                         android:textStyle="bold"></TextView>
 

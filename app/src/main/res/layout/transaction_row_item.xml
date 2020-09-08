@@ -17,8 +17,9 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_2"
         android:text="@string/id"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
-        android:layout_weight="0.10"
+        android:layout_weight="0.11"
         android:gravity="center_vertical" />
 
     <TextView
@@ -27,8 +28,9 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_2"
         android:text="@string/category"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
-        android:layout_weight="0.15"
+        android:layout_weight="0.16"
         android:gravity="center_vertical" />
 
     <TextView
@@ -37,8 +39,9 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_2"
         android:text="@string/store"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
-        android:layout_weight="0.2"
+        android:layout_weight="0.19"
         android:gravity="center_vertical" />
 
     <TextView
@@ -47,8 +50,9 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_2"
         android:text="@string/charge_date"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
-        android:layout_weight="0.2"
+        android:layout_weight="0.21"
         android:gravity="center_vertical" />
 
     <TextView
@@ -57,6 +61,7 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_2"
         android:text="@string/payment_method"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.2"
         android:gravity="center_vertical"
@@ -69,10 +74,11 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_2"
         android:text="@string/price"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
         android:textDirection="ltr"
         android:textAlignment="viewEnd"
-        android:layout_weight="0.15"
+        android:layout_weight="0.13"
         android:gravity="center_vertical"
         tools:ignore="RtlCompat" />
 

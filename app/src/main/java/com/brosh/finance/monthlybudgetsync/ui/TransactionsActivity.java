@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -90,7 +91,7 @@ public class TransactionsActivity extends AppCompatActivity {
         categoriesSpinner = findViewById(R.id.categorySpinnerTransactions);
         init(selectedCategory);
         setOnClickTextViews();
-        setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
+        //setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
 
         categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -221,7 +222,7 @@ public class TransactionsActivity extends AppCompatActivity {
             TextView currentTV = (TextView) headersTV.getChildAt(i);
             if (currentTV != headerTV) {
                 currentTV.setText(defaultTextTVHeaders.get(i));
-                currentTV.setTextColor(Color.BLACK);
+                currentTV.setTextColor(getResources().getColor(R.color.colorWhite));
             }
         }
     }

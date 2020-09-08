@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         android:padding="8dp"
         android:layout_weight="1"
-        android:text="@string/category" />
+        android:text="@string/category"
+        android:textColor="@color/colorWhite"/>
 
     <TextView
         android:id="@+id/budgetLabel"
@@ -22,6 +23,7 @@
         android:padding="8dp"
         android:layout_weight="1"
         android:text="@string/budget"
+        android:textColor="@color/colorWhite"
         android:textDirection="ltr"
         android:textAlignment="center"
         android:gravity="center_horizontal"
@@ -34,6 +36,7 @@
         android:padding="8dp"
         android:layout_weight="1"
         android:text="@string/balance"
+        android:textColor="@color/colorWhite"
         android:textDirection="ltr"
         android:textAlignment="viewEnd"
         android:gravity="end"

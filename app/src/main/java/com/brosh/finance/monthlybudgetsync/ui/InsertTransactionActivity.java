@@ -21,7 +21,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -133,7 +132,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                         String day, month;
                         day = selectedday < 10 ? "0" + selectedday : String.valueOf(selectedday);
-                        month = (selectedmonth + 1) < 10 ? "0" + selectedmonth + 1 : String.valueOf(selectedmonth + 1);
+                        month = (selectedmonth + 1) < 10 ? "0" + (selectedmonth + 1) : String.valueOf(selectedmonth + 1);
                         payDateEditText.setText(day + "/" + month + "/" + selectedyear);
                         payDateEditText.setError(null);
                     }

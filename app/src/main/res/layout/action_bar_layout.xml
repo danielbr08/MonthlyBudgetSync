@@ -10,7 +10,7 @@
         android:id="@+id/tv_title"
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
         android:gravity="center"
-        android:textColor="#FFF"
+        android:textColor="@color/colorWhite"
         android:textStyle="bold"
         android:textSize="18dp"
         android:text="@string/app_name"

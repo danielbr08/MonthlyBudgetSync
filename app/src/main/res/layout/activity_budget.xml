@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.BudgetActivity">
+    tools:context=".ui.BudgetActivity"
+    android:background="@color/colorLoginBackground">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_budgets"
@@ -32,8 +33,8 @@
                         android:gravity="center_horizontal"
                         android:padding="8dp"
                         android:text="@string/budget"
+                        android:textColor="@color/colorWhite"
                         android:textAlignment="center"
-                        android:textColor="@android:color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -63,8 +64,8 @@
                             android:layout_weight="1"
                             android:padding="8dp"
                             android:text="@string/category"
+                            android:textColor="@color/colorWhite"
                             android:textAlignment="viewStart"
-                            android:textColor="@android:color/black"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold"
                             tools:ignore="RtlCompat" />
@@ -77,8 +78,8 @@
                             android:gravity="center_horizontal"
                             android:padding="8dp"
                             android:text="@string/budget"
+                            android:textColor="@color/colorWhite"
                             android:textAlignment="center"
-                            android:textColor="@android:color/black"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold" />
 
@@ -90,8 +91,8 @@
                             android:gravity="end"
                             android:padding="8dp"
                             android:text="@string/balance"
+                            android:textColor="@color/colorWhite"
                             android:textAlignment="viewEnd"
-                            android:textColor="@android:color/black"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -116,8 +117,7 @@
                             android:layout_weight="1"
                             android:padding="8dp"
                             android:text="@string/total"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/transaction_text_size"
+                            android:textColor="@color/colorWhite"                            android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold" />
 
                         <TextView
@@ -129,8 +129,7 @@
                             android:padding="8dp"
                             android:text=""
                             android:textAlignment="center"
-                            android:textColor="@android:color/black"
-                            android:textDirection="ltr"
+                            android:textColor="@color/colorWhite"                            android:textDirection="ltr"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold"
                             tools:targetApi="jelly_bean_mr1" />
@@ -144,8 +143,7 @@
                             android:padding="8dp"
                             android:text=""
                             android:textAlignment="viewEnd"
-                            android:textColor="@android:color/black"
-                            android:textDirection="ltr"
+                            android:textColor="@color/colorWhite"                            android:textDirection="ltr"
                             android:textSize="@dimen/transaction_text_size"
                             android:textStyle="bold"
                             tools:targetApi="jelly_bean_mr1" />

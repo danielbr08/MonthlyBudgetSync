@@ -93,7 +93,7 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         View dayPeekerView = ((Activity) context).getLayoutInflater().inflate(R.layout.day_peeker, null);
         Integer defaultId = chargeDay.getText().toString() == null ? R.id.tv1 : UiUtil.getIdTVByName((ViewGroup) dayPeekerView, chargeDay.getText().toString()).get(0);
         final TextView defaultSelectionTV[] = {dayPeekerView.findViewById(defaultId)};
-        defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_style);
+        defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
         final TextView selectedDay[] = {defaultSelectionTV[0]};
         final TextView prevSelectedDay[] = {defaultSelectionTV[0]};
 
@@ -110,7 +110,7 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
                 case DialogInterface.BUTTON_NEGATIVE:
                     //No button clicked - rollback
                     UiUtil.restoreBackground(Arrays.asList(selectedDay[0]), dayPeekerView.getBackground());
-                    defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_style);
+                    defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
                     prevSelectedDay[0] = defaultSelectionTV[0];
                     selectedDay[0] = defaultSelectionTV[0];
 
@@ -134,7 +134,7 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
                         prevSelectedDay[0] = selectedDay[0];
                         selectedDay[0] = (TextView) tv1;
                         UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), v.getBackground());
-                        selectedDay[0].setBackgroundResource(R.drawable.circle_style);
+                        selectedDay[0].setBackgroundResource(R.drawable.circle_pink_style);
                     });
                 }
                 alertDialog.show();
