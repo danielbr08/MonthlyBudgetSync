@@ -4,170 +4,199 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.BudgetActivity"
-    android:background="@color/colorLoginBackground">
+    android:background="@color/colorLoginBackground"
+    tools:context=".ui.BudgetActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_budgets"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="1">
-
-                    <TextView
-                        android:id="@+id/BudgetTitleLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:padding="8dp"
-                        android:text="@string/budget"
-                        android:textColor="@color/colorWhite"
-                        android:textAlignment="center"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/LLBudget"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-
-                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/LLBudgetTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/border_style"
-                        android:orientation="horizontal"
-                        android:padding="6dp"
-                        android:weightSum="3">
+                        android:weightSum="1">
 
                         <TextView
-                            android:id="@+id/categoryLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:padding="8dp"
-                            android:text="@string/category"
-                            android:textColor="@color/colorWhite"
-                            android:textAlignment="viewStart"
-                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
-                            tools:ignore="RtlCompat" />
-
-                        <TextView
-                            android:id="@+id/budgetLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:id="@+id/BudgetTitleLabel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
                             android:padding="8dp"
                             android:text="@string/budget"
-                            android:textColor="@color/colorWhite"
                             android:textAlignment="center"
-                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/balanceLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:padding="8dp"
-                            android:text="@string/balance"
                             android:textColor="@color/colorWhite"
-                            android:textAlignment="viewEnd"
-                            android:textSize="@dimen/transaction_text_size"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/categories_rows"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-
                     <LinearLayout
+                        android:id="@+id/LLBudget"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/border_style"
-                        android:padding="6dp"
-                        android:weightSum="3">
+                        android:layout_height="0dp"
 
-                        <TextView
-                            android:id="@+id/totalLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:padding="8dp"
-                            android:text="@string/total"
-                            android:textColor="@color/colorWhite"                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/totalBudget"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:padding="8dp"
-                            android:text=""
-                            android:textAlignment="center"
-                            android:textColor="@color/colorWhite"                            android:textDirection="ltr"
-                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
-                            tools:targetApi="jelly_bean_mr1" />
+                        <LinearLayout
+                            android:id="@+id/LLBudgetTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/border_style"
+                            android:orientation="horizontal"
+                            android:padding="6dp"
+                            android:weightSum="3">
 
-                        <TextView
-                            android:id="@+id/totalBalance"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:padding="8dp"
-                            android:text=""
-                            android:textAlignment="viewEnd"
-                            android:textColor="@color/colorWhite"                            android:textDirection="ltr"
-                            android:textSize="@dimen/transaction_text_size"
-                            android:textStyle="bold"
-                            tools:targetApi="jelly_bean_mr1" />
+                            <TextView
+                                android:id="@+id/categoryLabel"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:padding="8dp"
+                                android:text="@string/category"
+                                android:textAlignment="viewStart"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="@dimen/transaction_text_size"
+                                android:textStyle="bold"
+                                tools:ignore="RtlCompat" />
+
+                            <TextView
+                                android:id="@+id/budgetLabel"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:padding="8dp"
+                                android:text="@string/budget"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="@dimen/transaction_text_size"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/balanceLabel"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:padding="8dp"
+                                android:text="@string/balance"
+                                android:textAlignment="viewEnd"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="@dimen/transaction_text_size"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/categories_rows"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                android:orientation="vertical" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/border_style"
+                                android:padding="6dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:id="@+id/totalLabel"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:padding="8dp"
+                                    android:text="@string/total"
+                                    android:textColor="@color/colorWhite"
+                                    android:textSize="@dimen/transaction_text_size"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/totalBudget"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal"
+                                    android:padding="8dp"
+                                    android:text=""
+                                    android:textAlignment="center"
+                                    android:textColor="@color/colorWhite"
+                                    android:textDirection="ltr"
+                                    android:textSize="@dimen/transaction_text_size"
+                                    android:textStyle="bold"
+                                    tools:targetApi="jelly_bean_mr1" />
+
+                                <TextView
+                                    android:id="@+id/totalBalance"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="end"
+                                    android:padding="8dp"
+                                    android:text=""
+                                    android:textAlignment="viewEnd"
+                                    android:textColor="@color/colorWhite"
+                                    android:textDirection="ltr"
+                                    android:textSize="@dimen/transaction_text_size"
+                                    android:textStyle="bold"
+                                    tools:targetApi="jelly_bean_mr1" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="bottom">
+
+                                <com.google.android.gms.ads.AdView
+                                    android:id="@+id/adView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:adSize="BANNER"
+                                    app:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.core.widget.NestedScrollView>
+                </LinearLayout>
             </LinearLayout>
-        </ScrollView>
+
+        </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:layout_constraintBottom_toBottomOf="@+id/refresh_layout_budgets"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
