@@ -512,13 +512,9 @@ public class CreateBudgetActivity extends AppCompatActivity {
     private void setConstPaymentCBOnCheckChangedListner(CheckBox constPaymentCB, final EditText shopET, final Spinner optionalDaysSpinner) {
         constPaymentCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    shopET.setVisibility(View.VISIBLE);
-                    optionalDaysSpinner.setVisibility(View.VISIBLE);
-                } else {
-                    shopET.setVisibility(View.INVISIBLE);
-                    optionalDaysSpinner.setVisibility(View.INVISIBLE);
-                }
+                int visibility = isChecked ? View.VISIBLE : View.INVISIBLE;
+                shopET.setVisibility(visibility);
+                optionalDaysSpinner.setVisibility(visibility);
             }
         });
     }

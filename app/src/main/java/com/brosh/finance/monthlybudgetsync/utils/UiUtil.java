@@ -194,7 +194,7 @@ public final class UiUtil {
     public static void setDaysInMonthSpinner(Spinner spinner, Activity activity) {
         List<Integer> daysInMonth = IntStream.range(1, 31).boxed().collect(Collectors.toList());
         List<String> daysInMonthStringList = Lists.transform(daysInMonth, Functions.toStringFunction());
-        SpinnerAdapter adapter = new SpinnerAdapter(daysInMonthStringList, activity);
+        SpinnerAdapter adapter = new SpinnerAdapter(daysInMonthStringList, activity, R.layout.custom_spinner);
         spinner.setAdapter(adapter);
         spinner.setSelection(1, true);
         spinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

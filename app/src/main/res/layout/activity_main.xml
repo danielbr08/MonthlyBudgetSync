@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity"
-    android:background="@color/colorLoginBackground">
+    android:background="@drawable/walpaper"
+    tools:context=".ui.MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_main"
@@ -15,12 +15,12 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -35,6 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:background="@color/colorApp"
                 android:padding="5dp">
 
                 <!--            <Button-->
@@ -72,10 +73,10 @@
                     android:id="@+id/monthSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:backgroundTint="@color/colorWhite"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:backgroundTint="@color/colorWhite"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <!--            <TextView-->
                 <!--                android:id="@+id/monthLabel"-->
@@ -87,10 +88,14 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:background="@drawable/dollar"></LinearLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="100dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -98,14 +103,16 @@
                     android:id="@+id/budgetButton"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_pink_style"
                     android:text="@string/budget"
                     android:textColor="@color/colorLoginBackground"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/insertTransactionButton"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintHorizontal_bias="0.501"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
                     android:id="@+id/transactionsButton"
@@ -120,12 +127,11 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@+id/insertTransactionButton"
+                    app:layout_constraintHorizontal_bias="0.527"
+                    app:layout_constraintStart_toEndOf="@+id/budgetButton"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.4"
-                    tools:ignore="RtlCompat"
-                    android:layout_marginEnd="30dp"/>
+                    app:layout_constraintVertical_bias="0.501"
+                    tools:ignore="RtlCompat" />
 
                 <Button
                     android:id="@+id/insertTransactionButton"
@@ -138,33 +144,46 @@
                     android:textSize="13sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/budgetButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.4"
-                    tools:ignore="RtlCompat"
-                    android:layout_marginStart="30dp"/>
+                    app:layout_constraintVertical_bias="0.5"
+                    tools:ignore="RtlCompat" />
 
                 <Button
                     android:id="@+id/createBudgetButton"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/circle_pink_style"
                     android:text="@string/create_budget"
                     android:textColor="@color/colorLoginBackground"
                     android:textSize="13sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/insertTransactionButton"
                     tools:ignore="RtlCompat" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:background="@drawable/budget_img"></LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:adSize="BANNER"
-                app:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+                android:background="@color/colorLoginBackground">
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/adView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:adSize="BANNER"
+                    app:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
+            </LinearLayout>
         </LinearLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

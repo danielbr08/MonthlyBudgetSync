@@ -112,7 +112,7 @@ public class TransactionsActivity extends AppCompatActivity {
         String currentRefMonth = DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<String> monthCategories = new ArrayList<String>(dbUtil.getCategoriesNames(currentRefMonth));
         monthCategories.add(0, getString(R.string.all));
-        SpinnerAdapter adapter = new SpinnerAdapter(monthCategories, this);
+        SpinnerAdapter adapter = new SpinnerAdapter(monthCategories, this, R.layout.custom_spinner);
         categoriesSpinner.setAdapter(adapter);
         if (selectedCategory != null)
             categoriesSpinner.setSelection(monthCategories.indexOf(selectedCategory));

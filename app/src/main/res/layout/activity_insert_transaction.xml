@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     tools:context=".ui.InsertTransactionActivity"
-    android:background="@color/colorLoginBackground">
+    android:background="@drawable/walpaper">
 
 
     <RelativeLayout
@@ -68,7 +68,6 @@
                     android:layout_weight=".7"
                     android:orientation="vertical"
                     android:text="@string/category"
-                    android:background="@color/colorLoginBackground"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -97,7 +96,6 @@
                     android:layout_weight=".7"
                     android:orientation="vertical"
                     android:text="@string/payment_method"
-                    android:background="@color/colorLoginBackground"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -130,7 +128,6 @@
                     android:layout_weight=".7"
                     android:gravity="center_vertical"
                     android:text="@string/charge_date"
-                    android:background="@color/colorLoginBackground"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -171,7 +168,6 @@
                     android:layout_weight=".7"
                     android:gravity="center_vertical"
                     android:text="@string/store"
-                    android:background="@color/colorLoginBackground"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -211,7 +207,6 @@
                     android:layout_weight=".7"
                     android:gravity="center_vertical"
                     android:text="@string/price"
-                    android:background="@color/colorLoginBackground"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold" />

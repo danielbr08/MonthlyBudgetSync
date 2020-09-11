@@ -3,7 +3,6 @@ package com.brosh.finance.monthlybudgetsync.ui;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.TargetApi;
@@ -24,7 +23,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
-import com.brosh.finance.monthlybudgetsync.adapters.SpinnerAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
@@ -64,10 +62,12 @@ public class InsertTransactionActivity extends AppCompatActivity {
     public void setSpinnersAllignment() {
         List<String> categoriesNames = dbUtil.getCategoriesNames(month.getYearMonth());
         List<String> paymentMethod = getPaymentMethodList();
-        SpinnerAdapter namesAdapter = new SpinnerAdapter(categoriesNames, this);
-        SpinnerAdapter PaymentMethodAdapter = new SpinnerAdapter(paymentMethod, this);
-        categoriesSpinner.setAdapter(namesAdapter);
-        paymentTypeSpinner.setAdapter(PaymentMethodAdapter);
+        ArrayAdapter categoriesNamesAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, categoriesNames);
+        ArrayAdapter paymentMethodAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, paymentMethod);
+        categoriesNamesAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
+        paymentMethodAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
+        categoriesSpinner.setAdapter(categoriesNamesAdapter);
+        paymentTypeSpinner.setAdapter(paymentMethodAdapter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".ui.CreateBudgetActivity"
-    android:background="@color/colorLoginBackground">
+    android:background="@drawable/walpaper">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_create_budget"
