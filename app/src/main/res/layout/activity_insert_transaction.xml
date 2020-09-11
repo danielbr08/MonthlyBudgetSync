@@ -139,8 +139,8 @@
                     android:layout_weight=".3"
                     android:clickable="true"
                     android:ems="10"
-                    android:background="@color/colorWhite"
-                    android:textColor="@color/colorLoginBackground"
+                    android:textColor="@color/colorWhite"
+                    android:backgroundTint="@color/colorLoginBackground"
                     android:focusable="false"
                     android:inputType="date"
                     android:orientation="vertical"
@@ -182,8 +182,8 @@
                     android:maxLines="1"
                     android:orientation="vertical"
                     android:singleLine="true"
-                    android:background="@color/colorWhite"
-                    android:textColor="@color/colorLoginBackground"/>
+                    android:textColor="@color/colorWhite"
+                    android:backgroundTint="@color/colorLoginBackground"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -222,8 +222,8 @@
                     android:gravity="center_vertical"
                     android:textDirection="ltr"
                     tools:targetApi="jelly_bean_mr1"
-                    android:background="@color/colorWhite"
-                    android:textColor="@color/colorLoginBackground"/>
+                    android:textColor="@color/colorWhite"
+                    android:backgroundTint="@color/colorLoginBackground"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -246,7 +246,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
@@ -254,14 +254,14 @@
 
                 <Button
                     android:id="@+id/sendTransactionButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:text="@string/insert"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:background="@color/colorWhite"
-                    android:textColor="@color/colorLoginBackground"/>
+                    android:background="@drawable/walpaper"
+                    android:textColor="@color/colorWhite"/>
             </LinearLayout>
 
             <LinearLayout

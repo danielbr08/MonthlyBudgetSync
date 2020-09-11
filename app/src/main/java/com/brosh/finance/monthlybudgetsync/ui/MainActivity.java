@@ -13,11 +13,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -200,8 +202,12 @@ public class MainActivity extends AppCompatActivity {
                 String refMonth = refMonthSpinner.getSelectedItem().toString();
                 month = dbUtil.getMonth(refMonth);
                 boolean isActive = month != null && month.isActive();
+                Drawable circleButton =  isActive ? getResources().getDrawable(R.drawable.circle_pink_style) : getResources().getDrawable(R.drawable.circle_gray_style);
                 insertTransactionButton.setEnabled(isActive);
                 createBudgetButton.setEnabled(isActive);
+                insertTransactionButton.setBackground(circleButton);
+                createBudgetButton.setBackground(circleButton);
+
             }
 
             @Override
@@ -299,6 +305,9 @@ public class MainActivity extends AppCompatActivity {
             budgetButton.setEnabled(false);
             transactionsButton.setEnabled(false);
             insertTransactionButton.setEnabled(false);
+            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
             month = null;
         } else {
             if (month == null) { // After create budget first time
@@ -308,6 +317,9 @@ public class MainActivity extends AppCompatActivity {
                     budgetButton.setEnabled(true);
                     transactionsButton.setEnabled(true);
                     insertTransactionButton.setEnabled(true);
+                    budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
+                    transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
+                    insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
                 } else { // todo Exception should throws
 
                 }
@@ -330,19 +342,26 @@ public class MainActivity extends AppCompatActivity {
             budgetButton.setEnabled(false);
             transactionsButton.setEnabled(false);
             insertTransactionButton.setEnabled(false);
+            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
             month = null;
         } else {
             if (!dbUtil.isCurrentRefMonthExists()) {
                 createNewMonth(new Date());
                 insertTransactionButton.setEnabled(true);
+                insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
             }
             budgetButton.setEnabled(true);
             transactionsButton.setEnabled(true);
+            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
+            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
             month = dbUtil.getMonth(DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR));
             Date nextRefMonth = DateUtil.getNextRefMonth(month.getRefMonth());
             if (new Date().after(nextRefMonth)) {
                 createNewMonth(nextRefMonth);
                 insertTransactionButton.setEnabled(true);
+                insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
             }
             initRefMonthSpinner();
         }
