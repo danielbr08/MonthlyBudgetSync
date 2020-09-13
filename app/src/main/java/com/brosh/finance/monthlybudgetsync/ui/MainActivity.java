@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                 String refMonth = refMonthSpinner.getSelectedItem().toString();
                 month = dbUtil.getMonth(refMonth);
                 boolean isActive = month != null && month.isActive();
-                Drawable circleButton =  isActive ? getResources().getDrawable(R.drawable.circle_pink_style) : getResources().getDrawable(R.drawable.circle_gray_style);
+                Drawable circleButton = isActive ? getResources().getDrawable(R.drawable.circle_pink_style) : getResources().getDrawable(R.drawable.circle_gray_style);
                 insertTransactionButton.setEnabled(isActive);
                 createBudgetButton.setEnabled(isActive);
                 insertTransactionButton.setBackground(circleButton);
@@ -382,8 +382,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // todo check for better solution for buttons order
+        TextView tv = new TextView(this);
+        tv.setTextColor(getResources().getColor(R.color.colorLoginBackground));
+        tv.setText(R.string.are_you_sure_you_want_to_exit);
+        tv.setPadding(40, 40, 40, 0);
         new AlertDialog.Builder(this)
-                .setMessage(R.string.are_you_sure_you_want_to_exit)
+                .setCustomTitle(tv)
                 .setCancelable(false)
                 .setNegativeButton(getString(R.string.yes), new DialogInterface.OnClickListener() { // Negative is actually positive
                     public void onClick(DialogInterface dialog, int id) {

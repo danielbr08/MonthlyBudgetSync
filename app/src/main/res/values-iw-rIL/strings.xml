@@ -111,5 +111,5 @@
     <string name="error_email_already_in_use">המייל כבר בשימוש</string>
     <string name="user_not_ound">משתמש לא קיים</string>
     <string name="error_invalid_password">סיסמה שגויה</string>
-
+    <string name="are_you_sure_you_want_to_refresh">רענון העמוד עלול לגרום לאבדן מידע.\nאתה בטוח שברצונך לרענן?</string>
 </resources>

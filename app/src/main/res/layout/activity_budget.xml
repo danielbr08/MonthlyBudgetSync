@@ -180,9 +180,8 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="bottom"
-                                android:background="@color/colorLoginBackground">
+                                android:layout_height="wrap_content"
+                                android:gravity="bottom">
 
                                 <com.google.android.gms.ads.AdView
                                     android:id="@+id/adView"

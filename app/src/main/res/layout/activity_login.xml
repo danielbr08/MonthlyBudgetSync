@@ -13,7 +13,7 @@
         android:id="@+id/loginBtn"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="84dp"
         android:background="@color/colorWhite"
         android:fontFamily="@font/aclonica"
         android:text="@string/login"
@@ -130,28 +130,28 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/password">
 
-    <CheckBox
-        android:id="@+id/rememberMeCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="@string/remember_me"
-        android:textColor="@color/colorWhite"
-        app:buttonTint="@color/colorWhite"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        <CheckBox
+            android:id="@+id/rememberMeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/remember_me"
+            android:textColor="@color/colorWhite"
+            app:buttonTint="@color/colorWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
 
-    <TextView
-        android:id="@+id/forgotPasswordTV"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:onClick="openForgotPassword"
-        android:text="@string/forgot_password"
-        android:textColor="@color/colorLink"
-        android:layout_marginStart="18dp"
-        app:layout_constraintStart_toEndOf="@+id/rememberMeCheckBox"
-        app:layout_constraintTop_toBottomOf="parent"
-        android:gravity="center"
-        tools:ignore="RtlCompat" />
+        <TextView
+            android:id="@+id/forgotPasswordTV"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="openForgotPassword"
+            android:text="@string/forgot_password"
+            android:textColor="@color/colorLink"
+            android:layout_marginStart="18dp"
+            app:layout_constraintStart_toEndOf="@+id/rememberMeCheckBox"
+            app:layout_constraintTop_toBottomOf="parent"
+            android:gravity="center"
+            tools:ignore="RtlCompat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

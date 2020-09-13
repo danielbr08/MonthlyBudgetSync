@@ -120,12 +120,26 @@ public class CreateBudgetActivity extends AppCompatActivity {
     }
 
     private void setRefreshListener() {
+        final Context context = this;
         refreshLayout = findViewById(R.id.refresh_layout_create_budget);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                setBudgetGui();
-                refreshLayout.setRefreshing(false);
+                TextView tv = new TextView(context);
+                tv.setTextColor(getResources().getColor(R.color.colorLoginBackground));
+                tv.setText(R.string.are_you_sure_you_want_to_refresh);
+                tv.setPadding(40, 40, 40, 0);
+                new androidx.appcompat.app.AlertDialog.Builder(context)
+                        .setCustomTitle(tv)
+                        .setCancelable(false)
+                        .setNegativeButton(getString(R.string.yes), new DialogInterface.OnClickListener() { // Negative is actually positive
+                            public void onClick(DialogInterface dialog, int id) {
+                                setBudgetGui();
+                                refreshLayout.setRefreshing(false);
+                            }
+                        })
+                        .setPositiveButton(getString(R.string.no), (dialogInterface, i) -> refreshLayout.setRefreshing(false)) // Positive is actually negative
+                        .show();
             }
         });
     }

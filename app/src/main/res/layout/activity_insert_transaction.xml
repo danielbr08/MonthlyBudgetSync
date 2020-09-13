@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
                     android:orientation="vertical"
-                    android:backgroundTint="@color/colorWhite"/>
+                    android:backgroundTint="@color/colorWhite" />
 
             </LinearLayout>
 
@@ -114,6 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:orientation="horizontal">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -121,30 +122,30 @@
                     android:gravity="center_vertical"
                     android:weightSum="1">
 
-                <TextView
-                    android:id="@+id/payDateLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".7"
-                    android:gravity="center_vertical"
-                    android:text="@string/charge_date"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/payDateLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".7"
+                        android:gravity="center_vertical"
+                        android:text="@string/charge_date"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/payDatePlainText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".3"
-                    android:clickable="true"
-                    android:ems="10"
-                    android:textColor="@color/colorWhite"
-                    android:backgroundTint="@color/colorLoginBackground"
-                    android:focusable="false"
-                    android:inputType="date"
-                    android:orientation="vertical"
-                    tools:targetApi="o" />
+                    <EditText
+                        android:id="@+id/payDatePlainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".3"
+                        android:clickable="true"
+                        android:ems="10"
+                        android:textColor="@color/colorWhite"
+                        android:backgroundTint="@color/colorLoginBackground"
+                        android:focusable="false"
+                        android:inputType="date"
+                        android:orientation="vertical"
+                        tools:targetApi="o" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -154,6 +155,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -161,29 +163,29 @@
                     android:gravity="center"
                     android:weightSum="1">
 
-                <TextView
-                    android:id="@+id/shopLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".7"
-                    android:gravity="center_vertical"
-                    android:text="@string/store"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/shopLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".7"
+                        android:gravity="center_vertical"
+                        android:text="@string/store"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/shopAutoCompleteTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".3"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:orientation="vertical"
-                    android:singleLine="true"
-                    android:textColor="@color/colorWhite"
-                    android:backgroundTint="@color/colorLoginBackground"/>
+                    <AutoCompleteTextView
+                        android:id="@+id/shopAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".3"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:orientation="vertical"
+                        android:singleLine="true"
+                        android:textColor="@color/colorWhite"
+                        android:backgroundTint="@color/colorLoginBackground" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -193,37 +195,37 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:gravity="center">
 
-                <TextView
-                    android:id="@+id/transactionPriceLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".7"
-                    android:gravity="center_vertical"
-                    android:text="@string/price"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/transactionPriceLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".7"
+                        android:gravity="center_vertical"
+                        android:text="@string/price"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/transactionPricePlainText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".3"
-                    android:ems="10"
-                    android:importantForAutofill="no"
-                    android:inputType="numberSigned|numberDecimal|textMultiLine"
-                    android:gravity="center_vertical"
-                    android:textDirection="ltr"
-                    tools:targetApi="jelly_bean_mr1"
-                    android:textColor="@color/colorWhite"
-                    android:backgroundTint="@color/colorLoginBackground"/>
+                    <EditText
+                        android:id="@+id/transactionPricePlainText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".3"
+                        android:ems="10"
+                        android:importantForAutofill="no"
+                        android:inputType="numberSigned|numberDecimal|textMultiLine"
+                        android:gravity="center_vertical"
+                        android:textDirection="ltr"
+                        tools:targetApi="jelly_bean_mr1"
+                        android:textColor="@color/colorWhite"
+                        android:backgroundTint="@color/colorLoginBackground" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -261,7 +263,7 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:background="@drawable/walpaper"
-                    android:textColor="@color/colorWhite"/>
+                    android:textColor="@color/colorWhite" />
             </LinearLayout>
 
             <LinearLayout
@@ -275,8 +277,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight=".7"
-                    android:background="@drawable/budget"
-                    android:layout_marginBottom="20px"/>
+                    android:background="@drawable/credit_card"
+                    android:layout_marginBottom="20px" />
 
                 <com.google.android.gms.ads.AdView
                     android:id="@+id/adView"
@@ -284,7 +286,6 @@
                     android:layout_height="wrap_content"
                     app:adSize="BANNER"
                     app:adUnitId="ca-app-pub-3940256099942544/6300978111"
-                    android:background="@color/colorLoginBackground"
                     android:layout_weight=".1" />
 
             </LinearLayout>
