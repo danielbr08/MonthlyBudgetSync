@@ -13,7 +13,7 @@
         android:id="@+id/loginBtn"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="87dp"
         android:background="@color/colorWhite"
         android:fontFamily="@font/aclonica"
         android:text="@string/login"
