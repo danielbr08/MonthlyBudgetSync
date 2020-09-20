@@ -482,6 +482,9 @@ public final class DBUtil {
                 Category cat = getCategoryById(refMonth, catId);
                 cat.getTransactions().put(tranId, tran);
                 double newBalance = cat.getBudget() - getTotalTransactionsSum(refMonth, catId, true);
+                if(cat.getBalance() != newBalance) {
+                    getDBCategoriesPath(refMonth).child(catId).child(Definitions.BALANCE).setValue(newBalance);
+                }
                 getCategoryById(refMonth, catId).setBalance(newBalance);
                 setTransactionFieldsEventUpdateValue(dataSnapshot, refMonth, catId);
             }
