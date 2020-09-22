@@ -1,6 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,9 +33,6 @@ import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -146,6 +144,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                                 }
                             });
                             try {
+                                userDBKey = TextUtil.getEmailComma(email);
                                 final User user = new User(fullName, email, phone, password, userDBKey);
                                 setUserStartApp(user);
                             } catch (Exception e) {
@@ -198,17 +197,19 @@ public class Register extends AppCompatActivity implements UserStartApp {
     }
 
     public void setUserStartApp(final User newUser) {
+        final Context context = this;
         DatabaseReferenceRoot.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                User user = newUser;
+                User user;
                 boolean isNewUser = newUser != null;
 //                String ownerDBKey = null;
 //                if (userDBKey != null && snapshot.child(Definition.SHARES).hasChild(userDBKey)) {
 //                    Share share = snapshot.child(userDBKey).getValue(Share.class);
 //                    ownerDBKey = share.getOwner();
 //                }
-                if (user != null) { // New user case
+                if (newUser != null) { // New user case
+                    user = newUser;
                     if (snapshot.child(Definitions.USERS).hasChild(user.getDbKey())) { // User already exists - cannot create user(duplicate)
                         return;
                     } else {
@@ -221,8 +222,12 @@ public class Register extends AppCompatActivity implements UserStartApp {
                 } else { // Already registered
                     user = snapshot.child(Definitions.USERS).child(userDBKey).getValue(User.class);//
                 }
-                DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
-                dbUtil.initDB(user, currentActivity);
+                if (snapshot.child(Definitions.SHARES).hasChild(userDBKey)) {
+                    DBUtil.showShareDialogEnterApp(context, snapshot, user);
+                } else {
+                    DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
+                    dbUtil.initDB(user, currentActivity);
+                }
             }
 
             @Override

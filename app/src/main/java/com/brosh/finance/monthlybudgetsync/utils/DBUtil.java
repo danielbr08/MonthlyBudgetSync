@@ -1,13 +1,17 @@
 package com.brosh.finance.monthlybudgetsync.utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
@@ -482,7 +486,7 @@ public final class DBUtil {
                 Category cat = getCategoryById(refMonth, catId);
                 cat.getTransactions().put(tranId, tran);
                 double newBalance = cat.getBudget() - getTotalTransactionsSum(refMonth, catId, true);
-                if(cat.getBalance() != newBalance) {
+                if (cat.getBalance() != newBalance) {
                     getDBCategoriesPath(refMonth).child(catId).child(Definitions.BALANCE).setValue(newBalance);
                 }
                 getCategoryById(refMonth, catId).setBalance(newBalance);
@@ -1081,6 +1085,44 @@ public final class DBUtil {
         String emailCommaReplaced = emailToShare.replace(Definitions.DOT, Definitions.COMMA);
         Share share = sharesMap.containsKey(emailCommaReplaced) ? sharesMap.get(emailCommaReplaced) : null;
         return share != null && share.getStatus() == ShareStatus.SUCCESSFULLY_SHARED ? true : false;
+    }
+
+    public static void showShareDialogEnterApp(Context context, DataSnapshot snapshot, User user) {
+        Share share = snapshot.child(Definitions.SHARES).child(user.getDbKey()).getValue(Share.class);
+        if (share.getStatus() == ShareStatus.PENDING) {
+            String ownerDBKey = share.getDbKey();
+            User ownerUser = snapshot.child(Definitions.USERS).child(ownerDBKey).getValue(User.class);
+            String userName = ownerUser.getName();
+            String question = String.format(context.getString(R.string.share_budget_question), userName);
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            share.setStatus(ShareStatus.SUCCESSFULLY_SHARED);
+                            user.setDbKey(ownerDBKey);
+                            snapshot.child(Definitions.USERS).child(TextUtil.getEmailComma(share.getUserEmail())).child(Definitions.dbKey).getRef().setValue(ownerDBKey);
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            share.setStatus(ShareStatus.DENY);
+                            break;
+                    }
+                    snapshot.child(Definitions.SHARES).child(TextUtil.getEmailComma(share.getUserEmail())).getRef().setValue(share);
+                    DBUtil.getInstance().initDB(user, (Activity) context);
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(question).setPositiveButton(context.getString(R.string.yes), dialogClickListener)
+                    .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();
+
+        } else {
+            DBUtil.getInstance().initDB(user, (Activity) context);
+        }
     }
 
 

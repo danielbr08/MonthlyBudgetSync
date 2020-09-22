@@ -108,10 +108,9 @@ public class Login extends AppCompatActivity implements UserStartApp {
                     userDBKey = email.replace(Definitions.DOT, Definitions.COMMA);
                     setUserStartApp(null);
                 } else {
-                    if(task.getException() instanceof  FirebaseNetworkException){
+                    if (task.getException() instanceof FirebaseNetworkException) {
                         TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, currentActivity);
-                    }
-                    else if(task.getException() instanceof FirebaseAuthException) {
+                    } else if (task.getException() instanceof FirebaseAuthException) {
                         String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
                         switch (errorCode) {
                             case "ERROR_INVALID_EMAIL":
@@ -205,41 +204,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
                 DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
                 //                String ownerDBKey = null;
                 if (snapshot.child(Definitions.SHARES).hasChild(userDBKey)) {
-                    Share share = snapshot.child(Definitions.SHARES).child(userDBKey).getValue(Share.class);
-                    if (share.getStatus() == ShareStatus.PENDING) {
-                        String ownerDBKey = share.getDbKey();
-                        User ownerUser = snapshot.child(Definitions.USERS).child(ownerDBKey).getValue(User.class);
-                        String userName = ownerUser.getName();
-                        String question = String.format(getString(R.string.share_budget_question), userName);
-                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        //Yes button clicked
-                                        share.setStatus(ShareStatus.SUCCESSFULLY_SHARED);
-                                        user.setDbKey(ownerDBKey);
-                                        snapshot.child(Definitions.USERS).child(userDBKey).child(Definitions.dbKey).getRef().setValue(ownerDBKey);
-                                        break;
-
-                                    case DialogInterface.BUTTON_NEGATIVE:
-                                        //No button clicked
-                                        share.setStatus(ShareStatus.DENY);
-                                        break;
-                                }
-                                snapshot.child(Definitions.SHARES).child(userDBKey).getRef().setValue(share);
-                                dbUtil.initDB(user, currentActivity);
-                            }
-                        };
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage(question).setPositiveButton(getString(R.string.yes), dialogClickListener)
-                                .setNegativeButton(getString(R.string.no), dialogClickListener).show();
-
-                    } else {
-                        dbUtil.initDB(user, currentActivity);
-                    }
+                    DBUtil.showShareDialogEnterApp(context, snapshot, user);
                 } else {
                     dbUtil.initDB(user, currentActivity);
                 }
