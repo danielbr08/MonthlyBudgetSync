@@ -26,6 +26,7 @@
         <SwitchPreferenceCompat
             app:key="defaultShowActiveOnly"
             app:title="@string/default_show_active_only"
+            android:summary="@string/default_show_active_only_summary"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

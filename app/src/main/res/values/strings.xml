@@ -91,7 +91,7 @@
     <string name="email_updates">Email Updates</string>
     <string name="notifications">Notifications</string>
     <string name="auto_complete_length">Autocomplete starting from</string>
-    <string name="default_show_active_only">By default show active transactions only</string>
+    <string name="default_show_active_only">Show active transactions only</string>
     <string name="default_currency">$</string>
     <string name="usd">$</string>
     <string name="eur">€</string>
@@ -111,4 +111,5 @@
     <string name="user_not_ound">user not found</string>
     <string name="error_invalid_password">invalid_password</string>
     <string name="are_you_sure_you_want_to_refresh">Page refresh may result in loss of information.\nAre you sure you want to refresh?</string>
+    <string name="default_show_active_only_summary">Show only active transactions(not deleted) as default in transactions screen</string>
 </resources>

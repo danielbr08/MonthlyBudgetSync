@@ -92,7 +92,7 @@
     <string name="email_updates">עדכונים למייל</string>
     <string name="notifications">התראות</string>
     <string name="auto_complete_length">השלמה אוטומטית בתווים</string>
-    <string name="default_show_active_only">עסקאות פעילות בלבד כברירת מחדל</string>
+    <string name="default_show_active_only">הצג עסקאות פעילות בלבד</string>
     <string name="default_currency">₪</string>
     <string name="usd">$</string>
     <string name="eur">€</string>
@@ -112,4 +112,5 @@
     <string name="user_not_ound">משתמש לא קיים</string>
     <string name="error_invalid_password">סיסמה שגויה</string>
     <string name="are_you_sure_you_want_to_refresh">רענון העמוד עלול לגרום לאבדן מידע.\nאתה בטוח שברצונך לרענן?</string>
+    <string name="default_show_active_only_summary">הצג רק עסקאות שלא נמחקו (כברירת מחדל) במסך עסקאות</string>
 </resources>
