@@ -105,7 +105,7 @@ public class Login extends AppCompatActivity implements UserStartApp {
                 if (task.isSuccessful()) {
                     saveLoginPreferences(email, password);
                     TextUtil.showMessage(getString(R.string.logged_in_successfully), Toast.LENGTH_SHORT, currentActivity);
-                    userDBKey = email.replace(Definitions.DOT, Definitions.COMMA);
+                    userDBKey = email.replace(Definitions.DOT, Definitions.COMMA); // todo should be email from editText. need to think about this
                     setUserStartApp(null);
                 } else {
                     if (task.getException() instanceof FirebaseNetworkException) {
@@ -199,11 +199,11 @@ public class Login extends AppCompatActivity implements UserStartApp {
                 User user = snapshot.child(Definitions.USERS).child(userDBKey).getValue(User.class);
                 if (user.getUserSettings() == null) { // todo remove after add config object for all users
                     user.setUserSettings(new UserSettings());
-                    snapshot.child(Definitions.USERS).child(userDBKey).getRef().setValue(user);
+                    snapshot.child(Definitions.USERS).child(user.getDbKey()).getRef().setValue(user);
                 }
                 DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
                 //                String ownerDBKey = null;
-                if (snapshot.child(Definitions.SHARES).hasChild(userDBKey)) {
+                if (snapshot.child(Definitions.SHARES).hasChild(user.getDbKey())) {
                     DBUtil.showShareDialogEnterApp(context, snapshot, user);
                 } else {
                     dbUtil.initDB(user, currentActivity);

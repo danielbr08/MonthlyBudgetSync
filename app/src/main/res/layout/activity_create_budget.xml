@@ -46,7 +46,8 @@
                         android:gravity="center_horizontal"
                         android:text="@string/create_budget"
                         android:textAlignment="center"
-                        android:textColor="@color/colorWhite"                        android:textSize="24sp"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -79,7 +80,8 @@
                         android:gravity="center_vertical"
                         android:padding="@dimen/padding_8"
                         android:text="@string/budget"
-                        android:textColor="@color/colorWhite"                        android:textSize="@dimen/transaction_text_size"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold" />
 
                     <TextView
@@ -91,7 +93,8 @@
                         android:gravity="center_vertical"
                         android:padding="@dimen/padding_8"
                         android:text="@string/constant_date"
-                        android:textColor="@color/colorWhite"                        android:textSize="@dimen/transaction_text_size"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold"
                         app:autoSizeTextType="uniform" />
 
@@ -104,7 +107,8 @@
                         android:gravity="center_vertical"
                         android:padding="@dimen/padding_8"
                         android:text="@string/store"
-                        android:textColor="@color/colorWhite"                        android:textSize="@dimen/transaction_text_size"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold" />
 
                     <TextView
@@ -115,7 +119,8 @@
 
                         android:gravity="center_vertical"
                         android:text="@string/charge_day"
-                        android:textColor="@color/colorWhite"                        android:textSize="@dimen/transaction_text_size"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -145,12 +150,13 @@
 
                     <Button
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
                         android:onClick="onCreateBudgetClicked"
                         android:text="@string/create"
+                        android:textStyle="bold"
                         android:background="@color/colorWhite"
                         android:textColor="@color/colorLoginBackground"
-                        android:gravity="center"/>
+                        android:gravity="center" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
