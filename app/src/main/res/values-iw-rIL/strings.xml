@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">תקציב חודשי</string>
+    <string name="app_name_icon">תקציב חודשי משותף</string>
     <string name="id">מזהה</string>
     <string name="category">קטגוריה</string>
     <string name="month">חודש</string>
