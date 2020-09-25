@@ -18,8 +18,8 @@
         android:id="@+id/helpItem"
         android:title="@string/help"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/aboutItem"
-        android:title="@string/about"
-        app:showAsAction="never" />
+<!--    <item-->
+<!--        android:id="@+id/aboutItem"-->
+<!--        android:title="@string/about"-->
+<!--        app:showAsAction="never" />-->
 </menu>

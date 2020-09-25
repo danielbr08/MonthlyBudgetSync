@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.helpItem:
                 Toast.makeText(this, "help item selected", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.aboutItem:
-                Toast.makeText(this, "about item selected", Toast.LENGTH_SHORT).show();
-                return true;
+//            case R.id.aboutItem:
+//                Toast.makeText(this, "about item selected", Toast.LENGTH_SHORT).show();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
