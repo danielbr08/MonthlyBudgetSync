@@ -193,9 +193,9 @@ public class InsertTransactionActivity extends AppCompatActivity {
             public void onComplete(@Nullable DatabaseError databaseError, boolean b,
                                    @Nullable DataSnapshot dataSnapshot) {
                 // send message and close window
-                String message = databaseError != null ? "Error" : getString(R.string.transaction_inserted_successfully);
+                String message = databaseError != null ? getString(R.string.error) : getString(R.string.transaction_inserted_successfully);
                 try {
-                    TextUtil.showMessage(getString(R.string.transaction_inserted_successfully), Toast.LENGTH_LONG, context);
+                    TextUtil.showMessage(message, Toast.LENGTH_LONG, context);
                     ((Activity) context).finish();
                 } catch (Exception e) {
                     progressBar.setVisibility(View.GONE);

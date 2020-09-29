@@ -244,7 +244,7 @@ public class TransactionsActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
+                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP); // todo only reload recycler. listener are not needed(also for delete tran event)
             }
         });
     }
@@ -262,6 +262,10 @@ public class TransactionsActivity extends AppCompatActivity {
             int position = viewHolder.getAdapterPosition();
             Transaction tran = transactions.get(position);
             boolean update = false;
+            boolean onlyActive = ((CheckBox) findViewById(R.id.transactionsFilterCB)).isChecked();
+            boolean isSpecificCategory = categoriesSpinner.getSelectedItemPosition() > 0;
+
+            String catId = DBUtil.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId();
             if (ItemTouchHelper.RIGHT == direction) {
                 if (!tran.isDeleted()) {
                     tran.setDeleted(true);
@@ -274,17 +278,37 @@ public class TransactionsActivity extends AppCompatActivity {
                 }
             }
             if (update) {
-                String catId = DBUtil.getInstance().getCategoryByName(refMonth, tran.getCategory()).getId();
                 DBUtil.getInstance().markDeleteTransaction(refMonth, tran);
                 DBUtil.getInstance().updateCategoryBudgetValue(refMonth, catId);
             }
             transactions.remove(position);
             adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-            boolean onlyActive = ((CheckBox) findViewById(R.id.transactionsFilterCB)).isChecked();
             if (!tran.isDeleted() || !onlyActive) {
                 transactions.add(position, tran);
                 adapter.notifyItemInserted(position);
             }
+            if (update) {
+                catId = isSpecificCategory ? catId : null;
+                updateTotalLabel(catId, onlyActive);
+            }
         }
     };
+
+    private void updateTotalLabel(String catId, boolean onlyActive) {
+        if (catId == null) {
+            updateTotalLabel(onlyActive);
+            return;
+        }
+        double activeTransactionsSum = dbUtil.getTransactionsSum(refMonth, catId, onlyActive);
+        activeTransactionsSum = Math.round(activeTransactionsSum * 100.d) / 100.0d;
+        DecimalFormat decim = new DecimalFormat("#,###.##");
+        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(decim.format(activeTransactionsSum));
+    }
+
+    private void updateTotalLabel(boolean onlyActive) {
+        double activeTransactionsSum = dbUtil.getTransactionsSum(refMonth, onlyActive);
+        activeTransactionsSum = Math.round(activeTransactionsSum * 100.d) / 100.0d;
+        DecimalFormat decim = new DecimalFormat("#,###.##");
+        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(decim.format(activeTransactionsSum));
+    }
 }

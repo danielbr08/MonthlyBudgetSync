@@ -71,10 +71,10 @@ public final class DBUtil {
 
     private ValueEventListener rootEventListener;
 
-    private Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
-    private Map<String, Month> monthDBHM = new HashMap<>();
-    private Set<String> shopsSet = new HashSet<String>();
-    private Map<String, Share> sharesMap = new HashMap<>();
+    private static Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
+    private static Map<String, Month> monthDBHM = new HashMap<>();
+    private static Set<String> shopsSet = new HashSet<String>();
+    private static Map<String, Share> sharesMap = new HashMap<>();
 
     private String userKey;
     private User user;
@@ -849,6 +849,26 @@ public final class DBUtil {
             return activeTtransactions;
         }
         return getTransactions(refMonth, catId);
+    }
+
+    public double getTransactionsSum(String refMonth, String catId, boolean onlyActive) {
+        List<Transaction> transactions = getTransactions(refMonth, catId, onlyActive);
+        double sum = 0d;
+        for (Transaction tran : transactions) {
+            sum += tran.getPrice();
+        }
+        return sum;
+    }
+
+    public double getTransactionsSum(String refMonth, boolean onlyActive) {
+        List<Transaction> transactions = getTransactions(refMonth);
+        double sum = 0d;
+        for (Transaction tran : transactions) {
+            if (!onlyActive || !tran.isDeleted()) {
+                sum += tran.getPrice();
+            }
+        }
+        return sum;
     }
 
     public Category getCategoryByName(String refMonth, String catName) {
