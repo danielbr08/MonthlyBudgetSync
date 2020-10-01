@@ -1080,7 +1080,7 @@ public final class DBUtil {
     }
 
     public void updateCategoryBudgetValue(String refMonth, String catId) {
-        Double balance = getTotalTransactionsSum(refMonth, catId, true);
+        Double balance = getCategoryById(refMonth,catId).getBudget() - getTotalTransactionsSum(refMonth, catId, true);
         getDBCategoriesPath(refMonth).runTransaction(new com.google.firebase.database.Transaction.Handler() {
             @NonNull
             @Override
