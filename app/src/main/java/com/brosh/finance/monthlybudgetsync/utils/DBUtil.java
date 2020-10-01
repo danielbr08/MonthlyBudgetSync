@@ -52,6 +52,26 @@ public final class DBUtil {
     private static DBUtil instance;
     private static FirebaseDatabase database;
 
+    private ValueEventListener rootEventListener;
+
+    private static Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
+    private static Map<String, Month> monthDBHM = new HashMap<>();
+    private static Set<String> shopsSet = new HashSet<String>();
+    private static Map<String, Share> sharesMap = new HashMap<>();
+
+    private String userKey;
+    private User user;
+    private Context context;
+
+
+    public void clear() {
+        instance = new DBUtil();
+        budgetDBHM.clear();
+        monthDBHM.clear();
+        shopsSet.clear();
+        sharesMap.clear();
+    }
+
     private DBUtil() {
     }
 
@@ -67,22 +87,6 @@ public final class DBUtil {
             database.setPersistenceEnabled(true);
         }
         return database;
-    }
-
-    private ValueEventListener rootEventListener;
-
-    private static Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
-    private static Map<String, Month> monthDBHM = new HashMap<>();
-    private static Set<String> shopsSet = new HashSet<String>();
-    private static Map<String, Share> sharesMap = new HashMap<>();
-
-    private String userKey;
-    private User user;
-    private Context context;
-
-
-    public void clear() {
-        instance = new DBUtil();
     }
 
     public ValueEventListener getRootEventListener() {
