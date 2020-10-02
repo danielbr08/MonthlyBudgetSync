@@ -87,7 +87,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
 
-        user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
+        user = DBUtil.getInstance().getUser();
         if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {

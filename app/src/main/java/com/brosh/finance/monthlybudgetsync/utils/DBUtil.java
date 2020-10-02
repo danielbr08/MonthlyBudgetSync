@@ -54,13 +54,13 @@ public final class DBUtil {
 
     private ValueEventListener rootEventListener;
 
+    private static User user;
     private static Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private static Map<String, Month> monthDBHM = new HashMap<>();
     private static Set<String> shopsSet = new HashSet<String>();
     private static Map<String, Share> sharesMap = new HashMap<>();
 
     private String userKey;
-    private User user;
     private Context context;
 
 
@@ -70,6 +70,7 @@ public final class DBUtil {
         monthDBHM.clear();
         shopsSet.clear();
         sharesMap.clear();
+        user = null;
     }
 
     private DBUtil() {
@@ -1080,7 +1081,7 @@ public final class DBUtil {
     }
 
     public void updateCategoryBudgetValue(String refMonth, String catId) {
-        Double balance = getCategoryById(refMonth,catId).getBudget() - getTotalTransactionsSum(refMonth, catId, true);
+        Double balance = getCategoryById(refMonth, catId).getBudget() - getTotalTransactionsSum(refMonth, catId, true);
         getDBCategoriesPath(refMonth).runTransaction(new com.google.firebase.database.Transaction.Handler() {
             @NonNull
             @Override

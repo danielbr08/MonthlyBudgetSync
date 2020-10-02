@@ -93,7 +93,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_circular);
         Bundle extras = getIntent().getExtras();
         String refMonth = extras.getString(Definitions.MONTH, null);
-        user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
+        user = DBUtil.getInstance().getUser();
         if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {

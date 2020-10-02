@@ -66,7 +66,7 @@ public class TransactionsActivity extends AppCompatActivity {
         adapter = null;
         Bundle extras = getIntent().getExtras();
         refMonth = extras.getString(Definitions.MONTH, null);
-        user = (User) getIntent().getExtras().getSerializable(Definitions.USER);
+        user = DBUtil.getInstance().getUser();
         if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
