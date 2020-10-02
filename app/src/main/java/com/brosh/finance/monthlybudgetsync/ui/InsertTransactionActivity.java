@@ -78,7 +78,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         }
         List<String> shopsList = new ArrayList<String>(shopsSet);
         AutoCompleteTextView shposAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.shopAutoCompleteTextView);
-        ArrayAdapter<String> anotherAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shopsList);
+        ArrayAdapter<String> anotherAdapter = new ArrayAdapter<String>(this, R.layout.shops_spinner, shopsList);
         shposAutoCompleteTextView.setAdapter(anotherAdapter);
         shposAutoCompleteTextView.setThreshold(2);// Set auto complete from the first character
     }
