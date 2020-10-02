@@ -80,8 +80,8 @@ public class BudgetActivity extends AppCompatActivity {
         }
         totalBalance = Math.round(totalBalance * 100.d) / 100.0d;
         DecimalFormat decim = new DecimalFormat("#,###.##");
-        ((TextView) findViewById(R.id.totalBalance)).setText(decim.format(totalBalance));
-        ((TextView) findViewById(R.id.totalBudget)).setText(decim.format(totalBudget));
+        ((TextView) findViewById(R.id.totalBalance)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), decim.format(totalBalance)));
+        ((TextView) findViewById(R.id.totalBudget)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), decim.format(totalBudget)));
         CategoriesViewAdapter adapter = new CategoriesViewAdapter(this, categories);
         RecyclerView categories_rows = findViewById(R.id.categories_rows);
         categories_rows.setAdapter(adapter);

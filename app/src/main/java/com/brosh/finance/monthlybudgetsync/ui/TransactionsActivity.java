@@ -120,7 +120,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setTransactionsInGui(String catName, Integer sortBy, char ascOrDesc) {
-        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(getString(R.string.zero));
+        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), getString(R.string.zero)));
         Boolean isIncludeCategory = false;
         if (catName.equals(getString(R.string.all)))
             isIncludeCategory = true;
@@ -141,7 +141,7 @@ public class TransactionsActivity extends AppCompatActivity {
             }
             tranSum = Math.round(tranSum * 100.d) / 100.0d;
             DecimalFormat decim = new DecimalFormat("#,###.##");
-            ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(decim.format(tranSum));
+            ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), decim.format(tranSum)));
             noTranMessageLL.setVisibility(View.GONE);
         }
         transactions_rows = findViewById(R.id.transactions_rows);
@@ -302,13 +302,13 @@ public class TransactionsActivity extends AppCompatActivity {
         double activeTransactionsSum = dbUtil.getTransactionsSum(refMonth, catId, onlyActive);
         activeTransactionsSum = Math.round(activeTransactionsSum * 100.d) / 100.0d;
         DecimalFormat decim = new DecimalFormat("#,###.##");
-        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(decim.format(activeTransactionsSum));
+        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), decim.format(activeTransactionsSum)));
     }
 
     private void updateTotalLabel(boolean onlyActive) {
         double activeTransactionsSum = dbUtil.getTransactionsSum(refMonth, onlyActive);
         activeTransactionsSum = Math.round(activeTransactionsSum * 100.d) / 100.0d;
         DecimalFormat decim = new DecimalFormat("#,###.##");
-        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(decim.format(activeTransactionsSum));
+        ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), decim.format(activeTransactionsSum)));
     }
 }
