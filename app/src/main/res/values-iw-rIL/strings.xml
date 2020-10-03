@@ -114,4 +114,5 @@
     <string name="error_invalid_password">סיסמה שגויה</string>
     <string name="are_you_sure_you_want_to_refresh">רענון העמוד עלול לגרום לאבדן מידע.\nאתה בטוח שברצונך לרענן?</string>
     <string name="default_show_active_only_summary">הצג רק עסקאות שלא נמחקו (כברירת מחדל) במסך עסקאות</string>
+    <string name="tutorial_app_youtube">https://youtu.be/cwsW3tjK52I</string>
 </resources>

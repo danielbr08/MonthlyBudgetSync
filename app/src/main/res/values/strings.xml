@@ -113,4 +113,5 @@
     <string name="error_invalid_password">invalid_password</string>
     <string name="are_you_sure_you_want_to_refresh">Page refresh may result in loss of information.\nAre you sure you want to refresh?</string>
     <string name="default_show_active_only_summary">Show only active transactions(not deleted) as default in transactions screen</string>
+    <string name="tutorial_app_youtube">https://youtu.be/cwsW3tjK52I</string> <!--    todo change this link to en-->
 </resources>

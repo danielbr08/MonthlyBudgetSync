@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -103,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(shareIntent);
                 return true;
             case R.id.helpItem:
-                Toast.makeText(this, "help item selected", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(getString(R.string.tutorial_app_youtube)));
+                startActivity(i);
                 return true;
 //            case R.id.aboutItem:
 //                Toast.makeText(this, "about item selected", Toast.LENGTH_SHORT).show();
