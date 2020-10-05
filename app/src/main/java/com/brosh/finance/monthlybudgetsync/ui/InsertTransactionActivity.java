@@ -9,6 +9,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -59,36 +60,14 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
     private Set<String> shopsSet;
 
-    public void setSpinnersAllignment() {
-        List<String> categoriesNames = dbUtil.getCategoriesNames(month.getYearMonth());
-        List<String> paymentMethod = getPaymentMethodList();
-        ArrayAdapter categoriesNamesAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, categoriesNames);
-        ArrayAdapter paymentMethodAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, paymentMethod);
-        categoriesNamesAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
-        paymentMethodAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
-        categoriesSpinner.setAdapter(categoriesNamesAdapter);
-        paymentTypeSpinner.setAdapter(paymentMethodAdapter);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void init() {
-        setSpinnersAllignment();
-        if (shopsSet.size() == 0) {
-            shopsSet.addAll(shopsSet);
-        }
-        List<String> shopsList = new ArrayList<String>(shopsSet);
-        AutoCompleteTextView shposAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.shopAutoCompleteTextView);
-        ArrayAdapter<String> anotherAdapter = new ArrayAdapter<String>(this, R.layout.shops_spinner, shopsList);
-        shposAutoCompleteTextView.setAdapter(anotherAdapter);
-        shposAutoCompleteTextView.setThreshold(2);// Set auto complete from the first character
-    }
-
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_transaction);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
 
         progressBar = findViewById(R.id.progress_circular);
         Bundle extras = getIntent().getExtras();
@@ -148,6 +127,30 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 view.setEnabled(false);
             }
         });
+    }
+
+    public void setSpinnersAllignment() {
+        List<String> categoriesNames = dbUtil.getCategoriesNames(month.getYearMonth());
+        List<String> paymentMethod = getPaymentMethodList();
+        ArrayAdapter categoriesNamesAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, categoriesNames);
+        ArrayAdapter paymentMethodAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, paymentMethod);
+        categoriesNamesAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
+        paymentMethodAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
+        categoriesSpinner.setAdapter(categoriesNamesAdapter);
+        paymentTypeSpinner.setAdapter(paymentMethodAdapter);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void init() {
+        setSpinnersAllignment();
+        if (shopsSet.size() == 0) {
+            shopsSet.addAll(shopsSet);
+        }
+        List<String> shopsList = new ArrayList<String>(shopsSet);
+        AutoCompleteTextView shposAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.shopAutoCompleteTextView);
+        ArrayAdapter<String> anotherAdapter = new ArrayAdapter<String>(this, R.layout.shops_spinner, shopsList);
+        shposAutoCompleteTextView.setAdapter(anotherAdapter);
+        shposAutoCompleteTextView.setThreshold(2);// Set auto complete from the first character
     }
 
     public void insertTransaction(String refMonth) {

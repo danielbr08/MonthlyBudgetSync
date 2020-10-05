@@ -87,6 +87,8 @@ public class CreateBudgetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
 
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
+
         user = DBUtil.getInstance().getUser();
         if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
@@ -111,7 +113,6 @@ public class CreateBudgetActivity extends AppCompatActivity {
         allCategories = new ArrayList<>();
         dfaultBackground = new View(this).getBackground();
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
         display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
 
