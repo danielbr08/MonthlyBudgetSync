@@ -2,12 +2,10 @@ package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,10 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +38,10 @@ import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
 
@@ -52,6 +51,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    private InterstitialAd interstitialAd;
     private DBUtil dbUtil;
     private String userKey;
     private User user;
@@ -130,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        initAdFields();
+
         user = DBUtil.getInstance().getUser();
         if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
@@ -175,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                     insertTransactionScreen = new Intent(getApplicationContext(), InsertTransactionActivity.class);
                 addParametersToActivity(insertTransactionScreen);
                 startActivity(insertTransactionScreen);
-
             }
         });
 
@@ -210,13 +212,11 @@ public class MainActivity extends AppCompatActivity {
                 createBudgetButton.setEnabled(isActive);
                 insertTransactionButton.setBackground(circleButton);
                 createBudgetButton.setBackground(circleButton);
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
-
         });
     }
 
@@ -303,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        showAD();
         if (!dbUtil.isAnyBudgetExists()) { // Budget not exists at all
             budgetButton.setEnabled(false);
             transactionsButton.setEnabled(false);
@@ -398,5 +399,26 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setPositiveButton(getString(R.string.no), null) // Positive is actually negative
                 .show();
+    }
+
+    public void initAdFields() {
+        interstitialAd = new InterstitialAd(MainActivity.this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_unit_id));
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+    }
+
+    public void showAD() {
+        try {
+            if (interstitialAd.isLoaded())
+                interstitialAd.show();
+        } catch (Exception e) {
+        }
     }
 }

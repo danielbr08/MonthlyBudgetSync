@@ -114,4 +114,6 @@
     <string name="are_you_sure_you_want_to_refresh">Page refresh may result in loss of information.\nAre you sure you want to refresh?</string>
     <string name="default_show_active_only_summary">Show only active transactions(not deleted) as default in transactions screen</string>
     <string name="tutorial_app_youtube">https://youtu.be/6zDh77bxRBQ</string>
+    <string name="admob_app_id">ca-app-pub-9791546601159997~8799713541</string>
+    <string name="admob_unit_id">ca-app-pub-9791546601159997/1516119894</string>
 </resources>
