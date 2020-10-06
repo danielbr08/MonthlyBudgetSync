@@ -9,9 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.ContactUsActivity"></activity>
         <activity
             android:name=".ui.SettingsActivity"
-            android:label="@string/settings"></activity>
+            android:label="@string/settings" />
         <activity android:name=".ui.InsertTransactionActivity" />
         <activity android:name=".ui.TransactionsActivity" />
         <activity android:name=".ui.BudgetActivity" />

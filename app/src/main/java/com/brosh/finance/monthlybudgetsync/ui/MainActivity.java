@@ -86,10 +86,11 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.settingsItem:
 //                Toast.makeText(this, "settings item selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                intent = new Intent(getApplicationContext(), SettingsActivity.class);
                 addParametersToActivity(intent);
                 startActivity(intent);
                 return true;
@@ -104,14 +105,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent shareIntent = Intent.createChooser(sendIntent, null);
                 startActivity(shareIntent);
                 return true;
-            case R.id.helpItem:
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(getString(R.string.tutorial_app_youtube)));
-                startActivity(i);
+            case R.id.app_guide:
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(getString(R.string.tutorial_app_youtube)));
+                startActivity(intent);
                 return true;
-//            case R.id.aboutItem:
-//                Toast.makeText(this, "about item selected", Toast.LENGTH_SHORT).show();
-//                return true;
+            case R.id.contactUsItem:
+                intent = new Intent(getApplicationContext(), ContactUsActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

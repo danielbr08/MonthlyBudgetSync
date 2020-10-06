@@ -84,7 +84,7 @@
     <string name="user_already_shared">The user already shared!</string>
     <string name="please_enter_user_email_to_share">Please enter the user\'s email you want to share</string>
     <string name="invalid_email">Invalid email!</string>
-    <string name="help">Help</string>
+    <string name="app_guide">App Guide</string>
     <string name="about">About</string>
     <string name="data">Data</string>
     <string name="updates_and_notifications">Update &amp; Notifications</string>
@@ -116,4 +116,9 @@
     <string name="tutorial_app_youtube">https://youtu.be/6zDh77bxRBQ</string>
     <string name="admob_app_id">ca-app-pub-9791546601159997~8799713541</string>
     <string name="admob_unit_id">ca-app-pub-9791546601159997/1516119894</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="subject">Subject</string>
+    <string name="message">message</string>
+    <string name="submit">Submit</string>
+    <string name="your_message_was_sent_successfully">Your message was sent successfully!</string>
 </resources>

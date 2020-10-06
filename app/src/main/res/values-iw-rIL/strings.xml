@@ -85,7 +85,7 @@
     <string name="share_budget_question"> המשתמש \"%s\" שיתף איתך תקציב.\n האם ברצונך לקבל את השיתוף?\n שים לב, קבלת השיתוף תגרום לאיבוד המידע הקיים.</string>
     <string name="please_enter_user_email_to_share">הכנס את מייל המשתמש אותו תרצה לשתף</string>
     <string name="invalid_email">מייל שגוי!</string>
-    <string name="help">עזרה</string>
+    <string name="app_guide">מדריך למשתמש</string>
     <string name="about">אודות</string>
     <string name="currency">מטבע</string>
     <string name="data">נתונים</string>
@@ -117,4 +117,9 @@
     <string name="tutorial_app_youtube">https://youtu.be/cwsW3tjK52I</string>
     <string name="admob_app_id">ca-app-pub-9791546601159997~8799713541</string>
     <string name="admob_unit_id">ca-app-pub-9791546601159997/1516119894</string>
+    <string name="contact_us">צור קשר</string>
+    <string name="subject">נושא</string>
+    <string name="message">הודעה</string>
+    <string name="submit">שלח</string>
+    <string name="your_message_was_sent_successfully">הודעתך נשלחה בהצלחה!</string>
 </resources>

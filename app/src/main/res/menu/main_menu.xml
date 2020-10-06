@@ -4,8 +4,7 @@
     <item
         android:id="@+id/settingsItem"
         android:title="@string/settings"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
     <item
         android:id="@+id/shareItem"
         android:title="@string/share"
@@ -15,11 +14,11 @@
         android:title="@string/recommend_to_friend"
         app:showAsAction="never" />
     <item
-        android:id="@+id/helpItem"
-        android:title="@string/help"
+        android:id="@+id/app_guide"
+        android:title="@string/app_guide"
         app:showAsAction="never" />
-<!--    <item-->
-<!--        android:id="@+id/aboutItem"-->
-<!--        android:title="@string/about"-->
-<!--        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/contactUsItem"
+        android:title="@string/contact_us"
+        app:showAsAction="never" />
 </menu>
