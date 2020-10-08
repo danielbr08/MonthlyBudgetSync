@@ -60,12 +60,11 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String dbKey) {
+    public User(String name, String email, String phone, String dbKey) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.dbKey = dbKey != null ? dbKey : TextUtil.getEmailComma(email);
-        this.password = password;
         this.owner = null;
         this.userSettings = new UserSettings();
     }

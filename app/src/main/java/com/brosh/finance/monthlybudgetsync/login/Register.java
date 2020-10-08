@@ -149,7 +149,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                             });
                             try {
                                 userDBKey = TextUtil.getEmailComma(email);
-                                final User user = new User(fullName, email, phone, password, userDBKey);
+                                final User user = new User(fullName, email, phone, userDBKey);
                                 setUserStartApp(user);
                             } catch (Exception e) {
                                 String s = e.getMessage();
