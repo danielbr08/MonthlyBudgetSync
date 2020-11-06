@@ -86,6 +86,7 @@ public final class DBUtil {
         if (database == null) {
             database = FirebaseDatabase.getInstance();
             database.setPersistenceEnabled(true);
+            database.getReference().keepSynced(true);
         }
         return database;
     }
