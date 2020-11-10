@@ -46,7 +46,7 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity implements UserStartApp {
     public static final String TAG = "Register";
-    EditText mFullName, mEmail, mPassword, mPhone;
+    EditText mFullName, mEmail, mPassword, mRetypePassword, mPhone;
     private String userDBKey;
     Button mRegisterBtn;
     TextView mLoginBtn;
@@ -79,6 +79,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
         mFullName = findViewById(R.id.fullName);
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
+        mRetypePassword = findViewById(R.id.reTypePassword);
         mPhone = findViewById(R.id.phone);
         mRegisterBtn = findViewById(R.id.registerBtn);
         mLoginBtn = findViewById(R.id.createText);
@@ -102,6 +103,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
             public void onClick(View v) {
                 final String email = mEmail.getText().toString().trim();
                 final String password = mPassword.getText().toString().trim();
+                final String retypePassword = mRetypePassword.getText().toString().trim();
                 final String fullName = mFullName.getText().toString();
                 final String phone = mPhone.getText().toString();
 
@@ -117,6 +119,10 @@ public class Register extends AppCompatActivity implements UserStartApp {
 
                 if (password.length() < 6) {
                     mPassword.setError(getString(R.string.password_length_must_be_at_least_6));
+                    return;
+                }
+                if (!retypePassword.equals(password)) {
+                    mRetypePassword.setError(getString(R.string.password_are_not_matching));
                     return;
                 }
 

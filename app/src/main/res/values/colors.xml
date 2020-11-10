@@ -7,5 +7,6 @@
     <color name="colorLinkOnWhite">#3366BB</color>
     <color name="colorApp">#174B7A</color>
     <color name="colorLoginBackground">#187789</color>
+    <color name="colorRequired">#FF0000</color>
     <color name="colorWhite">#FFF</color>
 </resources>
