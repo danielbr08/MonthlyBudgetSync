@@ -1100,6 +1100,7 @@ public final class DBUtil {
 
     public void share(String emailToShare) throws Exception {
         if (isEmailAlreadyShared(emailToShare)) {
+            // todo ask if want to share anyway(loss data)
             throw new Exception(Definitions.EMAIL_ALREADY_SHARED);
         }
         String emailCommaReplaced = emailToShare.replace(Definitions.DOT, Definitions.COMMA);
