@@ -380,8 +380,13 @@ public final class DBUtil {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String key = dataSnapshot.getKey();
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String prevKey) {
+                if(sharesMap.containsKey(prevKey)){
+                    sharesMap.remove(prevKey);
+                }
+                String sharedUser = dataSnapshot.getKey();
+                Share share = dataSnapshot.getValue(Share.class);
+                sharesMap.put(sharedUser, share);
             }
 
             @Override
