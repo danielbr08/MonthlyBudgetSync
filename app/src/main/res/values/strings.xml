@@ -123,4 +123,24 @@
     <string name="message">message</string>
     <string name="submit">Submit</string>
     <string name="your_message_was_sent_successfully">Your message was sent successfully!</string>
+    <string name="user_not_exists">User not exists!</string>
+    <string name="profile">Profile</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="please_enter_password">Please enter password</string>
+    <string name="please_enter_password_for_confirmation">Please enter password for confirmation</string>
+    <string name="update">Update</string>
+    <string name="please_enter_new_email">Please enter new email</string>
+    <string name="please_enter_new_password">Please enter new password</string>
+    <string name="please_enter_new_phone">Please enter new phone number</string>
+    <string name="please_enter_new_user_name">Please enter new user name</string>
+    <string name="change_user_name">Change User Name</string>
+    <string name="change_email">Change Email</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_phone">Change Phone Number</string>
+    <string name="email_successfully_changed">Email successfully changed!</string>
+    <string name="password_successfully_changed">Password successfully changed!</string>
+    <string name="phone_number_successfully_changed">Phone number successfully changed!</string>
+    <string name="user_name_successfully_changed">User name successfully changed!</string>
 </resources>

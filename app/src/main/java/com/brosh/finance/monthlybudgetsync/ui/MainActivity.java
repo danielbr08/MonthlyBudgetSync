@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private Button createBudgetButton;
     private Month month;
     private SwipeRefreshLayout refreshLayout;
-    private TextView userLogeedInTV;
+    private TextView userLogeedInTV = null;
 
     public void initRefMonthSpinner() {
         List<String> allMonths = dbUtil.getAllMonthsYearMonth();
@@ -145,8 +145,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
         userKey = user.getDbKey();
-        userLogeedInTV = findViewById(R.id.tv_user_logeed_in);
-        userLogeedInTV.setText(String.format("%s %s", getString(R.string.logged_as), user.getName()));
+        setUserNameLable();
         dbUtil = DBUtil.getInstance();
 
         refMonthSpinner = findViewById(R.id.monthSpinner);
@@ -308,16 +307,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        showAD();
-        if (!dbUtil.isAnyBudgetExists()) { // Budget not exists at all
-            budgetButton.setEnabled(false);
-            transactionsButton.setEnabled(false);
-            insertTransactionButton.setEnabled(false);
-            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            month = null;
-        } else {
+        setUserNameLable();
+        if (user.getUserSettings().isAdEnabled()) {
+            showAD();
+        }
+        if (dbUtil.isAnyBudgetExists()) { // Some Budget exists
             if (month == null) { // After create budget first time
                 if (dbUtil.isCurrentRefMonthExists()) {
                     month = dbUtil.getMonth(DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR));
@@ -333,6 +327,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else { // Same month as before
             }
+        } else {
+            budgetButton.setEnabled(false);
+            transactionsButton.setEnabled(false);
+            insertTransactionButton.setEnabled(false);
+            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            month = null;
         }
     }
 
@@ -346,15 +348,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refresh() {
-        if (!dbUtil.isAnyBudgetExists()) {
-            budgetButton.setEnabled(false);
-            transactionsButton.setEnabled(false);
-            insertTransactionButton.setEnabled(false);
-            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+        if (dbUtil.isAnyBudgetExists()) {
             month = null;
-        } else {
             if (!dbUtil.isCurrentRefMonthExists()) {
                 createNewMonth(new Date());
                 insertTransactionButton.setEnabled(true);
@@ -372,6 +367,13 @@ public class MainActivity extends AppCompatActivity {
                 insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
             }
             initRefMonthSpinner();
+        } else {
+            budgetButton.setEnabled(false);
+            transactionsButton.setEnabled(false);
+            insertTransactionButton.setEnabled(false);
+            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
         }
     }
 
@@ -425,5 +427,10 @@ public class MainActivity extends AppCompatActivity {
                 interstitialAd.show();
         } catch (Exception e) {
         }
+    }
+
+    private void setUserNameLable() {
+        userLogeedInTV = userLogeedInTV == null ? findViewById(R.id.tv_user_logeed_in) : userLogeedInTV;
+        userLogeedInTV.setText(String.format("%s %s", getString(R.string.logged_as), user.getName()));
     }
 }

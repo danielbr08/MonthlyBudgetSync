@@ -1,14 +1,17 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
@@ -24,6 +27,12 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserSettings;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +65,11 @@ public class SettingsActivity extends AppCompatActivity {
         saveUserSettings();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void saveUserSettings() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         UserSettings userSettings = user.getUserSettings();
@@ -82,8 +96,15 @@ public class SettingsActivity extends AppCompatActivity {
             userSettings = user.getUserSettings();
 
             Preference chargeDayPref = findPreference(Definitions.CHARGE_DAY);
+            Preference profilePref = findPreference(Definitions.PROFILE);
             SeekBarPreference autoCompleteyPref = findPreference(Definitions.AUTO_COMPLETE);
             SwitchPreferenceCompat activeTransactionsOnly = findPreference(Definitions.DEFAULT_SHOW_ACTIVE_ONLY);
+
+            Preference changeUserNamePref = findPreference(Definitions.CHANGE_USER_NAME);
+            Preference changeEmailPref = findPreference(Definitions.CHANGE_EMAIL);
+            Preference changePasswordPref = findPreference(Definitions.CHANGE_PASSWORD);
+            Preference changePhonePref = findPreference(Definitions.CHANGE_PHONE);
+
             SwitchPreferenceCompat emailUpdates = findPreference(Definitions.EMAIL_UPDATES);
             SwitchPreferenceCompat notifications = findPreference(Definitions.NOTIFICATIONS);
 
@@ -97,7 +118,7 @@ public class SettingsActivity extends AppCompatActivity {
             autoCompleteyPref.setValue(userSettings.getAutoCompleteFrom());
             autoCompleteyPref.setSummary(String.valueOf(userSettings.getAutoCompleteFrom()));
 
-            if (user.getOwner() != null) {
+            if (user.getOwnerUid() != null) {
                 chargeDayPref.setEnabled(false);
             }
 
@@ -150,16 +171,33 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.setView(dayPeekerView).setPositiveButton(R.string.select, dialogClickListener)
                         .setNegativeButton(R.string.cancel, dialogClickListener);
                 AlertDialog alertDialog = builder.create();
-                List<View> textViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
-                for (View tv : textViews) {
-                    tv.setOnClickListener(tv1 -> {
-                        prevSelectedDay[0] = selectedDay[0];
-                        selectedDay[0] = (TextView) tv1;
-                        UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), new TextView(context).getBackground());
-                        selectedDay[0].setBackgroundResource(R.drawable.circle_pink_style);
-                    });
-                }
                 alertDialog.show();
+                return true;
+            });
+
+            // todo need to make a layout with buttons of 3 types and any one of them will call by click to profile activity
+            changeUserNamePref.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_USER_NAME);
+                startActivity(intent);
+                return true;
+            });
+            changeEmailPref.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_EMAIL);
+                startActivity(intent);
+                return true;
+            });
+            changePasswordPref.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_PASSWORD);
+                startActivity(intent);
+                return true;
+            });
+            changePhonePref.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_PHONE_NUMBER);
+                startActivity(intent);
                 return true;
             });
         }

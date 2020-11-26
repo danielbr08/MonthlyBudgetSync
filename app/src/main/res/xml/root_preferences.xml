@@ -31,6 +31,26 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/profile">
+        <Preference
+            app:key="changeUserName"
+            app:title="@string/change_user_name"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="changeEmail"
+            app:title="@string/change_email"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="changePassword"
+            app:title="@string/change_password"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="changePhone"
+            app:title="@string/change_phone"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+
     <PreferenceCategory app:title="@string/updates_and_notifications">
 
         <SwitchPreferenceCompat

@@ -13,7 +13,7 @@ public final class Config {
     public static final String SEPARATOR = "-";
     public static final char DOWN_ARROW = 'ꜜ';
     public static final char UP_ARROW = 'ꜛ';
-    public static final String APP_URL = "https://play.google.com/store/apps/details?id=monthlybudget.apps.danielbrosh.monthlybudget&gl=IL"; // todo fill real app url from google play
+    public static final String APP_URL = "https://play.google.com/store/apps/details?id=com.brosh.finance.monthlybudgetsync";
     public static double CATEGORY_NAME_ET_WIDTH_PERCENT = 27.0 / 100;
     public static double CATEGORY_VALUE_ET_WIDTH_PERCENT = 14.0 / 100;
     public static double CONST_PAYMENT_CB_WIDTH_PERCENT = 14.0 / 100;
@@ -33,6 +33,7 @@ public final class Config {
     public static final DatabaseReference DatabaseReferenceRoot = DBUtil.getDatabase().getReference();
     public static final DatabaseReference DatabaseReferenceUsers = DBUtil.getDatabase().getReference("Users");
     public static final DatabaseReference DatabaseReferenceShares = DBUtil.getDatabase().getReference("Shares");
+    public static final DatabaseReference DatabaseReferenceOwners = DBUtil.getDatabase().getReference("Owners");
     public static final DatabaseReference DatabaseReferenceMonthlyBudget = DBUtil.getDatabase().getReference("Monthly Budget");
 
 

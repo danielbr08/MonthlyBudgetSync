@@ -1,5 +1,8 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
+import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+
 import java.io.Serializable;
 
 public class UserSettings implements Serializable {
@@ -24,7 +27,7 @@ public class UserSettings implements Serializable {
     public UserSettings() {
         this.chargeDay = 1;
         this.isAdEnabled = true;
-        this.currency = "$";
+        this.currency = DBUtil.getInstance().getContext().getString(R.string.default_currency);
         this.autoCompleteFrom = 2;
         this.activeTransactionsOnlyByDefault = true;
         this.emailUpdates = false;

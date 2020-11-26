@@ -2,13 +2,11 @@ package com.brosh.finance.monthlybudgetsync.login;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -25,16 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
-import com.brosh.finance.monthlybudgetsync.objects.Share;
-import com.brosh.finance.monthlybudgetsync.objects.ShareStatus;
-import com.brosh.finance.monthlybudgetsync.objects.UserSettings;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
@@ -46,10 +39,6 @@ import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +46,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity implements UserStartApp {
     private static final String TAG = "Login";
+
+    private static Context context;
 
     EditText mEmail, mPassword;
     Button mLoginBtn;
@@ -72,6 +63,10 @@ public class Login extends AppCompatActivity implements UserStartApp {
     private CheckBox rememberMeCB;
     private SharedPreferences preferences;
     String rememberMe;
+
+    public static Context getContext() {
+        return Login.context;
+    }
 
     public ProgressBar getProgressBar() {
         return progressBar;
@@ -104,9 +99,11 @@ public class Login extends AppCompatActivity implements UserStartApp {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    DBUtil.getInstance(); // invoke for init context in DBUtil instance
                     saveLoginPreferences(email, password);
                     TextUtil.showMessage(getString(R.string.logged_in_successfully), Toast.LENGTH_SHORT, currentActivity);
-                    userDBKey = email.replace(Definitions.DOT, Definitions.COMMA); // todo should be email from editText. need to think about this
+                    String uid = task.getResult().getUser().getUid();
+                    userDBKey = uid;
                     setUserStartApp(null);
                 } else {
                     if (task.getException() instanceof FirebaseNetworkException) {
@@ -141,6 +138,8 @@ public class Login extends AppCompatActivity implements UserStartApp {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        context = getApplicationContext();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         UiUtil.setToolbar(this, null);
@@ -200,12 +199,6 @@ public class Login extends AppCompatActivity implements UserStartApp {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 User user = snapshot.child(Definitions.USERS).child(userDBKey).getValue(User.class);
-                if (user.getUserSettings() == null) { // todo remove after add config object for all users
-                    user.setUserSettings(new UserSettings());
-                    snapshot.child(Definitions.USERS).child(user.getDbKey()).getRef().setValue(user);
-                }
-                DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
-                //                String ownerDBKey = null;
                 if (snapshot.child(Definitions.SHARES).hasChild(user.getDbKey())) {
                     DBUtil.showShareDialogEnterApp(context, snapshot, user);
                 } else {

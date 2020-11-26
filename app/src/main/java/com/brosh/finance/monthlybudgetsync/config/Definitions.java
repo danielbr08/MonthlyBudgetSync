@@ -8,6 +8,7 @@ public class Definitions {
     public static final String MONTHS = "Months";
     public static final String MONTH = "Month";
     public static final String SHOPS = "Shops";
+    public static final String OWNERS = "Owners";
     public static final String ZERO = "0";
     public static final String DOT = ".";
     public static final String COMMA = ",";
@@ -32,7 +33,9 @@ public class Definitions {
     public static final String DELETE_CODE = "DEL";
     public static final String USER_SETTINGS = "userSettings";
     public static final String CONTACT_US = "contactUs";
-    public static String dbKey = "dbKey";
+    public static final String EMAIL_UID = "Email Uid";
+    public static final String UPDATE_TYPE = "updateType";
+    public static final String DBKEY = "dbKey";
     public static final int SORT_BY_ID = 1;
     public static final int SORT_BY_CATEGORY = 2;
     public static final int SORT_BY_PAYMRNT_METHOD = 3;
@@ -40,10 +43,19 @@ public class Definitions {
     public static final int SORT_BY_CHARGE_DATE = 5;
     public static final int SORT_BY_PRICE = 6;
     public static final int SORT_BY_REGISTRATION_DATE = 7;
-    public static String CHARGE_DAY = "chargeDay";
-    public static String CURRENCY = "currency";
-    public static String DEFAULT_SHOW_ACTIVE_ONLY = "defaultShowActiveOnly";
-    public static String AUTO_COMPLETE = "autoComplete";
-    public static String EMAIL_UPDATES = "emailUpdates";
-    public static String NOTIFICATIONS = "notifications";
+    public static final String CHARGE_DAY = "chargeDay";
+    public static final String PROFILE = "profile";
+    public static final String CURRENCY = "currency";
+    public static final String DEFAULT_SHOW_ACTIVE_ONLY = "defaultShowActiveOnly";
+    public static final String AUTO_COMPLETE = "autoComplete";
+    public static final String CHANGE_USER_NAME = "changeUserName";
+    public static final String CHANGE_EMAIL = "changeEmail";
+    public static final String CHANGE_PASSWORD = "changePassword";
+    public static final String CHANGE_PHONE = "changePhone";
+    public static final String EMAIL_UPDATES = "emailUpdates";
+    public static final String NOTIFICATIONS = "notifications";
+    public static final int UPDATE_EMAIL = 1;
+    public static final int UPDATE_PASSWORD = 2;
+    public static final int UPDATE_PHONE_NUMBER = 3;
+    public static final int UPDATE_USER_NAME = 4;
 }

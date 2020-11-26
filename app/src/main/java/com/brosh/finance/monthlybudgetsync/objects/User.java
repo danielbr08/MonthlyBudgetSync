@@ -1,22 +1,27 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
+import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 
 public class User implements Serializable {
+    private String uid;
     private String name;
     private String email;
     private String phone;
-    private String password;
     private String dbKey;
-    private String owner; // if he is the owner of the DB
+    private String ownerUid; // if he is the owner of the DB
 
     private UserSettings userSettings;
-    //private String groupID;
 
     public String getEmail() {
         return email;
+    }
+
+    @Exclude
+    public String getEmailComma() {
+        return TextUtil.getEmailComma(email);
     }
 
     public void setEmail(String email) {
@@ -39,42 +44,25 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-
-    //    public String getGroupID() {
-//        return groupID;
-//    }
-//
-//    public void setGroupID(String groupID) {
-//        this.groupID = groupID;
-//    }
-//
-//
-
     public User() {
     }
 
-    public User(String name, String email, String phone, String dbKey) {
+    public User(String uid, String name, String email, String phone, String dbKey) {
+        this.uid = uid;
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.dbKey = dbKey != null ? dbKey : TextUtil.getEmailComma(email);
-        this.owner = null;
+        this.dbKey = dbKey != null ? dbKey : uid;
+        this.ownerUid = uid;
         this.userSettings = new UserSettings();
     }
 
-    public String getPassword() {
-        return password;
+    public String getUid() {
+        return uid;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getDbKey() {
@@ -85,12 +73,17 @@ public class User implements Serializable {
         this.dbKey = dbKey;
     }
 
-    public String getOwner() {
-        return owner;
+    public void setOwnerUid(String ownerUid) {
+        this.ownerUid = ownerUid;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public String getOwnerUid() {
+        return ownerUid;
+    }
+
+    @Exclude
+    public boolean isOwner() {
+        return this.uid.equals(dbKey);
     }
 
     public UserSettings getUserSettings() {

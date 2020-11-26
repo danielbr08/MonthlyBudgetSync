@@ -154,8 +154,8 @@ public class Register extends AppCompatActivity implements UserStartApp {
                                 }
                             });
                             try {
-                                userDBKey = TextUtil.getEmailComma(email);
-                                final User user = new User(fullName, email, phone, userDBKey);
+                                userDBKey = userID;
+                                final User user = new User(userID, fullName, email, phone, userDBKey);
                                 setUserStartApp(user);
                             } catch (Exception e) {
                                 String s = e.getMessage();
@@ -216,7 +216,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
 //                String ownerDBKey = null;
 //                if (userDBKey != null && snapshot.child(Definition.SHARES).hasChild(userDBKey)) {
 //                    Share share = snapshot.child(userDBKey).getValue(Share.class);
-//                    ownerDBKey = share.getOwner();
+//                    ownerDBKey = share.getOwnerUid();
 //                }
                 if (newUser != null) { // New user case
                     user = newUser;
@@ -224,6 +224,7 @@ public class Register extends AppCompatActivity implements UserStartApp {
                         return;
                     } else {
                         DatabaseReferenceUsers.child(user.getDbKey()).setValue(user);
+                        DBUtil.getInstance().getDBUserEmailUidPath().child(TextUtil.getEmailComma(user.getEmail())).setValue(user.getUid());
                         Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definitions.BUDGETS).setValue("");
                         Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definitions.MONTHS).setValue("");
                         Config.DatabaseReferenceMonthlyBudget.child(user.getDbKey()).child(Definitions.SHOPS).setValue("");
@@ -235,7 +236,6 @@ public class Register extends AppCompatActivity implements UserStartApp {
                 if (snapshot.child(Definitions.SHARES).hasChild(userDBKey)) {
                     DBUtil.showShareDialogEnterApp(context, snapshot, user);
                 } else {
-                    DBUtil.getInstance().setSharesDB(snapshot.child(Definitions.SHARES));
                     dbUtil.initDB(user, currentActivity);
                 }
             }

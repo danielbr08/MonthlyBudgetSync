@@ -9,14 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ContactUsActivity"></activity>
+        <activity android:name=".ui.ProfileActivity"></activity>
+        <activity android:name=".ui.ContactUsActivity" />
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/settings" />
         <activity android:name=".ui.InsertTransactionActivity" />
         <activity android:name=".ui.TransactionsActivity" />
         <activity android:name=".ui.BudgetActivity" />
-        <activity android:name=".ui.InitAppActivity" />
         <activity android:name=".login.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -124,4 +124,24 @@
     <string name="message">הודעה</string>
     <string name="submit">שלח</string>
     <string name="your_message_was_sent_successfully">הודעתך נשלחה בהצלחה!</string>
+    <string name="user_not_exists">משתמש לא קיים!</string>
+    <string name="profile">פרופיל</string>
+    <string name="update_profile">עדכון פרופיל</string>
+    <string name="old_password">סיסמה</string>
+    <string name="new_password">סיסמה חדשה</string>
+    <string name="please_enter_password">אנא הכנס סיסמה</string>
+    <string name="please_enter_password_for_confirmation">אנא הכנס סיסמה לאישור</string>
+    <string name="update">עדכן</string>
+    <string name="please_enter_new_email">אנא הכנס מייל חדש</string>
+    <string name="please_enter_new_password">אנא הכנס סיסמה חדשה</string>
+    <string name="please_enter_new_phone">אנא הכנס מספר נייד חדש</string>
+    <string name="please_enter_new_user_name">אנא הכנס שם משתמש חדש</string>
+    <string name="change_user_name">שינוי שם משתמש</string>
+    <string name="change_email">שינוי מייל</string>
+    <string name="change_password">שינוי סיסמה</string>
+    <string name="change_phone">שינוי מספר נייד</string>
+    <string name="email_successfully_changed">המייל עודכן בהצלחה!</string>
+    <string name="password_successfully_changed">הסיסמה שונתה בהצלחה!</string>
+    <string name="phone_number_successfully_changed">מספר הנייד עודכן בהצלחה!</string>
+    <string name="user_name_successfully_changed">שם המשתמש עודכן בהצלחה!</string>
 </resources>

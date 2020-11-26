@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.brosh.finance.monthlybudgetsync.login.Login;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.ChildEventListenerMap;
@@ -58,11 +59,12 @@ public final class DBUtil {
     private static Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
     private static Map<String, Month> monthDBHM = new HashMap<>();
     private static Set<String> shopsSet = new HashSet<String>();
+    private static Map<String, String> userMailUidMap = new HashMap<>();
     private static Map<String, Share> sharesMap = new HashMap<>();
+    private static Map<String, Set<String>> ownersMap = new HashMap<>();
 
     private String userKey;
     private Context context;
-
 
     public void clear() {
         instance = new DBUtil();
@@ -70,10 +72,16 @@ public final class DBUtil {
         monthDBHM.clear();
         shopsSet.clear();
         sharesMap.clear();
+        userMailUidMap.clear();
         user = null;
     }
 
     private DBUtil() {
+        context = getContext();
+    }
+
+    public Context getContext() {
+        return Login.getContext();
     }
 
     public static DBUtil getInstance() {
@@ -99,12 +107,29 @@ public final class DBUtil {
         this.rootEventListener = rootEventListener;
     }
 
-    public Map<String, Share> getSharesMap() {
+    public static Map<String, Set<String>> getOwnersMap() {
+        return DBUtil.ownersMap;
+    }
+
+    public static void setOwnersMap(Map<String, Set<String>> ownersMap) {
+        DBUtil.ownersMap = ownersMap;
+    }
+
+    public static Map<String, Share> getSharesMap() {
         return sharesMap;
     }
 
     public void setSharesMap(Map<String, Share> sharesMap) {
-        this.sharesMap = sharesMap;
+        DBUtil.sharesMap = sharesMap;
+    }
+
+
+    public static Map<String, String> getUserMailUidMap() {
+        return userMailUidMap;
+    }
+
+    public void setUserMailUidMap(Map<String, String> userMailUidMap) {
+        DBUtil.userMailUidMap = userMailUidMap;
     }
 
     public Set<String> getShopsSet() {
@@ -112,7 +137,7 @@ public final class DBUtil {
     }
 
     public void setShopsSet(Set<String> shopsSet) {
-        this.shopsSet = shopsSet;
+        DBUtil.shopsSet = shopsSet;
     }
 
     public User getUser() {
@@ -120,7 +145,7 @@ public final class DBUtil {
     }
 
     public void setUser(User user) {
-        this.user = user;
+        DBUtil.user = user;
     }
 
     public String getUserKey() {
@@ -140,7 +165,7 @@ public final class DBUtil {
     }
 
     public void setBudgetDBHM(Map<String, Map<String, Budget>> budgetDBHM) {
-        this.budgetDBHM = budgetDBHM;
+        DBUtil.budgetDBHM = budgetDBHM;
     }
 
     public Map<String, Month> getMonthDBHM() {
@@ -148,7 +173,7 @@ public final class DBUtil {
     }
 
     public void setMonthDBHM(Map<String, Month> monthDBHM) {
-        this.monthDBHM = monthDBHM;
+        DBUtil.monthDBHM = monthDBHM;
     }
 
     public void updateSpecificCategory(String refMonthKey, int budgetNumber, Category categoryObj) {
@@ -237,17 +262,21 @@ public final class DBUtil {
         this.userKey = user.getDbKey();
         this.user = user;
         this.context = activity;
-        DatabaseReference databaseReference = Config.DatabaseReferenceMonthlyBudget.child(userKey);
+        DatabaseReference databaseReference = Config.DatabaseReferenceRoot;
 
         rootEventListener = new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
+                DataSnapshot monthlyBudgetDataSnapshot = dataSnapshot.child(Definitions.MONTHLY_BUDGET).child(userKey);
+                if (!monthlyBudgetDataSnapshot.exists()) {
                     startApp(activity);
                     return;
                 }
-                for (DataSnapshot myDataSnapshot : dataSnapshot.getChildren()) {
+                setSharesDB(dataSnapshot.child(Definitions.SHARES));
+                setUsersDB(dataSnapshot);
+                setOwnersDB(dataSnapshot);
+                for (DataSnapshot myDataSnapshot : monthlyBudgetDataSnapshot.getChildren()) {
                     String keyNode = myDataSnapshot.getKey();
                     Object value = myDataSnapshot.getValue();
                     boolean hasData = !(value instanceof String && value.equals(""));
@@ -290,6 +319,49 @@ public final class DBUtil {
         };
 
         databaseReference.addListenerForSingleValueEvent(rootEventListener);
+    }
+
+    private void setSharesDB(DataSnapshot sharesSnapshot) {
+        // Set data
+        for (DataSnapshot shareSnapshot : sharesSnapshot.getChildren()) {
+            String sharedUserUid = shareSnapshot.getKey();
+            Share share = shareSnapshot.getValue(Share.class);
+            sharesMap.put(sharedUserUid, share);
+        }
+        setAddChildSharesDB(sharesSnapshot);
+    }
+
+    public void setUsersDB(DataSnapshot rootSnapshot) {
+        DataSnapshot emailUidSnapshot = rootSnapshot.child(Definitions.EMAIL_UID);
+        DataSnapshot usersSnapshot = rootSnapshot.child(Definitions.USERS);
+        // Set data
+        for (DataSnapshot snapshot : emailUidSnapshot.getChildren()) {
+            String email = snapshot.getKey();
+            Object userUidObj = snapshot.getValue();
+            String userUid = userUidObj.toString();
+            userMailUidMap.put(TextUtil.getEmailComma(email), userUid);
+        }
+        setAddChildUsersDB(usersSnapshot);
+    }
+
+    public void setOwnersDB(DataSnapshot rootSnapshot) {
+        DataSnapshot ownersSnapshot = rootSnapshot.child(Definitions.OWNERS);
+        // Set data
+        Object value = ownersSnapshot.getValue();
+        Map<String, List<String>> owners = value != null ? (Map<String, List<String>>) value : null;
+
+        if (owners != null) {
+            ownersMap.clear();
+            for (Map.Entry<String, List<String>> entry : owners.entrySet()) {
+                String owner = entry.getKey();
+                List<String> guests = entry.getValue();
+                if (owner == null || guests == null)
+                    continue;
+                Set<String> ownerGuestsSet = new HashSet<>(guests);
+                ownersMap.put(owner, ownerGuestsSet);
+            }
+        }
+        setAddChildOwnersDB(ownersSnapshot);
     }
 
     public void setBudgetDB(DataSnapshot budgetsSnapshot) {
@@ -370,13 +442,78 @@ public final class DBUtil {
 //        }
     }
 
-    public void setSharesDB(DataSnapshot shopsSnapshot) {
+    public void setAddChildUsersDB(DataSnapshot shopsSnapshot) {
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String sharedUser = dataSnapshot.getKey();
+                User user = dataSnapshot.getValue(User.class);
+                userMailUidMap.put(TextUtil.getEmailComma(user.getEmail()), user.getUid());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                User user = dataSnapshot.getValue(User.class);
+                userMailUidMap.put(TextUtil.getEmailComma(user.getEmail()), user.getUid());
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                userMailUidMap.remove(TextUtil.getEmailComma(user.getEmail()));
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
+            shopsSnapshot.getRef().addChildEventListener(addChildEvent);
+            addChildValueEventListener(shopsSnapshot.getRef(), addChildEvent);
+        }
+    }
+
+    public void setAddChildOwnersDB(DataSnapshot shopsSnapshot) {
+        ValueEventListener updateOwnersEvent = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Object value = dataSnapshot.getValue();
+                Map<String, List<String>> owners = value != null ? (Map<String, List<String>>) value : null;
+                if (owners != null) {
+                    ownersMap.clear();
+                    for (Map.Entry<String, List<String>> entry : owners.entrySet()) {
+                        String owner = entry.getKey();
+                        List<String> guests = entry.getValue();
+                        if (owner == null || guests == null)
+                            continue;
+                        Set<String> ownerGuestsSet = new HashSet<>(guests);
+                        ownersMap.put(owner, ownerGuestsSet);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
+            shopsSnapshot.getRef().addValueEventListener(updateOwnersEvent);
+            addValueEventListener(shopsSnapshot.getRef(), updateOwnersEvent);
+        }
+    }
+
+    public void setAddChildSharesDB(DataSnapshot shopsSnapshot) {
+        ChildEventListener addChildEvent = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String sharedUserUid = dataSnapshot.getKey();
                 Share share = dataSnapshot.getValue(Share.class);
-                sharesMap.put(sharedUser, share);
+                sharesMap.put(sharedUserUid, share);
             }
 
             @Override
@@ -547,7 +684,7 @@ public final class DBUtil {
 
     private boolean isCatExists(String refMonth, String catId) {
         if (isRefMonthExists(refMonth))
-            return getCategories(refMonth).keySet().contains(catId);
+            return getCategories(refMonth).containsKey(catId);
         return false;
     }
 
@@ -576,7 +713,7 @@ public final class DBUtil {
                 Object value = (Object) dataSnapshot.getValue();
                 if (value != null) {
                     Category currentCategory = monthDBHM.get(refMonthKey).getCategories().get(catId);
-                    double balance = Double.valueOf(value.toString());
+                    double balance = Double.parseDouble(value.toString());
                     currentCategory.setBalance(balance);
                 }
 //                else
@@ -597,7 +734,7 @@ public final class DBUtil {
 
     private void setTransactionFieldsEventUpdateValue(final DataSnapshot transactionDBDataSnapshot, String refMonth, String catId) {
         String tranId = transactionDBDataSnapshot.getKey();
-        List<String> transactionFields = Arrays.asList(Definitions.DELETED);
+        List<String> transactionFields = Collections.singletonList(Definitions.DELETED);
         for (String transactionField : transactionFields) {
             DataSnapshot transactionFieldDataBaseReference = transactionDBDataSnapshot.child(transactionField);
             setTransactionFieldEventUpdateValue(transactionFieldDataBaseReference, refMonth, catId, tranId);
@@ -612,10 +749,9 @@ public final class DBUtil {
                 Object value = dataSnapshot.getValue();
                 if (value != null) {
                     Transaction currentTransaction = monthDBHM.get(refMonthKey).getCategories().get(catId).getTransactions().get(tranId);
-                    switch (fieldName) {
-                        case Definitions.DELETED:
-                            boolean deleted = Boolean.valueOf(dataSnapshot.getValue().toString());
-                            currentTransaction.setDeleted(deleted);
+                    if (Definitions.DELETED.equals(fieldName)) {
+                        boolean deleted = Boolean.parseBoolean(dataSnapshot.getValue().toString());
+                        currentTransaction.setDeleted(deleted);
                     }
                 }
             }
@@ -651,7 +787,7 @@ public final class DBUtil {
         Map<DatabaseReference, ChildEventListener> childEventListenersHM = ChildEventListenerMap.getInstance().getChildEventListenersHM();
         Map<DatabaseReference, ValueEventListener> valueEventListenersHM = ValueEventListenerMap.getInstance().getValueEventListenerHM();
 
-        Set<DatabaseReference> allEventsPathDBreference = new HashSet();
+        Set<DatabaseReference> allEventsPathDBreference = new HashSet<>();
         allEventsPathDBreference.addAll(childEventListenersHM.keySet());
         allEventsPathDBreference.addAll(valueEventListenersHM.keySet());
 
@@ -673,10 +809,7 @@ public final class DBUtil {
         valueEventListenersHM.put(databaseReference, event);
     }
 
-    // Returns new categories wroted
-    public List<Category> writeCategoriesByBudgets(final String refMonth, int budgetNumber, List<Budget> budgets) {
-        List<Category> wrotedCategories = new ArrayList<>();
-
+    public void writeCategoriesByBudgets(final String refMonth, int budgetNumber, List<Budget> budgets) {
         int idPerMonth = 0;
         for (Budget bgt : budgets) {
             if (isFrqTran(bgt))
@@ -684,15 +817,13 @@ public final class DBUtil {
             String catId = getDBCategoriesPath(refMonth).push().getKey();
             Category cat = budgetToCategory(bgt, catId, idPerMonth);
             updateSpecificCategory(refMonth, budgetNumber, cat);
-            wrotedCategories.add(cat);
         }
         setIdNumerator(refMonth, idPerMonth);
-        return wrotedCategories;
     }
 
     public Category budgetToCategory(Budget budget, String catId, int idPerMonth) {
         Category cat = new Category(catId, budget.getCategoryName(), budget.getValue(), budget.getValue());
-        Map<String, Transaction> transactions = new HashMap();
+        Map<String, Transaction> transactions = new HashMap<>();
         if (isFrqTran(budget)) {
             String paymentMethod = context.getString(R.string.credit_card);
             Date payDate = DateUtil.getCurrentDate(budget.getChargeDay());
@@ -708,7 +839,7 @@ public final class DBUtil {
     }
 
     public boolean isAnyBudgetExists() {
-        return this.budgetDBHM.size() > 0;
+        return budgetDBHM.size() > 0;
     }
 
     public void createNewMonth(int budgetNumber, String refMonth) {
@@ -753,8 +884,20 @@ public final class DBUtil {
         return getDBUserRootPath().child(Definitions.SHOPS);
     }
 
-    public DatabaseReference getDBSaresPath() {
+    public DatabaseReference getDBSharesPath() {
         return Config.DatabaseReferenceShares;
+    }
+
+    public DatabaseReference getDBUserEmailUidPath() {
+        return getDatabase().getReference().child(Definitions.EMAIL_UID);
+    }
+
+    public DatabaseReference getDBUsersPath() {
+        return Config.DatabaseReferenceUsers;
+    }
+
+    public DatabaseReference getDBOwnersPath() {
+        return Config.DatabaseReferenceOwners;
     }
 
     public Map<String, Budget> getBudget(String budgetNumber) {
@@ -1101,19 +1244,34 @@ public final class DBUtil {
     }
 
     public void share(String emailToShare) throws Exception {
+        String emailComma = TextUtil.getEmailComma(emailToShare);
         if (isEmailAlreadyShared(emailToShare)) {
             // todo ask if want to share anyway(loss data)
             throw new Exception(Definitions.EMAIL_ALREADY_SHARED);
         }
-        String emailCommaReplaced = emailToShare.replace(Definitions.DOT, Definitions.COMMA);
-        Share share = new Share(user.getEmail(), emailToShare, user.getDbKey(), ShareStatus.PENDING);
-        getDBSaresPath().child(emailCommaReplaced).setValue(share);
+        if (!userMailUidMap.containsKey(emailComma)) {
+            throw new Exception(context.getString(R.string.user_not_exists));
+        }
+        String guestUid = userMailUidMap.get(emailComma);
+        Share share = new Share(guestUid, user.getUid(), emailToShare, user.getDbKey(), ShareStatus.PENDING);
+        getDBSharesPath().child(guestUid).setValue(share);
+
+        String ownerUid = user.getUid();
+        Set<String> guestsUids = ownersMap.containsKey(ownerUid) ? ownersMap.get(ownerUid) : new HashSet<>();
+        if (guestsUids.contains(guestUid)) {
+            throw new Exception(Definitions.EMAIL_ALREADY_SHARED);
+        } else {
+            //DBUtil.getInstance().getDBUsersPath().child(guestUid).child(Definitions.OWNER).setValue(user.getEmail());
+//            guestsUids.add(guestUid);
+//            getDBOwnersPath().child(ownerUid).setValue(new ArrayList<>(guestsUids)); // todo it not possible to store guests as set need to store as list
+        }
     }
 
     public boolean isEmailAlreadyShared(String emailToShare) {
-        String emailCommaReplaced = emailToShare.replace(Definitions.DOT, Definitions.COMMA);
-        Share share = sharesMap.containsKey(emailCommaReplaced) ? sharesMap.get(emailCommaReplaced) : null;
-        return share != null && share.getStatus() == ShareStatus.SUCCESSFULLY_SHARED ? true : false;
+        String emailComma = TextUtil.getEmailComma(emailToShare);
+        String ownerUid = userMailUidMap.get(emailComma);
+        Share share = ownerUid != null ? sharesMap.containsKey(ownerUid) ? sharesMap.get(emailComma) : null : null;
+        return share != null && share.getStatus() == ShareStatus.SUCCESSFULLY_SHARED;
     }
 
     public static void showShareDialogEnterApp(Context context, DataSnapshot snapshot, User user) {
@@ -1132,7 +1290,15 @@ public final class DBUtil {
                             //Yes button clicked
                             share.setStatus(ShareStatus.SUCCESSFULLY_SHARED);
                             user.setDbKey(ownerDBKey);
-                            snapshot.child(Definitions.USERS).child(TextUtil.getEmailComma(share.getUserEmail())).child(Definitions.dbKey).getRef().setValue(ownerDBKey);
+                            snapshot.child(Definitions.USERS).child(share.getGuestUid()).child(Definitions.DBKEY).getRef().setValue(ownerDBKey);
+                            user.setOwnerUid(share.getOwnerUid());
+
+                            snapshot.child(Definitions.USERS).child(share.getGuestUid()).getRef().setValue(user);
+
+                            String ownerUid = share.getOwnerUid();
+                            Set<String> guestsUids = ownersMap.containsKey(ownerUid) ? ownersMap.get(ownerUid) : new HashSet<>();
+                            guestsUids.add(user.getUid());
+                            DBUtil.getInstance().getDBOwnersPath().child(ownerUid).setValue(new ArrayList<>(guestsUids)); // todo it not possible to store guests as set need to store as list
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
@@ -1140,7 +1306,7 @@ public final class DBUtil {
                             share.setStatus(ShareStatus.DENY);
                             break;
                     }
-                    snapshot.child(Definitions.SHARES).child(TextUtil.getEmailComma(share.getUserEmail())).getRef().setValue(share);
+                    snapshot.child(Definitions.SHARES).child(share.getGuestUid()).getRef().setValue(share);
                     DBUtil.getInstance().initDB(user, (Activity) context);
                 }
             };
@@ -1153,7 +1319,4 @@ public final class DBUtil {
             DBUtil.getInstance().initDB(user, (Activity) context);
         }
     }
-
-
-    //****************************************************************************************
 }
