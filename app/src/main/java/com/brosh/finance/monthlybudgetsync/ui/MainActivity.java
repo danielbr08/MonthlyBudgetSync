@@ -42,6 +42,7 @@ import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
@@ -409,14 +410,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initAdFields() {
-        interstitialAd = new InterstitialAd(MainActivity.this);
-        interstitialAd.setAdUnitId(getString(R.string.admob_unit_id));
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_transition_unit_id));
         interstitialAd.loadAd(new AdRequest.Builder().build());
         interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
                 // Load the next interstitial.
                 interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
             }
         });
     }

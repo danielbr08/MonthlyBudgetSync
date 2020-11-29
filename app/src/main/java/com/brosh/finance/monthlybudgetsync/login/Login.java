@@ -57,7 +57,6 @@ public class Login extends AppCompatActivity implements UserStartApp {
     private DBUtil dbUtil;
     private Activity currentActivity;
     private DatabaseReference DatabaseReferenceRoot;
-    private DatabaseReference DatabaseReferenceUsers;
     private String userDBKey;
 
     private CheckBox rememberMeCB;
@@ -146,7 +145,6 @@ public class Login extends AppCompatActivity implements UserStartApp {
         currentActivity = this;
         dbUtil = DBUtil.getInstance();
         DatabaseReferenceRoot = Config.DatabaseReferenceRoot;
-        DatabaseReferenceUsers = Config.DatabaseReferenceUsers;
         rememberMeCB = findViewById(R.id.rememberMeCheckBox);
         preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
 

@@ -117,7 +117,8 @@
     <string name="default_show_active_only_summary">Show only active transactions(not deleted) as default in transactions screen</string>
     <string name="tutorial_app_youtube">https://youtu.be/6zDh77bxRBQ</string>
     <string name="admob_app_id">ca-app-pub-9791546601159997~8799713541</string>
-    <string name="admob_unit_id">ca-app-pub-9791546601159997/1516119894</string>
+    <string name="admob_transition_unit_id">ca-app-pub-9791546601159997/1516119894</string>
+    <string name="admob_banner_unit_id">ca-app-pub-9791546601159997/7490378563</string>
     <string name="contact_us">Contact Us</string>
     <string name="subject">Subject</string>
     <string name="message">message</string>
