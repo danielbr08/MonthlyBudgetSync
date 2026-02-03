@@ -10,24 +10,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ProfileActivity" />
-        <activity android:name=".ui.ContactUsActivity" />
+        <activity
+            android:name=".ui.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ContactUsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.SettingsActivity"
-            android:label="@string/settings" />
-        <activity android:name=".ui.InsertTransactionActivity" />
-        <activity android:name=".ui.TransactionsActivity" />
-        <activity android:name=".ui.BudgetActivity" />
-        <activity android:name=".login.Login">
+            android:label="@string/settings"
+            android:exported="false" />
+        <activity
+            android:name=".ui.InsertTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.TransactionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.BudgetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".login.Login"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.CreateBudgetActivity" />
-        <activity android:name=".login.Register" />
-        <activity android:name=".ui.MainActivity" /> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <activity
+            android:name=".ui.CreateBudgetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".login.Register"
+            android:exported="false" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false" />
+        <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />

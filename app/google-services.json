@@ -42,6 +42,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195119523095:android:ca3397c585256fc967c352dev",
+        "android_client_info": {
+          "package_name": "com.brosh.finance.monthlybudgetsync.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195119523095-0ai1d91pq7626res0a6ijltbi3n4smr8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-lHUbewSes05bfUnFcjmKVZaxe3emNOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195119523095-0ai1d91pq7626res0a6ijltbi3n4smr8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

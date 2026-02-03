@@ -1,12 +1,8 @@
 package com.brosh.finance.monthlybudgetsync.utils;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 
 public final class TextUtil {
@@ -28,17 +24,7 @@ public final class TextUtil {
     }
 
     public static void showMessage(String message, int duration, Context context) {
-        new Runnable() {
-            @Override
-            public void run() {
-                Toast toast = Toast.makeText(context, message, duration);
-                View view = toast.getView();
-                view.getBackground().setColorFilter(context.getResources().getColor(R.color.colorWhite), PorterDuff.Mode.SRC_IN);
-                TextView text = view.findViewById(android.R.id.message);
-                text.setTextColor(context.getResources().getColor(R.color.colorApp));
-                toast.show();
-            }
-        }.run();
+        Toast.makeText(context, message, duration).show();
     }
 
     public static String getEmailComma(String email) {

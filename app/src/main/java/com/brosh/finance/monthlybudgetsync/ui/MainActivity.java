@@ -39,11 +39,12 @@ import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
 
@@ -88,35 +89,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
-        switch (item.getItemId()) {
-            case R.id.settingsItem:
-//                Toast.makeText(this, "settings item selected", Toast.LENGTH_SHORT).show();
-                intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                addParametersToActivity(intent);
-                startActivity(intent);
-                return true;
-            case R.id.shareItem:
-                openShareDialog();
-                return true;
-            case R.id.recommend_to_friend:
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, Config.APP_URL);
-                sendIntent.setType("text/plain");
-                Intent shareIntent = Intent.createChooser(sendIntent, null);
-                startActivity(shareIntent);
-                return true;
-            case R.id.app_guide:
-                intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(getString(R.string.tutorial_app_youtube)));
-                startActivity(intent);
-                return true;
-            case R.id.contactUsItem:
-                intent = new Intent(getApplicationContext(), ContactUsActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == R.id.settingsItem) {
+            intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            addParametersToActivity(intent);
+            startActivity(intent);
+            return true;
+        } else if (itemId == R.id.shareItem) {
+            openShareDialog();
+            return true;
+        } else if (itemId == R.id.recommend_to_friend) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, Config.APP_URL);
+            sendIntent.setType("text/plain");
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+            return true;
+        } else if (itemId == R.id.app_guide) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(getString(R.string.tutorial_app_youtube)));
+            startActivity(intent);
+            return true;
+        } else if (itemId == R.id.contactUsItem) {
+            intent = new Intent(getApplicationContext(), ContactUsActivity.class);
+            startActivity(intent);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        MobileAds.initialize(this, initializationStatus -> {});
         initAdFields();
 
         user = DBUtil.getInstance().getUser();
@@ -410,27 +410,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initAdFields() {
-        interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId(getString(R.string.admob_transition_unit_id));
-        interstitialAd.loadAd(new AdRequest.Builder().build());
-        interstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                // Load the next interstitial.
-                interstitialAd.loadAd(new AdRequest.Builder().build());
-            }
+        loadInterstitialAd();
+    }
 
-            @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-            }
-        });
+    private void loadInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, getString(R.string.admob_transition_unit_id), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd ad) {
+                        interstitialAd = ad;
+                        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Load the next interstitial.
+                                interstitialAd = null;
+                                loadInterstitialAd();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        interstitialAd = null;
+                    }
+                });
     }
 
     public void showAD() {
         try {
-            if (interstitialAd.isLoaded())
-                interstitialAd.show();
+            if (interstitialAd != null) {
+                interstitialAd.show(this);
+            }
         } catch (Exception e) {
         }
     }
