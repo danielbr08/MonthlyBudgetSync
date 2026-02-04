@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         // Setup year spinner
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this,
                 R.layout.custom_spinner, availableYears);
+        yearAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
         
         // Determine initial year selection
@@ -175,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
         
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this,
                 R.layout.custom_spinner, displayMonths);
+        monthAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         monthSpinner.setAdapter(monthAdapter);
         
         // Select appropriate month
