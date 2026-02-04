@@ -1,14 +1,10 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -29,36 +25,36 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity {
-    private static final String TAG = "BudgetActivity";
-
     private Month month;
     private DBUtil dbUtil;
     private User user;
 
     private SwipeRefreshLayout refreshLayout;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget);
 
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
         Bundle extras = getIntent().getExtras();
-        String refMonth = extras.getString(Definitions.MONTH, null);
-        user = DBUtil.getInstance().getUser();
-        if (user.getUserSettings().isAdEnabled()) {
+        String refMonth = extras != null ? extras.getString(Definitions.MONTH, null) : null;
+        dbUtil = DBUtil.getInstance();
+        user = dbUtil.getUser();
+        
+        boolean adEnabled = user != null && user.getUserSettings().isAdEnabled();
+        if (adEnabled) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
-        dbUtil = DBUtil.getInstance();
-        month = dbUtil.getMonth(refMonth);
+        
+        month = refMonth != null ? dbUtil.getMonth(refMonth) : null;
         String yearMonth = month != null ? month.getYearMonth() : null;
         UiUtil.setToolbar(this, yearMonth);
 
-        setCategoriesInGui();
+        if (month != null) {
+            setCategoriesInGui();
+        }
         setRefreshListener();
     }
 
@@ -67,8 +63,10 @@ public class BudgetActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setCategoriesInGui() {
+        if (month == null || user == null) {
+            return;
+        }
         String currentRefMonth = DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         List<Category> categories = dbUtil.getCategoriesByPriority(currentRefMonth);
 
@@ -93,13 +91,9 @@ public class BudgetActivity extends AppCompatActivity {
 
     private void setRefreshListener() {
         refreshLayout = findViewById(R.id.refresh_layout_budgets);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onRefresh() {
-                setCategoriesInGui();
-                refreshLayout.setRefreshing(false);
-            }
+        refreshLayout.setOnRefreshListener(() -> {
+            setCategoriesInGui();
+            refreshLayout.setRefreshing(false);
         });
     }
 

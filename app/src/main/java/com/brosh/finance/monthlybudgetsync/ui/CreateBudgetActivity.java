@@ -1,21 +1,17 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,9 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,7 +39,6 @@ import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,50 +47,41 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateBudgetActivity extends AppCompatActivity {
-    private static final String TAG = "CreateBudgetActivity";
-
     private DBUtil dbUtil;
-    DatabaseReference DatabaseReferenceUserMonthlyBudget;
     private Month month;
 
-    AlertDialog.Builder myAlert;
     private List<Budget> allBudgets;
     private List<Budget> budgets;
     private ArrayList<String> allCategories;
     private boolean isInputValid;
-    private Display display;
     private int screenWidth;
-    private int buttonSize = 120;
+    private int buttonSize;
 
-    private Drawable dfaultBackground;
+    private Drawable defaultBackground;
 
     CreateBudgetViewAdapter adapter;
     RecyclerView budgetsRowsRecycler;
 
     private LinearLayout LLMain;
     private LinearLayout LLBudgets;
-    private User user;
 
     private SwipeRefreshLayout refreshLayout;
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_budget);
 
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
-
-        user = DBUtil.getInstance().getUser();
+        User user = DBUtil.getInstance().getUser();
         if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
         String userKey = user.getDbKey();
-        String refMonth = getIntent().getExtras().getString(Definitions.MONTH);
+        Bundle extras = getIntent().getExtras();
+        String refMonth = extras != null ? extras.getString(Definitions.MONTH) : null;
         dbUtil = DBUtil.getInstance();
         month = dbUtil.getMonth(refMonth);
         String yearMonth = month != null ? month.getYearMonth() : null;
@@ -105,48 +90,46 @@ public class CreateBudgetActivity extends AppCompatActivity {
         adapter = new CreateBudgetViewAdapter(this, budgets);
         budgetsRowsRecycler = findViewById(R.id.budgets_rows);
 
-        DatabaseReferenceUserMonthlyBudget = DBUtil.getDatabase().getReference(Definitions.MONTHLY_BUDGET).child(userKey);
+        if (userKey != null) {
+            DBUtil.getDatabase().getReference(Definitions.MONTHLY_BUDGET).child(userKey);
+        }
         LLMain = findViewById(R.id.LLMainCreateBudget);
         LLBudgets = new LinearLayout(this);
         LLBudgets.setOrientation(LinearLayout.VERTICAL);
         allBudgets = new ArrayList<>();
         allCategories = new ArrayList<>();
-        dfaultBackground = new View(this).getBackground();
+        defaultBackground = new View(this).getBackground();
 
-        display = getWindowManager().getDefaultDisplay();
-        screenWidth = display.getWidth();
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        buttonSize = 100; // Fixed button size in pixels
 
         setRefreshListener();
         setBudgetGui();
     }
 
     private void setRefreshListener() {
-        final Context context = this;
         refreshLayout = findViewById(R.id.refresh_layout_create_budget);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                TextView tv = new TextView(context);
-                tv.setTextColor(getResources().getColor(R.color.colorLoginBackground));
-                tv.setText(R.string.are_you_sure_you_want_to_refresh);
-                tv.setPadding(40, 40, 40, 0);
-                new androidx.appcompat.app.AlertDialog.Builder(context)
-                        .setCustomTitle(tv)
-                        .setCancelable(false)
-                        .setNegativeButton(getString(R.string.yes), new DialogInterface.OnClickListener() { // Negative is actually positive
-                            public void onClick(DialogInterface dialog, int id) {
-                                setBudgetGui();
-                                refreshLayout.setRefreshing(false);
-                            }
-                        })
-                        .setPositiveButton(getString(R.string.no), (dialogInterface, i) -> refreshLayout.setRefreshing(false)) // Positive is actually negative
-                        .show();
-            }
+        refreshLayout.setOnRefreshListener(() -> {
+            TextView tv = new TextView(this);
+            tv.setTextColor(ContextCompat.getColor(this, R.color.colorLoginBackground));
+            tv.setText(R.string.are_you_sure_you_want_to_refresh);
+            tv.setPadding(40, 40, 40, 0);
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setCustomTitle(tv)
+                    .setCancelable(false)
+                    .setNegativeButton(getString(R.string.yes), (dialog, id) -> { // Negative is actually positive
+                        setBudgetGui();
+                        refreshLayout.setRefreshing(false);
+                    })
+                    .setPositiveButton(getString(R.string.no), (dialogInterface, i) -> refreshLayout.setRefreshing(false)) // Positive is actually negative
+                    .show();
         });
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @SuppressWarnings("unused")
     public void setAddAndDeleteButton() {
         final LinearLayout newll = new LinearLayout(CreateBudgetActivity.this);
         newll.setOrientation(LinearLayout.HORIZONTAL);
@@ -156,33 +139,29 @@ public class CreateBudgetActivity extends AppCompatActivity {
         final TextView emptyTV = new TextView(this);
 
         //Set default background color
-        addRowButton.setBackgroundDrawable(dfaultBackground);
-        deleteRowsButton.setBackgroundDrawable(dfaultBackground);
+        addRowButton.setBackground(defaultBackground);
+        deleteRowsButton.setBackground(defaultBackground);
 
-        addRowButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                int budgetSize = LLBudgets.getChildCount() - 1;
-                LinearLayout lastBudgetRow = (LinearLayout) LLBudgets.getChildAt(budgetSize);
-                int categoryNameIndex = 1;
-                int categoryValueIndex = 2;
-                EditText categoryNameET = (EditText) lastBudgetRow.getChildAt(categoryNameIndex);
-                EditText categoryValueET = (EditText) lastBudgetRow.getChildAt(categoryValueIndex);
-                boolean isLastRowValid = !categoryNameET.getText().toString().trim().equals("") && !categoryValueET.getText().toString().trim().equals("");
-                if (isLastRowValid)
-                    add_New_row(null, 0, false, null, 0);
-            }
-        });
-
-        deleteRowsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                LLBudgets.removeAllViews();
+        addRowButton.setOnClickListener(view -> {
+            int budgetSize = LLBudgets.getChildCount() - 1;
+            LinearLayout lastBudgetRow = (LinearLayout) LLBudgets.getChildAt(budgetSize);
+            int categoryNameIndex = 1;
+            int categoryValueIndex = 2;
+            EditText categoryNameET = (EditText) lastBudgetRow.getChildAt(categoryNameIndex);
+            EditText categoryValueET = (EditText) lastBudgetRow.getChildAt(categoryValueIndex);
+            boolean isLastRowValid = !categoryNameET.getText().toString().trim().isEmpty() && !categoryValueET.getText().toString().trim().isEmpty();
+            if (isLastRowValid)
                 add_New_row(null, 0, false, null, 0);
-            }
         });
-        deleteRowsButton.setImageDrawable(getResources().getDrawable(R.drawable.clean_screen));
+
+        deleteRowsButton.setOnClickListener(view -> {
+            LLBudgets.removeAllViews();
+            add_New_row(null, 0, false, null, 0);
+        });
+        deleteRowsButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.clean_screen));
         deleteRowsButton.setScaleType(ImageView.ScaleType.FIT_XY);
 
-        addRowButton.setImageDrawable(getResources().getDrawable(R.drawable.add_button_md));
+        addRowButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.add_button_md));
         addRowButton.setScaleType(ImageView.ScaleType.FIT_XY);
 
 
@@ -230,19 +209,18 @@ public class CreateBudgetActivity extends AppCompatActivity {
             boolean constPayment = constPaymentCB.isChecked();
             String shop = shopET.getText().toString().trim();
             String chargeDayStr = chargeDayTV.getText().toString().trim();
-            int chargeDay = 1;
 
             if (!constPayment) {
                 shopET.setText(R.string.empty);
                 shop = null;
                 chargeDayStr = getString(R.string.one);
             }
-            chargeDay = Integer.valueOf(chargeDayStr);
+            int chargeDay = Integer.parseInt(chargeDayStr);
             if (valueStr.equals(getString(R.string.empty)))
                 valueStr = getString(R.string.one);
-            int value = Integer.valueOf(valueStr);
+            int value = Integer.parseInt(valueStr);
             allCategories.add(category);
-            verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET, chargeDayTV);
+            verifyBudgetInput(categoryET, valueET, constPaymentCB, shopET);
             if (isInputValid)
                 allBudgets.add(new Budget(category, value, constPayment, shop, chargeDay, catPriority++));
             else
@@ -251,7 +229,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         budgets = allBudgets;
     }
 
-    public void verifyBudgetInput(EditText categoryET, EditText valueET, CheckBox constPaymentCB, EditText shopET, TextView chargeDayTV) {//EditText chargeDayET) {
+    public void verifyBudgetInput(EditText categoryET, EditText valueET, CheckBox constPaymentCB, EditText shopET) {
         isInputValid = true;
         String category = categoryET.getText().toString().trim();
         String valueStr = valueET.getText().toString().trim().replace(Definitions.COMMA, getString(R.string.empty));
@@ -260,7 +238,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
 
         if (valueStr.equals(getString(R.string.empty)))
             valueStr = getString(R.string.zero);
-        int value = Integer.valueOf(valueStr);
+        int value = Integer.parseInt(valueStr);
 
         //Check duplicate of category
         if (Collections.frequency(allCategories, category) > 1) {
@@ -269,12 +247,12 @@ public class CreateBudgetActivity extends AppCompatActivity {
         }
 
         //Check illegal characters
-        if (category.contains(TextUtil.getSeperator())) {
+        if (category.contains(TextUtil.getSeparator())) {
             setErrorEditText(categoryET, getString(R.string.illegal_Character));
             isInputValid = false;
         }
         //Check illegal category
-        if (category.length() == 0) {
+        if (category.isEmpty()) {
             setErrorEditText(categoryET, getString(R.string.please_insert_category));
             isInputValid = false;
         }
@@ -284,41 +262,34 @@ public class CreateBudgetActivity extends AppCompatActivity {
             isInputValid = false;
         }
 
-        if (constPayment && shop.length() == 0) {
+        if (constPayment && shop.isEmpty()) {
             setErrorEditText(shopET, getString(R.string.please_insert_store));
             isInputValid = false;
         }
 
         //Check illegal characters
-        if (shop.contains(TextUtil.getSeperator())) {
+        if (shop.contains(TextUtil.getSeparator())) {
             setErrorEditText(shopET, getString(R.string.please_insert_value));
             isInputValid = false;
         }
-
-        if (!isInputValid)
-            return;
     }
 
-    public void setErrorEditText(EditText et, String errorMesage) {
-        et.setError(errorMesage);
+    public void setErrorEditText(EditText et, String errorMessage) {
+        et.setError(errorMessage);
     }
 
     public void showQuestionDeleteCurrentMonth(String message) {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        //Yes button clicked
-                        createBudget(Definitions.DELETE_CODE);
-                        break;
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    //Yes button clicked
+                    createBudget(Definitions.DELETE_CODE);
+                    break;
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        questionFalseAnswer();
-                        break;
-                }
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    questionFalseAnswer();
+                    break;
             }
         };
 
@@ -334,12 +305,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         myAlert.show();
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                myAlert.create().dismiss();
-                //finish();
-            }
-        }, 1000); // 1000 milliseconds delay
+        handler.postDelayed(() -> myAlert.create().dismiss(), 1000); // 1000 milliseconds delay
     }
 
     public boolean isOriginBudgetChanged(int budgetNumber) {
@@ -364,7 +330,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
                     break;
                 }
             }
-            if (isBudgetsEquals == false)
+            if (!isBudgetsEquals)
                 return true;
             isBudgetsEquals = false;
         }
@@ -382,14 +348,13 @@ public class CreateBudgetActivity extends AppCompatActivity {
                     break;
                 }
             }
-            if (isBudgetExists == false)
+            if (!isBudgetExists)
                 addedBudgets.add(bgt);
             isBudgetExists = false;
         }
         return addedBudgets;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createBudget(String operation) {
         int budgetNumber = dbUtil.getMaxBudgetNumber() + 1;
         ArrayList<Budget> addedBudgets = new ArrayList<>();
@@ -398,7 +363,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         else if (operation.equals(Definitions.DELETE_CODE))
             dbUtil.deleteDataRefMonth(month.getYearMonth());
 
-        String refMonth = DateUtil.getYearMonth(DateUtil.getTodayDate(), getString(R.string.seperator));
+        String refMonth = DateUtil.getYearMonth(DateUtil.getTodayDate(), getString(R.string.separator));
         writeBudget(budgetNumber, allBudgets);
         writeBudgetsToTreeFB(budgetNumber);
 
@@ -417,6 +382,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         finish();
     }
 
+    @SuppressWarnings("unused")
     private List<Category> budgetToCategories(List<Budget> budgets) {
         List<Category> categories = new ArrayList<>();
         for (Budget budget : budgets) {
@@ -426,7 +392,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
         return categories;
     }
 
-    private void writeBudgetsToTreeFB(final int budgetNumber) { // todo move this function to dbService
+    private void writeBudgetsToTreeFB(final int budgetNumber) {
         String budgetNumberStr = String.valueOf(budgetNumber);
         Map<String, Budget> hmBudgets = dbUtil.getBudget(budgetNumberStr);
         dbUtil.getDBBudgetsPath().child(budgetNumberStr).setValue(hmBudgets);
@@ -437,7 +403,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
 
     public void setBudgetGui() {
         this.budgets = new ArrayList<>(dbUtil.getBudgetDataFromDB(dbUtil.getMaxBudgetNumber()));
-        if (this.budgets.size() == 0)
+        if (this.budgets.isEmpty())
             this.budgets.add(new Budget("", 0, false, "", 2, budgets.size() + 1));
         this.adapter = new CreateBudgetViewAdapter(this, budgets);
         this.budgetsRowsRecycler = findViewById(R.id.budgets_rows);
@@ -446,8 +412,6 @@ public class CreateBudgetActivity extends AppCompatActivity {
         budgetsRowsRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void add_New_row(String categoryName, int categoryValue, boolean isConstPayment, String shop, int chargeDay) {
         final LinearLayout newll = new LinearLayout(CreateBudgetActivity.this);
         final EditText categoryNameET = new EditText(CreateBudgetActivity.this),
@@ -456,12 +420,11 @@ public class CreateBudgetActivity extends AppCompatActivity {
         final Spinner optionalDaysSpinner = new Spinner(CreateBudgetActivity.this);
         final CheckBox constPaymentCB = new CheckBox(CreateBudgetActivity.this);
 
-        // todo check the width of widgets
         int screenWidthReduceButtonSize = screenWidth - buttonSize;
         List<View> rowViews = Arrays.asList(categoryNameET, categoryValueET, constPaymentCB, shopET, optionalDaysSpinner);
         List<String> viewsText = Arrays.asList(categoryName, String.valueOf(categoryValue), String.valueOf(isConstPayment), shop, String.valueOf(chargeDay - 1));
         List<View> textInputType = Arrays.asList(categoryNameET, constPaymentCB, shopET);
-        List<View> numberInputType = Arrays.asList(categoryValueET);
+        List<View> numberInputType = Collections.singletonList(categoryValueET);
         UiUtil.setViewsText(rowViews, viewsText);
         UiUtil.setTxtSize(rowViews, 12);
         setViewsInput(textInputType, numberInputType);
@@ -469,33 +432,25 @@ public class CreateBudgetActivity extends AppCompatActivity {
         UiUtil.setDaysInMonthSpinner(optionalDaysSpinner, this);
 
         UiUtil.setWidthCreateBudgetPageDataWidgets(rowViews, screenWidthReduceButtonSize, ViewGroup.LayoutParams.WRAP_CONTENT);
-        setConstPaymentCBOnCheckChangedListner(constPaymentCB, shopET, optionalDaysSpinner);
+        setConstPaymentCBOnCheckChangedListener(constPaymentCB, shopET, optionalDaysSpinner);
 
 
         newll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         newll.setOrientation(LinearLayout.HORIZONTAL);
 
-        optionalDaysSpinner.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(categoryNameET.getWindowToken(), 0);
-                imm.hideSoftInputFromWindow(categoryValueET.getWindowToken(), 0);
-                //imm.hideSoftInputFromWindow(constPaymentCB.getWindowToken(), 0);
-                imm.hideSoftInputFromWindow(shopET.getWindowToken(), 0);
-                return false;
-            }
+        optionalDaysSpinner.setOnTouchListener((v, event) -> {
+            InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(categoryNameET.getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(categoryValueET.getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(shopET.getWindowToken(), 0);
+            v.performClick();
+            return false;
         });
 
         final ImageButton deleteRowButton = new ImageButton(this);
-        deleteRowButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                LLBudgets.removeView(newll);
-            }
-        });
-        deleteRowButton.setImageDrawable(getResources().getDrawable(R.drawable.delete_icon));
-        deleteRowButton.setBackgroundDrawable(dfaultBackground);
+        deleteRowButton.setOnClickListener(view -> LLBudgets.removeView(newll));
+        deleteRowButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.delete_icon));
+        deleteRowButton.setBackground(defaultBackground);
         deleteRowButton.setLayoutParams(new LinearLayout.LayoutParams(buttonSize, buttonSize));
         deleteRowButton.setAdjustViewBounds(true);
 
@@ -524,20 +479,18 @@ public class CreateBudgetActivity extends AppCompatActivity {
         }
     }
 
-    private void setConstPaymentCBOnCheckChangedListner(CheckBox constPaymentCB, final EditText shopET, final Spinner optionalDaysSpinner) {
-        constPaymentCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int visibility = isChecked ? View.VISIBLE : View.INVISIBLE;
-                shopET.setVisibility(visibility);
-                optionalDaysSpinner.setVisibility(visibility);
-            }
+    private void setConstPaymentCBOnCheckChangedListener(CheckBox constPaymentCB, final EditText shopET, final Spinner optionalDaysSpinner) {
+        constPaymentCB.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int visibility = isChecked ? View.VISIBLE : View.INVISIBLE;
+            shopET.setVisibility(visibility);
+            optionalDaysSpinner.setVisibility(visibility);
         });
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
         @Override
         public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-            int position = viewHolder.getAdapterPosition();
+            int position = viewHolder.getBindingAdapterPosition();
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             final int swipeFlags = position == 0 ? 0 : ItemTouchHelper.START | ItemTouchHelper.END;
             return makeMovementFlags(dragFlags, swipeFlags);
@@ -545,7 +498,7 @@ public class CreateBudgetActivity extends AppCompatActivity {
 
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            adapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            adapter.notifyItemMoved(viewHolder.getBindingAdapterPosition(), target.getBindingAdapterPosition());
             return true;
         }
 
@@ -553,35 +506,33 @@ public class CreateBudgetActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             if (budgets.size() < 2)
                 return;
-            budgets.remove(viewHolder.getAdapterPosition());
-            adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            int position = viewHolder.getBindingAdapterPosition();
+            budgets.remove(position);
+            adapter.notifyItemRemoved(position);
         }
 
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreateBudgetClicked(View view) {
-        {
-            setBudgets();
-            if (allBudgets.size() == 0) {// Nothing needed to do
-                showMessageNoButton(getString(R.string.please_insert_budget));
-                return;
-            }
-            int budgetNumber = dbUtil.getMaxBudgetNumber();
-            ArrayList<Budget> newBudgets = getAddedBudgets(budgetNumber);
-            boolean isOriginContentBudgetChanged = isOriginBudgetChanged(budgetNumber);
-            boolean isBudgetChange = isBudgetChange(budgetNumber);
-            boolean isAddedBudgetsExists = newBudgets.size() > 0;
-            if (!isInputValid || !isBudgetChange)
-                return;
-            if (month == null)
-                createBudget(Definitions.CREATE_CODE);// First time create budget
-            else if (isOriginContentBudgetChanged) {// Rewriting of monthly budget needed
-                if (dbUtil.isCurrentRefMonthExists())
-                    showQuestionDeleteCurrentMonth(getString(R.string.create_budget_question));
-                return;
-            } else if (isAddedBudgetsExists)// Insert the added budgets needed only
-                createBudget(Definitions.ADD_CODE);// Values of old budget updated only
+        setBudgets();
+        if (allBudgets.isEmpty()) { // Nothing needed to do
+            showMessageNoButton(getString(R.string.please_insert_budget));
+            return;
+        }
+        int budgetNumber = dbUtil.getMaxBudgetNumber();
+        ArrayList<Budget> newBudgets = getAddedBudgets(budgetNumber);
+        boolean isOriginContentBudgetChanged = isOriginBudgetChanged(budgetNumber);
+        boolean isBudgetChange = isBudgetChange(budgetNumber);
+        boolean isAddedBudgetsExists = !newBudgets.isEmpty();
+        if (!isInputValid || !isBudgetChange)
+            return;
+        if (month == null) {
+            createBudget(Definitions.CREATE_CODE);// First time create budget
+        } else if (isOriginContentBudgetChanged) {// Rewriting of monthly budget needed
+            if (dbUtil.isCurrentRefMonthExists())
+                showQuestionDeleteCurrentMonth(getString(R.string.create_budget_question));
+        } else if (isAddedBudgetsExists) {// Insert the added budgets needed only
+            createBudget(Definitions.ADD_CODE);// Values of old budget updated only
         }
     }
 

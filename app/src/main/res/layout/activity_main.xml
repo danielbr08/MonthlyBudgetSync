@@ -31,62 +31,80 @@
             tools:layout_constraintRight_creator="1"
             tools:layout_constraintTop_creator="1">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <!-- Header with two rows for better visibility -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:background="@color/colorApp"
-                android:padding="5dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp">
 
-                <!--            <Button-->
-                <!--                android:id="@+id/shareButton"-->
-                <!--                android:layout_width="wrap_content"-->
-                <!--                android:layout_height="wrap_content"-->
-                <!--                android:onClick="openShareDialog"-->
-                <!--                android:text="@string/Share" />-->
-
-                <TextView
-                    android:id="@+id/tv_user_logeed_in"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:padding="@dimen/padding_2"
-                    android:text=""
-                    android:textColor="@color/colorWhite"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/logoutTV"
-                    android:layout_width="wrap_content"
+                <!-- Row 1: User info and logout -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="logout"
-                    android:padding="@dimen/padding_2"
-                    android:text="@string/logout"
-                    android:textColor="@color/colorLink"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tv_user_logeed_in"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <Spinner
-                    android:id="@+id/monthSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="@color/colorWhite"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/tv_user_logeed_in"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
 
-                <!--            <TextView-->
-                <!--                android:id="@+id/monthLabel"-->
-                <!--                android:layout_width="90dp"-->
-                <!--                android:layout_height="match_parent"-->
-                <!--                android:layout_weight="0.35"-->
-                <!--                android:text='""'-->
-                <!--                android:textSize="18sp" />-->
+                    <TextView
+                        android:id="@+id/logoutTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="logout"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="0dp"
+                        android:text="@string/logout"
+                        android:textColor="@color/colorLink"
+                        android:textSize="14sp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <!-- Row 2: Date selectors -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="6dp">
+
+                    <Spinner
+                        android:id="@+id/monthSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="44dp"
+                        android:backgroundTint="@color/colorWhite"
+                        android:dropDownWidth="wrap_content" />
+
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="1dp" />
+
+                    <Spinner
+                        android:id="@+id/yearSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="44dp"
+                        android:backgroundTint="@color/colorWhite"
+                        android:dropDownWidth="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

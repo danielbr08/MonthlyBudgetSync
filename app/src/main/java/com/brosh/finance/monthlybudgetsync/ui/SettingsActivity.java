@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
@@ -27,12 +26,6 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserSettings;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,15 +64,21 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void saveUserSettings() {
+        if (user == null) {
+            return;
+        }
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         UserSettings userSettings = user.getUserSettings();
-        userSettings.setChargeDay(Integer.valueOf(prefs.getString(Definitions.CHARGE_DAY, String.valueOf(userSettings.getChargeDay()))));
+        userSettings.setChargeDay(Integer.parseInt(prefs.getString(Definitions.CHARGE_DAY, String.valueOf(userSettings.getChargeDay()))));
         userSettings.setCurrency(prefs.getString(Definitions.CURRENCY, userSettings.getCurrency()));
         userSettings.setActiveTransactionsOnlyByDefault(prefs.getBoolean(Definitions.DEFAULT_SHOW_ACTIVE_ONLY, userSettings.isActiveTransactionsOnlyByDefault()));
         userSettings.setAutoCompleteFrom(prefs.getInt(Definitions.AUTO_COMPLETE, userSettings.getAutoCompleteFrom()));
         userSettings.setEmailUpdates(prefs.getBoolean(Definitions.EMAIL_UPDATES, userSettings.isEmailUpdates()));
         userSettings.setNotifications(prefs.getBoolean(Definitions.NOTIFICATIONS, userSettings.isNotifications()));
-        Config.DatabaseReferenceUsers.child(user.getDbKey()).child(Definitions.USER_SETTINGS).setValue(userSettings);
+        String dbKey = user.getDbKey();
+        if (dbKey != null) {
+            Config.DatabaseReferenceUsers.child(dbKey).child(Definitions.USER_SETTINGS).setValue(userSettings);
+        }
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -122,23 +121,21 @@ public class SettingsActivity extends AppCompatActivity {
                 chargeDayPref.setEnabled(false);
             }
 
-            autoCompleteyPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    int newVal = Integer.valueOf(newValue.toString());
-                    ((SeekBarPreference) preference).setValue(newVal);
-                    preference.setSummary(String.valueOf(newVal));
-                    userSettings.setAutoCompleteFrom(newVal);
-                    return false;
-                }
+            autoCompleteyPref.setOnPreferenceChangeListener((preference, newValue) -> {
+                int newVal = Integer.parseInt(newValue.toString());
+                ((SeekBarPreference) preference).setValue(newVal);
+                preference.setSummary(String.valueOf(newVal));
+                userSettings.setAutoCompleteFrom(newVal);
+                return false;
             });
 
             View dayPeekerView = this.getLayoutInflater().inflate(R.layout.day_peeker, null);
-            Integer defaultId = UiUtil.getIdTVByName((ViewGroup) dayPeekerView, String.valueOf(userSettings.getChargeDay())).get(0);
-            final TextView defaultSelectionTV[] = {dayPeekerView.findViewById(defaultId)};
+            List<Integer> ids = UiUtil.getIdTVByName((ViewGroup) dayPeekerView, String.valueOf(userSettings.getChargeDay()));
+            int defaultId = (ids != null && !ids.isEmpty()) ? ids.get(0) : R.id.tv1;
+            final TextView[] defaultSelectionTV = {dayPeekerView.findViewById(defaultId)};
             defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
-            final TextView selectedDay[] = {defaultSelectionTV[0]};
-            final TextView prevSelectedDay[] = {defaultSelectionTV[0]};
+            final TextView[] selectedDay = {defaultSelectionTV[0]};
+            final TextView[] prevSelectedDay = {defaultSelectionTV[0]};
 
             DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
                 switch (which) {
@@ -146,10 +143,10 @@ public class SettingsActivity extends AppCompatActivity {
                         //Yes button clicked
                         defaultSelectionTV[0] = selectedDay[0];
                         String selectedDaytext = selectedDay[0].getText().toString();
-                        userSettings.setChargeDay(Integer.valueOf(selectedDaytext));
+                        int chargeDay = Integer.parseInt(selectedDaytext);
+                        userSettings.setChargeDay(chargeDay);
                         chargeDayPref.setSummary(selectedDaytext);
-                        prefs.edit().putString(Definitions.CHARGE_DAY, selectedDaytext).commit();
-                        userSettings.setChargeDay(Integer.valueOf(selectedDaytext));
+                        prefs.edit().putString(Definitions.CHARGE_DAY, selectedDaytext).apply();
                         dialog.dismiss();
                         break;
 
@@ -159,6 +156,7 @@ public class SettingsActivity extends AppCompatActivity {
                         defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
                         prevSelectedDay[0] = defaultSelectionTV[0];
                         selectedDay[0] = defaultSelectionTV[0];
+                        break;
                 }
             };
 
@@ -175,7 +173,6 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
             });
 
-            // todo need to make a layout with buttons of 3 types and any one of them will call by click to profile activity
             changeUserNamePref.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
                 intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_USER_NAME);

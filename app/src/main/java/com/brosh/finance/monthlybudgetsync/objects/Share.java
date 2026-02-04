@@ -1,5 +1,10 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
+/**
+ * Represents a budget sharing relationship between users.
+ * Note: Setters are required for Firebase deserialization.
+ */
+@SuppressWarnings("unused") // Setters used by Firebase deserialization
 public class Share {
     private String guestUid;
     private String ownerUid;

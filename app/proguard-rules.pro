@@ -5,17 +5,71 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# ======== General Android Rules ========
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve line numbers for debugging crash reports
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep annotations
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+
+# ======== Firebase Rules ========
+
+# Keep Firebase model classes (they use reflection for serialization)
+-keep class com.brosh.finance.monthlybudgetsync.objects.** { *; }
+
+# Firebase Database
+-keepattributes Signature
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.** {
+    *;
+}
+
+# Firebase Auth
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+
+# ======== Gson (if used by Firebase) ========
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn sun.misc.**
+-keep class com.google.gson.stream.** { *; }
+
+# ======== Google Play Services ========
+-keep class com.google.android.gms.ads.** { *; }
+-keep class com.google.ads.** { *; }
+
+# ======== Keep Serializable classes ========
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# ======== Prevent stripping of model classes ========
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.User { *; }
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.Budget { *; }
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.Category { *; }
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.Transaction { *; }
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.Month { *; }
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.Share { *; }
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.UserSettings { *; }
+-keepclassmembers class com.brosh.finance.monthlybudgetsync.objects.ContactUs { *; }
+
+# ======== Remove logging in release ========
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
+
+# ======== Optimization Settings ========
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
+-optimizationpasses 5
+-allowaccessmodification
+
+# ======== Debugging (remove for production) ========
+# -dontobfuscate

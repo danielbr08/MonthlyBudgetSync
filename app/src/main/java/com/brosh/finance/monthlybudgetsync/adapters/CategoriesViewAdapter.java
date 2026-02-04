@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -22,12 +23,12 @@ import java.util.List;
 
 public class CategoriesViewAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
 
-    private LayoutInflater mInflater;
-    private List<Category> categories;
-    private Context context;
+    private final LayoutInflater mInflater;
+    private final List<Category> categories;
+    private final Context context;
 
     public CategoriesViewAdapter(Context context, List<Category> categories) {
-        this.categories = categories;
+        this.categories = categories != null ? categories : new java.util.ArrayList<>();
         this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
     }
@@ -37,28 +38,36 @@ public class CategoriesViewAdapter extends RecyclerView.Adapter<CategoryViewHold
         return categories.size();
     }
 
+    @NonNull
     @Override
-    public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.category_row_item, parent, false);
         CategoryViewHolder holder = new CategoryViewHolder(view);
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                String category = ((TextView) ((LinearLayout) v).getChildAt(0)).getText().toString().trim();
-                Intent intent = new Intent(context, TransactionsActivity.class);
-                Month month = ((BudgetActivity) context).getMonth();
-                intent.putExtra("categoryName", category);
-                intent.putExtra(Definitions.USER, ((BudgetActivity) context).getUser());
-                intent.putExtra(Definitions.MONTH, month == null ? month : month.getYearMonth());
-                context.startActivity(intent);
-                return true;
+        holder.itemView.setOnLongClickListener(v -> {
+            if (!(v instanceof LinearLayout layout)) {
+                return false;
             }
+            View childView = layout.getChildAt(0);
+            if (!(childView instanceof TextView textView)) {
+                return false;
+            }
+            String category = textView.getText().toString().trim();
+            Intent intent = new Intent(context, TransactionsActivity.class);
+            
+            if (context instanceof BudgetActivity budgetActivity) {
+                Month month = budgetActivity.getMonth();
+                intent.putExtra("categoryName", category);
+                intent.putExtra(Definitions.USER, budgetActivity.getUser());
+                intent.putExtra(Definitions.MONTH, month != null ? month.getYearMonth() : null);
+                context.startActivity(intent);
+            }
+            return true;
         });
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(final CategoryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CategoryViewHolder holder, int position) {
         holder.onBindViewHolder(categories.get(position));
     }
 

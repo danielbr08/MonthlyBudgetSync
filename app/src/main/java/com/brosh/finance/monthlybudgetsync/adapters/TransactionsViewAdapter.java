@@ -14,20 +14,19 @@ import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import java.util.List;
 
 public class TransactionsViewAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
-    private LayoutInflater mInflater;
-    private List<Transaction> transaction;
-    private boolean showCategory;
+    private final LayoutInflater mInflater;
+    private final List<Transaction> transactions;
+    private final boolean showCategory;
 
-    public TransactionsViewAdapter(Context context, List<Transaction> transaction, boolean showCategory) {
+    public TransactionsViewAdapter(Context context, List<Transaction> transactions, boolean showCategory) {
         this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.transaction = transaction;
+        this.transactions = transactions != null ? transactions : new java.util.ArrayList<>();
         this.showCategory = showCategory;
     }
 
     @NonNull
     @Override
     public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        int transactionLayout = this.showCategory ? R.layout.transaction_row_item : R.layout.transaction_row_item_no_category;
         int transactionLayout = R.layout.transaction_row_item;
         View view = this.mInflater.inflate(transactionLayout, parent, false);
         return new TransactionViewHolder(view, this.showCategory);
@@ -35,11 +34,13 @@ public class TransactionsViewAdapter extends RecyclerView.Adapter<TransactionVie
 
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
-        holder.onBindViewHolder(transaction.get(position));
+        if (position >= 0 && position < transactions.size()) {
+            holder.onBindViewHolder(transactions.get(position));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return transaction.size();
+        return transactions.size();
     }
 }

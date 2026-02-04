@@ -1,10 +1,15 @@
 package com.brosh.finance.monthlybudgetsync.config;
 
-public class Definitions {
-    public static final String CATEGORIES = "categories";// todo replace name to Categories
+public final class Definitions {
+    
+    private Definitions() {
+        // Constants class - do not instantiate
+    }
+    
+    public static final String CATEGORIES = "categories";
     public static final String TRANSACTIONS = "transactions";
     public static final String MONTHLY_BUDGET = "Monthly Budget";
-    public static final String BUDGETS = "Budget";// todo replace name to Budgets
+    public static final String BUDGETS = "Budget";
     public static final String MONTHS = "Months";
     public static final String MONTH = "Month";
     public static final String SHOPS = "Shops";
@@ -38,7 +43,7 @@ public class Definitions {
     public static final String DBKEY = "dbKey";
     public static final int SORT_BY_ID = 1;
     public static final int SORT_BY_CATEGORY = 2;
-    public static final int SORT_BY_PAYMRNT_METHOD = 3;
+    public static final int SORT_BY_PAYMENT_METHOD = 3;
     public static final int SORT_BY_STORE = 4;
     public static final int SORT_BY_CHARGE_DATE = 5;
     public static final int SORT_BY_PRICE = 6;

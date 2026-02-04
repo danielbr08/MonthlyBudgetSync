@@ -1,47 +1,100 @@
 package com.brosh.finance.monthlybudgetsync.objects;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
+/**
+ * Represents a financial transaction within a budget category.
+ * Note: Setters are required for Firebase deserialization.
+ */
+@SuppressWarnings("unused") // Setters used by Firebase deserialization
 public class Transaction implements Serializable {
-    private String id;
+    @Serial
+    private static final long serialVersionUID = 1L;
+    
+    @Nullable private String id;
     private int idPerMonth;
-    private String category;
-    private String paymentMethod;
-    private String shop;
-    private Date payDate;
+    @Nullable private String category;
+    @Nullable private String paymentMethod;
+    @Nullable private String shop;
+    @Nullable private Date payDate;
     private double price;
-    private Date registrationDate;
+    @Nullable private Date registrationDate;
     private boolean deleted;
 
+    /**
+     * Default constructor required for Firebase deserialization.
+     */
     public Transaction() {
     }
 
-    private void postConstructor() {
-        this.formatDateFields();
-    }
-
+    /**
+     * Normalizes date fields to a consistent format.
+     */
+    @SuppressWarnings("unused") // Called from constructor and may be used for future functionality
     public void formatDateFields() {
-        this.registrationDate = this.registrationDate != null ? DateUtil.changeDateFormat(this.registrationDate, Config.DATE_FORMAT) : this.registrationDate;
-        this.payDate = this.payDate != null ? DateUtil.changeDateFormat(this.payDate, Config.DATE_FORMAT) : this.payDate;
+        if (this.registrationDate != null) {
+            this.registrationDate = DateUtil.changeDateFormat(this.registrationDate, Config.DATE_FORMAT);
+        }
+        if (this.payDate != null) {
+            this.payDate = DateUtil.changeDateFormat(this.payDate, Config.DATE_FORMAT);
+        }
     }
 
-    public Transaction(String id, int idPerMonth, String category, String paymentMethod, String shop, Date payDate, double price) {
+    /**
+     * Creates a new Transaction with the specified parameters.
+     */
+    public Transaction(@Nullable String id, int idPerMonth, @Nullable String category, 
+                       @Nullable String paymentMethod, @Nullable String shop, 
+                       @Nullable Date payDate, double price) {
         this.id = id;
         this.idPerMonth = idPerMonth;
         this.category = category;
         this.paymentMethod = paymentMethod;
         this.shop = shop;
         this.payDate = payDate;
-        this.price = price;
+        this.price = Math.max(0, price);  // Ensure non-negative
         this.registrationDate = DateUtil.getTodayDate();
+        this.deleted = false;
 
-        postConstructor();
+        formatDateFields();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Transaction other = (Transaction) obj;
+        return Objects.equals(id, other.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+    
+    @NonNull
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", category='" + category + '\'' +
+                ", shop='" + shop + '\'' +
+                ", price=" + price +
+                ", deleted=" + deleted +
+                '}';
     }
 
+    @Nullable
     public String getId() {
         return id;
     }
@@ -50,18 +103,22 @@ public class Transaction implements Serializable {
         return idPerMonth;
     }
 
+    @Nullable
     public String getCategory() {
         return category;
     }
 
+    @Nullable
     public String getPaymentMethod() {
         return paymentMethod;
     }
 
+    @Nullable
     public String getShop() {
         return shop;
     }
 
+    @Nullable
     public Date getPayDate() {
         return payDate;
     }
@@ -70,11 +127,12 @@ public class Transaction implements Serializable {
         return price;
     }
 
+    @Nullable
     public Date getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setId(String id) {
+    public void setId(@Nullable String id) {
         this.id = id;
     }
 
@@ -82,19 +140,19 @@ public class Transaction implements Serializable {
         this.idPerMonth = idPerMonth;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(@Nullable String category) {
         this.category = category;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(@Nullable String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
-    public void setShop(String shop) {
+    public void setShop(@Nullable String shop) {
         this.shop = shop;
     }
 
-    public void setPayDate(Date payDate) {
+    public void setPayDate(@Nullable Date payDate) {
         this.payDate = payDate;
     }
 
@@ -102,7 +160,7 @@ public class Transaction implements Serializable {
         this.price = price;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
+    public void setRegistrationDate(@Nullable Date registrationDate) {
         this.registrationDate = registrationDate;
     }
 

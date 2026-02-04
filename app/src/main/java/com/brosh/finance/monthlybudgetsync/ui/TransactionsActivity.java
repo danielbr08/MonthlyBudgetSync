@@ -1,22 +1,18 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,12 +36,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TransactionsActivity extends AppCompatActivity {
-    private static final String TAG = "TransactionsActivity";
-
     private Spinner categoriesSpinner;
     private List<Transaction> transactions;
-    private List<String> defaultTextTVHeaders;
-    private RecyclerView transactions_rows;
+    private RecyclerView transactionsRows;
     private TransactionsViewAdapter adapter;
 
     private Month month;
@@ -55,39 +48,49 @@ public class TransactionsActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout refreshLayout;
     private CheckBox transactionsActiveFilterCB;
+    private List<String> defaultTextTVHeaders;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
 
-        transactions_rows = findViewById(R.id.transactions_rows);
+        // Initialize default header texts
+        defaultTextTVHeaders = Arrays.asList(
+                getString(R.string.id),
+                getString(R.string.category),
+                getString(R.string.store),
+                getString(R.string.charge_date),
+                getString(R.string.payment_method),
+                getString(R.string.price)
+        );
+
+        transactionsRows = findViewById(R.id.transactions_rows);
         adapter = null;
         Bundle extras = getIntent().getExtras();
-        refMonth = extras.getString(Definitions.MONTH, null);
-        user = DBUtil.getInstance().getUser();
-        if (user.getUserSettings().isAdEnabled()) {
+        refMonth = extras != null ? extras.getString(Definitions.MONTH, null) : null;
+        dbUtil = DBUtil.getInstance();
+        user = dbUtil.getUser();
+        
+        boolean adEnabled = user != null && user.getUserSettings().isAdEnabled();
+        if (adEnabled) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
             findViewById(R.id.adView).setVisibility(View.GONE);
         }
-        dbUtil = DBUtil.getInstance();
+        
         month = dbUtil.getMonth(refMonth);
         String yearMonth = month != null ? month.getYearMonth() : null;
         UiUtil.setToolbar(this, yearMonth);
-        String selectedCategory = extras.containsKey("categoryName") ? extras.getString("categoryName") : null;
+        String selectedCategory = extras != null && extras.containsKey("categoryName") ? extras.getString("categoryName") : null;
 
         transactionsActiveFilterCB = findViewById(R.id.transactionsFilterCB);
-        transactionsActiveFilterCB.setChecked(true); // todo this by user choice
+        transactionsActiveFilterCB.setChecked(true);
         setActiveTransactionListener();
         this.transactions = dbUtil.getTransactions(refMonth);
         LinearLayout llNoTransMessage = findViewById(R.id.ll_no_trans_message);
-        int noTransMessageVisibility = (this.transactions == null || this.transactions.size() == 0) ? View.VISIBLE : View.GONE;
+        int noTransMessageVisibility = (this.transactions == null || this.transactions.isEmpty()) ? View.VISIBLE : View.GONE;
         llNoTransMessage.setVisibility(noTransMessageVisibility);
-
-        this.defaultTextTVHeaders = Arrays.asList(getString(R.string.id), getString(R.string.category), getString(R.string.store), getString(R.string.charge_date), getString(R.string.payment_method), getString(R.string.price));
-        //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//Rotate the screen to to be on landspace moade only
         categoriesSpinner = findViewById(R.id.categorySpinnerTransactions);
         init(selectedCategory);
         setOnClickTextViews();
@@ -103,6 +106,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
+                // No action needed
             }
         });
         setRefreshListener();
@@ -110,7 +114,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
     public void init(String selectedCategory) {
         String currentRefMonth = DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
-        List<String> monthCategories = new ArrayList<String>(dbUtil.getCategoriesNames(currentRefMonth));
+        List<String> monthCategories = new ArrayList<>(dbUtil.getCategoriesNames(currentRefMonth));
         monthCategories.add(0, getString(R.string.all));
         SpinnerAdapter adapter = new SpinnerAdapter(monthCategories, this, R.layout.custom_spinner);
         categoriesSpinner.setAdapter(adapter);
@@ -118,19 +122,16 @@ public class TransactionsActivity extends AppCompatActivity {
             categoriesSpinner.setSelection(monthCategories.indexOf(selectedCategory));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void setTransactionsInGui(String catName, Integer sortBy, char ascOrDesc) {
         ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), getString(R.string.zero)));
-        Boolean isIncludeCategory = false;
-        if (catName.equals(getString(R.string.all)))
-            isIncludeCategory = true;
+        boolean isIncludeCategory = catName.equals(getString(R.string.all));
 
         String currentRefMonth = DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR);
         String catId = isIncludeCategory ? null : dbUtil.getCategoryByName(currentRefMonth, catName).getId();
         boolean onlyActive = transactionsActiveFilterCB.isChecked();
         this.transactions = dbUtil.getTransactions(currentRefMonth, catId, onlyActive);
         LinearLayout noTranMessageLL = findViewById(R.id.ll_no_trans_message);
-        if (transactions == null || transactions.size() == 0) {
+        if (transactions == null || transactions.isEmpty()) {
             noTranMessageLL.setVisibility(View.VISIBLE);
         } else {
             if (sortBy != null)
@@ -144,57 +145,53 @@ public class TransactionsActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.tv_total_transactions_top)).setText(String.format("%s %s", user.getUserSettings().getCurrency(), decim.format(tranSum)));
             noTranMessageLL.setVisibility(View.GONE);
         }
-        transactions_rows = findViewById(R.id.transactions_rows);
+        transactionsRows = findViewById(R.id.transactions_rows);
         adapter = new TransactionsViewAdapter(this, transactions, isIncludeCategory);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(transactions_rows);
-        transactions_rows.setAdapter(adapter);
-        transactions_rows.setLayoutManager(new LinearLayoutManager(this));
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(transactionsRows);
+        transactionsRows.setAdapter(adapter);
+        transactionsRows.setLayoutManager(new LinearLayoutManager(this));
     }
 
     public void setOnClickTextViews() {
         final LinearLayout rowLL = findViewById(R.id.headersTV);
         for (int i = 0; i < rowLL.getChildCount(); i++) {
             final int j = i;
-            ((TextView) rowLL.getChildAt(j)).setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-                @Override
-                public void onClick(View view) {
-                    TextView headerTV = ((TextView) rowLL.getChildAt(j));
-                    String allText = headerTV.getText().toString();
-                    char ascOrDesc = allText.charAt(allText.length() - 1);
-                    String text = "";
-                    int sortBY;
-                    if (ascOrDesc != Definitions.ARROW_UP && ascOrDesc != Definitions.ARROW_DOWN) {
-                        ascOrDesc = 'X';
-                        text = allText;
-                    } else
-                        text = new String(allText.substring(0, allText.length() - 1));
-
-//                    setTextViewsHeader();
-                    switch (ascOrDesc) {
-                        case ('ꜜ'): {
-                            ascOrDesc = Definitions.ARROW_UP;
-                            headerTV.setText(text + Definitions.ARROW_UP);
-                            headerTV.setTextColor(Color.RED);
-                            break;
-                        }
-                        case ('ꜛ'): {
-                            ascOrDesc = Definitions.ARROW_DOWN;
-                            headerTV.setText(text + Definitions.ARROW_DOWN);
-                            headerTV.setTextColor(Color.RED);
-                            break;
-                        }
-                        default: {
-                            headerTV.setText(text + Definitions.ARROW_UP);
-                            headerTV.setTextColor(Color.RED);
-                            ascOrDesc = Definitions.ARROW_UP;
-                            break;
-                        }
-                    }
-                    setDefaultHeadersStyleExeptSelected(headerTV);
-                    sortBY = getSortBy(text);
-                    setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), sortBY, ascOrDesc);
+            ((TextView) rowLL.getChildAt(j)).setOnClickListener(view -> {
+                TextView headerTV = ((TextView) rowLL.getChildAt(j));
+                String allText = headerTV.getText().toString();
+                char ascOrDesc = allText.charAt(allText.length() - 1);
+                String text;
+                int sortBY;
+                if (ascOrDesc != Definitions.ARROW_UP && ascOrDesc != Definitions.ARROW_DOWN) {
+                    ascOrDesc = 'X';
+                    text = allText;
+                } else {
+                    text = allText.substring(0, allText.length() - 1);
                 }
+
+                switch (ascOrDesc) {
+                    case ('ꜜ'): {
+                        ascOrDesc = Definitions.ARROW_UP;
+                        headerTV.setText(getString(R.string.header_with_arrow, text, Definitions.ARROW_UP));
+                        headerTV.setTextColor(Color.RED);
+                        break;
+                    }
+                    case ('ꜛ'): {
+                        ascOrDesc = Definitions.ARROW_DOWN;
+                        headerTV.setText(getString(R.string.header_with_arrow, text, Definitions.ARROW_DOWN));
+                        headerTV.setTextColor(Color.RED);
+                        break;
+                    }
+                    default: {
+                        headerTV.setText(getString(R.string.header_with_arrow, text, Definitions.ARROW_UP));
+                        headerTV.setTextColor(Color.RED);
+                        ascOrDesc = Definitions.ARROW_UP;
+                        break;
+                    }
+                }
+                setDefaultHeadersStyleExeptSelected(headerTV);
+                sortBY = getSortBy(text);
+                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), sortBY, ascOrDesc);
             });
         }
     }
@@ -205,7 +202,7 @@ public class TransactionsActivity extends AppCompatActivity {
         else if (header.equals(getString(R.string.category)))
             return Definitions.SORT_BY_CATEGORY;
         if (header.equals(getString(R.string.payment_method)))
-            return Definitions.SORT_BY_PAYMRNT_METHOD;
+            return Definitions.SORT_BY_PAYMENT_METHOD;
         else if (header.equals(getString(R.string.store)))
             return Definitions.SORT_BY_STORE;
         if (header.equals(getString(R.string.charge_date)))
@@ -222,44 +219,35 @@ public class TransactionsActivity extends AppCompatActivity {
             TextView currentTV = (TextView) headersTV.getChildAt(i);
             if (currentTV != headerTV) {
                 currentTV.setText(defaultTextTVHeaders.get(i));
-                currentTV.setTextColor(getResources().getColor(R.color.colorWhite));
+                currentTV.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
             }
         }
     }
 
     private void setRefreshListener() {
         refreshLayout = findViewById(R.id.refresh_layout_transactions);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onRefresh() {
-                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
-                refreshLayout.setRefreshing(false);
-            }
+        refreshLayout.setOnRefreshListener(() -> {
+            setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
+            refreshLayout.setRefreshing(false);
         });
     }
 
     public void setActiveTransactionListener() {
-        transactionsActiveFilterCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP); // todo only reload recycler. listener are not needed(also for delete tran event)
-            }
-        });
+        transactionsActiveFilterCB.setOnCheckedChangeListener((buttonView, isChecked) -> 
+            setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP));
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
 
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            adapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            adapter.notifyItemMoved(viewHolder.getBindingAdapterPosition(), target.getBindingAdapterPosition());
             return true;
         }
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            int position = viewHolder.getAdapterPosition();
+            int position = viewHolder.getBindingAdapterPosition();
             Transaction tran = transactions.get(position);
             boolean update = false;
             boolean onlyActive = ((CheckBox) findViewById(R.id.transactionsFilterCB)).isChecked();
@@ -282,7 +270,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 DBUtil.getInstance().updateCategoryBudgetValue(refMonth, catId);
             }
             transactions.remove(position);
-            adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            adapter.notifyItemRemoved(position);
             if (!tran.isDeleted() || !onlyActive) {
                 transactions.add(position, tran);
                 adapter.notifyItemInserted(position);

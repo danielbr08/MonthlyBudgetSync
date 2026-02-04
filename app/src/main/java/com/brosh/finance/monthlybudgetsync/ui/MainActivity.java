@@ -1,22 +1,21 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,75 +47,273 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Main activity of the application.
+ * Provides navigation to budget, transactions, and other features.
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final String PREFS_CHECKBOX = "checkbox";
+    private static final String PREFS_REMEMBER_ME = "rememberMe";
+    private static final String PREFS_EMAIL = "email";
+    private static final String PREFS_PASSWORD = "password";
 
+    @Nullable
     private InterstitialAd interstitialAd;
     private DBUtil dbUtil;
     private String userKey;
+    @Nullable
     private User user;
 
-    private Intent budgetScreen, transactionsScreen, insertTransactionScreen, createBudgetScreen;
-    private Spinner refMonthSpinner;
+    // UI components
+    private Spinner yearSpinner;
+    private Spinner monthSpinner;
     private Button insertTransactionButton;
     private Button budgetButton;
     private Button transactionsButton;
     private Button createBudgetButton;
-    private Month month;
     private SwipeRefreshLayout refreshLayout;
-    private TextView userLogeedInTV = null;
+    @Nullable private TextView userLoggedInTV;
+    
+    // Activity state
+    private boolean isDestroyed = false;
+    
+    // Month selection state
+    private List<String> allMonths;
+    private List<String> availableYears;
+    private String selectedYear;
+    private boolean isSpinnerInitializing;
+    
+    // State
+    @Nullable private Month month;
 
+    /**
+     * Initializes the year and month spinners with available months.
+     * Uses a two-level approach: select year first, then month.
+     */
     public void initRefMonthSpinner() {
-        List<String> allMonths = dbUtil.getAllMonthsYearMonth();
-        String refMonth;
-        if (month != null) {
-            refMonth = month.getYearMonth();
-            if (allMonths.contains(refMonth)) {
-                allMonths.remove(refMonth);
-                allMonths.add(0, refMonth);// put the current month first
+        if (yearSpinner == null || monthSpinner == null || dbUtil == null) {
+            Log.w(TAG, "Cannot init spinners - null references");
+            return;
+        }
+        
+        allMonths = dbUtil.getAllMonthsYearMonth();
+        if (allMonths == null || allMonths.isEmpty()) {
+            return;
+        }
+        
+        // Extract unique years and sort descending (newest first)
+        availableYears = extractUniqueYears(allMonths);
+        if (availableYears.isEmpty()) {
+            return;
+        }
+        
+        isSpinnerInitializing = true;
+        
+        // Setup year spinner
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this,
+                R.layout.custom_spinner, availableYears);
+        yearSpinner.setAdapter(yearAdapter);
+        
+        // Determine initial year selection
+        String currentYearMonth = month != null ? month.getYearMonth() : null;
+        String initialYear = availableYears.get(0); // Default to first (most recent)
+        
+        if (currentYearMonth != null && currentYearMonth.contains(Config.SEPARATOR)) {
+            String yearFromMonth = currentYearMonth.split(Config.SEPARATOR)[0];
+            if (availableYears.contains(yearFromMonth)) {
+                initialYear = yearFromMonth;
             }
         }
-        ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<>(this,
-                R.layout.custom_spinner, allMonths);
-        refMonthSpinner.setAdapter(adapter);
+        
+        selectedYear = initialYear;
+        int yearPosition = availableYears.indexOf(initialYear);
+        yearSpinner.setSelection(yearPosition);
+        
+        // Setup month spinner for selected year
+        updateMonthSpinnerForYear(initialYear, currentYearMonth);
+        
+        isSpinnerInitializing = false;
+    }
+    
+    /**
+     * Extracts unique years from month list and sorts them descending.
+     */
+    private List<String> extractUniqueYears(List<String> months) {
+        List<String> years = new ArrayList<>();
+        for (String yearMonth : months) {
+            if (yearMonth != null && yearMonth.contains(Config.SEPARATOR)) {
+                String year = yearMonth.split(Config.SEPARATOR)[0];
+                if (!years.contains(year)) {
+                    years.add(year);
+                }
+            }
+        }
+        // Sort descending (newest first)
+        years.sort(java.util.Collections.reverseOrder());
+        return years;
+    }
+    
+    /**
+     * Updates month spinner with months available in the selected year.
+     */
+    private void updateMonthSpinnerForYear(String year, @Nullable String selectYearMonth) {
+        List<String> monthsForYear = getMonthsForYear(year);
+        if (monthsForYear.isEmpty()) {
+            return;
+        }
+        
+        // Convert month numbers to display names
+        List<String> displayMonths = new ArrayList<>();
+        for (String ym : monthsForYear) {
+            displayMonths.add(formatMonthForDisplay(ym));
+        }
+        
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this,
+                R.layout.custom_spinner, displayMonths);
+        monthSpinner.setAdapter(monthAdapter);
+        
+        // Select appropriate month
+        int monthPosition = 0;
+        if (selectYearMonth != null) {
+            String displayName = formatMonthForDisplay(selectYearMonth);
+            int idx = displayMonths.indexOf(displayName);
+            if (idx >= 0) {
+                monthPosition = idx;
+            }
+        }
+        monthSpinner.setSelection(monthPosition);
+    }
+    
+    /**
+     * Gets all months (yearMonth format) for a specific year.
+     */
+    private List<String> getMonthsForYear(String year) {
+        List<String> result = new ArrayList<>();
+        if (allMonths == null) return result;
+        
+        for (String ym : allMonths) {
+            if (ym != null && ym.startsWith(year + Config.SEPARATOR)) {
+                result.add(ym);
+            }
+        }
+        // Sort descending (newest month first)
+        result.sort(java.util.Collections.reverseOrder());
+        return result;
+    }
+    
+    /**
+     * Formats a yearMonth string for display (e.g., "2024-01" -> "01 - Jan").
+     */
+    private String formatMonthForDisplay(String yearMonth) {
+        if (yearMonth == null || !yearMonth.contains(Config.SEPARATOR)) {
+            return yearMonth != null ? yearMonth : "";
+        }
+        
+        String[] parts = yearMonth.split(Config.SEPARATOR);
+        if (parts.length < 2) return yearMonth;
+        
+        String monthNum = parts[1];
+        String monthName = getMonthName(monthNum);
+        return monthNum + " - " + monthName;
+    }
+    
+    /**
+     * Gets the localized month name from month number.
+     * Uses the device's locale for proper localization.
+     */
+    private String getMonthName(String monthNum) {
+        try {
+            int idx = Integer.parseInt(monthNum) - 1;
+            if (idx >= 0 && idx < 12) {
+                java.text.DateFormatSymbols symbols = new java.text.DateFormatSymbols(java.util.Locale.getDefault());
+                String[] monthNames = symbols.getShortMonths();
+                return monthNames[idx];
+            }
+        } catch (NumberFormatException e) {
+            // Ignore
+        }
+        return monthNum;
+    }
+    
+    /**
+     * Gets the yearMonth key from the current spinner selections.
+     */
+    private String getSelectedYearMonth() {
+        if (yearSpinner == null || monthSpinner == null) return null;
+        
+        Object yearObj = yearSpinner.getSelectedItem();
+        Object monthObj = monthSpinner.getSelectedItem();
+        
+        if (yearObj == null || monthObj == null) return null;
+        
+        String year = yearObj.toString();
+        String monthDisplay = monthObj.toString();
+        
+        // Extract month number from display format "01 - Jan"
+        String monthNum = monthDisplay.split(" - ")[0];
+        
+        return year + Config.SEPARATOR + monthNum;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent intent;
         int itemId = item.getItemId();
-        if (itemId == R.id.settingsItem) {
-            intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            addParametersToActivity(intent);
-            startActivity(intent);
-            return true;
-        } else if (itemId == R.id.shareItem) {
-            openShareDialog();
-            return true;
-        } else if (itemId == R.id.recommend_to_friend) {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, Config.APP_URL);
-            sendIntent.setType("text/plain");
-            Intent shareIntent = Intent.createChooser(sendIntent, null);
-            startActivity(shareIntent);
-            return true;
-        } else if (itemId == R.id.app_guide) {
-            intent = new Intent(Intent.ACTION_VIEW);
+        
+        try {
+            if (itemId == R.id.settingsItem) {
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                addParametersToActivity(intent);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.shareItem) {
+                openShareDialog();
+                return true;
+            } else if (itemId == R.id.recommend_to_friend) {
+                shareAppWithFriend();
+                return true;
+            } else if (itemId == R.id.app_guide) {
+                openAppGuide();
+                return true;
+            } else if (itemId == R.id.contactUsItem) {
+                Intent intent = new Intent(getApplicationContext(), ContactUsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error handling menu item: " + e.getMessage(), e);
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_SHORT, this);
+        }
+        
+        return super.onOptionsItemSelected(item);
+    }
+    
+    /**
+     * Shares the app URL with a friend via share intent.
+     */
+    private void shareAppWithFriend() {
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, Config.APP_URL);
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+    
+    /**
+     * Opens the app guide YouTube video.
+     */
+    private void openAppGuide() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(getString(R.string.tutorial_app_youtube)));
             startActivity(intent);
-            return true;
-        } else if (itemId == R.id.contactUsItem) {
-            intent = new Intent(getApplicationContext(), ContactUsActivity.class);
-            startActivity(intent);
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        } catch (Exception e) {
+            Log.e(TAG, "Could not open app guide", e);
+            TextUtil.showMessage("Could not open guide", Toast.LENGTH_SHORT, this);
         }
     }
 
@@ -127,123 +324,226 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        // Handle back press with confirmation dialog
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isFinishing()) {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    return;
+                }
+                
+                // Show confirmation dialog before exiting
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(R.string.are_you_sure_you_want_to_exit)
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.yes), (dialog, id) -> {
+                            setEnabled(false);
+                            getOnBackPressedDispatcher().onBackPressed();
+                        })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .show();
+            }
+        });
 
+        // Let the system handle orientation based on device capabilities
+
+        // Initialize ads
         MobileAds.initialize(this, initializationStatus -> {});
         initAdFields();
 
-        user = DBUtil.getInstance().getUser();
+        // Get user data
+        dbUtil = DBUtil.getInstance();
+        user = dbUtil.getUser();
+        
+        if (user == null) {
+            Log.e(TAG, "User is null, redirecting to login");
+            redirectToLogin();
+            return;
+        }
+        
+        // Setup ads visibility
         if (user.getUserSettings().isAdEnabled()) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
-            findViewById(R.id.adView).setVisibility(View.GONE);
+            View adView = findViewById(R.id.adView);
+            if (adView != null) {
+                adView.setVisibility(View.GONE);
+            }
         }
+        
         userKey = user.getDbKey();
-        setUserNameLable();
-        dbUtil = DBUtil.getInstance();
-
-        refMonthSpinner = findViewById(R.id.monthSpinner);
-
-        budgetScreen = null;
-        transactionsScreen = null;
-        insertTransactionScreen = null;
-        createBudgetScreen = null;
-        refMonthSpinner = findViewById(R.id.monthSpinner);
-
+        initializeViews();
+        setUserNameLabel();
+        refresh();
+        setRefreshListener();
+        setupButtonListeners();
+        setupSpinnerListener();
+        
+        String yearMonth = month != null ? month.getYearMonth() : null;
+        UiUtil.setToolbar(this, yearMonth);
+    }
+    
+    /**
+     * Initializes all view references.
+     */
+    private void initializeViews() {
+        yearSpinner = findViewById(R.id.yearSpinner);
+        monthSpinner = findViewById(R.id.monthSpinner);
         insertTransactionButton = findViewById(R.id.insertTransactionButton);
         budgetButton = findViewById(R.id.budgetButton);
         transactionsButton = findViewById(R.id.transactionsButton);
         createBudgetButton = findViewById(R.id.createBudgetButton);
-        refresh();
-        setRefreshListener();
-        String yearMonth = month != null ? month.getYearMonth() : null;
-        UiUtil.setToolbar(this, yearMonth);
-
-        budgetButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-                if (budgetScreen == null)
-                    budgetScreen = new Intent(getApplicationContext(), BudgetActivity.class);
-                addParametersToActivity(budgetScreen);
-                startActivity(budgetScreen);
-            }
+    }
+    
+    /**
+     * Sets up click listeners for all navigation buttons.
+     */
+    private void setupButtonListeners() {
+        budgetButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), BudgetActivity.class);
+            addParametersToActivity(intent);
+            startActivity(intent);
         });
-
-        insertTransactionButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-                if (insertTransactionScreen == null)
-                    insertTransactionScreen = new Intent(getApplicationContext(), InsertTransactionActivity.class);
-                addParametersToActivity(insertTransactionScreen);
-                startActivity(insertTransactionScreen);
-            }
+        
+        insertTransactionButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), InsertTransactionActivity.class);
+            addParametersToActivity(intent);
+            startActivity(intent);
         });
-
-        transactionsButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-                if (transactionsScreen == null)
-                    transactionsScreen = new Intent(getApplicationContext(), TransactionsActivity.class);
-                addParametersToActivity(transactionsScreen);
-                startActivity(transactionsScreen);
-            }
+        
+        transactionsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), TransactionsActivity.class);
+            addParametersToActivity(intent);
+            startActivity(intent);
         });
-
-        createBudgetButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-                if (createBudgetScreen == null)
-                    createBudgetScreen = new Intent(getApplicationContext(), CreateBudgetActivity.class);
-                addParametersToActivity(createBudgetScreen);
-                startActivity(createBudgetScreen);
-            }
+        
+        createBudgetButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), CreateBudgetActivity.class);
+            addParametersToActivity(intent);
+            startActivity(intent);
         });
-
-        refMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    }
+    
+    /**
+     * Sets up the year and month spinner selection listeners.
+     */
+    private void setupSpinnerListener() {
+        // Year spinner listener - updates month spinner when year changes
+        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String refMonth = refMonthSpinner.getSelectedItem().toString();
-                month = dbUtil.getMonth(refMonth);
-                boolean isActive = month != null && month.isActive();
-                Drawable circleButton = isActive ? getResources().getDrawable(R.drawable.circle_pink_style) : getResources().getDrawable(R.drawable.circle_gray_style);
-                insertTransactionButton.setEnabled(isActive);
-                createBudgetButton.setEnabled(isActive);
-                insertTransactionButton.setBackground(circleButton);
-                createBudgetButton.setBackground(circleButton);
+                if (isSpinnerInitializing) return;
+                
+                Object selectedItem = yearSpinner.getSelectedItem();
+                if (selectedItem == null) return;
+                
+                String newYear = selectedItem.toString();
+                if (!newYear.equals(selectedYear)) {
+                    selectedYear = newYear;
+                    // Update month spinner for new year, select first month
+                    List<String> monthsForYear = getMonthsForYear(newYear);
+                    if (!monthsForYear.isEmpty()) {
+                        updateMonthSpinnerForYear(newYear, monthsForYear.get(0));
+                    }
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
+                // No action needed
+            }
+        });
+        
+        // Month spinner listener - loads selected month data
+        monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (isSpinnerInitializing) return;
+                
+                String yearMonth = getSelectedYearMonth();
+                if (yearMonth == null) return;
+                
+                month = dbUtil.getMonth(yearMonth);
+                boolean isActive = month != null && month.isActive();
+                updateButtonStates(isActive);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // No action needed
             }
         });
     }
-
-    public void logout(View view) {
-        SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("rememberMe", "false");
-        if (preferences.contains("email"))
-            editor.remove("email");
-        if (preferences.contains("password"))
-            editor.remove("password");
-        editor.apply();
-
-        FirebaseAuth.getInstance().signOut();//logout
-        DBUtil.getInstance().clear();
-        userLogeedInTV.setText(getString(R.string.empty));
+    
+    /**
+     * Updates button enabled states and backgrounds.
+     */
+    private void updateButtonStates(boolean isActive) {
+        Drawable circleButton = ContextCompat.getDrawable(this, 
+            isActive ? R.drawable.circle_pink_style : R.drawable.circle_gray_style);
+        
+        insertTransactionButton.setEnabled(isActive);
+        createBudgetButton.setEnabled(isActive);
+        insertTransactionButton.setBackground(circleButton);
+        createBudgetButton.setBackground(circleButton);
+    }
+    
+    /**
+     * Redirects user to login screen and finishes this activity.
+     */
+    private void redirectToLogin() {
         startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    /**
+     * Logs out the current user and returns to login screen.
+     */
+    public void logout(View view) {
+        try {
+            // Clear saved credentials
+            SharedPreferences preferences = getSharedPreferences(PREFS_CHECKBOX, MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(PREFS_REMEMBER_ME, "false");
+            editor.remove(PREFS_EMAIL);
+            editor.remove(PREFS_PASSWORD);
+            editor.apply();
+
+            // Sign out from Firebase
+            FirebaseAuth.getInstance().signOut();
+            
+            // Clear local data
+            DBUtil.getInstance().clear();
+            
+            // Update UI
+            if (userLoggedInTV != null) {
+                userLoggedInTV.setText(getString(R.string.empty));
+            }
+            
+            // Navigate to login
+            redirectToLogin();
+        } catch (Exception e) {
+            Log.e(TAG, "Error during logout: " + e.getMessage(), e);
+            // Still try to redirect to login even if there's an error
+            redirectToLogin();
+        }
+    }
+
+    /**
+     * Opens a dialog to share budget with another user.
+     */
     public void openShareDialog() {
+        if (isFinishing() || isDestroyed) {
+            return;
+        }
+        
         final Context context = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final EditText emailInput = new EditText(this);
@@ -253,29 +553,29 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setView(emailInput);
         builder.setPositiveButton(getString(R.string.share), null);
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.cancel());
+        
         AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String emailText = emailInput.getText().toString();
-                if (!TextUtil.isEmailValid(emailText)) {
-                    emailInput.setError(getString(R.string.invalid_email));
-                } else {
-                    try {
-                        DBUtil.getInstance().share(emailText);
-                        TextUtil.showMessage(getString(R.string.successfully_shared), Toast.LENGTH_LONG, context);
-                    } catch (Exception e) {
-                        TextUtil.showMessage(e.getMessage(), Toast.LENGTH_LONG, context);
-                    }
-                    dialog.dismiss();
+        
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String emailText = TextUtil.safeTrim(emailInput.getText().toString());
+            
+            if (!TextUtil.isEmailValid(emailText)) {
+                emailInput.setError(getString(R.string.invalid_email));
+                return;
+            }
+            
+            try {
+                DBUtil.getInstance().share(emailText);
+                TextUtil.showMessage(getString(R.string.successfully_shared), Toast.LENGTH_LONG, context);
+                dialog.dismiss();
+            } catch (Exception e) {
+                String errorMsg = e.getMessage();
+                if (errorMsg == null || errorMsg.isEmpty()) {
+                    errorMsg = getString(R.string.error);
                 }
+                TextUtil.showMessage(errorMsg, Toast.LENGTH_LONG, context);
             }
         });
     }
@@ -286,20 +586,6 @@ public class MainActivity extends AppCompatActivity {
         dbUtil.createNewMonth(budgetNumber, refMonth);
     }
 
-//    public void share(View view) {
-//        String shareWith = ((EditText)findViewById(R.id.etShare)).getText().toString().trim().replace('.',',');
-//        DatabaseReferenceShares.child(shareWith).setValue(email.getText().toString().trim().replace('.',','));
-//    }
-
-//    public void openCreateBudgetActivity(String userKey){
-////        Intent intent = new Intent(MainActivity.this, Create_Budget_Activity.class);
-////        intent.putExtra(getString(R.string.language),getString(R.string.hebrew));
-//////        String userKey = getIntent().getExtras().getString(getString(R.string.user),getString(R.string.empty));
-////        intent.putExtra(getString(R.string.user),userKey);
-////        intent.putExtra( getString(R.string.db_service),dbService);
-////        startActivity(intent);
-////    }
-
     public void addParametersToActivity(Intent activity) {
         activity.putExtra(Definitions.MONTH, month == null ? null : month.getYearMonth());
     }
@@ -307,147 +593,229 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        
+        if (user == null || dbUtil == null) {
+            return;
+        }
 
-        setUserNameLable();
+        setUserNameLabel();
+        
+        // Show interstitial ad if enabled
         if (user.getUserSettings().isAdEnabled()) {
             showAD();
         }
-        if (dbUtil.isAnyBudgetExists()) { // Some Budget exists
-            if (month == null) { // After create budget first time
-                if (dbUtil.isCurrentRefMonthExists()) {
-                    month = dbUtil.getMonth(DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR));
-                    initRefMonthSpinner();
-                    budgetButton.setEnabled(true);
-                    transactionsButton.setEnabled(true);
-                    insertTransactionButton.setEnabled(true);
-                    budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
-                    transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
-                    insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
-                } else { // todo Exception should throws
-
-                }
-            } else { // Same month as before
-            }
+        
+        // Update UI based on budget state
+        if (dbUtil.isAnyBudgetExists()) {
+            handleBudgetExists();
         } else {
-            budgetButton.setEnabled(false);
-            transactionsButton.setEnabled(false);
-            insertTransactionButton.setEnabled(false);
-            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            month = null;
+            handleNoBudget();
         }
+    }
+    
+    /**
+     * Handles UI state when at least one budget exists.
+     */
+    private void handleBudgetExists() {
+        if (month == null && dbUtil.isCurrentRefMonthExists()) {
+            // After creating budget for the first time
+            month = dbUtil.getMonth(DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR));
+            initRefMonthSpinner();
+            enableAllButtons();
+        }
+    }
+    
+    /**
+     * Handles UI state when no budgets exist.
+     */
+    private void handleNoBudget() {
+        disableAllButtons();
+        month = null;
+    }
+    
+    /**
+     * Enables all navigation buttons with active styling.
+     */
+    private void enableAllButtons() {
+        Drawable activeDrawable = ContextCompat.getDrawable(this, R.drawable.circle_pink_style);
+        
+        budgetButton.setEnabled(true);
+        transactionsButton.setEnabled(true);
+        insertTransactionButton.setEnabled(true);
+        
+        budgetButton.setBackground(activeDrawable);
+        transactionsButton.setBackground(activeDrawable);
+        insertTransactionButton.setBackground(activeDrawable);
+    }
+    
+    /**
+     * Disables all navigation buttons with inactive styling.
+     */
+    private void disableAllButtons() {
+        Drawable inactiveDrawable = ContextCompat.getDrawable(this, R.drawable.circle_gray_style);
+        
+        budgetButton.setEnabled(false);
+        transactionsButton.setEnabled(false);
+        insertTransactionButton.setEnabled(false);
+        
+        budgetButton.setBackground(inactiveDrawable);
+        transactionsButton.setBackground(inactiveDrawable);
+        insertTransactionButton.setBackground(inactiveDrawable);
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        ValueEventListener rootEventListener = DBUtil.getInstance().getRootEventListener();
-        if (rootEventListener != null) {
-            Config.DatabaseReferenceMonthlyBudget.child(userKey).removeEventListener(rootEventListener);
+        isDestroyed = true;
+        
+        // Clean up Firebase listeners to prevent memory leaks
+        try {
+            DBUtil dbUtilInstance = DBUtil.getInstance();
+            if (dbUtilInstance != null) {
+                ValueEventListener rootEventListener = dbUtilInstance.getRootEventListener();
+                if (rootEventListener != null && userKey != null) {
+                    Config.DatabaseReferenceMonthlyBudget.child(userKey).removeEventListener(rootEventListener);
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Error cleaning up listeners: " + e.getMessage());
         }
+        
+        // Clean up ad
+        interstitialAd = null;
+        
+        super.onDestroy();
     }
 
+    /**
+     * Refreshes the main activity state and UI.
+     */
     private void refresh() {
+        if (dbUtil == null) {
+            return;
+        }
+        
         if (dbUtil.isAnyBudgetExists()) {
             month = null;
+            
+            // Create current month if it doesn't exist
             if (!dbUtil.isCurrentRefMonthExists()) {
                 createNewMonth(new Date());
+                Drawable activeDrawable = ContextCompat.getDrawable(this, R.drawable.circle_pink_style);
                 insertTransactionButton.setEnabled(true);
-                insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
+                insertTransactionButton.setBackground(activeDrawable);
             }
-            budgetButton.setEnabled(true);
-            transactionsButton.setEnabled(true);
-            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
-            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
-            month = dbUtil.getMonth(DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR));
-            Date nextRefMonth = DateUtil.getNextRefMonth(month.getRefMonth());
-            if (new Date().after(nextRefMonth)) {
-                createNewMonth(nextRefMonth);
-                insertTransactionButton.setEnabled(true);
-                insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_pink_style));
+            
+            enableAllButtons();
+            
+            String currentYearMonth = DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR);
+            month = dbUtil.getMonth(currentYearMonth);
+            
+            // Check if we need to create next month
+            if (month != null && month.getRefMonth() != null) {
+                Date nextRefMonth = DateUtil.getNextRefMonth(month.getRefMonth());
+                if (nextRefMonth != null && new Date().after(nextRefMonth)) {
+                    createNewMonth(nextRefMonth);
+                    Drawable activeDrawable = ContextCompat.getDrawable(this, R.drawable.circle_pink_style);
+                    insertTransactionButton.setEnabled(true);
+                    insertTransactionButton.setBackground(activeDrawable);
+                }
             }
+            
             initRefMonthSpinner();
         } else {
-            budgetButton.setEnabled(false);
-            transactionsButton.setEnabled(false);
-            insertTransactionButton.setEnabled(false);
-            budgetButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            transactionsButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
-            insertTransactionButton.setBackground(getResources().getDrawable(R.drawable.circle_gray_style));
+            disableAllButtons();
         }
     }
 
+    /**
+     * Sets up the pull-to-refresh listener.
+     */
     private void setRefreshListener() {
         refreshLayout = findViewById(R.id.refresh_layout_main);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onRefresh() {
+        if (refreshLayout != null) {
+            refreshLayout.setOnRefreshListener(() -> {
                 refresh();
                 refreshLayout.setRefreshing(false);
-            }
-        });
+            });
+        }
     }
 
-    @Override
-    public void onBackPressed() {
-        // todo check for better solution for buttons order
-        TextView tv = new TextView(this);
-        tv.setTextColor(getResources().getColor(R.color.colorLoginBackground));
-        tv.setText(R.string.are_you_sure_you_want_to_exit);
-        tv.setPadding(40, 40, 40, 0);
-        new AlertDialog.Builder(this)
-                .setCustomTitle(tv)
-                .setCancelable(false)
-                .setNegativeButton(getString(R.string.yes), new DialogInterface.OnClickListener() { // Negative is actually positive
-                    public void onClick(DialogInterface dialog, int id) {
-                        MainActivity.super.onBackPressed();
-                    }
-                })
-                .setPositiveButton(getString(R.string.no), null) // Positive is actually negative
-                .show();
-    }
-
+    /**
+     * Initializes ad-related fields.
+     */
     public void initAdFields() {
         loadInterstitialAd();
     }
 
+    /**
+     * Loads an interstitial ad.
+     */
     private void loadInterstitialAd() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this, getString(R.string.admob_transition_unit_id), adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd ad) {
-                        interstitialAd = ad;
-                        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                // Load the next interstitial.
-                                interstitialAd = null;
-                                loadInterstitialAd();
+        if (isDestroyed || isFinishing()) {
+            return;
+        }
+        
+        try {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            InterstitialAd.load(this, getString(R.string.admob_transition_unit_id), adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd ad) {
+                            if (isDestroyed) {
+                                return;
                             }
-                        });
-                    }
+                            interstitialAd = ad;
+                            interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    interstitialAd = null;
+                                    loadInterstitialAd();
+                                }
+                            });
+                        }
 
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        interstitialAd = null;
-                    }
-                });
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            Log.d(TAG, "Interstitial ad failed to load: " + loadAdError.getMessage());
+                            interstitialAd = null;
+                        }
+                    });
+        } catch (Exception e) {
+            Log.w(TAG, "Error loading interstitial ad", e);
+        }
     }
 
+    /**
+     * Shows the interstitial ad if available.
+     */
     public void showAD() {
+        if (isDestroyed || isFinishing()) {
+            return;
+        }
+        
         try {
             if (interstitialAd != null) {
                 interstitialAd.show(this);
             }
         } catch (Exception e) {
+            Log.w(TAG, "Error showing ad", e);
         }
     }
 
-    private void setUserNameLable() {
-        userLogeedInTV = userLogeedInTV == null ? findViewById(R.id.tv_user_logeed_in) : userLogeedInTV;
-        userLogeedInTV.setText(String.format("%s %s", getString(R.string.logged_as), user.getName()));
+    /**
+     * Updates the user name label with current user information.
+     */
+    private void setUserNameLabel() {
+        if (userLoggedInTV == null) {
+            userLoggedInTV = findViewById(R.id.tv_user_logeed_in);
+        }
+        
+        if (userLoggedInTV != null && user != null) {
+            String userName = user.getName();
+            if (userName == null || userName.isEmpty()) {
+                userName = getString(R.string.empty);
+            }
+            userLoggedInTV.setText(String.format("%s %s", getString(R.string.logged_as), userName));
+        }
     }
 }

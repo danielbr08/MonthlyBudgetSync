@@ -8,6 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a budget month with its categories.
+ * Note: Setters are required for Firebase deserialization.
+ */
+@SuppressWarnings("unused") // Setters used by Firebase deserialization
 public class Month implements Serializable {
 
     private String id;
@@ -52,6 +57,7 @@ public class Month implements Serializable {
         this.budgetNumber = budgetNumber;
     }
 
+    @SuppressWarnings("unused") // May be used for future functionality
     public void updateSpecificCategory(String id, Category cat) {
         this.categories.put(id, cat);
     }
@@ -87,11 +93,19 @@ public class Month implements Serializable {
     }
 
     public Map<String, Category> getCategories() {
+        if (categories == null) {
+            categories = new HashMap<>();
+        }
         return categories;
     }
 
     public void addCategory(String id, Category category) {
-        categories.put(id, category);
+        if (categories == null) {
+            categories = new HashMap<>();
+        }
+        if (id != null && category != null) {
+            categories.put(id, category);
+        }
     }
 
     public String getId() {

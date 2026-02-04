@@ -3,7 +3,6 @@ package com.brosh.finance.monthlybudgetsync.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +28,6 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
-import java.util.Set;
 
 import static com.brosh.finance.monthlybudgetsync.config.Definitions.*;
 
@@ -37,7 +35,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private int updateType;
     private TextView oldValueTV;
-    private EditText newValueET, passwordToConfirmET;
+    private EditText newValueET;
+    private EditText passwordToConfirmET;
     private Button submit;
     private ProgressBar progressBar;
 
@@ -50,13 +49,15 @@ public class ProfileActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         user = DBUtil.getInstance().getUser();
-        updateType = extras.getInt(UPDATE_TYPE);
+        if (extras != null) {
+            updateType = extras.getInt(UPDATE_TYPE);
+        }
 
-        oldValueTV = (TextView) findViewById(R.id.oldValueTV);
-        newValueET = (EditText) findViewById(R.id.newValueET);
-        passwordToConfirmET = (EditText) findViewById(R.id.passwordToConfirmET);
-        submit = (Button) findViewById(R.id.submitUpdateProfile);
-        progressBar = (ProgressBar) findViewById(R.id.progressBarUpdateProfile);
+        oldValueTV = findViewById(R.id.oldValueTV);
+        newValueET = findViewById(R.id.newValueET);
+        passwordToConfirmET = findViewById(R.id.passwordToConfirmET);
+        submit = findViewById(R.id.submitUpdateProfile);
+        progressBar = findViewById(R.id.progressBarUpdateProfile);
         prepareUI();
     }
 
@@ -95,7 +96,6 @@ public class ProfileActivity extends AppCompatActivity {
         String passwordConfirm = passwordToConfirmET.getText().toString().trim();
 
         try {
-            // todo need to validate new value and password
             switch (updateType) {
                 case UPDATE_EMAIL:
                     changeEmail(newValue, passwordConfirm);
@@ -104,7 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
                     changePassword(newValue, passwordConfirm);
                     break;
                 case UPDATE_PHONE_NUMBER:
-                    changePoneNumber(newValue, passwordConfirm);
+                    changePhoneNumber(newValue, passwordConfirm);
                     break;
                 case UPDATE_USER_NAME:
                     changeUserName(newValue, passwordConfirm);
@@ -119,8 +119,11 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void changeEmail(String newEmail, String password) {
-        Activity activity = this;
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
+        if (usr == null || usr.getEmail() == null) {
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
+            return;
+        }
         String oldEmail = usr.getEmail();
         // Get auth credentials from the user for re-authentication
         AuthCredential credential = EmailAuthProvider
@@ -170,8 +173,8 @@ public class ProfileActivity extends AppCompatActivity {
                                             progressBar.setVisibility(View.GONE);
                                             if (task.getException() instanceof FirebaseNetworkException) {
                                                 TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, getApplicationContext());
-                                            } else if (task.getException() instanceof FirebaseAuthException) {
-                                                String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+                                            } else if (task.getException() instanceof FirebaseAuthException authException) {
+                                                String errorCode = authException.getErrorCode();
                                                 switch (errorCode) {
                                                     case "ERROR_INVALID_EMAIL":
                                                         newValueET.setError(getString(R.string.error_invalid_email));
@@ -192,6 +195,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void changePassword(String newPassword, String passwordConfirm) {
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
+        if (usr == null || usr.getEmail() == null) {
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
+            return;
+        }
         AuthCredential credential = EmailAuthProvider.getCredential(usr.getEmail(), passwordConfirm);
         usr.reauthenticate(credential)
                 .addOnCompleteListener(task -> {
@@ -208,8 +215,8 @@ public class ProfileActivity extends AppCompatActivity {
                                     if (task.getException() instanceof FirebaseNetworkException) {
                                         TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, getApplicationContext());
                                         return;
-                                    } else if (task.getException() instanceof FirebaseAuthException) {
-                                        String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+                                    } else if (task.getException() instanceof FirebaseAuthException authException) {
+                                        String errorCode = authException.getErrorCode();
                                         switch (errorCode) {
                                             case "ERROR_WEAK_PASSWORD":
                                                 newValueET.setError(getString(R.string.error_weak_password));
@@ -222,9 +229,13 @@ public class ProfileActivity extends AppCompatActivity {
                 });
     }
 
-    private void changePoneNumber(String phoneNumber, String password) {
+    private void changePhoneNumber(String phoneNumber, String password) {
         User user = DBUtil.getInstance().getUser();
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
+        if (usr == null || usr.getEmail() == null) {
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
+            return;
+        }
         AuthCredential credential = EmailAuthProvider
                 .getCredential(usr.getEmail(), password);
         usr.reauthenticate(credential)
@@ -248,6 +259,10 @@ public class ProfileActivity extends AppCompatActivity {
     private void changeUserName(String newUserName, String password) {
         User user = DBUtil.getInstance().getUser();
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
+        if (usr == null || usr.getEmail() == null) {
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
+            return;
+        }
         AuthCredential credential = EmailAuthProvider
                 .getCredential(usr.getEmail(), password);
         usr.reauthenticate(credential)

@@ -7,7 +7,7 @@
     <string name="budget">Budget</string>
     <string name="empty"></string>
     <string name="zero">0</string>
-    <string name="seperator">-</string>
+    <string name="separator">-</string>
     <string name="hebrew">עברית</string>
     <string name="english">EN</string>
     <string name="create_budget">CREATE BUDGET</string>
@@ -61,12 +61,14 @@
     <string name="logged_in_successfully">logged in successfully!</string>
     <string name="insert">Insert</string>
     <string name="selecting_date">Selecting Date</string>
+    <string name="date_format">%1$s/%2$s/%3$d</string>
+    <string name="header_with_arrow">%1$s%2$c</string>
     <string name="transaction_inserted_successfully">Transaction inserted successfully!</string>
     <string name="requiredField">Required field!</string>
     <string name="credit_card">Credit Card</string>
     <string name="cash">Cash</string>
     <string name="chek">Check</string>
-    <string name="bank_wired">Bank Ttransfer</string>
+    <string name="bank_wired">Bank Transfer</string>
     <string name="user_created">User Created</string>
     <string name="logged_as">logged as: </string>
     <string name="active_transactions">active</string>
@@ -111,7 +113,7 @@
     <string name="error_weak_password">weak password</string>
     <string name="error_invalid_email">invalid email</string>
     <string name="error_email_already_in_use">email already in use</string>
-    <string name="user_not_ound">user not found</string>
+    <string name="user_not_found">user not found</string>
     <string name="error_invalid_password">invalid_password</string>
     <string name="are_you_sure_you_want_to_refresh">Page refresh may result in loss of information.\nAre you sure you want to refresh?</string>
     <string name="default_show_active_only_summary">Show only active transactions(not deleted) as default in transactions screen</string>

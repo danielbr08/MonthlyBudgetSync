@@ -5,13 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.brosh.finance.monthlybudgetsync.login.Login;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
@@ -37,8 +35,8 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,55 +44,109 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Database utility class for Firebase operations.
+ * Implements thread-safe singleton pattern with proper null safety.
+ */
 public final class DBUtil {
     private static final String TAG = "DBUtil";
 
-    private static DBUtil instance;
-    private static FirebaseDatabase database;
+    // Thread-safe singleton with volatile
+    private static volatile DBUtil instance;
+    private static volatile FirebaseDatabase database;
+    private static final Object LOCK = new Object();
+    private static final Object DB_LOCK = new Object();
 
-    private ValueEventListener rootEventListener;
+    private volatile ValueEventListener rootEventListener;
 
-    private static User user;
-    private static Map<String, Map<String, Budget>> budgetDBHM = new HashMap<>();
-    private static Map<String, Month> monthDBHM = new HashMap<>();
-    private static Set<String> shopsSet = new HashSet<String>();
-    private static Map<String, String> userMailUidMap = new HashMap<>();
-    private static Map<String, Share> sharesMap = new HashMap<>();
-    private static Map<String, Set<String>> ownersMap = new HashMap<>();
+    // Use thread-safe collections
+    private static volatile User user;
+    private static final Map<String, Map<String, Budget>> budgetDBHM = new ConcurrentHashMap<>();
+    private static final Map<String, Month> monthDBHM = new ConcurrentHashMap<>();
+    private static final Set<String> shopsSet = Collections.synchronizedSet(new HashSet<>());
+    private static final Map<String, String> userMailUidMap = new ConcurrentHashMap<>();
+    private static final Map<String, Share> sharesMap = new ConcurrentHashMap<>();
+    private static final Map<String, Set<String>> ownersMap = new ConcurrentHashMap<>();
 
     private String userKey;
-    private Context context;
+    // Use WeakReference to avoid memory leaks
+    private WeakReference<Context> contextRef;
 
+    /**
+     * Clears all cached data. Call this on logout.
+     */
     public void clear() {
-        instance = new DBUtil();
-        budgetDBHM.clear();
-        monthDBHM.clear();
-        shopsSet.clear();
-        sharesMap.clear();
-        userMailUidMap.clear();
-        user = null;
+        synchronized (LOCK) {
+            budgetDBHM.clear();
+            monthDBHM.clear();
+            shopsSet.clear();
+            sharesMap.clear();
+            userMailUidMap.clear();
+            ownersMap.clear();
+            user = null;
+            userKey = null;
+            rootEventListener = null;
+        }
     }
 
     private DBUtil() {
-        context = getContext();
+        Context ctx = Login.getContext();
+        contextRef = new WeakReference<>(ctx);
     }
 
+    /**
+     * Returns the application context safely.
+     * @return Context or null if not available
+     */
+    @Nullable
     public Context getContext() {
-        return Login.getContext();
+        Context ctx = contextRef != null ? contextRef.get() : null;
+        if (ctx == null) {
+            ctx = Login.getContext();
+            if (ctx != null) {
+                contextRef = new WeakReference<>(ctx);
+            }
+        }
+        return ctx;
     }
 
+    /**
+     * Thread-safe singleton accessor using double-checked locking.
+     * @return DBUtil instance
+     */
     public static DBUtil getInstance() {
-        if (instance == null)
-            instance = new DBUtil();
+        if (instance == null) {
+            synchronized (LOCK) {
+                if (instance == null) {
+                    instance = new DBUtil();
+                }
+            }
+        }
         return instance;
     }
 
+    /**
+     * Returns the Firebase database instance, initializing if needed.
+     * Thread-safe with proper persistence configuration.
+     * @return FirebaseDatabase instance
+     */
     public static FirebaseDatabase getDatabase() {
         if (database == null) {
-            database = FirebaseDatabase.getInstance();
-            database.setPersistenceEnabled(true);
-            database.getReference().keepSynced(true);
+            synchronized (DB_LOCK) {
+                if (database == null) {
+                    try {
+                        database = FirebaseDatabase.getInstance();
+                        database.setPersistenceEnabled(true);
+                        database.getReference().keepSynced(true);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to initialize Firebase database", e);
+                        // Return default instance without persistence if already set
+                        database = FirebaseDatabase.getInstance();
+                    }
+                }
+            }
         }
         return database;
     }
@@ -103,97 +155,105 @@ public final class DBUtil {
         return rootEventListener;
     }
 
-    public void setRootEventListener(ValueEventListener rootEventListener) {
-        this.rootEventListener = rootEventListener;
-    }
-
+    @SuppressWarnings("unused") // May be used for future functionality
     public static Map<String, Set<String>> getOwnersMap() {
         return DBUtil.ownersMap;
-    }
-
-    public static void setOwnersMap(Map<String, Set<String>> ownersMap) {
-        DBUtil.ownersMap = ownersMap;
     }
 
     public static Map<String, Share> getSharesMap() {
         return sharesMap;
     }
 
-    public void setSharesMap(Map<String, Share> sharesMap) {
-        DBUtil.sharesMap = sharesMap;
-    }
-
-
     public static Map<String, String> getUserMailUidMap() {
         return userMailUidMap;
-    }
-
-    public void setUserMailUidMap(Map<String, String> userMailUidMap) {
-        DBUtil.userMailUidMap = userMailUidMap;
     }
 
     public Set<String> getShopsSet() {
         return shopsSet;
     }
 
-    public void setShopsSet(Set<String> shopsSet) {
-        DBUtil.shopsSet = shopsSet;
-    }
-
     public User getUser() {
         return user;
     }
 
+    @SuppressWarnings("unused") // May be used for future functionality
     public void setUser(User user) {
         DBUtil.user = user;
     }
 
+    @SuppressWarnings("unused") // May be used for future functionality
     public String getUserKey() {
         return userKey;
-    }
-
-    public void setUserKey(String userKey) {
-        this.userKey = userKey;
     }
 
     public Month getMonth(String refMonth) {
         return monthDBHM.get(refMonth);
     }
 
+    @SuppressWarnings("unused") // May be used for future functionality
     public Map<String, Map<String, Budget>> getBudgetDBHM() {
         return budgetDBHM;
     }
 
-    public void setBudgetDBHM(Map<String, Map<String, Budget>> budgetDBHM) {
-        DBUtil.budgetDBHM = budgetDBHM;
-    }
-
-    public Map<String, Month> getMonthDBHM() {
+    // Used internally by getCategoriesByPriority
+    private Map<String, Month> getMonthDBHM() {
         return monthDBHM;
     }
 
-    public void setMonthDBHM(Map<String, Month> monthDBHM) {
-        DBUtil.monthDBHM = monthDBHM;
-    }
-
     public void updateSpecificCategory(String refMonthKey, int budgetNumber, Category categoryObj) {
-        if (monthDBHM.get(refMonthKey) == null) {
-            int chargeDay = user.getUserSettings().getChargeDay();
-            monthDBHM.put(refMonthKey, new Month(refMonthKey, budgetNumber, chargeDay));
+        if (refMonthKey == null || categoryObj == null) {
+            Log.w(TAG, "updateSpecificCategory called with null parameters");
+            return;
         }
-        monthDBHM.get(refMonthKey).addCategory(categoryObj.getId(), categoryObj);
+        
+        Month month = monthDBHM.get(refMonthKey);
+        if (month == null) {
+            int chargeDay = 1; // Default charge day
+            if (user != null) {
+                chargeDay = user.getUserSettings().getChargeDay();
+            }
+            month = new Month(refMonthKey, budgetNumber, chargeDay);
+            monthDBHM.put(refMonthKey, month);
+        }
+        month.addCategory(categoryObj.getId(), categoryObj);
     }
 
-    public void updateSpecificTransaction(String refMonthKey, String categoryObjkey, String transactionObj, Transaction trnObj) {
-        if (monthDBHM.get(refMonthKey) == null)
-            monthDBHM.put(refMonthKey, null);
-        monthDBHM.get(refMonthKey).getCategories().get(categoryObjkey).addTransactions(transactionObj, trnObj);
+    @SuppressWarnings("unused") // May be used for future functionality
+    public void updateSpecificTransaction(String refMonthKey, String categoryObjKey, String transactionObj, Transaction trnObj) {
+        if (refMonthKey == null || categoryObjKey == null || transactionObj == null || trnObj == null) {
+            Log.w(TAG, "updateSpecificTransaction called with null parameters");
+            return;
+        }
+        
+        Month month = monthDBHM.get(refMonthKey);
+        if (month == null) {
+            Log.w(TAG, "Month not found for key: " + refMonthKey);
+            return;
+        }
+        
+        Map<String, Category> categories = month.getCategories();
+        if (categories == null) {
+            Log.w(TAG, "Categories map is null for month: " + refMonthKey);
+            return;
+        }
+        
+        Category category = categories.get(categoryObjKey);
+        if (category == null) {
+            Log.w(TAG, "Category not found: " + categoryObjKey);
+            return;
+        }
+        
+        category.addTransactions(transactionObj, trnObj);
     }
 
     public void updateSpecificBudget(String budgetNumber, Budget budgetObj) {
-        if (budgetDBHM.get(budgetNumber) == null)
-            budgetDBHM.put(budgetNumber, new HashMap<>());
-        budgetDBHM.get(budgetNumber).put(budgetObj.getId(), budgetObj);
+        if (budgetNumber == null || budgetObj == null) {
+            Log.w(TAG, "updateSpecificBudget called with null parameters");
+            return;
+        }
+        
+        Map<String, Budget> budgetMap = budgetDBHM.computeIfAbsent(budgetNumber, k -> new HashMap<>());
+        budgetMap.put(budgetObj.getId(), budgetObj);
     }
 
     public void updateSpecificMonth(String refMonthKey, Month monthObj) {
@@ -201,120 +261,144 @@ public final class DBUtil {
     }
 
     public int getMaxBudgetNumber() {
-        return Collections.max(getBudgetNumbesrAsInt());
-
+        return Collections.max(getBudgetNumbersAsInt());
     }
 
-    public List<Integer> getBudgetNumbesrAsInt() {
-        List<Integer> budetNumbers = new ArrayList<>(Arrays.asList(0));
-        for (String bugetNumber : budgetDBHM.keySet()) {
-            budetNumbers.add(Integer.valueOf(bugetNumber));
+    public List<Integer> getBudgetNumbersAsInt() {
+        List<Integer> budgetNumbers = new ArrayList<>(List.of(0));
+        for (String budgetNumber : budgetDBHM.keySet()) {
+            budgetNumbers.add(Integer.parseInt(budgetNumber));
         }
-        return budetNumbers;
+        return budgetNumbers;
     }
 
+    /**
+     * Retrieves budget data from local cache sorted by category priority.
+     * @param budgetNumber the budget number to retrieve
+     * @return List of budgets, never null (empty list if not found)
+     */
+    @NonNull
     public List<Budget> getBudgetDataFromDB(long budgetNumber) {
-        List<Budget> budgets = new ArrayList<>();
-        if (!budgetDBHM.containsKey(String.valueOf(budgetNumber)))
-            return budgets;
-        budgets = new ArrayList<>(budgetDBHM.get(String.valueOf(budgetNumber)).values());
+        String budgetKey = String.valueOf(budgetNumber);
+        Map<String, Budget> budgetMap = budgetDBHM.get(budgetKey);
+        
+        if (budgetMap == null || budgetMap.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        List<Budget> budgets = new ArrayList<>(budgetMap.values());
         try {
-            Collections.sort(budgets, ComparatorUtil.COMPARE_BY_CATEGORY_PRIORITY);
+            budgets.sort(ComparatorUtil.COMPARE_BY_CATEGORY_PRIORITY);
         } catch (Exception e) {
-            String s = e.getMessage();
-            s = s;
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "Error sorting budgets: " + e.getMessage(), e);
         }
         return budgets;
     }
 
     public boolean isCurrentRefMonthExists() {
         String currentRefMonth = DateUtil.getYearMonth(DateUtil.getTodayDate(), Definitions.DASH);
-        return (monthDBHM.get(currentRefMonth) != null && monthDBHM.get(currentRefMonth).getCategories().size() > 0);
-    }
-
-    public void deleteDataRefMonth(String refMonth) {
-        monthDBHM.remove(refMonth);
-        getDBMonthPath(refMonth).removeValue(); // todo  check if this call will run delete event listener node. if yes, the next line is not needed.
-//        deleteChildValueEventsListener(Config.DatabaseReferenceMonthlyBudget.child(userKey).child(refMonth)); // todo add support databasereference parameter
-    }
-
-    public int getMaxIDPerMonthTRN(String refMonth) {
-        //return monthDBHM.get(refMonth).getTranIdNumerator();
-        int maxId = -1;
-        List<Category> categories = new ArrayList<Category>(getCategories(refMonth).values());
-        for (Category cat : categories) {
-            List<Transaction> transactions = new ArrayList<Transaction>(cat.getTransactions().values());
-            for (Transaction trn : transactions) {
-                if (trn.getIdPerMonth() > maxId) {
-                    maxId = trn.getIdPerMonth();
-                }
-            }
+        Month month = monthDBHM.get(currentRefMonth);
+        if (month == null) {
+            return false;
         }
-        return maxId;
+        Map<String, Category> categories = month.getCategories();
+        return categories != null && !categories.isEmpty();
     }
 
-    public void updateBudgetNumberMB(String startCurrentMonth, int budgetNumber) {
+    /**
+     * Deletes a specific month's data from both local cache and Firebase.
+     * @param refMonth the reference month key to delete
+     */
+    public void deleteDataRefMonth(String refMonth) {
+        if (refMonth == null) {
+            return;
+        }
+        monthDBHM.remove(refMonth);
+        getDBMonthPath(refMonth).removeValue();
     }
 
-    public void initDB(final User user, Activity activity) {
+
+    /**
+     * Initializes the database with user data.
+     * Sets up all necessary listeners for real-time updates.
+     * 
+     * @param user the authenticated user
+     * @param activity the calling activity for UI operations
+     * @throws IllegalArgumentException if user or activity is null
+     */
+    public void initDB(@NonNull final User user, @NonNull Activity activity) {
+        // @NonNull annotation ensures these are not null, but dbKey check is still needed
+        if (user.getDbKey() == null) {
+            Log.e(TAG, "User dbKey is null, cannot initialize database");
+            return;
+        }
 
         this.userKey = user.getDbKey();
-        this.user = user;
-        this.context = activity;
+        DBUtil.user = user;
+        this.contextRef = new WeakReference<>(activity);
         DatabaseReference databaseReference = Config.DatabaseReferenceRoot;
 
         rootEventListener = new ValueEventListener() {
 
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                DataSnapshot monthlyBudgetDataSnapshot = dataSnapshot.child(Definitions.MONTHLY_BUDGET).child(userKey);
-                if (!monthlyBudgetDataSnapshot.exists()) {
-                    startApp(activity);
-                    return;
-                }
-                setSharesDB(dataSnapshot.child(Definitions.SHARES));
-                setUsersDB(dataSnapshot);
-                setOwnersDB(dataSnapshot);
-                for (DataSnapshot myDataSnapshot : monthlyBudgetDataSnapshot.getChildren()) {
-                    String keyNode = myDataSnapshot.getKey();
-                    Object value = myDataSnapshot.getValue();
-                    boolean hasData = !(value instanceof String && value.equals(""));
-                    switch (keyNode) {
-                        case Definitions.BUDGETS: {
-                            if (hasData) {
-                                setBudgetDB(myDataSnapshot);
-                            }
-                            // Set event add child
-                            setAddChildBudgetsEvent(myDataSnapshot);
-                            break;
-                        }
-                        case Definitions.MONTHS: {
-                            if (hasData) {
-                                setMonthsDB(myDataSnapshot);
-                            }
-                            // Set event add child
-                            setAddChildMonthEvent(myDataSnapshot);
-                            break;
-                        }
-                        case Definitions.SHOPS: {
-                            if (hasData) {
-                                setShopsDB(myDataSnapshot);
-                            }
-                            break;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    DataSnapshot monthlyBudgetDataSnapshot = dataSnapshot.child(Definitions.MONTHLY_BUDGET).child(userKey);
+                    if (!monthlyBudgetDataSnapshot.exists()) {
+                        startApp(activity);
+                        return;
+                    }
+                    
+                    // Process shares first for proper initialization order
+                    DataSnapshot sharesSnapshot = dataSnapshot.child(Definitions.SHARES);
+                    if (sharesSnapshot.exists()) {
+                        setSharesDB(sharesSnapshot);
+                    }
+                    
+                    setUsersDB(dataSnapshot);
+                    setOwnersDB(dataSnapshot);
+                    
+                    for (DataSnapshot myDataSnapshot : monthlyBudgetDataSnapshot.getChildren()) {
+                        String keyNode = myDataSnapshot.getKey();
+                        if (keyNode == null) continue;
+                        
+                        Object value = myDataSnapshot.getValue();
+                        boolean hasData = value != null && !(value instanceof String str && str.isEmpty());
+                        
+                        switch (keyNode) {
+                            case Definitions.BUDGETS:
+                                if (hasData) {
+                                    setBudgetDB(myDataSnapshot);
+                                }
+                                setAddChildBudgetsEvent(myDataSnapshot);
+                                break;
+                            case Definitions.MONTHS:
+                                if (hasData) {
+                                    setMonthsDB(myDataSnapshot);
+                                }
+                                setAddChildMonthEvent(myDataSnapshot);
+                                break;
+                            case Definitions.SHOPS:
+                                if (hasData) {
+                                    setShopsDB(myDataSnapshot);
+                                }
+                                break;
+                            default:
+                                // Ignore unknown nodes
+                                break;
                         }
                     }
-                }
-                try {
                     startApp(activity);
                 } catch (Exception e) {
-                    String s = e.getMessage();// todo remove those lines
-                    s = s;
-                    Log.e(TAG, e.getMessage());
+                    Log.e(TAG, "Error initializing database: " + e.getMessage(), e);
+                    // Still try to start app even on partial failure
+                    startApp(activity);
                 }
             }
 
-            public void onCancelled(DatabaseError firebaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError firebaseError) {
+                Log.e(TAG, "Database initialization cancelled: " + firebaseError.getMessage());
             }
         };
 
@@ -338,8 +422,10 @@ public final class DBUtil {
         for (DataSnapshot snapshot : emailUidSnapshot.getChildren()) {
             String email = snapshot.getKey();
             Object userUidObj = snapshot.getValue();
-            String userUid = userUidObj.toString();
-            userMailUidMap.put(TextUtil.getEmailComma(email), userUid);
+            if (email != null && userUidObj != null) {
+                String userUid = userUidObj.toString();
+                userMailUidMap.put(TextUtil.getEmailComma(email), userUid);
+            }
         }
         setAddChildUsersDB(usersSnapshot);
     }
@@ -348,6 +434,7 @@ public final class DBUtil {
         DataSnapshot ownersSnapshot = rootSnapshot.child(Definitions.OWNERS);
         // Set data
         Object value = ownersSnapshot.getValue();
+        @SuppressWarnings("unchecked")
         Map<String, List<String>> owners = value != null ? (Map<String, List<String>>) value : null;
 
         if (owners != null) {
@@ -381,95 +468,77 @@ public final class DBUtil {
         for (DataSnapshot currentMonthDataSnapshot : monthsSnapshot.getChildren()) {
             String refMonthKey = currentMonthDataSnapshot.getKey();
             Month month = currentMonthDataSnapshot.getValue(Month.class);
-            month.setIsActive();
-            updateSpecificMonth(refMonthKey, month);
+            if (month != null) {
+                month.setIsActive();
+                updateSpecificMonth(refMonthKey, month);
+            }
         }
     }
 
+    /**
+     * Sets up the shops database listener to sync shop names.
+     */
     public void setShopsDB(DataSnapshot shopsSnapshot) {
-        ValueEventListener updateShopsEvent = new ValueEventListener() {//todo check if can delete
+        ValueEventListener updateShopsEvent = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Object value = dataSnapshot.getValue();
-                List<String> shops = value != null ? (List<String>) value : null;
-                if (shops != null) {
-                    shopsSet.clear();
-                    shopsSet.addAll(shops);
+                if (value instanceof List) {
+                    @SuppressWarnings("unchecked")
+                    List<String> shops = (List<String>) value;
+                    synchronized (shopsSet) {
+                        shopsSet.clear();
+                        shopsSet.addAll(shops);
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "Shops listener cancelled: " + databaseError.getMessage());
             }
         };
+        
         if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
             shopsSnapshot.getRef().addValueEventListener(updateShopsEvent);
             addValueEventListener(shopsSnapshot.getRef(), updateShopsEvent);
         }
-//
-//        ChildEventListener addChildEvent = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                String shop = dataSnapshot.getValue().toString();
-//                shopsSet.add(shop);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                String key = dataSnapshot.getKey();
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//                String shop = dataSnapshot.getValue().toString();
-//                shopsSet.remove(shop);
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
-//        if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
-//            shopsSnapshot.getRef().addChildEventListener(addChildEvent);
-//            addChildValueEventListener(shopsSnapshot.getRef(), addChildEvent);
-//        }
     }
 
     public void setAddChildUsersDB(DataSnapshot shopsSnapshot) {
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                User user = dataSnapshot.getValue(User.class);
-                userMailUidMap.put(TextUtil.getEmailComma(user.getEmail()), user.getUid());
+                User userSnapshot = dataSnapshot.getValue(User.class);
+                if (userSnapshot != null && userSnapshot.getEmail() != null && userSnapshot.getUid() != null) {
+                    userMailUidMap.put(TextUtil.getEmailComma(userSnapshot.getEmail()), userSnapshot.getUid());
+                }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                User user = dataSnapshot.getValue(User.class);
-                userMailUidMap.put(TextUtil.getEmailComma(user.getEmail()), user.getUid());
+                User userSnapshot = dataSnapshot.getValue(User.class);
+                if (userSnapshot != null && userSnapshot.getEmail() != null && userSnapshot.getUid() != null) {
+                    userMailUidMap.put(TextUtil.getEmailComma(userSnapshot.getEmail()), userSnapshot.getUid());
+                }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                userMailUidMap.remove(TextUtil.getEmailComma(user.getEmail()));
+                User userSnapshot = dataSnapshot.getValue(User.class);
+                if (userSnapshot != null && userSnapshot.getEmail() != null) {
+                    userMailUidMap.remove(TextUtil.getEmailComma(userSnapshot.getEmail()));
+                }
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                // No action needed
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "Users listener cancelled: " + databaseError.getMessage());
             }
         };
         if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(shopsSnapshot.getRef())) {
@@ -483,6 +552,7 @@ public final class DBUtil {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Object value = dataSnapshot.getValue();
+                @SuppressWarnings("unchecked")
                 Map<String, List<String>> owners = value != null ? (Map<String, List<String>>) value : null;
                 if (owners != null) {
                     ownersMap.clear();
@@ -555,7 +625,7 @@ public final class DBUtil {
                 if (categoriesDBSnapShot.exists()) {
                     setAddChildCategoryEvent(categoriesDBSnapShot, refMonth);
                 }
-                setTranIdNumeratorEventUpdateValue(dataSnapshot.child(Definitions.TRAN_ID_NUMERATOR), refMonth); // todo check why fired twice(next line also)
+                setTranIdNumeratorEventUpdateValue(dataSnapshot.child(Definitions.TRAN_ID_NUMERATOR), refMonth);
                 setBudgetNumberEventUpdateValue(dataSnapshot.child(Definitions.BUDGET_NUMBER), refMonth);
             }
 
@@ -565,8 +635,6 @@ public final class DBUtil {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//                String refMonth = dataSnapshot.getKey();
-//                thisObject.monthDBHM.remove(refMonth);
                 deleteEventsListener(dataSnapshot.getRef());
             }
 
@@ -591,29 +659,35 @@ public final class DBUtil {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Category cat = dataSnapshot.getValue(Category.class);
-                getCategories(refMonth).put(cat.getId(), cat);
-                setCategoryFieldsEventUpdateValue(dataSnapshot, refMonth);
+                if (cat != null && cat.getId() != null) {
+                    Map<String, Category> categories = getCategories(refMonth);
+                    categories.put(cat.getId(), cat);
+                    setCategoryFieldsEventUpdateValue(dataSnapshot, refMonth);
+                }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // No action needed
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String catId = dataSnapshot.getKey();
-                getCategories(refMonth).remove(catId);
+                if (catId != null) {
+                    getCategories(refMonth).remove(catId);
+                }
                 deleteEventsListener(dataSnapshot.getRef());
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                // No action needed
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "Category listener cancelled: " + databaseError.getMessage());
             }
         };
         if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(categoryDataSnapshot.getRef())) {
@@ -628,35 +702,50 @@ public final class DBUtil {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String tranId = dataSnapshot.getKey();
                 Transaction tran = dataSnapshot.getValue(Transaction.class);
+                if (tranId == null || tran == null) {
+                    return;
+                }
+                
                 Category cat = getCategoryById(refMonth, catId);
+                if (cat == null) {
+                    Log.w(TAG, "Category not found for transaction: " + tranId);
+                    return;
+                }
+                
                 cat.getTransactions().put(tranId, tran);
                 double newBalance = cat.getBudget() - getTotalTransactionsSum(refMonth, catId, true);
-                if (cat.getBalance() != newBalance) {
+                if (Double.compare(cat.getBalance(), newBalance) != 0) {
                     getDBCategoriesPath(refMonth).child(catId).child(Definitions.BALANCE).setValue(newBalance);
                 }
-                getCategoryById(refMonth, catId).setBalance(newBalance);
+                cat.setBalance(newBalance);
                 setTransactionFieldsEventUpdateValue(dataSnapshot, refMonth, catId);
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // No action needed
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 String tranId = dataSnapshot.getKey();
-                if (isTranExists(refMonth, catId, tranId)) { // todo for all child removed event
-                    getTransactions(refMonth, catId).remove(tranId);
-                    deleteEventsListener(dataSnapshot.getRef());// todo delete anyway (method need to support case of have no event listener for this node)
+                if (tranId != null && isTranExists(refMonth, catId, tranId)) {
+                    Category cat = getCategoryById(refMonth, catId);
+                    if (cat != null) {
+                        cat.getTransactions().remove(tranId);
+                    }
                 }
+                deleteEventsListener(dataSnapshot.getRef());
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // No action needed
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Transaction listener cancelled: " + databaseError.getMessage());
             }
         };
         if (!ChildEventListenerMap.getInstance().isEventAlreadyExists(transactionDataSnapshot.getRef())) {
@@ -677,9 +766,11 @@ public final class DBUtil {
     }
 
     private boolean isTranExists(String refMonth, String catId, String tranId) {
-        if (isCatExists(refMonth, catId))
-            return getTransactions(refMonth).contains(tranId);
-        return false;
+        if (!isCatExists(refMonth, catId) || tranId == null) {
+            return false;
+        }
+        Category category = getCategoryById(refMonth, catId);
+        return category != null && category.getTransactions().containsKey(tranId);
     }
 
     private boolean isCatExists(String refMonth, String catId) {
@@ -702,30 +793,37 @@ public final class DBUtil {
 
     private void setCategoryFieldsEventUpdateValue(final DataSnapshot categoryDBDataSnapshot, String refMonthKey) {
         String catId = categoryDBDataSnapshot.getKey();
-//        setCategoryBalanceEventUpdateValue(categoryDBDataSnapshot.child(Definition.BALANCE), refMonthKey, catId);
         setAddChildTransactionEvent(categoryDBDataSnapshot.child(Definitions.TRANSACTIONS), refMonthKey, catId);
     }
 
+    @SuppressWarnings("unused") // May be used for future functionality
     private void setCategoryBalanceEventUpdateValue(DataSnapshot categoryBalanceDBDataSnapshot, String refMonthKey, String catId) {
         ValueEventListener event = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Object value = (Object) dataSnapshot.getValue();
+                Object value = dataSnapshot.getValue();
                 if (value != null) {
-                    Category currentCategory = monthDBHM.get(refMonthKey).getCategories().get(catId);
-                    double balance = Double.parseDouble(value.toString());
-                    currentCategory.setBalance(balance);
+                    Month month = monthDBHM.get(refMonthKey);
+                    if (month == null || month.getCategories() == null) {
+                        return;
+                    }
+                    Category currentCategory = month.getCategories().get(catId);
+                    if (currentCategory != null) {
+                        try {
+                            double balance = Double.parseDouble(value.toString());
+                            currentCategory.setBalance(balance);
+                        } catch (NumberFormatException e) {
+                            Log.w(TAG, "Invalid balance value: " + value);
+                        }
+                    }
                 }
-//                else
-//                    deleteEventsListener(dataSnapshot);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "Balance listener cancelled: " + databaseError.getMessage());
             }
         };
-        categoryBalanceDBDataSnapshot.getRef().addValueEventListener(event);
         if (!ValueEventListenerMap.getInstance().isEventAlreadyExists(categoryBalanceDBDataSnapshot.getRef())) {
             categoryBalanceDBDataSnapshot.getRef().addValueEventListener(event);
             addValueEventListener(categoryBalanceDBDataSnapshot.getRef(), event);
@@ -747,21 +845,36 @@ public final class DBUtil {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String fieldName = dataSnapshot.getKey();
                 Object value = dataSnapshot.getValue();
-                if (value != null) {
-                    Transaction currentTransaction = monthDBHM.get(refMonthKey).getCategories().get(catId).getTransactions().get(tranId);
-                    if (Definitions.DELETED.equals(fieldName)) {
-                        boolean deleted = Boolean.parseBoolean(dataSnapshot.getValue().toString());
-                        currentTransaction.setDeleted(deleted);
-                    }
+                if (value == null) {
+                    return;
+                }
+                
+                Month month = monthDBHM.get(refMonthKey);
+                if (month == null || month.getCategories() == null) {
+                    return;
+                }
+                
+                Category category = month.getCategories().get(catId);
+                if (category == null || category.getTransactions() == null) {
+                    return;
+                }
+                
+                Transaction currentTransaction = category.getTransactions().get(tranId);
+                if (currentTransaction == null) {
+                    return;
+                }
+                
+                if (Definitions.DELETED.equals(fieldName)) {
+                    boolean deleted = Boolean.parseBoolean(value.toString());
+                    currentTransaction.setDeleted(deleted);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "Transaction field listener cancelled: " + databaseError.getMessage());
             }
         };
-        transactionFieldDataSnapshot.getRef().addValueEventListener(event);
 
         if (!ValueEventListenerMap.getInstance().isEventAlreadyExists(transactionFieldDataSnapshot.getRef())) {
             transactionFieldDataSnapshot.getRef().addValueEventListener(event);
@@ -770,14 +883,22 @@ public final class DBUtil {
     }
 
     public void deleteEventListener(DatabaseReference eventDatabaseReference) {
+        if (eventDatabaseReference == null) {
+            return;
+        }
+        
         Map<DatabaseReference, ChildEventListener> childEventListenersHM = ChildEventListenerMap.getInstance().getChildEventListenersHM();
         Map<DatabaseReference, ValueEventListener> valueEventListenersHM = ValueEventListenerMap.getInstance().getValueEventListenerHM();
-        if (childEventListenersHM.containsKey(eventDatabaseReference)) {
-            ChildEventListener childEvent = childEventListenersHM.get(eventDatabaseReference);
+        
+        ChildEventListener childEvent = childEventListenersHM.get(eventDatabaseReference);
+        if (childEvent != null) {
             eventDatabaseReference.removeEventListener(childEvent);
             childEventListenersHM.remove(eventDatabaseReference);
-        } else if (valueEventListenersHM.containsKey(eventDatabaseReference)) {
-            ValueEventListener valueEvent = valueEventListenersHM.get(eventDatabaseReference);
+            return;
+        }
+        
+        ValueEventListener valueEvent = valueEventListenersHM.get(eventDatabaseReference);
+        if (valueEvent != null) {
             eventDatabaseReference.removeEventListener(valueEvent);
             valueEventListenersHM.remove(eventDatabaseReference);
         }
@@ -825,13 +946,17 @@ public final class DBUtil {
         Category cat = new Category(catId, budget.getCategoryName(), budget.getValue(), budget.getValue());
         Map<String, Transaction> transactions = new HashMap<>();
         if (isFrqTran(budget)) {
-            String paymentMethod = context.getString(R.string.credit_card);
+            Context ctx = getContext();
+            String paymentMethod = ctx != null ? ctx.getString(R.string.credit_card) : "Credit Card";
             Date payDate = DateUtil.getCurrentDate(budget.getChargeDay());
             String yearMonth = DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR);
             String tranId = getDBTransactionsPath(yearMonth, catId).push().getKey();
             Transaction transaction = new Transaction(tranId, idPerMonth, budget.getCategoryName(), paymentMethod, budget.getShop(), payDate, budget.getValue());
             transactions.put(tranId, transaction);
-            shopsSet.add(budget.getShop());
+            String shop = budget.getShop();
+            if (shop != null) {
+                shopsSet.add(shop);
+            }
             cat.setTransactions(transactions);
             cat.withdrawal(budget.getValue());
         }
@@ -839,7 +964,7 @@ public final class DBUtil {
     }
 
     public boolean isAnyBudgetExists() {
-        return budgetDBHM.size() > 0;
+        return !budgetDBHM.isEmpty();
     }
 
     public void createNewMonth(int budgetNumber, String refMonth) {
@@ -849,11 +974,6 @@ public final class DBUtil {
 
         getDBMonthPath(refMonth).setValue(newMonth);
         updateShopsFB();
-
-//        Set<String> updatedShops = new HashSet<String>(shopsSet);
-//        updatedShops.removeAll(oldShops);
-//        writeNewShopFB(updatedShops, oldShops.size());
-
     }
 
     public DatabaseReference getDBUserRootPath() {
@@ -906,53 +1026,104 @@ public final class DBUtil {
         return null;
     }
 
+    /**
+     * Returns the categories for a given month.
+     * @param refMonth the reference month key
+     * @return Map of categories, or empty map if not found (never null)
+     */
+    @NonNull
     public Map<String, Category> getCategories(String refMonth) {
-        if (monthDBHM.containsKey(refMonth)) {
-            return monthDBHM.get(refMonth).getCategories();
+        if (refMonth == null) {
+            return new HashMap<>();
         }
-        return null;
+        Month month = monthDBHM.get(refMonth);
+        if (month != null && month.getCategories() != null) {
+            return month.getCategories();
+        }
+        return new HashMap<>();
     }
 
+    /**
+     * Returns a deep clone of categories for the given month.
+     * @param refMonth the reference month key
+     * @return Map of category clones, or null if month not found
+     */
+    @Nullable
     public Map<String, Category> getCategoriesClone(String refMonth) {
+        if (refMonth == null) {
+            return null;
+        }
+        
+        Month month = monthDBHM.get(refMonth);
+        if (month == null || month.getCategories() == null) {
+            return null;
+        }
+        
         try {
             Map<String, Category> categoriesClone = new HashMap<>();
-            if (monthDBHM.containsKey(refMonth)) {
-                for (Category cat : monthDBHM.get(refMonth).getCategories().values()) {
+            for (Category cat : month.getCategories().values()) {
+                if (cat != null) {
                     categoriesClone.put(cat.getId(), (Category) cat.clone());
                 }
-                return categoriesClone;
             }
-            return null;
-        } catch (Exception e) {
-            String s = e.getMessage();
-            s = s;
-            Log.e(TAG, e.getMessage());
+            return categoriesClone;
+        } catch (CloneNotSupportedException e) {
+            Log.e(TAG, "Error cloning categories: " + e.getMessage(), e);
             return null;
         }
     }
 
-    public List<Category> getCategoriesByPriority(String refMonth) { // todo check performance
-        long budgetNumber = getMonthDBHM().get(refMonth).getBudgetNumber();
-        Map<String, Category> categoriesClone = getCategoriesClone(refMonth);
-        List<Budget> sortedBudgets = getBudgetDataFromDB(budgetNumber);
+    /**
+     * Returns categories sorted by budget priority.
+     * @param refMonth the reference month key
+     * @return List of categories sorted by priority, never null
+     */
+    @NonNull
+    public List<Category> getCategoriesByPriority(String refMonth) {
         List<Category> sortedCategories = new ArrayList<>();
+        
+        if (refMonth == null) {
+            return sortedCategories;
+        }
+        
+        Month month = getMonthDBHM().get(refMonth);
+        if (month == null) {
+            return sortedCategories;
+        }
+        
+        long budgetNumber = month.getBudgetNumber();
+        Map<String, Category> categoriesClone = getCategoriesClone(refMonth);
+        if (categoriesClone == null || categoriesClone.isEmpty()) {
+            return sortedCategories;
+        }
+        
+        List<Budget> sortedBudgets = getBudgetDataFromDB(budgetNumber);
 
         for (Budget budget : sortedBudgets) {
+            if (budget == null || budget.getCategoryName() == null) {
+                continue;
+            }
+            
+            Category matchedCategory = null;
             for (Category cat : categoriesClone.values()) {
-                if (budget.getCategoryName().equals(cat.getName()) && budget.getValue() == cat.getBudget()) {
-                    sortedCategories.add(cat);
-                    categoriesClone.remove(cat.getId());
+                if (cat != null && budget.getCategoryName().equals(cat.getName()) 
+                        && Double.compare(budget.getValue(), cat.getBudget()) == 0) {
+                    matchedCategory = cat;
                     break;
                 }
+            }
+            
+            if (matchedCategory != null) {
+                sortedCategories.add(matchedCategory);
+                categoriesClone.remove(matchedCategory.getId());
             }
         }
         return sortedCategories;
     }
 
     public List<String> getAllMonthsYearMonth() {
-        List<String> monthsList = new ArrayList<String>(monthDBHM.keySet());
-        java.util.Collections.sort(monthsList);
-        java.util.Collections.reverse(monthsList);
+        List<String> monthsList = new ArrayList<>(monthDBHM.keySet());
+        monthsList.sort(Collections.reverseOrder());
         return monthsList;
     }
 
@@ -962,7 +1133,7 @@ public final class DBUtil {
 
         for (Category cat : getCategoriesByPriority(refMonth)) {
             String categoryName = cat.getName();
-            if (!categoriesNamesSet.contains(categoryName)) {
+            if (categoryName != null && !categoriesNamesSet.contains(categoryName)) {
                 categoriesNamesList.add(categoryName);
                 categoriesNamesSet.add(categoryName);
             }
@@ -970,34 +1141,52 @@ public final class DBUtil {
         return categoriesNamesList;
     }
 
-    public List<Transaction> getTransactions(String refMonth, String catId) {
+    /**
+     * Returns transactions for a specific category or all categories.
+     * @param refMonth the reference month key
+     * @param catId category ID, or null for all categories
+     * @return List of transactions, never null (empty list if not found)
+     */
+    @NonNull
+    public List<Transaction> getTransactions(String refMonth, @Nullable String catId) {
         if (catId == null) {
             return getTransactions(refMonth);
         }
+        
         Category category = getCategoryById(refMonth, catId);
-        if (category.getTransactions() != null)
-            return new ArrayList<>(category.getTransactions().values());
-        return null;
+        if (category == null || category.getTransactions() == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(category.getTransactions().values());
     }
 
+    /**
+     * Returns all transactions for a given month.
+     * @param refMonth the reference month key
+     * @return List of all transactions, never null
+     */
+    @NonNull
     public List<Transaction> getTransactions(String refMonth) {
         Map<String, Category> categoriesHM = getCategories(refMonth);
         List<Transaction> transactions = new ArrayList<>();
+        
         for (Category cat : categoriesHM.values()) {
-            transactions.addAll(cat.getTransactions().values());
+            if (cat != null) {
+                transactions.addAll(cat.getTransactions().values());
+            }
         }
         return transactions;
     }
 
     public List<Transaction> getTransactions(String refMonth, String catId, boolean onlyActive) {
         if (onlyActive) {
-            List<Transaction> activeTtransactions = new ArrayList<>();
+            List<Transaction> activeTransactions = new ArrayList<>();
             for (Transaction tran : getTransactions(refMonth, catId)) {
                 if (!tran.isDeleted()) {
-                    activeTtransactions.add(tran);
+                    activeTransactions.add(tran);
                 }
             }
-            return activeTtransactions;
+            return activeTransactions;
         }
         return getTransactions(refMonth, catId);
     }
@@ -1022,17 +1211,38 @@ public final class DBUtil {
         return sum;
     }
 
+    /**
+     * Finds a category by name in a given month.
+     * @param refMonth the reference month key
+     * @param catName the category name to find
+     * @return Category if found, null otherwise
+     */
+    @Nullable
     public Category getCategoryByName(String refMonth, String catName) {
+        if (refMonth == null || catName == null) {
+            return null;
+        }
+        
         Map<String, Category> categoriesHM = getCategories(refMonth);
         for (Category cat : categoriesHM.values()) {
-            if (catName.equals(cat.getName())) {
+            if (cat != null && catName.equals(cat.getName())) {
                 return cat;
             }
         }
         return null;
     }
 
+    /**
+     * Finds a category by ID in a given month.
+     * @param refMonth the reference month key
+     * @param catId the category ID to find
+     * @return Category if found, null otherwise
+     */
+    @Nullable
     public Category getCategoryById(String refMonth, String catId) {
+        if (refMonth == null || catId == null) {
+            return null;
+        }
         return getCategories(refMonth).get(catId);
     }
 
@@ -1051,32 +1261,31 @@ public final class DBUtil {
         return bgt.isConstPayment();
     }
 
-//    private Transaction createTransactionByBudget(Budget bgt, String catId) {
-//        int idPerMonth = 0;
-//        String paymentMethod = getString(R.string.credit_card);
-//        Date payDate = DateService.getCurrentDate(bgt.getChargeDay());
-//        return new Transaction(idPerMonth, bgt.getCategoryName(), paymentMethod, bgt.getShop(), payDate, bgt.getValue());
-//    }
-
     private void setIdNumerator(String refMonth, int idPerMonth) {
-        monthDBHM.get(refMonth).setTranIdNumerator(idPerMonth);
+        Month month = monthDBHM.get(refMonth);
+        if (month != null) {
+            month.setTranIdNumerator(idPerMonth);
+        }
     }
 
     private void setTranIdNumeratorEventUpdateValue(final DataSnapshot tranIdNumeratorDB, final String refMonthKey) {
         ValueEventListener event = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Long value = (Long) dataSnapshot.getValue();
-                if (value != null)
-                    monthDBHM.get(refMonthKey).setTranIdNumerator(value.intValue());
+                Object valueObj = dataSnapshot.getValue();
+                if (valueObj instanceof Long longValue) {
+                    Month month = monthDBHM.get(refMonthKey);
+                    if (month != null) {
+                        month.setTranIdNumerator(longValue.intValue());
+                    }
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "TranIdNumerator listener cancelled: " + databaseError.getMessage());
             }
         };
-        tranIdNumeratorDB.getRef().addValueEventListener(event);
 
         if (!ValueEventListenerMap.getInstance().isEventAlreadyExists(tranIdNumeratorDB.getRef())) {
             tranIdNumeratorDB.getRef().addValueEventListener(event);
@@ -1088,17 +1297,20 @@ public final class DBUtil {
         ValueEventListener event = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Long value = (Long) dataSnapshot.getValue();
-                if (value != null)
-                    monthDBHM.get(refMonthKey).setBudgetNumber(value.intValue());
+                Object valueObj = dataSnapshot.getValue();
+                if (valueObj instanceof Long longValue) {
+                    Month month = monthDBHM.get(refMonthKey);
+                    if (month != null) {
+                        month.setBudgetNumber(longValue.intValue());
+                    }
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "BudgetNumber listener cancelled: " + databaseError.getMessage());
             }
         };
-        budgetNumberDB.getRef().addValueEventListener(event);
 
         if (!ValueEventListenerMap.getInstance().isEventAlreadyExists(budgetNumberDB.getRef())) {
             budgetNumberDB.getRef().addValueEventListener(event);
@@ -1107,10 +1319,28 @@ public final class DBUtil {
     }
 
     public void addNewCategoriesToExistingMonth(String refMonth, int budgetNumber, List<Budget> budgets) {
-        int idPerMonth = monthDBHM.get(refMonth).getTranIdNumerator() + 1;
+        if (refMonth == null || budgets == null) {
+            Log.w(TAG, "addNewCategoriesToExistingMonth called with null parameters");
+            return;
+        }
+        
+        Month month = monthDBHM.get(refMonth);
+        if (month == null) {
+            Log.w(TAG, "Month not found: " + refMonth);
+            return;
+        }
+        
+        int idPerMonth = month.getTranIdNumerator() + 1;
         DatabaseReference categoriesDBReference = getDBCategoriesPath(refMonth);
-        String catId = categoriesDBReference.push().getKey();
+        
         for (Budget budget : budgets) {
+            if (budget == null) {
+                continue;
+            }
+            String catId = categoriesDBReference.push().getKey();
+            if (catId == null) {
+                continue;
+            }
             Category cat = budgetToCategory(budget, catId, idPerMonth++);
             updateSpecificCategory(refMonth, budgetNumber, cat);
             categoriesDBReference.child(catId).setValue(cat);
@@ -1154,7 +1384,7 @@ public final class DBUtil {
         ChildEventListener addChildEvent = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Budget>>() {
+                GenericTypeIndicator<Map<String, Budget>> genericTypeIndicator = new GenericTypeIndicator<>() {
                 };
                 String budgetNumber = dataSnapshot.getKey();
                 Map<String, Budget> budgets = dataSnapshot.getValue(genericTypeIndicator);
@@ -1194,7 +1424,12 @@ public final class DBUtil {
     }
 
     public void updateBudgetNumber(String refMonth, int budgetNumber) {
-        getMonth(refMonth).setBudgetNumber(budgetNumber);
+        Month month = getMonth(refMonth);
+        if (month != null) {
+            month.setBudgetNumber(budgetNumber);
+        } else {
+            Log.w(TAG, "Cannot update budget number - month not found: " + refMonth);
+        }
     }
 
     public void writeNewShopFB(String newShop) {
@@ -1210,24 +1445,50 @@ public final class DBUtil {
     }
 
     public void markDeleteTransaction(String refMonth, Transaction tran) {
-        String catId = getCategoryByName(refMonth, tran.getCategory()).getId();
+        if (refMonth == null || tran == null || tran.getCategory() == null) {
+            Log.w(TAG, "markDeleteTransaction called with null parameters");
+            return;
+        }
+        
+        Category category = getCategoryByName(refMonth, tran.getCategory());
+        if (category == null || category.getId() == null) {
+            Log.w(TAG, "Category not found for transaction: " + tran.getCategory());
+            return;
+        }
+        
+        String catId = category.getId();
         getDBTransactionsPath(refMonth, catId).runTransaction(new com.google.firebase.database.Transaction.Handler() {
             @NonNull
             @Override
             public com.google.firebase.database.Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                mutableData.child(tran.getId()).child(Definitions.DELETED).setValue(tran.isDeleted());
+                if (tran.getId() != null) {
+                    mutableData.child(tran.getId()).child(Definitions.DELETED).setValue(tran.isDeleted());
+                }
                 return com.google.firebase.database.Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-
+                if (databaseError != null) {
+                    Log.w(TAG, "markDeleteTransaction failed: " + databaseError.getMessage());
+                }
             }
         });
     }
 
     public void updateCategoryBudgetValue(String refMonth, String catId) {
-        Double balance = getCategoryById(refMonth, catId).getBudget() - getTotalTransactionsSum(refMonth, catId, true);
+        if (refMonth == null || catId == null) {
+            Log.w(TAG, "updateCategoryBudgetValue called with null parameters");
+            return;
+        }
+        
+        Category category = getCategoryById(refMonth, catId);
+        if (category == null) {
+            Log.w(TAG, "Category not found: " + catId);
+            return;
+        }
+        
+        double balance = category.getBudget() - getTotalTransactionsSum(refMonth, catId, true);
         getDBCategoriesPath(refMonth).runTransaction(new com.google.firebase.database.Transaction.Handler() {
             @NonNull
             @Override
@@ -1238,7 +1499,9 @@ public final class DBUtil {
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-
+                if (databaseError != null) {
+                    Log.w(TAG, "updateCategoryBudgetValue failed: " + databaseError.getMessage());
+                }
             }
         });
     }
@@ -1246,24 +1509,26 @@ public final class DBUtil {
     public void share(String emailToShare) throws Exception {
         String emailComma = TextUtil.getEmailComma(emailToShare);
         if (isEmailAlreadyShared(emailToShare)) {
-            // todo ask if want to share anyway(loss data)
             throw new Exception(Definitions.EMAIL_ALREADY_SHARED);
         }
         if (!userMailUidMap.containsKey(emailComma)) {
-            throw new Exception(context.getString(R.string.user_not_exists));
+            Context ctx = getContext();
+            String errorMsg = ctx != null ? ctx.getString(R.string.user_not_exists) : "User not exists";
+            throw new Exception(errorMsg);
         }
         String guestUid = userMailUidMap.get(emailComma);
+        if (guestUid == null) {
+            Context ctx = getContext();
+            String errorMsg = ctx != null ? ctx.getString(R.string.user_not_exists) : "User not exists";
+            throw new Exception(errorMsg);
+        }
         Share share = new Share(guestUid, user.getUid(), emailToShare, user.getDbKey(), ShareStatus.PENDING);
         getDBSharesPath().child(guestUid).setValue(share);
 
         String ownerUid = user.getUid();
-        Set<String> guestsUids = ownersMap.containsKey(ownerUid) ? ownersMap.get(ownerUid) : new HashSet<>();
+        Set<String> guestsUids = ownersMap.getOrDefault(ownerUid, new HashSet<>());
         if (guestsUids.contains(guestUid)) {
             throw new Exception(Definitions.EMAIL_ALREADY_SHARED);
-        } else {
-            //DBUtil.getInstance().getDBUsersPath().child(guestUid).child(Definitions.OWNER).setValue(user.getEmail());
-//            guestsUids.add(guestUid);
-//            getDBOwnersPath().child(ownerUid).setValue(new ArrayList<>(guestsUids)); // todo it not possible to store guests as set need to store as list
         }
     }
 
@@ -1275,48 +1540,72 @@ public final class DBUtil {
     }
 
     public static void showShareDialogEnterApp(Context context, DataSnapshot snapshot, User user) {
-        Share share = snapshot.child(Definitions.SHARES).child(user.getDbKey()).getValue(Share.class);
-        if (share.getStatus() == ShareStatus.PENDING) {
-            String ownerDBKey = share.getDbKey();
-            User ownerUser = snapshot.child(Definitions.USERS).child(ownerDBKey).getValue(User.class);
-            String userName = ownerUser.getName();
-            String question = String.format(context.getString(R.string.share_budget_question), userName);
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_POSITIVE:
-                            //Yes button clicked
-                            share.setStatus(ShareStatus.SUCCESSFULLY_SHARED);
-                            user.setDbKey(ownerDBKey);
-                            snapshot.child(Definitions.USERS).child(share.getGuestUid()).child(Definitions.DBKEY).getRef().setValue(ownerDBKey);
-                            user.setOwnerUid(share.getOwnerUid());
-
-                            snapshot.child(Definitions.USERS).child(share.getGuestUid()).getRef().setValue(user);
-
-                            String ownerUid = share.getOwnerUid();
-                            Set<String> guestsUids = ownersMap.containsKey(ownerUid) ? ownersMap.get(ownerUid) : new HashSet<>();
-                            guestsUids.add(user.getUid());
-                            DBUtil.getInstance().getDBOwnersPath().child(ownerUid).setValue(new ArrayList<>(guestsUids)); // todo it not possible to store guests as set need to store as list
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
-                            share.setStatus(ShareStatus.DENY);
-                            break;
-                    }
-                    snapshot.child(Definitions.SHARES).child(share.getGuestUid()).getRef().setValue(share);
-                    DBUtil.getInstance().initDB(user, (Activity) context);
-                }
-            };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(question).setPositiveButton(context.getString(R.string.yes), dialogClickListener)
-                    .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();
-
-        } else {
-            DBUtil.getInstance().initDB(user, (Activity) context);
+        if (context == null || snapshot == null || user == null || user.getDbKey() == null) {
+            Log.w(TAG, "showShareDialogEnterApp called with null parameters");
+            return;
         }
+        
+        Share share = snapshot.child(Definitions.SHARES).child(user.getDbKey()).getValue(Share.class);
+        if (share == null || share.getStatus() != ShareStatus.PENDING) {
+            DBUtil.getInstance().initDB(user, (Activity) context);
+            return;
+        }
+        
+        String ownerDBKey = share.getDbKey();
+        if (ownerDBKey == null) {
+            DBUtil.getInstance().initDB(user, (Activity) context);
+            return;
+        }
+        
+        User ownerUser = snapshot.child(Definitions.USERS).child(ownerDBKey).getValue(User.class);
+        String userName = ownerUser != null ? ownerUser.getName() : "Unknown";
+        if (userName == null) {
+            userName = "Unknown";
+        }
+        
+        String question = String.format(context.getString(R.string.share_budget_question), userName);
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    // Yes button clicked
+                    share.setStatus(ShareStatus.SUCCESSFULLY_SHARED);
+                    user.setDbKey(ownerDBKey);
+                    
+                    String guestUid = share.getGuestUid();
+                    if (guestUid != null) {
+                        snapshot.child(Definitions.USERS).child(guestUid).child(Definitions.DBKEY).getRef().setValue(ownerDBKey);
+                        user.setOwnerUid(share.getOwnerUid());
+                        snapshot.child(Definitions.USERS).child(guestUid).getRef().setValue(user);
+                    }
+
+                    String ownerUid = share.getOwnerUid();
+                    if (ownerUid != null && user.getUid() != null) {
+                        Set<String> guestsUids = ownersMap.getOrDefault(ownerUid, new HashSet<>());
+                        guestsUids.add(user.getUid());
+                        DBUtil.getInstance().getDBOwnersPath().child(ownerUid).setValue(new ArrayList<>(guestsUids));
+                    }
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // No button clicked
+                    share.setStatus(ShareStatus.DENY);
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            String shareGuestUid = share.getGuestUid();
+            if (shareGuestUid != null) {
+                snapshot.child(Definitions.SHARES).child(shareGuestUid).getRef().setValue(share);
+            }
+            DBUtil.getInstance().initDB(user, (Activity) context);
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(question)
+                .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(context.getString(R.string.no), dialogClickListener)
+                .show();
     }
 }

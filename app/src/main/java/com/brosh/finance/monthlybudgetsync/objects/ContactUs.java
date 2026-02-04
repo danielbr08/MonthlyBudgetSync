@@ -20,34 +20,42 @@ public class ContactUs implements Serializable {
         this.creationDate = creationDate;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for serialization
     public String getSubject() {
         return subject;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for deserialization
     public void setSubject(String subject) {
         this.subject = subject;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for serialization
     public String getMessage() {
         return message;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for deserialization
     public void setMessage(String message) {
         this.message = message;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for serialization
     public boolean isActive() {
         return active;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for deserialization
     public void setActive(boolean active) {
         this.active = active;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for serialization
     public Date getCreationDate() {
         return creationDate;
     }
 
+    @SuppressWarnings("unused") // Used by Firebase for deserialization
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }

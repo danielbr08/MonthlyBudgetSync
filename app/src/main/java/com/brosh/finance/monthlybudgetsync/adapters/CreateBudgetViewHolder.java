@@ -4,16 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -26,13 +23,12 @@ import java.util.List;
 
 public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
 
-    private EditText catName;
-    private EditText budget;
-    private CheckBox constDate;
-    private EditText store;
-    private TextView chargeDay;
+    private final EditText catName;
+    private final EditText budget;
+    private final CheckBox constDate;
+    private final EditText store;
+    private final TextView chargeDay;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public CreateBudgetViewHolder(@NonNull View itemView) {
         super(itemView);
 
@@ -42,7 +38,6 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         store = itemView.findViewById(R.id.bgt_store);
         chargeDay = itemView.findViewById(R.id.bgt_charge_day);
 
-        // todo take it outside to external file( eventListener file)
         View.OnLongClickListener eventLongClick = v -> {
             View parent = (View) v.getParent();
             parent.performLongClick();
@@ -52,19 +47,14 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         catName.setOnLongClickListener(eventLongClick);
         budget.setOnLongClickListener(eventLongClick);
         store.setOnLongClickListener(eventLongClick);
-//        constDate.setOnLongClickListener(eventLongClick);
-//        chargeDay.setOnLongClickListener(eventLongClick);
 
-        final EditText store = this.store;
-        final TextView chargeDay = this.chargeDay;
+        final EditText storeRef = this.store;
+        final TextView chargeDayRef = this.chargeDay;
 
-        this.constDate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int visibilty = isChecked ? View.VISIBLE : View.INVISIBLE;
-                store.setVisibility(visibilty);
-                chargeDay.setVisibility(visibilty);
-            }
+        this.constDate.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int visibility = isChecked ? View.VISIBLE : View.INVISIBLE;
+            storeRef.setVisibility(visibility);
+            chargeDayRef.setVisibility(visibility);
         });
     }
 
@@ -81,21 +71,18 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
 
         this.catName.requestFocus();
 
-//        if(position%2 != 0)
-//            itemView.setBackgroundColor(Color.LTGRAY);
-//        else
-//            itemView.setBackgroundColor(Color.DKGRAY);
-
         this.store.setVisibility(visibilty);
         this.chargeDay.setVisibility(visibilty);
 
 
         View dayPeekerView = ((Activity) context).getLayoutInflater().inflate(R.layout.day_peeker, null);
-        Integer defaultId = chargeDay.getText().toString() == null ? R.id.tv1 : UiUtil.getIdTVByName((ViewGroup) dayPeekerView, chargeDay.getText().toString()).get(0);
-        final TextView defaultSelectionTV[] = {dayPeekerView.findViewById(defaultId)};
+        String chargeDayText = chargeDay.getText().toString();
+        List<Integer> ids = UiUtil.getIdTVByName((ViewGroup) dayPeekerView, chargeDayText);
+        int defaultId = (ids != null && !ids.isEmpty()) ? ids.get(0) : R.id.tv1;
+        final TextView[] defaultSelectionTV = {dayPeekerView.findViewById(defaultId)};
         defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
-        final TextView selectedDay[] = {defaultSelectionTV[0]};
-        final TextView prevSelectedDay[] = {defaultSelectionTV[0]};
+        final TextView[] selectedDay = {defaultSelectionTV[0]};
+        final TextView[] prevSelectedDay = {defaultSelectionTV[0]};
 
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             switch (which) {
@@ -117,28 +104,25 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
             }
         };
 
-        chargeDay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(R.string.select_charge_day);
-                if (dayPeekerView.getParent() != null) {
-                    ((ViewGroup) dayPeekerView.getParent()).removeView(dayPeekerView);
-                }
-                builder.setView(dayPeekerView).setPositiveButton(R.string.select, dialogClickListener)
-                        .setNegativeButton(R.string.cancel, dialogClickListener);
-                AlertDialog alertDialog = builder.create();
-                List<View> textViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
-                for (View tv : textViews) {
-                    tv.setOnClickListener(tv1 -> {
-                        prevSelectedDay[0] = selectedDay[0];
-                        selectedDay[0] = (TextView) tv1;
-                        UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), v.getBackground());
-                        selectedDay[0].setBackgroundResource(R.drawable.circle_pink_style);
-                    });
-                }
-                alertDialog.show();
+        chargeDay.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.select_charge_day);
+            if (dayPeekerView.getParent() != null) {
+                ((ViewGroup) dayPeekerView.getParent()).removeView(dayPeekerView);
             }
+            builder.setView(dayPeekerView).setPositiveButton(R.string.select, dialogClickListener)
+                    .setNegativeButton(R.string.cancel, dialogClickListener);
+            AlertDialog alertDialog = builder.create();
+            List<View> textViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
+            for (View tv : textViews) {
+                tv.setOnClickListener(tv1 -> {
+                    prevSelectedDay[0] = selectedDay[0];
+                    selectedDay[0] = (TextView) tv1;
+                    UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), v.getBackground());
+                    selectedDay[0].setBackgroundResource(R.drawable.circle_pink_style);
+                });
+            }
+            alertDialog.show();
         });
     }
 }

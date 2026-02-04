@@ -2,22 +2,16 @@ package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -46,8 +40,6 @@ import java.util.List;
 import java.util.Set;
 
 public class InsertTransactionActivity extends AppCompatActivity {
-    private static final String TAG = "InsertTransactionActivity";
-
     private Spinner categoriesSpinner;
     private Spinner paymentTypeSpinner;
     private Button btnSendTransaction;
@@ -60,24 +52,29 @@ public class InsertTransactionActivity extends AppCompatActivity {
 
     private Set<String> shopsSet;
 
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_transaction);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//Rotate the screen to to be on portrait moade only
+        // Let the system handle orientation based on device capabilities
 
         progressBar = findViewById(R.id.progress_circular);
         Bundle extras = getIntent().getExtras();
-        String refMonth = extras.getString(Definitions.MONTH, null);
+        String refMonth = extras != null ? extras.getString(Definitions.MONTH, null) : null;
         user = DBUtil.getInstance().getUser();
-        if (user.getUserSettings().isAdEnabled()) {
+        
+        // Setup ads visibility with null safety
+        boolean adEnabled = user != null && user.getUserSettings().isAdEnabled();
+        if (adEnabled) {
             UiUtil.addAdvertiseToActivity(this);
         } else {
-            findViewById(R.id.adView).setVisibility(View.GONE);
+            View adView = findViewById(R.id.adView);
+            if (adView != null) {
+                adView.setVisibility(View.GONE);
+            }
         }
+        
         dbUtil = DBUtil.getInstance();
         month = dbUtil.getMonth(refMonth);
         String yearMonth = month != null ? month.getYearMonth() : null;
@@ -92,125 +89,174 @@ public class InsertTransactionActivity extends AppCompatActivity {
         payDateEditText = findViewById(R.id.payDatePlainText);
         payDateEditText.setText(DateUtil.getCurrentDate(Config.DATE_FORMAT_CHARACTER));
 
-        payDateEditText.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //To show current date in the datepicker
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                View focusedView = getCurrentFocus();
-                if (focusedView != null) {
-                    imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
-                }
-                Calendar mcurrentDate = Calendar.getInstance();
-                int mYear = mcurrentDate.get(Calendar.YEAR);
-                int mMonth = mcurrentDate.get(Calendar.MONTH);
-                int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog mDatePicker = new DatePickerDialog(InsertTransactionActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                        String day, month;
-                        day = selectedday < 10 ? "0" + selectedday : String.valueOf(selectedday);
-                        month = (selectedmonth + 1) < 10 ? "0" + (selectedmonth + 1) : String.valueOf(selectedmonth + 1);
-                        payDateEditText.setText(day + "/" + month + "/" + selectedyear);
-                        payDateEditText.setError(null);
-                    }
-                }, mYear, mMonth, mDay);
-                mDatePicker.setTitle(getString(R.string.selecting_date));
-                mDatePicker.show();
+        payDateEditText.setOnClickListener(v -> {
+            //To show current date in the datepicker
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            View focusedView = getCurrentFocus();
+            if (focusedView != null) {
+                imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
             }
+            Calendar mcurrentDate = Calendar.getInstance();
+            int mYear = mcurrentDate.get(Calendar.YEAR);
+            int mMonth = mcurrentDate.get(Calendar.MONTH);
+            int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog mDatePicker = new DatePickerDialog(InsertTransactionActivity.this, 
+                (datepicker, selectedyear, selectedmonth, selectedday) -> {
+                    String day = selectedday < 10 ? "0" + selectedday : String.valueOf(selectedday);
+                    String month = (selectedmonth + 1) < 10 ? "0" + (selectedmonth + 1) : String.valueOf(selectedmonth + 1);
+                    payDateEditText.setText(getString(R.string.date_format, day, month, selectedyear));
+                    payDateEditText.setError(null);
+                }, mYear, mMonth, mDay);
+            mDatePicker.setTitle(getString(R.string.selecting_date));
+            mDatePicker.show();
         });
 
-        btnSendTransaction.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                insertTransaction(refMonth);
-                view.setEnabled(false);
-            }
+        btnSendTransaction.setOnClickListener(view -> {
+            insertTransaction(refMonth);
+            view.setEnabled(false);
         });
     }
 
     public void setSpinnersAllignment() {
-        List<String> categoriesNames = dbUtil.getCategoriesNames(month.getYearMonth());
+        String yearMonth = month != null ? month.getYearMonth() : null;
+        List<String> categoriesNames = yearMonth != null ? dbUtil.getCategoriesNames(yearMonth) : new ArrayList<>();
         List<String> paymentMethod = getPaymentMethodList();
-        ArrayAdapter categoriesNamesAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, categoriesNames);
-        ArrayAdapter paymentMethodAdapter = new ArrayAdapter(this, R.layout.custom_spinner_insert_transaction, paymentMethod);
+        ArrayAdapter<String> categoriesNamesAdapter = new ArrayAdapter<>(this, R.layout.custom_spinner_insert_transaction, categoriesNames);
+        ArrayAdapter<String> paymentMethodAdapter = new ArrayAdapter<>(this, R.layout.custom_spinner_insert_transaction, paymentMethod);
         categoriesNamesAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
         paymentMethodAdapter.setDropDownViewResource(R.layout.spinner_selector_insert_transaction);
         categoriesSpinner.setAdapter(categoriesNamesAdapter);
         paymentTypeSpinner.setAdapter(paymentMethodAdapter);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void init() {
         setSpinnersAllignment();
-        if (shopsSet.size() == 0) {
-            shopsSet.addAll(shopsSet);
-        }
-        List<String> shopsList = new ArrayList<String>(shopsSet);
-        AutoCompleteTextView shposAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.shopAutoCompleteTextView);
-        ArrayAdapter<String> anotherAdapter = new ArrayAdapter<String>(this, R.layout.shops_spinner, shopsList);
-        shposAutoCompleteTextView.setAdapter(anotherAdapter);
-        shposAutoCompleteTextView.setThreshold(2);// Set auto complete from the first character
+        List<String> shopsList = new ArrayList<>(shopsSet);
+        AutoCompleteTextView shopsAutoCompleteTextView = findViewById(R.id.shopAutoCompleteTextView);
+        ArrayAdapter<String> anotherAdapter = new ArrayAdapter<>(this, R.layout.shops_spinner, shopsList);
+        shopsAutoCompleteTextView.setAdapter(anotherAdapter);
+        shopsAutoCompleteTextView.setThreshold(2);// Set auto complete from the first character
     }
 
+    /**
+     * Validates input and inserts a new transaction into the database.
+     * @param refMonth the reference month for the transaction
+     */
     public void insertTransaction(String refMonth) {
-        EditText shopET = (findViewById(R.id.shopAutoCompleteTextView));
-        EditText payDateET = (findViewById(R.id.payDatePlainText));
-        EditText transactionPriceET = (findViewById(R.id.transactionPricePlainText));
-        if (setErrorEditText(payDateET) || setErrorEditText(transactionPriceET))
+        if (refMonth == null || month == null) {
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_SHORT, this);
+            btnSendTransaction.setEnabled(true);
             return;
-        int idPerMonth = month.getTranIdNumerator() + 1;
-        progressBar.setVisibility(View.VISIBLE);
-
-        DatabaseReference monthDB = dbUtil.getDBMonthPath(refMonth);
-        final Context context = this;
-
-        //Insert data
-        String categoryName = categoriesSpinner.getSelectedItem().toString();
-        String paymentMethod = paymentTypeSpinner.getSelectedItem().toString();
-        String shop = shopET.getText().toString();
+        }
+        
+        EditText shopET = findViewById(R.id.shopAutoCompleteTextView);
+        EditText payDateET = findViewById(R.id.payDatePlainText);
+        EditText transactionPriceET = findViewById(R.id.transactionPricePlainText);
+        
+        // Validate inputs
+        if (setErrorEditText(payDateET) || setErrorEditText(transactionPriceET)) {
+            btnSendTransaction.setEnabled(true);
+            return;
+        }
+        
+        // Parse transaction data
+        String categoryName = categoriesSpinner.getSelectedItem() != null 
+            ? categoriesSpinner.getSelectedItem().toString() : "";
+        String paymentMethod = paymentTypeSpinner.getSelectedItem() != null 
+            ? paymentTypeSpinner.getSelectedItem().toString() : "";
+        String shop = shopET.getText().toString().trim();
+        
+        // Parse price safely
+        double transactionPrice;
+        try {
+            transactionPrice = Double.parseDouble(transactionPriceET.getText().toString().trim());
+        } catch (NumberFormatException e) {
+            transactionPriceET.setError(getString(R.string.requiredField));
+            btnSendTransaction.setEnabled(true);
+            return;
+        }
+        
+        // Parse date
         Date payDate = DateUtil.convertStringToDate(payDateET.getText().toString(), Config.DATE_FORMAT);
-        double transactionPrice = Double.valueOf(transactionPriceET.getText().toString());
-        String catId = dbUtil.getCategoryByName(month.getYearMonth(), categoryName).getId();
+        if (payDate == null) {
+            payDateET.setError(getString(R.string.requiredField));
+            btnSendTransaction.setEnabled(true);
+            return;
+        }
+        
+        // Get category
+        Category category = dbUtil.getCategoryByName(month.getYearMonth(), categoryName);
+        if (category == null) {
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_SHORT, this);
+            btnSendTransaction.setEnabled(true);
+            return;
+        }
+        
+        String catId = category.getId();
+        progressBar.setVisibility(View.VISIBLE);
+        
+        // Prepare transaction
+        int idPerMonth = month.getTranIdNumerator() + 1;
         DatabaseReference transactionsNode = dbUtil.getDBTransactionsPath(month.getYearMonth(), catId);
         String tranId = transactionsNode.push().getKey();
-        com.brosh.finance.monthlybudgetsync.objects.Transaction transaction = new com.brosh.finance.monthlybudgetsync.objects.Transaction(tranId, idPerMonth, categoryName, paymentMethod, shop, payDate, transactionPrice);
+        
+        com.brosh.finance.monthlybudgetsync.objects.Transaction transaction = 
+            new com.brosh.finance.monthlybudgetsync.objects.Transaction(
+                tranId, idPerMonth, categoryName, paymentMethod, shop, payDate, transactionPrice);
 
-        shopsSet.add(shop); // todo check if event listener call
-        dbUtil.writeNewShopFB(shop);
-        Category category = dbUtil.getCategoryById(refMonth, catId);
-        monthDB.runTransaction(new Transaction.Handler() { // todo move to DBService
+        // Add shop to set
+        if (!shop.isEmpty() && shopsSet != null) {
+            shopsSet.add(shop);
+            dbUtil.writeNewShopFB(shop);
+        }
+        
+        // Execute Firebase transaction
+        DatabaseReference monthDB = dbUtil.getDBMonthPath(refMonth);
+        final Context context = this;
+        
+        monthDB.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                Object trnNumeratorFB = mutableData.child(Definitions.TRAN_ID_NUMERATOR).getValue();
-                int idPerMonth = Integer.valueOf(trnNumeratorFB.toString()) + 1;
-                transaction.setIdPerMonth(idPerMonth);
-                mutableData.child(Definitions.TRAN_ID_NUMERATOR).setValue(idPerMonth);
-                mutableData.child(Definitions.BALANCE).setValue(category.getBalance());
-                mutableData.child(Definitions.CATEGORIES).child(category.getId()).child(Definitions.TRANSACTIONS).child(tranId).setValue(transaction); // todo check if event listener call
-                return Transaction.success(mutableData);
+                try {
+                    Object trnNumeratorFB = mutableData.child(Definitions.TRAN_ID_NUMERATOR).getValue();
+                    int newIdPerMonth = trnNumeratorFB != null 
+                        ? Integer.parseInt(trnNumeratorFB.toString()) + 1 : 1;
+                    
+                    transaction.setIdPerMonth(newIdPerMonth);
+                    mutableData.child(Definitions.TRAN_ID_NUMERATOR).setValue(newIdPerMonth);
+                    mutableData.child(Definitions.BALANCE).setValue(category.getBalance());
+                    mutableData.child(Definitions.CATEGORIES)
+                        .child(category.getId())
+                        .child(Definitions.TRANSACTIONS)
+                        .child(tranId).setValue(transaction);
+                    
+                    return Transaction.success(mutableData);
+                } catch (Exception e) {
+                    return Transaction.abort();
+                }
             }
 
             @Override
-            public void onComplete(@Nullable DatabaseError databaseError, boolean b,
+            public void onComplete(@Nullable DatabaseError databaseError, boolean committed,
                                    @Nullable DataSnapshot dataSnapshot) {
-                // send message and close window
-                String message = databaseError != null ? getString(R.string.error) : getString(R.string.transaction_inserted_successfully);
-                try {
-                    TextUtil.showMessage(message, Toast.LENGTH_LONG, context);
-                    ((Activity) context).finish();
-                } catch (Exception e) {
-                    progressBar.setVisibility(View.GONE);
-                    String s = e.getMessage();
-                    s = s;
+                progressBar.setVisibility(View.GONE);
+                
+                if (databaseError != null || !committed) {
+                    TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, context);
+                    btnSendTransaction.setEnabled(true);
+                } else {
+                    TextUtil.showMessage(getString(R.string.transaction_inserted_successfully), 
+                        Toast.LENGTH_LONG, context);
+                    finish();
                 }
             }
         });
     }
 
     public boolean setErrorEditText(EditText et) {
-        if (et.length() == 0) {
+        if (et.getText().toString().isEmpty()) {
             et.setError(getString(R.string.requiredField));
             return true;
         }

@@ -8,7 +8,7 @@
     <string name="budget">תקציב</string>
     <string name="empty"></string>
     <string name="zero">0</string>
-    <string name="seperator">-</string>
+    <string name="separator">-</string>
     <string name="hebrew">עברית</string>
     <string name="english">EN</string>
     <string name="create_budget">יצירת תקציב</string>
@@ -62,6 +62,8 @@
     <string name="logged_in_successfully">התחברת בהצלחה!</string>
     <string name="insert">הכנס</string>
     <string name="selecting_date">בחירת תאריך</string>
+    <string name="date_format">%1$s/%2$s/%3$d</string>
+    <string name="header_with_arrow">%1$s%2$c</string>
     <string name="transaction_inserted_successfully">העסקה הוכנסה בהצלחה!</string>
     <string name="requiredField">שדה חובה!</string>
     <string name="credit_card">כרטיס אשראי</string>
@@ -112,7 +114,7 @@
     <string name="error_weak_password">סיסמה חלשה</string>
     <string name="error_invalid_email">מייל שגוי</string>
     <string name="error_email_already_in_use">המייל כבר בשימוש</string>
-    <string name="user_not_ound">משתמש לא קיים</string>
+    <string name="user_not_found">משתמש לא קיים</string>
     <string name="error_invalid_password">סיסמה שגויה</string>
     <string name="are_you_sure_you_want_to_refresh">רענון העמוד עלול לגרום לאבדן מידע.\nאתה בטוח שברצונך לרענן?</string>
     <string name="default_show_active_only_summary">הצג רק עסקאות שלא נמחקו (כברירת מחדל) במסך עסקאות</string>
