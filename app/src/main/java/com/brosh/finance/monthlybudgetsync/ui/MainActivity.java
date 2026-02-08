@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.brosh.finance.monthlybudgetsync.adapters.PaginatedYearAdapter;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.login.Login;
@@ -72,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
     // UI components
     private Spinner yearSpinner;
     private Spinner monthSpinner;
-    private Button insertTransactionButton;
-    private Button budgetButton;
-    private Button transactionsButton;
-    private Button createBudgetButton;
+    private View insertTransactionButton;
+    private View budgetButton;
+    private View transactionsButton;
+    private View createBudgetButton;
     private SwipeRefreshLayout refreshLayout;
     @Nullable private TextView userLoggedInTV;
     
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> availableYears;
     private String selectedYear;
     private boolean isSpinnerInitializing;
+    private PaginatedYearAdapter paginatedYearAdapter;
     
     // State
     @Nullable private Month month;
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Initializes the year and month spinners with available months.
      * Uses a two-level approach: select year first, then month.
+     * Year spinner uses pagination when there are many years (5+).
      */
     public void initRefMonthSpinner() {
         if (yearSpinner == null || monthSpinner == null || dbUtil == null) {
@@ -114,12 +117,6 @@ public class MainActivity extends AppCompatActivity {
         
         isSpinnerInitializing = true;
         
-        // Setup year spinner
-        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this,
-                R.layout.custom_spinner, availableYears);
-        yearAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        yearSpinner.setAdapter(yearAdapter);
-        
         // Determine initial year selection
         String currentYearMonth = month != null ? month.getYearMonth() : null;
         String initialYear = availableYears.get(0); // Default to first (most recent)
@@ -131,9 +128,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         
+        // Setup year spinner with pagination support
+        paginatedYearAdapter = new PaginatedYearAdapter(this, availableYears);
+        
+        // Position window to show the initial year
+        paginatedYearAdapter.showYear(initialYear);
+        yearSpinner.setAdapter(paginatedYearAdapter);
+        
+        // Select the initial year in the spinner
+        int yearPosition = paginatedYearAdapter.getYearPosition(initialYear);
+        if (yearPosition >= 0) {
+            yearSpinner.setSelection(yearPosition);
+        }
+        
         selectedYear = initialYear;
-        int yearPosition = availableYears.indexOf(initialYear);
-        yearSpinner.setSelection(yearPosition);
         
         // Setup month spinner for selected year
         updateMonthSpinnerForYear(initialYear, currentYearMonth);
@@ -240,6 +248,51 @@ public class MainActivity extends AppCompatActivity {
             // Ignore
         }
         return monthNum;
+    }
+    
+    /**
+     * Handles selection of pagination markers in the year spinner.
+     * Loads more years WITHOUT auto-selecting - lets user browse and pick.
+     *
+     * @param marker The pagination marker that was selected
+     */
+    private void handleYearPaginationMarker(String marker) {
+        if (paginatedYearAdapter == null) return;
+        
+        isSpinnerInitializing = true;
+        
+        if (PaginatedYearAdapter.isLoadNewerMarker(marker)) {
+            // Load newer (more recent) years
+            paginatedYearAdapter.loadNewer();
+        } else if (PaginatedYearAdapter.isLoadOlderMarker(marker)) {
+            // Load older years
+            paginatedYearAdapter.loadOlder();
+        } else {
+            isSpinnerInitializing = false;
+            return;
+        }
+        
+        // Re-set the adapter to refresh the spinner
+        yearSpinner.setAdapter(paginatedYearAdapter);
+        
+        // Try to keep the previously selected year visible if it's in the new window
+        int previousPosition = paginatedYearAdapter.getYearPosition(selectedYear);
+        if (previousPosition >= 0) {
+            // Previously selected year is still visible - keep it selected
+            yearSpinner.setSelection(previousPosition);
+        } else {
+            // Select the first real year (skip any pagination marker at top)
+            String firstYear = paginatedYearAdapter.getFirstVisibleYear();
+            if (firstYear != null) {
+                int firstPosition = paginatedYearAdapter.getYearPosition(firstYear);
+                yearSpinner.setSelection(Math.max(0, firstPosition));
+            }
+        }
+        
+        isSpinnerInitializing = false;
+        
+        // Re-open the dropdown so user can continue browsing and select
+        yearSpinner.postDelayed(() -> yearSpinner.performClick(), 100);
     }
     
     /**
@@ -438,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setupSpinnerListener() {
         // Year spinner listener - updates month spinner when year changes
+        // Also handles pagination markers to load more years
         yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -446,7 +500,16 @@ public class MainActivity extends AppCompatActivity {
                 Object selectedItem = yearSpinner.getSelectedItem();
                 if (selectedItem == null) return;
                 
-                String newYear = selectedItem.toString();
+                String itemValue = selectedItem.toString();
+                
+                // Handle pagination markers
+                if (PaginatedYearAdapter.isPaginationMarker(itemValue)) {
+                    handleYearPaginationMarker(itemValue);
+                    return;
+                }
+                
+                // Normal year selection
+                String newYear = itemValue;
                 if (!newYear.equals(selectedYear)) {
                     selectedYear = newYear;
                     // Update month spinner for new year, select first month
@@ -488,13 +551,18 @@ public class MainActivity extends AppCompatActivity {
      * Updates button enabled states and backgrounds.
      */
     private void updateButtonStates(boolean isActive) {
-        Drawable circleButton = ContextCompat.getDrawable(this, 
-            isActive ? R.drawable.circle_pink_style : R.drawable.circle_gray_style);
-        
         insertTransactionButton.setEnabled(isActive);
         createBudgetButton.setEnabled(isActive);
-        insertTransactionButton.setBackground(circleButton);
-        createBudgetButton.setBackground(circleButton);
+        
+        // Update backgrounds for nav card style
+        insertTransactionButton.setBackground(ContextCompat.getDrawable(this,
+            isActive ? R.drawable.nav_card_insert : R.drawable.nav_card_disabled));
+        createBudgetButton.setBackground(ContextCompat.getDrawable(this,
+            isActive ? R.drawable.nav_card_create : R.drawable.nav_card_disabled));
+        
+        // Update alpha for visual feedback
+        insertTransactionButton.setAlpha(isActive ? 1.0f : 0.5f);
+        createBudgetButton.setAlpha(isActive ? 1.0f : 0.5f);
     }
     
     /**
@@ -639,22 +707,27 @@ public class MainActivity extends AppCompatActivity {
      * Enables all navigation buttons with active styling.
      */
     private void enableAllButtons() {
-        Drawable activeDrawable = ContextCompat.getDrawable(this, R.drawable.circle_pink_style);
-        
         budgetButton.setEnabled(true);
         transactionsButton.setEnabled(true);
         insertTransactionButton.setEnabled(true);
+        createBudgetButton.setEnabled(true);
         
-        budgetButton.setBackground(activeDrawable);
-        transactionsButton.setBackground(activeDrawable);
-        insertTransactionButton.setBackground(activeDrawable);
+        budgetButton.setBackground(ContextCompat.getDrawable(this, R.drawable.nav_card_budget));
+        transactionsButton.setBackground(ContextCompat.getDrawable(this, R.drawable.nav_card_transactions));
+        insertTransactionButton.setBackground(ContextCompat.getDrawable(this, R.drawable.nav_card_insert));
+        createBudgetButton.setBackground(ContextCompat.getDrawable(this, R.drawable.nav_card_create));
+        
+        budgetButton.setAlpha(1.0f);
+        transactionsButton.setAlpha(1.0f);
+        insertTransactionButton.setAlpha(1.0f);
+        createBudgetButton.setAlpha(1.0f);
     }
     
     /**
      * Disables all navigation buttons with inactive styling.
      */
     private void disableAllButtons() {
-        Drawable inactiveDrawable = ContextCompat.getDrawable(this, R.drawable.circle_gray_style);
+        Drawable inactiveDrawable = ContextCompat.getDrawable(this, R.drawable.nav_card_disabled);
         
         budgetButton.setEnabled(false);
         transactionsButton.setEnabled(false);
@@ -663,6 +736,10 @@ public class MainActivity extends AppCompatActivity {
         budgetButton.setBackground(inactiveDrawable);
         transactionsButton.setBackground(inactiveDrawable);
         insertTransactionButton.setBackground(inactiveDrawable);
+        
+        budgetButton.setAlpha(0.5f);
+        transactionsButton.setAlpha(0.5f);
+        insertTransactionButton.setAlpha(0.5f);
     }
 
     @Override
@@ -702,9 +779,9 @@ public class MainActivity extends AppCompatActivity {
             // Create current month if it doesn't exist
             if (!dbUtil.isCurrentRefMonthExists()) {
                 createNewMonth(new Date());
-                Drawable activeDrawable = ContextCompat.getDrawable(this, R.drawable.circle_pink_style);
                 insertTransactionButton.setEnabled(true);
-                insertTransactionButton.setBackground(activeDrawable);
+                insertTransactionButton.setBackground(ContextCompat.getDrawable(this, R.drawable.nav_card_insert));
+                insertTransactionButton.setAlpha(1.0f);
             }
             
             enableAllButtons();
@@ -717,9 +794,9 @@ public class MainActivity extends AppCompatActivity {
                 Date nextRefMonth = DateUtil.getNextRefMonth(month.getRefMonth());
                 if (nextRefMonth != null && new Date().after(nextRefMonth)) {
                     createNewMonth(nextRefMonth);
-                    Drawable activeDrawable = ContextCompat.getDrawable(this, R.drawable.circle_pink_style);
                     insertTransactionButton.setEnabled(true);
-                    insertTransactionButton.setBackground(activeDrawable);
+                    insertTransactionButton.setBackground(ContextCompat.getDrawable(this, R.drawable.nav_card_insert));
+                    insertTransactionButton.setAlpha(1.0f);
                 }
             }
             

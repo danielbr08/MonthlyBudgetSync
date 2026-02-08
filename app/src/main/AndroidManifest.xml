@@ -20,6 +20,7 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/settings"
+            android:theme="@style/AppTheme.Settings"
             android:exported="false" />
         <activity
             android:name=".ui.InsertTransactionActivity"
@@ -46,6 +47,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.MainActivity"
+            android:theme="@style/AppTheme.WithActionBar"
             android:exported="false" />
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data

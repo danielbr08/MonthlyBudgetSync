@@ -275,11 +275,11 @@ public class TransactionsActivity extends AppCompatActivity {
         // Add close button
         TextView closeButton = new TextView(this);
         closeButton.setText(getString(R.string.close));
-        closeButton.setTextSize(13);
-        closeButton.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-        closeButton.setBackgroundResource(R.drawable.circle_pink_style);
+        closeButton.setTextSize(12);
+        closeButton.setTextColor(ContextCompat.getColor(this, R.color.colorTextDark));
+        closeButton.setBackgroundResource(R.drawable.btn_close_dialog);
         closeButton.setGravity(android.view.Gravity.CENTER);
-        closeButton.setPadding((int)(20*density), (int)(8*density), (int)(20*density), (int)(8*density));
+        closeButton.setPadding((int)(16*density), (int)(6*density), (int)(16*density), (int)(6*density));
         
         LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,

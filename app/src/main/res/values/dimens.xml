@@ -1,10 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="transaction_text_size">13dp</dimen>
+    <!-- Consistent spacing system (4dp grid) -->
+    <dimen name="spacing_xxs">2dp</dimen>
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">20dp</dimen>
+    <dimen name="spacing_xxl">24dp</dimen>
+    <dimen name="spacing_xxxl">32dp</dimen>
+    <dimen name="spacing_huge">48dp</dimen>
+    
+    <!-- Corner radius -->
+    <dimen name="corner_sm">8dp</dimen>
+    <dimen name="corner_md">12dp</dimen>
+    <dimen name="corner_lg">16dp</dimen>
+    <dimen name="corner_xl">20dp</dimen>
+    <dimen name="corner_full">100dp</dimen>
+    
+    <!-- Button dimensions -->
+    <dimen name="btn_height_sm">40dp</dimen>
+    <dimen name="btn_height_md">48dp</dimen>
+    <dimen name="btn_height_lg">56dp</dimen>
+    <dimen name="btn_padding_h">24dp</dimen>
+    
+    <!-- Input field dimensions -->
+    <dimen name="input_height">56dp</dimen>
+    <dimen name="input_padding">16dp</dimen>
+    
+    <!-- Card dimensions -->
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_margin">12dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    
+    <!-- Navigation card dimensions -->
+    <dimen name="nav_card_size">140dp</dimen>
+    <dimen name="nav_card_icon_size">32dp</dimen>
+    
+    <!-- Icon sizes -->
+    <dimen name="icon_sm">20dp</dimen>
+    <dimen name="icon_md">24dp</dimen>
+    <dimen name="icon_lg">32dp</dimen>
+    <dimen name="icon_xl">48dp</dimen>
+    
+    <!-- FAB dimensions -->
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    
+    <!-- Text sizes -->
+    <dimen name="text_xs">12sp</dimen>
+    <dimen name="text_sm">14sp</dimen>
+    <dimen name="text_md">16sp</dimen>
+    <dimen name="text_lg">18sp</dimen>
+    <dimen name="text_xl">20sp</dimen>
+    <dimen name="text_xxl">24sp</dimen>
+    <dimen name="text_title">28sp</dimen>
+    <dimen name="text_display">32sp</dimen>
+    
+    <!-- Row/List item dimensions -->
+    <dimen name="row_min_height">56dp</dimen>
+    <dimen name="row_padding">12dp</dimen>
+    <dimen name="row_margin">8dp</dimen>
+    
+    <!-- Header dimensions -->
+    <dimen name="header_height">56dp</dimen>
+    <dimen name="toolbar_height">64dp</dimen>
+    
+    <!-- Legacy dimensions (backward compatibility) -->
+    <dimen name="transaction_text_size">13sp</dimen>
     <dimen name="padding_4">4dp</dimen>
     <dimen name="padding_8">8dp</dimen>
     <dimen name="padding_2">2dp</dimen>
-
-    <dimen name="width_day_peeker">35dp</dimen>
-    <dimen name="height_day_peeker">35dp</dimen>
+    <dimen name="width_day_peeker">40dp</dimen>
+    <dimen name="height_day_peeker">40dp</dimen>
+    
+    <!-- Screen margins -->
+    <dimen name="screen_margin_h">16dp</dimen>
+    <dimen name="screen_margin_v">20dp</dimen>
+    
+    <!-- Bottom navigation -->
+    <dimen name="bottom_bar_height">64dp</dimen>
+    
+    <!-- Logo sizes -->
+    <dimen name="logo_height_sm">80dp</dimen>
+    <dimen name="logo_height_md">120dp</dimen>
+    <dimen name="logo_height_lg">160dp</dimen>
 </resources>

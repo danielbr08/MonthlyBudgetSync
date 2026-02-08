@@ -79,6 +79,13 @@ public class BudgetActivity extends BaseActivity {
         totalBalanceTV.setText(FormatUtil.formatCurrency(totalBalance, currency));
         totalBudgetTV.setText(FormatUtil.formatCurrency(totalBudget, currency));
         
+        // Color-code balance based on value
+        if (totalBalance < 0) {
+            totalBalanceTV.setTextColor(0xFFEF4444); // Red for negative
+        } else {
+            totalBalanceTV.setTextColor(0xFF10B981); // Green for positive
+        }
+        
         // Setup RecyclerView
         if (adapter == null) {
             adapter = new CategoriesViewAdapter(this, categories);

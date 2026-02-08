@@ -19,6 +19,10 @@
     <string name="login">כניסה</string>
     <string name="new_here_create_account">חדש כאן? צור חשבון</string>
     <string name="logout">(התנתק)</string>
+    <string name="drag_to_reorder">גרור לשינוי סדר</string>
+    <string name="duplicate">שכפל</string>
+    <string name="delete">מחק</string>
+    <string name="row_options">אפשרויות שורה</string>
     <string name="your_profile">הפרופיל שלי</string>
     <string name="your_name">שם</string>
     <string name="your_email_address">מייל</string>
@@ -28,7 +32,7 @@
     <string name="register">הירשם</string>
     <string name="already_registered_login_here">כבר רשום? התחבר כאן</string>
     <string name="transactions">עסקאות</string>
-    <string name="monthly_budget">תקציב חודש</string>
+    <string name="monthly_budget">תקציב חודשי</string>
     <string name="categories">קטגוריות</string>
     <string name="shares">שיתופים</string>
     <string name="users">משתמשים</string>
@@ -153,4 +157,5 @@
     <string name="discount_percent">%</string>
     <string name="final_price">מחיר סופי:</string>
     <string name="original_price">מקורי</string>
+    <string name="add_category">+ הוסף קטגוריה</string>
 </resources>

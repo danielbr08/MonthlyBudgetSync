@@ -4,19 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient_auth"
     tools:context=".ui.InitAppActivity">
 
-
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/loadingPanel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ProgressBar
+        <!-- App Logo -->
+        <ImageView
+            android:layout_width="@dimen/logo_height_lg"
+            android:layout_height="@dimen/logo_height_lg"
+            android:src="@drawable/monthly_budget"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/app_name"
+            android:layout_marginBottom="@dimen/spacing_xxl" />
+
+        <!-- App Name -->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminate="true" />
+            android:text="@string/monthly_budget"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"
+            android:letterSpacing="-0.02"
+            android:layout_marginBottom="@dimen/spacing_sm" />
 
-    </RelativeLayout>
+        <!-- Tagline -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Track your finances smartly"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="@dimen/text_sm"
+            android:layout_marginBottom="@dimen/spacing_huge" />
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:layout_width="@dimen/icon_xl"
+            android:layout_height="@dimen/icon_xl"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimaryLight" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

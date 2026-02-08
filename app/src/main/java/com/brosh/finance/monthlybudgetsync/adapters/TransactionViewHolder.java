@@ -1,9 +1,11 @@
 package com.brosh.finance.monthlybudgetsync.adapters;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -28,6 +30,10 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
 
     private static final int HEADER_TEXT_SIZE = 12;
     private static final String EMPTY = "";
+    
+    // Price colors
+    private static final int COLOR_POSITIVE = 0xFF10B981; // Green
+    private static final int COLOR_NEGATIVE = 0xFFEF4444; // Red
     
     // Payment method display mappings (for legacy data)
     private static final String CREDIT_CARD_LONG_HE = "כרטיס אשראי";
@@ -80,6 +86,9 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
             bindTransactionRow(transaction);
         }
 
+        // Set price color based on value
+        setPriceColor(transaction.getPrice());
+
         setStrikeThroughText(transaction.isDeleted());
 
         if (isTotalRow) {
@@ -123,6 +132,20 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
         storeTV.setText(EMPTY);
         chargeDateTV.setText(EMPTY);
         priceTV.setText(FormatUtil.formatDecimal(transaction.getPrice()));
+    }
+    
+    /**
+     * Sets the price text color based on whether the value is positive or negative.
+     * Green for positive/zero, Red for negative.
+     *
+     * @param price the price value
+     */
+    private void setPriceColor(double price) {
+        if (price < 0) {
+            priceTV.setTextColor(COLOR_NEGATIVE);
+        } else {
+            priceTV.setTextColor(COLOR_POSITIVE);
+        }
     }
 
     // ============================================

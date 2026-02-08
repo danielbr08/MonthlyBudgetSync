@@ -1,71 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ContactUsActivity"
-    android:layout_margin="@dimen/padding_8">
+    android:background="@drawable/bg_gradient_main"
+    tools:context=".ui.ContactUsActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/contact_us"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/subjectET"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
-    <EditText
-        android:id="@+id/subjectET"
-        android:layout_width="0dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="@string/subject"
-        android:backgroundTint="@color/colorLoginBackground"
-        android:textColor="@color/colorLoginBackground"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/spacing_xxl"
+            android:paddingEnd="@dimen/spacing_xxl"
+            android:paddingTop="@dimen/spacing_xxxl"
+            android:paddingBottom="@dimen/spacing_xxxl">
 
-    <EditText
-        android:id="@+id/messageET"
-        android:layout_width="395dp"
-        android:layout_height="235dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:backgroundTint="@color/colorLoginBackground"
-        android:textColor="@color/colorLoginBackground"
-        android:hint="@string/message"
-        android:inputType="textMultiLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subjectET" />
+            <!-- Page Title -->
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/contact_us"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold"
+                android:letterSpacing="-0.02"
+                android:layout_marginBottom="@dimen/spacing_lg" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="158dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="164dp"
-        android:background="@color/colorLoginBackground"
-        android:onClick="saveMessage"
-        android:text="@string/submit"
-        android:textColor="@color/colorWhite"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messageET"
-        app:layout_constraintVertical_bias="0.187" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="We'd love to hear from you"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="@dimen/text_sm"
+                android:layout_marginBottom="@dimen/spacing_xxl" />
+
+            <!-- Form Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_glass"
+                android:padding="@dimen/spacing_xxl">
+
+                <!-- Subject Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_lg"
+                    style="@style/Widget.App.TextInputLayout"
+                    android:hint="@string/subject"
+                    app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/subjectET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:inputType="text"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textSize="@dimen/text_md" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Message Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_xxl"
+                    style="@style/Widget.App.TextInputLayout"
+                    android:hint="@string/message"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="500">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/messageET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:inputType="textMultiLine"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textSize="@dimen/text_md"
+                        android:minLines="6"
+                        android:gravity="top|start" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Submit Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height_lg"
+                    android:onClick="saveMessage"
+                    android:text="@string/submit"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/text_md"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    app:cornerRadius="@dimen/corner_md"
+                    app:backgroundTint="@color/colorButtonPrimary"
+                    app:rippleColor="@color/colorPrimaryLight"
+                    android:elevation="@dimen/card_elevation"
+                    app:icon="@android:drawable/ic_menu_send"
+                    app:iconGravity="textEnd"
+                    app:iconTint="@color/colorWhite" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

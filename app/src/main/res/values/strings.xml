@@ -18,6 +18,10 @@
     <string name="login">Login</string>
     <string name="new_here_create_account">New Here ? Create Account</string>
     <string name="logout">(Logout)</string>
+    <string name="drag_to_reorder">Drag to reorder</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="delete">Delete</string>
+    <string name="row_options">Row Options</string>
     <string name="your_profile">Your Profile</string>
     <string name="your_name">Your Name</string>
     <string name="your_email_address">Your Email Address</string>
@@ -152,4 +156,7 @@
     <string name="discount_percent">%</string>
     <string name="final_price">Final Price:</string>
     <string name="original_price">Original</string>
+    <string name="add_category">+ Add Category</string>
+    <string name="load_newer_years">▲ …</string>
+    <string name="load_older_years">▼ …</string>
 </resources>

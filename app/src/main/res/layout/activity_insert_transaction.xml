@@ -1,422 +1,367 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
-    tools:context=".ui.InsertTransactionActivity"
-    android:background="@drawable/walpaper">
+    android:background="@drawable/bg_gradient_main"
+    tools:context=".ui.InsertTransactionActivity">
 
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="0.8"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/LLMainInsertTranssaction"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="60dp">
 
+            <!-- Page Title -->
+            <TextView
+                android:id="@+id/inserTransactionLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/insert_transaction"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Form Card -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="1">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_glass"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:id="@+id/inserTransactionLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@string/insert_transaction"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/chooseCategoryLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_weight=".7"
-                    android:orientation="vertical"
-                    android:text="@string/category"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/categorySpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".3"
-                    android:orientation="vertical"
-                    android:backgroundTint="@color/colorWhite" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/choosePaymenMethodtLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".7"
-                    android:orientation="vertical"
-                    android:text="@string/payment_method"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/paymentMethodSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".3"
-                    android:orientation="vertical"
-                    android:backgroundTint="@color/colorWhite" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal">
-
+                <!-- Category Spinner -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:weightSum="1">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/chooseCategoryLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category"
+                        android:textColor="#B8C5D6"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <Spinner
+                        android:id="@+id/categorySpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/spinner_background"
+                        android:popupBackground="#FFFFFF" />
+
+                </LinearLayout>
+
+                <!-- Payment Method Spinner -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/choosePaymenMethodtLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/payment_method"
+                        android:textColor="#B8C5D6"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <Spinner
+                        android:id="@+id/paymentMethodSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/spinner_background"
+                        android:popupBackground="#FFFFFF" />
+
+                </LinearLayout>
+
+                <!-- Charge Date Input -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
                     <TextView
                         android:id="@+id/payDateLabel"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".7"
-                        android:gravity="center_vertical"
                         android:text="@string/charge_date"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textColor="#B8C5D6"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
 
                     <EditText
                         android:id="@+id/payDatePlainText"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".3"
+                        android:layout_height="50dp"
+                        android:background="@drawable/input_background"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
                         android:clickable="true"
-                        android:ems="10"
-                        android:textColor="@color/colorWhite"
-                        android:backgroundTint="@color/colorLoginBackground"
                         android:focusable="false"
                         android:inputType="date"
-                        android:orientation="vertical"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
                         tools:targetApi="o" />
+
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
+                <!-- Store Input -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:weightSum="1">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
                     <TextView
                         android:id="@+id/shopLabel"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".7"
-                        android:gravity="center_vertical"
                         android:text="@string/store"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textColor="#B8C5D6"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
 
                     <AutoCompleteTextView
                         android:id="@+id/shopAutoCompleteTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".3"
+                        android:layout_height="50dp"
+                        android:background="@drawable/input_background"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:orientation="vertical"
                         android:singleLine="true"
-                        android:textColor="@color/colorWhite"
-                        android:backgroundTint="@color/colorLoginBackground" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:hint="@string/store"
+                        android:textColorHint="#6B7B8C" />
+
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
+                <!-- Price Input -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
                     <TextView
                         android:id="@+id/transactionPriceLabel"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".7"
-                        android:gravity="center_vertical"
                         android:text="@string/price"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textColor="#B8C5D6"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
 
                     <EditText
                         android:id="@+id/transactionPricePlainText"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".3"
-                        android:ems="10"
+                        android:layout_height="50dp"
+                        android:background="@drawable/input_background"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
                         android:importantForAutofill="no"
-                        android:inputType="numberSigned|numberDecimal|textMultiLine"
-                        android:gravity="center_vertical"
+                        android:inputType="numberSigned|numberDecimal"
                         android:textDirection="ltr"
-                        tools:targetApi="jelly_bean_mr1"
-                        android:textColor="@color/colorWhite"
-                        android:backgroundTint="@color/colorLoginBackground" />
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:hint="0.00"
+                        android:textColorHint="#6B7B8C"
+                        tools:targetApi="jelly_bean_mr1" />
+
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <!-- Discount Section -->
-            <LinearLayout
-                android:id="@+id/discountSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
+                <!-- Discount Section -->
                 <LinearLayout
+                    android:id="@+id/discountSection"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:weightSum="1">
-
-                    <CheckBox
-                        android:id="@+id/discountCheckBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".7"
-                        android:text="@string/discount"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:buttonTint="@color/colorWhite" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp">
 
                     <LinearLayout
-                        android:id="@+id/discountInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".3"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <CheckBox
+                            android:id="@+id/discountCheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/discount"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            app:buttonTint="#32E0C4" />
+
+                        <LinearLayout
+                            android:id="@+id/discountInputLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginStart="12dp"
+                            android:visibility="gone">
+
+                            <EditText
+                                android:id="@+id/discountPercentEditText"
+                                android:layout_width="70dp"
+                                android:layout_height="44dp"
+                                android:background="@drawable/input_background"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:hint="0"
+                                android:textColorHint="#6B7B8C"
+                                android:inputType="numberDecimal"
+                                android:maxLength="5"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textAlignment="center"
+                                android:gravity="center" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/discount_percent"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:paddingStart="6dp"
+                                android:paddingEnd="4dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/finalPriceLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
+                        android:background="@drawable/row_item_background"
+                        android:padding="12dp"
+                        android:layout_marginTop="8dp"
                         android:visibility="gone">
 
-                        <EditText
-                            android:id="@+id/discountPercentEditText"
+                        <TextView
+                            android:id="@+id/finalPriceLabel"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="0"
-                            android:textColorHint="#AAFFFFFF"
-                            android:inputType="numberDecimal"
-                            android:maxLength="5"
-                            android:textColor="@color/colorWhite"
-                            android:backgroundTint="@color/colorLoginBackground"
-                            android:textAlignment="center"
-                            android:gravity="center" />
+                            android:text="@string/final_price"
+                            android:textColor="#B8C5D6"
+                            android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/finalPriceValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/discount_percent"
-                            android:textColor="@color/colorWhite"
+                            android:textColor="#10B981"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:paddingStart="4dp"
-                            android:paddingEnd="4dp" />
+                            android:textStyle="bold" />
+
                     </LinearLayout>
+
                 </LinearLayout>
 
+                <!-- Comment Section -->
                 <LinearLayout
-                    android:id="@+id/finalPriceLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:weightSum="1"
-                    android:paddingBottom="8dp"
-                    android:visibility="gone">
+                    android:orientation="vertical"
+                    android:layout_marginBottom="20dp">
 
-                    <TextView
-                        android:id="@+id/finalPriceLabel"
+                    <CheckBox
+                        android:id="@+id/addCommentCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/comment"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        app:buttonTint="#32E0C4" />
+
+                    <EditText
+                        android:id="@+id/commentEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".7"
-                        android:text="@string/final_price"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:minHeight="70dp"
+                        android:background="@drawable/input_background"
+                        android:padding="14dp"
+                        android:hint="@string/comment_hint"
+                        android:textColorHint="#6B7B8C"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:inputType="textMultiLine"
+                        android:maxLines="3"
+                        android:gravity="top|start"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/finalPriceValue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".3"
-                        android:textColor="#90EE90"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
                 </LinearLayout>
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
-
-                <CheckBox
-                    android:id="@+id/addCommentCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/comment"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:buttonTint="@color/colorWhite" />
-
-                <EditText
-                    android:id="@+id/commentEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    android:hint="@string/comment_hint"
-                    android:textColorHint="#AAFFFFFF"
-                    android:textColor="@color/colorWhite"
-                    android:backgroundTint="@color/colorLoginBackground"
-                    android:inputType="textMultiLine"
-                    android:maxLines="1"
-                    android:scrollHorizontally="false"
-                    android:gravity="top|start"
-                    android:padding="8dp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:orientation="horizontal">
-
+                <!-- Progress Indicator -->
                 <ProgressBar
                     android:id="@+id/progress_circular"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/insert"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="#32E0C4"
                     android:visibility="gone" />
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:layout_marginBottom="30px">
-
+                <!-- Submit Button -->
                 <Button
                     android:id="@+id/sendTransactionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
                     android:text="@string/insert"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:background="@color/colorWhite"
-                    android:textColor="@color/colorLoginBackground" />
+                    android:textAllCaps="false"
+                    android:background="@drawable/btn_primary" />
+
             </LinearLayout>
 
-            <LinearLayout
+            <!-- AdView Banner -->
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:layout_weight="0.8">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight=".7"
-                    android:background="@drawable/credit_card"
-                    android:layout_marginBottom="20px" />
-
-                <com.google.android.gms.ads.AdView
-                    android:id="@+id/adView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:adSize="BANNER"
-                    app:adUnitId="@string/admob_banner_unit_id"
-                    android:layout_weight=".1" />
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:adSize="BANNER"
+                app:adUnitId="@string/admob_banner_unit_id" />
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

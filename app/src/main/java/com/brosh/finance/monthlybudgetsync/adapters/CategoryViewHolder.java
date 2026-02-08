@@ -22,6 +22,15 @@ import java.util.List;
 public class CategoryViewHolder extends RecyclerView.ViewHolder {
 
     // ============================================
+    // COLORS
+    // ============================================
+    
+    private static final int COLOR_WHITE = Color.WHITE;
+    private static final int COLOR_BUDGET = 0xFFB8C5D6; // Light gray-blue
+    private static final int COLOR_POSITIVE = 0xFF10B981; // Green
+    private static final int COLOR_NEGATIVE = 0xFFEF4444; // Red
+
+    // ============================================
     // UI COMPONENTS
     // ============================================
 
@@ -53,15 +62,22 @@ public class CategoryViewHolder extends RecyclerView.ViewHolder {
      * @param category the category data to display
      */
     public void onBindViewHolder(@NonNull Category category) {
+        // Reset colors first (for recycled views)
+        categoryTV.setTextColor(COLOR_WHITE);
+        budgetTV.setTextColor(COLOR_BUDGET);
+        
+        // Set text values
         categoryTV.setText(category.getName());
         balanceTV.setText(FormatUtil.formatBalance(category.getBalance()));
         budgetTV.setText(FormatUtil.formatBudget(category.getBudget()));
 
-        // Style based on balance (red if negative)
+        // Style balance based on value (green if positive, red if negative)
         if (category.getBalance() < 0) {
-            UiUtil.setTextViewColor(allTextViews, Color.RED);
+            balanceTV.setTextColor(COLOR_NEGATIVE);
+        } else {
+            balanceTV.setTextColor(COLOR_POSITIVE);
         }
-        
+
         // Style total row differently (identified by null ID)
         if (category.getId() == null) {
             UiUtil.setTotalBudgetRow(allTextViews);

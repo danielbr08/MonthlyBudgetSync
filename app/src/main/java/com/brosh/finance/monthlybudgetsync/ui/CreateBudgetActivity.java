@@ -238,7 +238,12 @@ public class CreateBudgetActivity extends AppCompatActivity {
         }
         
         this.adapter = new CreateBudgetViewAdapter(this, budgets);
-        new ItemTouchHelper(createItemTouchCallback()).attachToRecyclerView(budgetsRowsRecycler);
+        
+        // Create and attach ItemTouchHelper for drag & swipe
+        ItemTouchHelper touchHelper = new ItemTouchHelper(createItemTouchCallback());
+        adapter.setItemTouchHelper(touchHelper);
+        touchHelper.attachToRecyclerView(budgetsRowsRecycler);
+        
         budgetsRowsRecycler.setAdapter(adapter);
         budgetsRowsRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -261,34 +266,67 @@ public class CreateBudgetActivity extends AppCompatActivity {
      */
     @NonNull
     private ItemTouchHelper.SimpleCallback createItemTouchCallback() {
-        return new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        return new ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.UP | ItemTouchHelper.DOWN,  // Drag directions
+                ItemTouchHelper.START | ItemTouchHelper.END  // Swipe directions
+        ) {
+            @Override
+            public boolean isLongPressDragEnabled() {
+                // Disable built-in long press drag - we handle it manually via startDrag()
+                return false;
+            }
+            
             @Override
             public int getMovementFlags(@NonNull RecyclerView recyclerView, 
                                        @NonNull RecyclerView.ViewHolder viewHolder) {
                 int position = viewHolder.getBindingAdapterPosition();
                 int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                // Don't allow swiping the first row
                 int swipeFlags = position == 0 ? 0 : ItemTouchHelper.START | ItemTouchHelper.END;
                 return makeMovementFlags(dragFlags, swipeFlags);
+            }
+            
+            @Override
+            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                super.onSelectedChanged(viewHolder, actionState);
+                // Disable SwipeRefreshLayout during drag/swipe to prevent interference
+                if (refreshLayout != null) {
+                    boolean isDragging = actionState == ItemTouchHelper.ACTION_STATE_DRAG || 
+                                        actionState == ItemTouchHelper.ACTION_STATE_SWIPE;
+                    refreshLayout.setEnabled(!isDragging);
+                }
             }
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, 
                                  @NonNull RecyclerView.ViewHolder viewHolder, 
                                  @NonNull RecyclerView.ViewHolder target) {
-                adapter.notifyItemMoved(
-                    viewHolder.getBindingAdapterPosition(), 
-                    target.getBindingAdapterPosition()
-                );
-                return true;
+                int fromPosition = viewHolder.getBindingAdapterPosition();
+                int toPosition = target.getBindingAdapterPosition();
+                if (fromPosition != RecyclerView.NO_POSITION && toPosition != RecyclerView.NO_POSITION) {
+                    return adapter.moveBudget(fromPosition, toPosition);
+                }
+                return false;
             }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                if (budgets.size() < 2) return;
-                
                 int position = viewHolder.getBindingAdapterPosition();
-                budgets.remove(position);
-                adapter.notifyItemRemoved(position);
+                if (position != RecyclerView.NO_POSITION) {
+                    adapter.removeBudget(position);
+                }
+            }
+            
+            @Override
+            public void clearView(@NonNull RecyclerView recyclerView, 
+                                 @NonNull RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+                // Clear selection after drag/swipe ends
+                adapter.clearSelection();
+                // Re-enable SwipeRefreshLayout
+                if (refreshLayout != null) {
+                    refreshLayout.setEnabled(true);
+                }
             }
         };
     }
@@ -688,9 +726,13 @@ public class CreateBudgetActivity extends AppCompatActivity {
      * Adds a new input row to the budget list.
      */
     public void addInputRow(View view) {
-        Budget budget = new Budget("", 0, false, "", 2, budgets.size() + 1);
-        budgets.add(budget);
-        adapter.notifyItemInserted(budgets.size() - 1);
+        if (adapter != null) {
+            int currentSize = adapter.getBudgets().size();
+            Budget budget = new Budget("", 0, false, "", 2, currentSize + 1);
+            adapter.addBudget(budget);
+            // Scroll to the new item
+            budgetsRowsRecycler.smoothScrollToPosition(adapter.getItemCount() - 1);
+        }
     }
 
     // ============================================

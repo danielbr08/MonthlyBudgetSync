@@ -3,70 +3,106 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="100"
-    android:minHeight="45dp"
-    android:descendantFocusability="afterDescendants">
+    android:background="@drawable/row_item_background"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp"
+    android:layout_marginBottom="6dp"
+    android:gravity="center_vertical"
+    android:focusable="true"
+    android:clickable="true">
 
+    <!-- Category Name -->
     <EditText
         android:id="@+id/bgt_category"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="28"
-        android:textSize="@dimen/transaction_text_size"
+        android:layout_height="44dp"
+        android:layout_weight="0.28"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/input_background"
+        android:hint="@string/category"
+        android:inputType="text"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:singleLine="true"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#6B7B8C"
+        android:textSize="12sp"
+        android:importantForAutofill="no" />
 
-        android:padding="@dimen/padding_8"
-        android:text="@string/category"
-        android:textColor="@color/colorWhite"
-        android:backgroundTint="@color/colorWhite"
-        android:descendantFocusability="blocksDescendants" />
-
+    <!-- Budget Value -->
     <EditText
         android:id="@+id/bgt_budget"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="18"
-        android:textSize="@dimen/transaction_text_size"
-
-        android:padding="@dimen/padding_2"
-        android:text="@string/budget"
-        android:textColor="@color/colorWhite"
-        android:backgroundTint="@color/colorWhite"
-
-        android:inputType="number"
-        android:textDirection="ltr" />
-
-    <CheckBox
-        android:id="@+id/bgt_constant_date"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="12"
-        android:buttonTint="@color/colorWhite"
-
-        android:padding="@dimen/padding_2"
-        android:gravity="center_vertical" />
-
-    <EditText
-        android:id="@+id/bgt_store"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="28"
-        android:textSize="@dimen/transaction_text_size"
-
-        android:padding="@dimen/padding_2"
-        android:text="@string/store"
-        android:textColor="@color/colorWhite"
-        android:backgroundTint="@color/colorWhite" />
-
-    <TextView
-        android:id="@+id/bgt_charge_day"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="14"
-        android:padding="@dimen/padding_4"
-        android:text="1"
-        android:textColor="@color/colorLink"
-        android:gravity="center_vertical"
+        android:layout_height="44dp"
+        android:layout_weight="0.22"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/input_background"
+        android:hint="0"
+        android:inputType="numberDecimal"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:singleLine="true"
         android:textAlignment="center"
-        tools:ignore="RtlCompat" />
+        android:textColor="#FFFFFF"
+        android:textColorHint="#6B7B8C"
+        android:textDirection="ltr"
+        android:textSize="12sp"
+        android:importantForAutofill="no"
+        tools:ignore="RtlCompat"
+        tools:targetApi="jelly_bean_mr1" />
+
+    <!-- Constant Date Section -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.50"
+        android:layout_marginStart="4dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Checkbox -->
+        <CheckBox
+            android:id="@+id/bgt_constant_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="#32E0C4" />
+
+        <!-- Store Name -->
+        <EditText
+            android:id="@+id/bgt_store"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/input_background"
+            android:hint="@string/store"
+            android:inputType="text"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:singleLine="true"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#6B7B8C"
+            android:textSize="11sp"
+            android:visibility="invisible"
+            android:importantForAutofill="no" />
+
+        <!-- Charge Day -->
+        <TextView
+            android:id="@+id/bgt_charge_day"
+            android:layout_width="36dp"
+            android:layout_height="40dp"
+            android:background="@drawable/input_background"
+            android:gravity="center"
+            android:text="@string/one"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -63,28 +63,12 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         store = itemView.findViewById(R.id.bgt_store);
         chargeDay = itemView.findViewById(R.id.bgt_charge_day);
 
-        setupLongClickListeners();
         setupConstDateListener();
     }
 
     // ============================================
     // SETUP METHODS
     // ============================================
-
-    /**
-     * Sets up long click listeners to propagate to parent view.
-     */
-    private void setupLongClickListeners() {
-        View.OnLongClickListener eventLongClick = v -> {
-            View parent = (View) v.getParent();
-            parent.performLongClick();
-            return false;
-        };
-
-        catName.setOnLongClickListener(eventLongClick);
-        budget.setOnLongClickListener(eventLongClick);
-        store.setOnLongClickListener(eventLongClick);
-    }
 
     /**
      * Sets up the constant payment checkbox listener.

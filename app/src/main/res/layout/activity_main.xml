@@ -1,211 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/walpaper"
+    android:background="@drawable/bg_gradient_main"
     tools:context=".ui.MainActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:clipToPadding="false"
+            android:paddingBottom="20dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-            <!-- Header with two rows for better visibility -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/colorApp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp">
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp">
 
-                <!-- Row 1: User info and logout -->
+                <!-- Header Section -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical"
+                    android:layout_marginBottom="20dp">
 
-                    <TextView
-                        android:id="@+id/tv_user_logeed_in"
-                        android:layout_width="0dp"
+                    <!-- Top Bar: User & Logout -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textColor="@color/colorWhite"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:ellipsize="end"
-                        android:maxLines="1" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
 
-                    <TextView
-                        android:id="@+id/logoutTV"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/tv_user_logeed_in"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textColor="#B8C5D6"
+                            android:textSize="14sp"
+                            android:ellipsize="end"
+                            android:maxLines="1" />
+
+                        <ImageButton
+                            android:id="@+id/logoutButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:onClick="logout"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_logout"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/logout"
+                            android:scaleType="fitCenter" />
+
+                    </LinearLayout>
+
+                    <!-- Date Selectors Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="logout"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        android:text="@string/logout"
-                        android:textColor="@color/colorLink"
-                        android:textSize="14sp" />
+                        android:background="@drawable/bg_card_glass"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:padding="16dp">
+
+                        <Spinner
+                            android:id="@+id/monthSpinner"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/spinner_background"
+                            android:dropDownWidth="180dp"
+                            android:popupBackground="#FFFFFF" />
+
+                        <View
+                            android:layout_width="12dp"
+                            android:layout_height="1dp" />
+
+                        <Spinner
+                            android:id="@+id/yearSpinner"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="0.7"
+                            android:background="@drawable/spinner_background"
+                            android:dropDownWidth="140dp"
+                            android:popupBackground="#FFFFFF" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <!-- Row 2: Date selectors -->
+                <!-- Navigation Cards Grid -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical">
+
+                    <!-- Row 1: Budget & Transactions -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp"
+                        android:baselineAligned="false">
+
+                        <!-- Budget Card -->
+                        <LinearLayout
+                            android:id="@+id/budgetButton"
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/nav_card_budget"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:elevation="4dp">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/budget_button_img"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@string/budget"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/budget"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textAlignment="center" />
+
+                        </LinearLayout>
+
+                        <!-- Transactions Card -->
+                        <LinearLayout
+                            android:id="@+id/transactionsButton"
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:background="@drawable/nav_card_transactions"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:elevation="4dp">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/transactions_button_img"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@string/transactions"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/transactions"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textAlignment="center" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Row 2: Insert & Create Budget -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+
+                        <!-- Insert Transaction Card -->
+                        <LinearLayout
+                            android:id="@+id/insertTransactionButton"
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/nav_card_insert"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:elevation="4dp">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/add_button_md"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@string/insert_transaction"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/insert_transaction"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textAlignment="center" />
+
+                        </LinearLayout>
+
+                        <!-- Create Budget Card -->
+                        <LinearLayout
+                            android:id="@+id/createBudgetButton"
+                            android:layout_width="0dp"
+                            android:layout_height="140dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:background="@drawable/nav_card_create"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:elevation="4dp">
+
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/budget_img"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@string/create_budget"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/create_budget"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textAlignment="center" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Spacer for AdView -->
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
+
+                <!-- AdView Banner -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_marginTop="6dp">
+                    android:layout_marginTop="16dp">
 
-                    <Spinner
-                        android:id="@+id/monthSpinner"
-                        android:layout_width="wrap_content"
+                    <com.google.android.gms.ads.AdView
+                        android:id="@+id/adView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minWidth="140dp"
-                        android:minHeight="44dp"
-                        android:backgroundTint="@color/colorWhite"
-                        android:dropDownWidth="180dp"
-                        android:popupBackground="@color/colorWhite" />
-
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="1dp" />
-
-                    <Spinner
-                        android:id="@+id/yearSpinner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minWidth="100dp"
-                        android:minHeight="44dp"
-                        android:backgroundTint="@color/colorWhite"
-                        android:dropDownWidth="140dp"
-                        android:popupBackground="@color/colorWhite" />
+                        app:adSize="BANNER"
+                        app:adUnitId="@string/admob_banner_unit_id" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:background="@drawable/dollar"></LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="240dp"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/budgetButton"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_pink_style"
-                    android:text="@string/budget"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.501"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/transactionsButton"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="start"
-
-                    android:background="@drawable/circle_pink_style"
-                    android:text="@string/transactions"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.527"
-                    app:layout_constraintStart_toEndOf="@+id/budgetButton"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.501"
-                    tools:ignore="RtlCompat" />
-
-                <Button
-                    android:id="@+id/insertTransactionButton"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="end"
-                    android:background="@drawable/circle_pink_style"
-                    android:text="@string/insert_transaction"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/budgetButton"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5"
-                    tools:ignore="RtlCompat" />
-
-                <Button
-                    android:id="@+id/createBudgetButton"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/circle_pink_style"
-                    android:text="@string/create_budget"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/insertTransactionButton"
-                    tools:ignore="RtlCompat" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:background="@drawable/budget_img"></LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.gms.ads.AdView
-                    android:id="@+id/adView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:adSize="BANNER"
-                    app:adUnitId="@string/admob_banner_unit_id"></com.google.android.gms.ads.AdView>
-            </LinearLayout>
-        </LinearLayout>
-
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

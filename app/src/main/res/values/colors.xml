@@ -1,12 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#423DD8</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="colorLink">#FFEB3B</color>
-    <color name="colorLinkOnWhite">#3366BB</color>
-    <color name="colorApp">#174B7A</color>
-    <color name="colorLoginBackground">#187789</color>
-    <color name="colorRequired">#fb607f</color>
-    <color name="colorWhite">#FFF</color>
+    <!-- Primary Brand Colors - Deep Emerald Finance Theme -->
+    <color name="colorPrimary">#0D7377</color>
+    <color name="colorPrimaryDark">#14454A</color>
+    <color name="colorPrimaryLight">#32E0C4</color>
+    <color name="colorAccent">#FF6B6B</color>
+    
+    <!-- Surface Colors -->
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSurfaceVariant">#F8FAFA</color>
+    <color name="colorBackground">#0D1B2A</color>
+    <color name="colorBackgroundLight">#1B263B</color>
+    <color name="colorBackgroundGradientStart">#0D1B2A</color>
+    <color name="colorBackgroundGradientEnd">#1B3A4B</color>
+    
+    <!-- Card & Container Colors -->
+    <color name="colorCard">#FFFFFF</color>
+    <color name="colorCardDark">#1E3A5F</color>
+    <color name="colorCardOverlay">#1A2744</color>
+    <color name="colorGlassCard">#1E3A5F99</color>
+    
+    <!-- Text Colors -->
+    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextSecondary">#B8C5D6</color>
+    <color name="colorTextDark">#1B263B</color>
+    <color name="colorTextMuted">#6B7B8C</color>
+    
+    <!-- Input & Form Colors -->
+    <color name="colorInputBackground">#FFFFFF</color>
+    <color name="colorInputBackgroundDark">#1E3A5F</color>
+    <color name="colorInputBorder">#E0E6ED</color>
+    <color name="colorInputBorderFocused">#0D7377</color>
+    <color name="colorInputHint">#9CA3AF</color>
+    
+    <!-- Status Colors -->
+    <color name="colorSuccess">#10B981</color>
+    <color name="colorSuccessLight">#D1FAE5</color>
+    <color name="colorWarning">#F59E0B</color>
+    <color name="colorWarningLight">#FEF3C7</color>
+    <color name="colorError">#EF4444</color>
+    <color name="colorErrorLight">#FEE2E2</color>
+    <color name="colorInfo">#3B82F6</color>
+    
+    <!-- Finance-specific Colors -->
+    <color name="colorPositive">#10B981</color>
+    <color name="colorNegative">#EF4444</color>
+    <color name="colorNeutral">#6B7280</color>
+    
+    <!-- Button Colors -->
+    <color name="colorButtonPrimary">#0D7377</color>
+    <color name="colorButtonPrimaryPressed">#0A5C5F</color>
+    <color name="colorButtonSecondary">#1E3A5F</color>
+    <color name="colorButtonAccent">#FF6B6B</color>
+    
+    <!-- Navigation Button Colors -->
+    <color name="colorNavBudget">#0D7377</color>
+    <color name="colorNavTransactions">#6366F1</color>
+    <color name="colorNavInsert">#10B981</color>
+    <color name="colorNavCreate">#F59E0B</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradientStart">#0D7377</color>
+    <color name="gradientEnd">#14454A</color>
+    <color name="gradientAccentStart">#FF6B6B</color>
+    <color name="gradientAccentEnd">#EC4899</color>
+    
+    <!-- Row & List Colors -->
+    <color name="colorRowBackground">#1E3A5F80</color>
+    <color name="colorRowAlternate">#1B3A4B60</color>
+    <color name="colorRowBorder">#2D4A6A</color>
+    <color name="colorDivider">#374151</color>
+    
+    <!-- Legacy colors (for backward compatibility) -->
+    <color name="colorLink">#32E0C4</color>
+    <color name="colorLinkOnWhite">#0D7377</color>
+    <color name="colorApp">#14454A</color>
+    <color name="colorLoginBackground">#0D1B2A</color>
+    <color name="colorRequired">#FF6B6B</color>
+    <color name="colorWhite">#FFFFFF</color>
+    
+    <!-- Shimmer/Loading Colors -->
+    <color name="shimmerBase">#1E3A5F</color>
+    <color name="shimmerHighlight">#2D4A6A</color>
+    
+    <!-- Shadow Colors -->
+    <color name="shadowColor">#1A000000</color>
+    <color name="shadowColorDark">#40000000</color>
 </resources>

@@ -8,17 +8,25 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.brosh.finance.monthlybudgetsync.R;
+
 import java.util.List;
 
 public class SpinnerAdapter extends BaseAdapter {
     private final List<String> data;
     private final LayoutInflater inflater;
     private final int spinnerType;
+    private final int dropdownType;
 
     public SpinnerAdapter(List<String> data, Activity activity, int spinnerType) {
+        this(data, activity, spinnerType, R.layout.spinner_dropdown_item);
+    }
+
+    public SpinnerAdapter(List<String> data, Activity activity, int spinnerType, int dropdownType) {
         this.data = data;
         this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.spinnerType = spinnerType;
+        this.dropdownType = dropdownType;
     }
 
     @Override
@@ -39,11 +47,26 @@ public class SpinnerAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (convertView == null) {
-            view = inflater.inflate(spinnerType, null);
+        if (view == null) {
+            view = inflater.inflate(spinnerType, parent, false);
         }
-        TextView tv = (TextView) view;
-        tv.setText(data.get(position));
+        if (view instanceof TextView) {
+            TextView tv = (TextView) view;
+            tv.setText(data.get(position));
+        }
+        return view;
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
+        if (view == null) {
+            view = inflater.inflate(dropdownType, parent, false);
+        }
+        if (view instanceof TextView) {
+            TextView tv = (TextView) view;
+            tv.setText(data.get(position));
+        }
         return view;
     }
 }

@@ -1,6 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?android:attr/spinnerItemStyle"
+    android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:textColor="@color/colorLoginBackground" />
+    android:gravity="center_vertical|start"
+    android:padding="16dp"
+    android:textColor="#1B263B"
+    android:textSize="14sp"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:singleLine="true"
+    android:background="#FFFFFF" />
