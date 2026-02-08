@@ -148,4 +148,8 @@
     <string name="user_name_successfully_changed">User name successfully changed!</string>
     <string name="comment">Comment</string>
     <string name="comment_hint">Add a comment (optional)</string>
+    <string name="discount">Discount</string>
+    <string name="discount_percent">%</string>
+    <string name="final_price">Final Price:</string>
+    <string name="original_price">Original</string>
 </resources>

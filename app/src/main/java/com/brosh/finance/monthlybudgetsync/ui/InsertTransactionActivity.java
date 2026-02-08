@@ -6,14 +6,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brosh.finance.monthlybudgetsync.R;
@@ -49,6 +53,14 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private EditText commentEditText;
     private CheckBox addCommentCheckBox;
     private ProgressBar progressBar;
+
+    // Discount UI elements
+    private CheckBox discountCheckBox;
+    private LinearLayout discountInputLayout;
+    private EditText discountPercentEditText;
+    private LinearLayout finalPriceLayout;
+    private TextView finalPriceValue;
+    private EditText transactionPriceEditText;
 
     private DBUtil dbUtil;
     private User user;
@@ -103,6 +115,15 @@ public class InsertTransactionActivity extends AppCompatActivity {
         setupCommentCheckboxBehavior();
         setupCommentEditTextBehavior();
 
+        // Initialize discount UI elements
+        transactionPriceEditText = findViewById(R.id.transactionPricePlainText);
+        discountCheckBox = findViewById(R.id.discountCheckBox);
+        discountInputLayout = findViewById(R.id.discountInputLayout);
+        discountPercentEditText = findViewById(R.id.discountPercentEditText);
+        finalPriceLayout = findViewById(R.id.finalPriceLayout);
+        finalPriceValue = findViewById(R.id.finalPriceValue);
+        setupDiscountBehavior();
+
         btnSendTransaction.setOnClickListener(view -> {
             insertTransaction(refMonth);
             view.setEnabled(false);
@@ -140,6 +161,124 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 commentEditText.setMinHeight((int) (40 * getResources().getDisplayMetrics().density));
             }
         });
+    }
+
+    /**
+     * Sets up the discount checkbox and input field behavior.
+     * When enabled, allows user to enter a discount percentage and displays the final price.
+     */
+    private void setupDiscountBehavior() {
+        // Toggle discount input visibility when checkbox is checked
+        discountCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                discountInputLayout.setVisibility(View.VISIBLE);
+                discountPercentEditText.requestFocus();
+                updateFinalPrice();
+            } else {
+                discountInputLayout.setVisibility(View.GONE);
+                finalPriceLayout.setVisibility(View.GONE);
+                discountPercentEditText.setText("");
+            }
+        });
+
+        // Listen for changes in the discount percentage
+        discountPercentEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateFinalPrice();
+            }
+        });
+
+        // Listen for changes in the original price
+        transactionPriceEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (discountCheckBox.isChecked()) {
+                    updateFinalPrice();
+                }
+            }
+        });
+    }
+
+    /**
+     * Calculates and displays the final price after applying the discount.
+     */
+    private void updateFinalPrice() {
+        try {
+            String priceStr = transactionPriceEditText.getText().toString().trim();
+            String discountStr = discountPercentEditText.getText().toString().trim();
+
+            if (priceStr.isEmpty()) {
+                finalPriceLayout.setVisibility(View.GONE);
+                return;
+            }
+
+            double originalPrice = Double.parseDouble(priceStr);
+            double discountPercent = discountStr.isEmpty() ? 0 : Double.parseDouble(discountStr);
+
+            // Validate discount percentage (0-100)
+            if (discountPercent < 0) discountPercent = 0;
+            if (discountPercent > 100) discountPercent = 100;
+
+            double finalPrice = calculateDiscountedPrice(originalPrice, discountPercent);
+
+            // Show final price only if there's a discount
+            if (discountPercent > 0) {
+                finalPriceLayout.setVisibility(View.VISIBLE);
+                finalPriceValue.setText(String.format("%.2f", finalPrice));
+            } else {
+                finalPriceLayout.setVisibility(View.GONE);
+            }
+        } catch (NumberFormatException e) {
+            finalPriceLayout.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Calculates the final price after applying a discount percentage.
+     * @param originalPrice the original price
+     * @param discountPercent the discount percentage (0-100)
+     * @return the discounted price
+     */
+    private double calculateDiscountedPrice(double originalPrice, double discountPercent) {
+        return originalPrice * (1 - discountPercent / 100);
+    }
+
+    /**
+     * Gets the final transaction price, applying discount if enabled.
+     * @return the final price to be used for the transaction
+     */
+    private double getFinalTransactionPrice() {
+        try {
+            double originalPrice = Double.parseDouble(transactionPriceEditText.getText().toString().trim());
+            
+            if (discountCheckBox.isChecked()) {
+                String discountStr = discountPercentEditText.getText().toString().trim();
+                double discountPercent = discountStr.isEmpty() ? 0 : Double.parseDouble(discountStr);
+                
+                // Validate discount percentage (0-100)
+                if (discountPercent < 0) discountPercent = 0;
+                if (discountPercent > 100) discountPercent = 100;
+                
+                return calculateDiscountedPrice(originalPrice, discountPercent);
+            }
+            
+            return originalPrice;
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     public void setSpinnersAllignment() {
@@ -191,11 +330,9 @@ public class InsertTransactionActivity extends AppCompatActivity {
             ? paymentTypeSpinner.getSelectedItem().toString() : "";
         String shop = shopET.getText().toString().trim();
         
-        // Parse price safely
-        double transactionPrice;
-        try {
-            transactionPrice = Double.parseDouble(transactionPriceET.getText().toString().trim());
-        } catch (NumberFormatException e) {
+        // Parse price safely and apply discount if enabled
+        double transactionPrice = getFinalTransactionPrice();
+        if (transactionPrice <= 0) {
             transactionPriceET.setError(getString(R.string.requiredField));
             btnSendTransaction.setEnabled(true);
             return;

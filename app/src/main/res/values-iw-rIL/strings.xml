@@ -149,4 +149,8 @@
     <string name="user_name_successfully_changed">שם המשתמש עודכן בהצלחה!</string>
     <string name="comment">מידע נוסף</string>
     <string name="comment_hint">הוסף הערה (לא חובה)</string>
+    <string name="discount">הנחה</string>
+    <string name="discount_percent">%</string>
+    <string name="final_price">מחיר סופי:</string>
+    <string name="original_price">מקורי</string>
 </resources>
