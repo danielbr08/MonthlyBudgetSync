@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/border_style"
-    android:padding="6dp"
-    android:weightSum="3">
+    android:padding="6dp">
 
     <TextView
         android:id="@+id/categoryLabel"
@@ -14,14 +13,18 @@
         android:padding="8dp"
         android:layout_weight="1"
         android:text="@string/category"
-        android:textColor="@color/colorWhite"/>
+        android:textColor="@color/colorWhite"
+        android:textDirection="locale"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/budgetLabel"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:minWidth="80dp"
         android:padding="8dp"
-        android:layout_weight="1"
         android:text="@string/budget"
         android:textColor="@color/colorWhite"
         android:textDirection="ltr"
@@ -31,10 +34,10 @@
 
     <TextView
         android:id="@+id/balanceLabel"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:minWidth="80dp"
         android:padding="8dp"
-        android:layout_weight="1"
         android:text="@string/balance"
         android:textColor="@color/colorWhite"
         android:textDirection="ltr"

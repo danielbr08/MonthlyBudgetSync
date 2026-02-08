@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -228,9 +229,86 @@ public class TransactionsActivity extends AppCompatActivity {
         
         // Setup RecyclerView
         adapter = new TransactionsViewAdapter(this, transactions, isAllCategories);
+        adapter.setOnTransactionLongClickListener(this::showTransactionDetailsDialog);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(transactionsRows);
         transactionsRows.setAdapter(adapter);
         transactionsRows.setLayoutManager(new LinearLayoutManager(this));
+    }
+    
+    /**
+     * Shows a dialog with full transaction details.
+     * @param transaction the transaction to display
+     */
+    private void showTransactionDetailsDialog(@NonNull Transaction transaction) {
+        String currency = user != null ? user.getUserSettings().getCurrency() : "";
+        float density = getResources().getDisplayMetrics().density;
+        int padding = (int) (16 * density);
+        
+        // Create compact content layout with solid background
+        LinearLayout contentLayout = new LinearLayout(this);
+        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        
+        // Create background with solid color and border
+        android.graphics.drawable.GradientDrawable background = new android.graphics.drawable.GradientDrawable();
+        background.setColor(ContextCompat.getColor(this, R.color.colorApp));
+        background.setCornerRadius(8 * density);
+        background.setStroke((int)(1 * density), Color.WHITE);
+        contentLayout.setBackground(background);
+        contentLayout.setPadding(padding, padding, padding, padding);
+        
+        // Add transaction details
+        addDetailRow(contentLayout, getString(R.string.id), String.valueOf(transaction.getIdPerMonth()));
+        addDetailRow(contentLayout, getString(R.string.category), transaction.getCategory());
+        addDetailRow(contentLayout, getString(R.string.store), transaction.getShop());
+        addDetailRow(contentLayout, getString(R.string.charge_date), 
+                DateUtil.convertDateToString(transaction.getPayDate(), Config.DATE_FORMAT));
+        addDetailRow(contentLayout, getString(R.string.payment_method), transaction.getPaymentMethod());
+        addDetailRow(contentLayout, getString(R.string.price), 
+                FormatUtil.formatCurrency(transaction.getPrice(), currency));
+        
+        // Add close button
+        TextView closeButton = new TextView(this);
+        closeButton.setText(getString(R.string.close));
+        closeButton.setTextSize(13);
+        closeButton.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
+        closeButton.setBackgroundResource(R.drawable.circle_pink_style);
+        closeButton.setGravity(android.view.Gravity.CENTER);
+        closeButton.setPadding((int)(20*density), (int)(8*density), (int)(20*density), (int)(8*density));
+        
+        LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        btnParams.gravity = android.view.Gravity.CENTER;
+        btnParams.topMargin = (int) (12 * density);
+        closeButton.setLayoutParams(btnParams);
+        contentLayout.addView(closeButton);
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(contentLayout)
+                .create();
+        
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+        
+        dialog.show();
+        
+        // Remove default dialog padding, keep dim background
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.getWindow().setDimAmount(0.6f);
+        }
+    }
+    
+    /**
+     * Adds a detail row to the dialog layout.
+     */
+    private void addDetailRow(LinearLayout parent, String label, String value) {
+        TextView textView = new TextView(this);
+        textView.setText(label + ": " + (value != null ? value : ""));
+        textView.setTextSize(13);
+        textView.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
+        int vertPadding = (int) (2 * getResources().getDisplayMetrics().density);
+        textView.setPadding(0, vertPadding, 0, vertPadding);
+        parent.addView(textView);
     }
     
     /**

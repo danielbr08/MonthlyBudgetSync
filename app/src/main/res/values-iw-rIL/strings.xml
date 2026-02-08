@@ -66,7 +66,7 @@
     <string name="header_with_arrow">%1$s%2$c</string>
     <string name="transaction_inserted_successfully">העסקה הוכנסה בהצלחה!</string>
     <string name="requiredField">שדה חובה!</string>
-    <string name="credit_card">כרטיס אשראי</string>
+    <string name="credit_card">כ. אשראי</string>
     <string name="cash">מזומן</string>
     <string name="chek">צ\'ק</string>
     <string name="bank_wired">העברה בנקאית</string>

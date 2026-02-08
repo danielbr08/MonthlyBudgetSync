@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="100">
+    android:weightSum="100"
+    android:baselineAligned="false">
 
     <TextView
         android:id="@+id/trn_id"
@@ -12,7 +13,10 @@
         android:padding="8dp"
         android:background="@drawable/border_style"
         android:text="@string/id"
-        android:layout_weight="16" />
+        android:layout_weight="16"
+        android:textDirection="locale"
+        android:singleLine="true"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_store"
@@ -21,7 +25,11 @@
         android:padding="8dp"
         android:background="@drawable/border_style"
         android:text="@string/store"
-        android:layout_weight="19" />
+        android:layout_weight="19"
+        android:textDirection="locale"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_charge_date"
@@ -30,7 +38,10 @@
         android:padding="8dp"
         android:background="@drawable/border_style"
         android:text="@string/charge_date"
-        android:layout_weight="23" />
+        android:layout_weight="23"
+        android:textDirection="ltr"
+        android:singleLine="true"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_payment_method"
@@ -39,7 +50,11 @@
         android:padding="8dp"
         android:background="@drawable/border_style"
         android:text="@string/payment_method"
-        android:layout_weight="24" />
+        android:layout_weight="24"
+        android:textDirection="locale"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_price"
@@ -50,6 +65,7 @@
         android:text="@string/price"
         android:textDirection="ltr"
         android:layout_weight="18"
+        android:singleLine="true"
         tools:targetApi="jelly_bean_mr1" />
 
 </LinearLayout>

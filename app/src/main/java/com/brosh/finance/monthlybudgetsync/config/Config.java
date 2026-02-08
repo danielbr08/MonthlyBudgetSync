@@ -20,6 +20,9 @@ public final class Config {
     /** Date format pattern (day/month/year) */
     public static final String DATE_FORMAT = "dd/MM/yyyy";
     
+    /** Short date format pattern for display (day/month/2-digit year) */
+    public static final String DATE_FORMAT_SHORT = "dd/MM/yy";
+    
     /** Character used as date separator */
     public static final String DATE_FORMAT_CHARACTER = "/";
     

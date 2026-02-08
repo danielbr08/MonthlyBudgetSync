@@ -28,6 +28,10 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
 
     private static final int HEADER_TEXT_SIZE = 12;
     private static final String EMPTY = "";
+    
+    // Payment method display mappings (for legacy data)
+    private static final String CREDIT_CARD_LONG_HE = "כרטיס אשראי";
+    private static final String CREDIT_CARD_SHORT_HE = "כ. אשראי";
 
     // ============================================
     // UI COMPONENTS
@@ -89,10 +93,24 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
     private void bindTransactionRow(@NonNull Transaction transaction) {
         idTV.setText(String.valueOf(transaction.getIdPerMonth()));
         catNameTV.setText(transaction.getCategory());
-        paymentMethodTV.setText(transaction.getPaymentMethod());
+        paymentMethodTV.setText(formatPaymentMethodForDisplay(transaction.getPaymentMethod()));
         storeTV.setText(transaction.getShop());
-        chargeDateTV.setText(DateUtil.convertDateToString(transaction.getPayDate(), Config.DATE_FORMAT));
+        chargeDateTV.setText(DateUtil.convertDateToString(transaction.getPayDate(), Config.DATE_FORMAT_SHORT));
         priceTV.setText(FormatUtil.formatDecimal(transaction.getPrice()));
+    }
+    
+    /**
+     * Formats payment method for display, converting legacy long text to short form.
+     * @param paymentMethod the original payment method text
+     * @return the formatted payment method text
+     */
+    private String formatPaymentMethodForDisplay(String paymentMethod) {
+        if (paymentMethod == null) return EMPTY;
+        // Convert old Hebrew credit card text to shortened form
+        if (CREDIT_CARD_LONG_HE.equals(paymentMethod)) {
+            return CREDIT_CARD_SHORT_HE;
+        }
+        return paymentMethod;
     }
     
     /**

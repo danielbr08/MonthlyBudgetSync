@@ -61,8 +61,7 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/border_style"
                             android:orientation="horizontal"
-                            android:padding="6dp"
-                            android:weightSum="3">
+                            android:padding="6dp">
 
                             <TextView
                                 android:id="@+id/categoryLabel"
@@ -79,9 +78,9 @@
 
                             <TextView
                                 android:id="@+id/budgetLabel"
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:minWidth="80dp"
                                 android:gravity="center_horizontal"
                                 android:padding="8dp"
                                 android:text="@string/budget"
@@ -92,9 +91,9 @@
 
                             <TextView
                                 android:id="@+id/balanceLabel"
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:minWidth="80dp"
                                 android:gravity="end"
                                 android:padding="8dp"
                                 android:text="@string/balance"
@@ -132,8 +131,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/border_style"
-                                android:padding="6dp"
-                                android:weightSum="3">
+                                android:padding="6dp">
 
                                 <TextView
                                     android:id="@+id/totalLabel"
@@ -148,9 +146,9 @@
 
                                 <TextView
                                     android:id="@+id/totalBudget"
-                                    android:layout_width="0dp"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="1"
+                                    android:minWidth="80dp"
                                     android:gravity="center_horizontal"
                                     android:padding="8dp"
                                     android:text=""
@@ -163,9 +161,9 @@
 
                                 <TextView
                                     android:id="@+id/totalBalance"
-                                    android:layout_width="0dp"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="1"
+                                    android:minWidth="80dp"
                                     android:gravity="end"
                                     android:padding="8dp"
                                     android:text=""

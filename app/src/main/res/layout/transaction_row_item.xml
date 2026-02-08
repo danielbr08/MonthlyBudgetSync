@@ -9,7 +9,8 @@
     android:padding="10dp"
     android:background="@drawable/border_style"
     android:gravity="center_vertical"
-    android:minHeight="50dp">
+    android:minHeight="50dp"
+    android:baselineAligned="false">
 
     <TextView
         android:id="@+id/trn_id"
@@ -20,7 +21,10 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.11"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:textDirection="locale"
+        android:singleLine="true"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_category"
@@ -31,7 +35,11 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.16"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:textDirection="locale"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_store"
@@ -42,7 +50,11 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.19"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:textDirection="locale"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_charge_date"
@@ -53,7 +65,10 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/transaction_text_size"
         android:layout_weight="0.21"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:textDirection="ltr"
+        android:singleLine="true"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_payment_method"
@@ -66,7 +81,11 @@
         android:layout_weight="0.2"
         android:gravity="center_vertical"
         android:textAlignment="center"
-        tools:ignore="RtlCompat" />
+        android:textDirection="locale"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:ignore="RtlCompat"
+        tools:targetApi="jelly_bean_mr1" />
 
     <TextView
         android:id="@+id/trn_price"
@@ -80,6 +99,8 @@
         android:textAlignment="viewEnd"
         android:layout_weight="0.13"
         android:gravity="center_vertical"
-        tools:ignore="RtlCompat" />
+        android:singleLine="true"
+        tools:ignore="RtlCompat"
+        tools:targetApi="jelly_bean_mr1" />
 
 </LinearLayout>

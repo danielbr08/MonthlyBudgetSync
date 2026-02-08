@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,12 +24,29 @@ import java.util.Objects;
 public class TransactionsViewAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
 
     // ============================================
+    // INTERFACES
+    // ============================================
+
+    /**
+     * Callback interface for transaction long-click events.
+     */
+    public interface OnTransactionLongClickListener {
+        /**
+         * Called when a transaction row is long-clicked.
+         * @param transaction the transaction that was long-clicked
+         */
+        void onTransactionLongClick(@NonNull Transaction transaction);
+    }
+
+    // ============================================
     // FIELDS
     // ============================================
 
     private final LayoutInflater mInflater;
     private final List<Transaction> transactions;
     private final boolean showCategory;
+    @Nullable
+    private OnTransactionLongClickListener longClickListener;
 
     // ============================================
     // CONSTRUCTOR
@@ -39,6 +57,14 @@ public class TransactionsViewAdapter extends RecyclerView.Adapter<TransactionVie
         this.transactions = transactions != null ? new ArrayList<>(transactions) : new ArrayList<>();
         this.showCategory = showCategory;
         setHasStableIds(true);
+    }
+
+    /**
+     * Sets the long-click listener for transaction rows.
+     * @param listener the listener to set
+     */
+    public void setOnTransactionLongClickListener(@Nullable OnTransactionLongClickListener listener) {
+        this.longClickListener = listener;
     }
 
     // ============================================
@@ -55,7 +81,18 @@ public class TransactionsViewAdapter extends RecyclerView.Adapter<TransactionVie
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         if (position >= 0 && position < transactions.size()) {
-            holder.onBindViewHolder(transactions.get(position));
+            Transaction transaction = transactions.get(position);
+            holder.onBindViewHolder(transaction);
+            
+            // Set long-click listener for non-total rows
+            if (transaction.getId() != null && longClickListener != null) {
+                holder.itemView.setOnLongClickListener(v -> {
+                    longClickListener.onTransactionLongClick(transaction);
+                    return true;
+                });
+            } else {
+                holder.itemView.setOnLongClickListener(null);
+            }
         }
     }
 

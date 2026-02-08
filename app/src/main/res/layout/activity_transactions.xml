@@ -133,7 +133,8 @@
                     android:minHeight="50dp"
                     android:orientation="horizontal"
                     android:padding="8dp"
-                    android:weightSum="1">
+                    android:weightSum="1"
+                    android:baselineAligned="false">
 
                     <TextView
                         android:id="@+id/trn_id"
@@ -145,7 +146,10 @@
                         android:text="@string/id"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textDirection="locale"
+                        android:singleLine="true"
+                        tools:targetApi="jelly_bean_mr1" />
 
                     <TextView
                         android:id="@+id/trn_category"
@@ -157,7 +161,10 @@
                         android:text="@string/category"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textDirection="locale"
+                        android:singleLine="true"
+                        tools:targetApi="jelly_bean_mr1" />
 
                     <TextView
                         android:id="@+id/trn_store"
@@ -169,7 +176,10 @@
                         android:text="@string/store"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textDirection="locale"
+                        android:singleLine="true"
+                        tools:targetApi="jelly_bean_mr1" />
 
                     <TextView
                         android:id="@+id/trn_charge_date"
@@ -181,7 +191,10 @@
                         android:text="@string/charge_date"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textDirection="ltr"
+                        android:singleLine="true"
+                        tools:targetApi="jelly_bean_mr1" />
 
                     <TextView
                         android:id="@+id/trn_payment_method"
@@ -195,7 +208,10 @@
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold"
-                        tools:ignore="RtlCompat" />
+                        android:textDirection="locale"
+                        android:singleLine="true"
+                        tools:ignore="RtlCompat"
+                        tools:targetApi="jelly_bean_mr1" />
 
                     <TextView
                         android:id="@+id/trn_price"
@@ -209,7 +225,10 @@
                         android:textSize="@dimen/transaction_text_size"
                         android:textStyle="bold"
                         android:textAlignment="viewEnd"
-                        tools:ignore="RtlCompat" />
+                        android:textDirection="ltr"
+                        android:singleLine="true"
+                        tools:ignore="RtlCompat"
+                        tools:targetApi="jelly_bean_mr1" />
 
                 </LinearLayout>
 
