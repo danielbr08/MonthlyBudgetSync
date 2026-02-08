@@ -266,6 +266,12 @@ public class TransactionsActivity extends AppCompatActivity {
         addDetailRow(contentLayout, getString(R.string.price), 
                 FormatUtil.formatCurrency(transaction.getPrice(), currency));
         
+        // Add comment if exists
+        String comment = transaction.getComment();
+        if (comment != null && !comment.isEmpty()) {
+            addCommentRow(contentLayout, getString(R.string.comment), comment, density);
+        }
+        
         // Add close button
         TextView closeButton = new TextView(this);
         closeButton.setText(getString(R.string.close));
@@ -309,6 +315,38 @@ public class TransactionsActivity extends AppCompatActivity {
         int vertPadding = (int) (2 * getResources().getDisplayMetrics().density);
         textView.setPadding(0, vertPadding, 0, vertPadding);
         parent.addView(textView);
+    }
+    
+    /**
+     * Adds a comment row with label and multiline value to the dialog layout.
+     */
+    private void addCommentRow(LinearLayout parent, String label, String value, float density) {
+        // Add separator line
+        View separator = new View(this);
+        separator.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
+        LinearLayout.LayoutParams sepParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, (int) (1 * density));
+        sepParams.topMargin = (int) (8 * density);
+        sepParams.bottomMargin = (int) (4 * density);
+        separator.setLayoutParams(sepParams);
+        parent.addView(separator);
+        
+        // Add label
+        TextView labelView = new TextView(this);
+        labelView.setText(label + ":");
+        labelView.setTextSize(13);
+        labelView.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
+        labelView.setTypeface(null, android.graphics.Typeface.BOLD);
+        parent.addView(labelView);
+        
+        // Add comment value (multiline)
+        TextView valueView = new TextView(this);
+        valueView.setText(value);
+        valueView.setTextSize(12);
+        valueView.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
+        int padding = (int) (4 * density);
+        valueView.setPadding(padding, padding, padding, padding);
+        parent.addView(valueView);
     }
     
     /**

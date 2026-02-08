@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -45,6 +46,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
     private Spinner paymentTypeSpinner;
     private Button btnSendTransaction;
     private EditText payDateEditText;
+    private EditText commentEditText;
+    private CheckBox addCommentCheckBox;
     private ProgressBar progressBar;
 
     private DBUtil dbUtil;
@@ -94,9 +97,48 @@ public class InsertTransactionActivity extends AppCompatActivity {
             DatePickerHelper.showDatePicker(InsertTransactionActivity.this, payDateEditText)
         );
 
+        // Initialize comment checkbox and EditText
+        addCommentCheckBox = findViewById(R.id.addCommentCheckBox);
+        commentEditText = findViewById(R.id.commentEditText);
+        setupCommentCheckboxBehavior();
+        setupCommentEditTextBehavior();
+
         btnSendTransaction.setOnClickListener(view -> {
             insertTransaction(refMonth);
             view.setEnabled(false);
+        });
+    }
+
+    /**
+     * Sets up the checkbox to toggle the comment EditText visibility.
+     */
+    private void setupCommentCheckboxBehavior() {
+        addCommentCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                commentEditText.setVisibility(View.VISIBLE);
+                commentEditText.requestFocus();
+            } else {
+                commentEditText.setVisibility(View.GONE);
+                commentEditText.setText("");
+                KeyboardUtil.hideKeyboard(this);
+            }
+        });
+    }
+
+    /**
+     * Sets up the comment EditText to expand when focused and collapse when not focused.
+     */
+    private void setupCommentEditTextBehavior() {
+        commentEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                // Expand: allow multiple lines
+                commentEditText.setMaxLines(5);
+                commentEditText.setMinHeight((int) (100 * getResources().getDisplayMetrics().density));
+            } else {
+                // Collapse: show single line when not focused
+                commentEditText.setMaxLines(1);
+                commentEditText.setMinHeight((int) (40 * getResources().getDisplayMetrics().density));
+            }
         });
     }
 
@@ -183,9 +225,17 @@ public class InsertTransactionActivity extends AppCompatActivity {
         DatabaseReference transactionsNode = dbUtil.getDBTransactionsPath(month.getYearMonth(), catId);
         String tranId = transactionsNode.push().getKey();
         
+        // Get comment (optional)
+        String comment = commentEditText.getText().toString().trim();
+        
         com.brosh.finance.monthlybudgetsync.objects.Transaction transaction = 
             new com.brosh.finance.monthlybudgetsync.objects.Transaction(
                 tranId, idPerMonth, categoryName, paymentMethod, shop, payDate, transactionPrice);
+        
+        // Set comment if provided
+        if (!comment.isEmpty()) {
+            transaction.setComment(comment);
+        }
 
         // Add shop to set
         if (!shop.isEmpty() && shopsSet != null) {

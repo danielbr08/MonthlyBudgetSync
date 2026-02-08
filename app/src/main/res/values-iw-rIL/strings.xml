@@ -147,4 +147,6 @@
     <string name="password_successfully_changed">הסיסמה שונתה בהצלחה!</string>
     <string name="phone_number_successfully_changed">מספר הנייד עודכן בהצלחה!</string>
     <string name="user_name_successfully_changed">שם המשתמש עודכן בהצלחה!</string>
+    <string name="comment">מידע נוסף</string>
+    <string name="comment_hint">הוסף הערה (לא חובה)</string>
 </resources>

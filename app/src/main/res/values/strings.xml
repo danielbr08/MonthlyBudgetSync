@@ -146,4 +146,6 @@
     <string name="password_successfully_changed">Password successfully changed!</string>
     <string name="phone_number_successfully_changed">Phone number successfully changed!</string>
     <string name="user_name_successfully_changed">User name successfully changed!</string>
+    <string name="comment">Comment</string>
+    <string name="comment_hint">Add a comment (optional)</string>
 </resources>

@@ -53,6 +53,9 @@ public class Transaction implements Serializable {
 
     private boolean deleted;
 
+    @Nullable
+    private String comment;
+
     // ============================================
     // CONSTRUCTORS
     // ============================================
@@ -118,6 +121,7 @@ public class Transaction implements Serializable {
                 ", shop='" + shop + '\'' +
                 ", price=" + price +
                 ", deleted=" + deleted +
+                ", comment='" + comment + '\'' +
                 '}';
     }
 
@@ -167,6 +171,11 @@ public class Transaction implements Serializable {
         return deleted;
     }
 
+    @Nullable
+    public String getComment() {
+        return comment;
+    }
+
     // ============================================
     // SETTERS
     // ============================================
@@ -205,6 +214,10 @@ public class Transaction implements Serializable {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public void setComment(@Nullable String comment) {
+        this.comment = comment;
     }
 
     // ============================================
