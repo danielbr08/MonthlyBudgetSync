@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -24,9 +22,13 @@ import com.brosh.finance.monthlybudgetsync.objects.Category;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DatePickerHelper;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.IntentHelper;
+import com.brosh.finance.monthlybudgetsync.utils.KeyboardUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.ValidationUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +36,6 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -60,8 +61,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
         // Let the system handle orientation based on device capabilities
 
         progressBar = findViewById(R.id.progress_circular);
-        Bundle extras = getIntent().getExtras();
-        String refMonth = extras != null ? extras.getString(Definitions.MONTH, null) : null;
+        String refMonth = IntentHelper.getYearMonth(this);
         user = DBUtil.getInstance().getUser();
         
         // Setup ads visibility with null safety
@@ -89,28 +89,10 @@ public class InsertTransactionActivity extends AppCompatActivity {
         payDateEditText = findViewById(R.id.payDatePlainText);
         payDateEditText.setText(DateUtil.getCurrentDate(Config.DATE_FORMAT_CHARACTER));
 
-        payDateEditText.setOnClickListener(v -> {
-            //To show current date in the datepicker
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            View focusedView = getCurrentFocus();
-            if (focusedView != null) {
-                imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
-            }
-            Calendar mcurrentDate = Calendar.getInstance();
-            int mYear = mcurrentDate.get(Calendar.YEAR);
-            int mMonth = mcurrentDate.get(Calendar.MONTH);
-            int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog mDatePicker = new DatePickerDialog(InsertTransactionActivity.this, 
-                (datepicker, selectedyear, selectedmonth, selectedday) -> {
-                    String day = selectedday < 10 ? "0" + selectedday : String.valueOf(selectedday);
-                    String month = (selectedmonth + 1) < 10 ? "0" + (selectedmonth + 1) : String.valueOf(selectedmonth + 1);
-                    payDateEditText.setText(getString(R.string.date_format, day, month, selectedyear));
-                    payDateEditText.setError(null);
-                }, mYear, mMonth, mDay);
-            mDatePicker.setTitle(getString(R.string.selecting_date));
-            mDatePicker.show();
-        });
+        // Use DatePickerHelper for cleaner date picker handling
+        payDateEditText.setOnClickListener(v -> 
+            DatePickerHelper.showDatePicker(InsertTransactionActivity.this, payDateEditText)
+        );
 
         btnSendTransaction.setOnClickListener(view -> {
             insertTransaction(refMonth);
@@ -255,12 +237,15 @@ public class InsertTransactionActivity extends AppCompatActivity {
         });
     }
 
-    public boolean setErrorEditText(EditText et) {
-        if (et.getText().toString().isEmpty()) {
-            et.setError(getString(R.string.requiredField));
-            return true;
-        }
-        return false;
+    /**
+     * Validates that an EditText is not empty.
+     * Uses ValidationUtil for consistent validation.
+     * 
+     * @param editText the EditText to validate
+     * @return true if empty (has error), false if valid
+     */
+    public boolean setErrorEditText(EditText editText) {
+        return !ValidationUtil.validateNotEmpty(editText, getString(R.string.requiredField));
     }
 
     private List<String> getPaymentMethodList() {

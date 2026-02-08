@@ -3,7 +3,6 @@ package com.brosh.finance.monthlybudgetsync.adapters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -11,23 +10,49 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
+import com.brosh.finance.monthlybudgetsync.utils.FormatUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * ViewHolder for budget creation items in RecyclerView.
+ * Handles budget row display, day picker dialog, and constant payment visibility.
+ */
 public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
 
+    // ============================================
+    // VIEW REFERENCES
+    // ============================================
+    
     private final EditText catName;
     private final EditText budget;
     private final CheckBox constDate;
     private final EditText store;
     private final TextView chargeDay;
+
+    // ============================================
+    // DAY PICKER STATE
+    // ============================================
+    
+    @Nullable
+    private View dayPickerView;
+    @Nullable
+    private TextView selectedDayTV;
+    @Nullable
+    private TextView previousSelectedDayTV;
+    @Nullable
+    private TextView defaultSelectionTV;
+
+    // ============================================
+    // CONSTRUCTOR
+    // ============================================
 
     public CreateBudgetViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -38,6 +63,18 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         store = itemView.findViewById(R.id.bgt_store);
         chargeDay = itemView.findViewById(R.id.bgt_charge_day);
 
+        setupLongClickListeners();
+        setupConstDateListener();
+    }
+
+    // ============================================
+    // SETUP METHODS
+    // ============================================
+
+    /**
+     * Sets up long click listeners to propagate to parent view.
+     */
+    private void setupLongClickListeners() {
         View.OnLongClickListener eventLongClick = v -> {
             View parent = (View) v.getParent();
             parent.performLongClick();
@@ -47,82 +84,178 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         catName.setOnLongClickListener(eventLongClick);
         budget.setOnLongClickListener(eventLongClick);
         store.setOnLongClickListener(eventLongClick);
+    }
 
-        final EditText storeRef = this.store;
-        final TextView chargeDayRef = this.chargeDay;
-
-        this.constDate.setOnCheckedChangeListener((buttonView, isChecked) -> {
+    /**
+     * Sets up the constant payment checkbox listener.
+     * Shows/hides store and charge day fields based on checkbox state.
+     */
+    private void setupConstDateListener() {
+        constDate.setOnCheckedChangeListener((buttonView, isChecked) -> {
             int visibility = isChecked ? View.VISIBLE : View.INVISIBLE;
-            storeRef.setVisibility(visibility);
-            chargeDayRef.setVisibility(visibility);
+            store.setVisibility(visibility);
+            chargeDay.setVisibility(visibility);
         });
     }
 
-    public void onBindViewHolder(Budget budget, int position, Context context) {
-        DecimalFormat decim = new DecimalFormat("#,###.##");
+    // ============================================
+    // BINDING
+    // ============================================
 
-        int visibilty = budget.isConstPayment() ? View.VISIBLE : View.INVISIBLE;
-        String store = budget.getShop() != null ? budget.getShop() : "";
-        this.catName.setText(budget.getCategoryName());
-        this.budget.setText(decim.format(budget.getValue()));
-        this.constDate.setChecked(budget.isConstPayment());
-        this.store.setText(store);
-        this.chargeDay.setText(String.valueOf(budget.getChargeDay()));
+    /**
+     * Binds budget data to the ViewHolder.
+     * 
+     * @param budgetData the budget to display
+     * @param position adapter position
+     * @param context the activity context
+     */
+    public void onBindViewHolder(@NonNull Budget budgetData, int position, @NonNull Context context) {
+        bindBudgetData(budgetData);
+        setupDayPicker(context);
+        setupChargeDayClickListener(context);
+    }
 
-        this.catName.requestFocus();
+    /**
+     * Binds the budget data to the views.
+     */
+    private void bindBudgetData(@NonNull Budget budgetData) {
+        int visibility = budgetData.isConstPayment() ? View.VISIBLE : View.INVISIBLE;
+        String shopText = budgetData.getShop() != null ? budgetData.getShop() : "";
 
-        this.store.setVisibility(visibilty);
-        this.chargeDay.setVisibility(visibilty);
+        catName.setText(budgetData.getCategoryName());
+        budget.setText(FormatUtil.formatInteger(budgetData.getValue()));
+        constDate.setChecked(budgetData.isConstPayment());
+        store.setText(shopText);
+        chargeDay.setText(String.valueOf(budgetData.getChargeDay()));
 
+        catName.requestFocus();
 
-        View dayPeekerView = ((Activity) context).getLayoutInflater().inflate(R.layout.day_peeker, null);
+        store.setVisibility(visibility);
+        chargeDay.setVisibility(visibility);
+    }
+
+    // ============================================
+    // DAY PICKER DIALOG
+    // ============================================
+
+    /**
+     * Initializes the day picker view and sets up the default selection.
+     */
+    private void setupDayPicker(@NonNull Context context) {
+        dayPickerView = ((Activity) context).getLayoutInflater()
+                .inflate(R.layout.day_peeker, null);
+        
+        initializeDefaultSelection();
+    }
+
+    /**
+     * Initializes the default selected day in the picker.
+     */
+    private void initializeDefaultSelection() {
+        if (dayPickerView == null) return;
+
         String chargeDayText = chargeDay.getText().toString();
-        List<Integer> ids = UiUtil.getIdTVByName((ViewGroup) dayPeekerView, chargeDayText);
+        List<Integer> ids = UiUtil.getIdTVByName((ViewGroup) dayPickerView, chargeDayText);
         int defaultId = (ids != null && !ids.isEmpty()) ? ids.get(0) : R.id.tv1;
-        final TextView[] defaultSelectionTV = {dayPeekerView.findViewById(defaultId)};
-        defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
-        final TextView[] selectedDay = {defaultSelectionTV[0]};
-        final TextView[] prevSelectedDay = {defaultSelectionTV[0]};
 
-        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    //Yes button clicked
-                    defaultSelectionTV[0] = selectedDay[0];
-                    String selectedDaytext = selectedDay[0].getText().toString();
-                    chargeDay.setText(selectedDaytext);
-                    dialog.dismiss();
-                    break;
+        defaultSelectionTV = dayPickerView.findViewById(defaultId);
+        if (defaultSelectionTV != null) {
+            defaultSelectionTV.setBackgroundResource(R.drawable.circle_pink_style);
+        }
+        
+        selectedDayTV = defaultSelectionTV;
+        previousSelectedDayTV = defaultSelectionTV;
+    }
 
-                case DialogInterface.BUTTON_NEGATIVE:
-                    //No button clicked - rollback
-                    UiUtil.restoreBackground(Arrays.asList(selectedDay[0]), dayPeekerView.getBackground());
-                    defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
-                    prevSelectedDay[0] = defaultSelectionTV[0];
-                    selectedDay[0] = defaultSelectionTV[0];
+    /**
+     * Sets up the charge day field click listener to show the day picker dialog.
+     */
+    private void setupChargeDayClickListener(@NonNull Context context) {
+        chargeDay.setOnClickListener(v -> showDayPickerDialog(context, v));
+    }
 
-            }
-        };
+    /**
+     * Shows the day picker dialog.
+     */
+    private void showDayPickerDialog(@NonNull Context context, @NonNull View clickedView) {
+        if (dayPickerView == null) return;
 
-        chargeDay.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(R.string.select_charge_day);
-            if (dayPeekerView.getParent() != null) {
-                ((ViewGroup) dayPeekerView.getParent()).removeView(dayPeekerView);
-            }
-            builder.setView(dayPeekerView).setPositiveButton(R.string.select, dialogClickListener)
-                    .setNegativeButton(R.string.cancel, dialogClickListener);
-            AlertDialog alertDialog = builder.create();
-            List<View> textViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
-            for (View tv : textViews) {
-                tv.setOnClickListener(tv1 -> {
-                    prevSelectedDay[0] = selectedDay[0];
-                    selectedDay[0] = (TextView) tv1;
-                    UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), v.getBackground());
-                    selectedDay[0].setBackgroundResource(R.drawable.circle_pink_style);
-                });
-            }
-            alertDialog.show();
-        });
+        // Remove from parent if already attached
+        removeViewFromParent(dayPickerView);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.select_charge_day);
+        builder.setView(dayPickerView);
+        builder.setPositiveButton(R.string.select, (dialog, which) -> onDaySelected());
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> onDaySelectionCancelled(clickedView));
+
+        AlertDialog alertDialog = builder.create();
+        setupDayPickerClickListeners(clickedView);
+        alertDialog.show();
+    }
+
+    /**
+     * Removes a view from its parent if it has one.
+     */
+    private void removeViewFromParent(@NonNull View view) {
+        if (view.getParent() != null) {
+            ((ViewGroup) view.getParent()).removeView(view);
+        }
+    }
+
+    /**
+     * Sets up click listeners for all day options in the picker.
+     */
+    private void setupDayPickerClickListeners(@NonNull View clickedView) {
+        if (dayPickerView == null) return;
+
+        List<View> textViews = UiUtil.findAllTextviews((ViewGroup) dayPickerView);
+        for (View tv : textViews) {
+            tv.setOnClickListener(dayView -> onDayOptionClicked(dayView, clickedView));
+        }
+    }
+
+    /**
+     * Handles click on a day option in the picker.
+     */
+    private void onDayOptionClicked(@NonNull View dayView, @NonNull View clickedView) {
+        previousSelectedDayTV = selectedDayTV;
+        selectedDayTV = (TextView) dayView;
+
+        // Reset previous selection
+        if (previousSelectedDayTV != null) {
+            UiUtil.restoreBackground(Arrays.asList(previousSelectedDayTV), clickedView.getBackground());
+        }
+
+        // Highlight new selection
+        if (selectedDayTV != null) {
+            selectedDayTV.setBackgroundResource(R.drawable.circle_pink_style);
+        }
+    }
+
+    /**
+     * Handles positive button click - applies the selected day.
+     */
+    private void onDaySelected() {
+        if (selectedDayTV != null) {
+            defaultSelectionTV = selectedDayTV;
+            chargeDay.setText(selectedDayTV.getText().toString());
+        }
+    }
+
+    /**
+     * Handles negative button click - restores previous selection.
+     */
+    private void onDaySelectionCancelled(@NonNull View clickedView) {
+        if (selectedDayTV != null && dayPickerView != null) {
+            UiUtil.restoreBackground(Arrays.asList(selectedDayTV), dayPickerView.getBackground());
+        }
+
+        if (defaultSelectionTV != null) {
+            defaultSelectionTV.setBackgroundResource(R.drawable.circle_pink_style);
+        }
+
+        previousSelectedDayTV = defaultSelectionTV;
+        selectedDayTV = defaultSelectionTV;
     }
 }

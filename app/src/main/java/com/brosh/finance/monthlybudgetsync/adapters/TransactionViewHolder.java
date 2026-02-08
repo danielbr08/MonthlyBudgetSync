@@ -10,57 +10,114 @@ import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.objects.Transaction;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.FormatUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.List;
 
+/**
+ * ViewHolder for displaying transactions in a RecyclerView.
+ * Handles formatting, styling, and strike-through for deleted transactions.
+ */
 public class TransactionViewHolder extends RecyclerView.ViewHolder {
-    private final TextView id;
-    private final TextView catName;
-    private final TextView paymentMethod;
-    private final TextView store;
-    private final TextView chargeDate;
-    private final TextView price;
+
+    // ============================================
+    // CONSTANTS
+    // ============================================
+
+    private static final int HEADER_TEXT_SIZE = 12;
+    private static final String EMPTY = "";
+
+    // ============================================
+    // UI COMPONENTS
+    // ============================================
+
+    private final TextView idTV;
+    private final TextView catNameTV;
+    private final TextView paymentMethodTV;
+    private final TextView storeTV;
+    private final TextView chargeDateTV;
+    private final TextView priceTV;
+    private final List<TextView> allTextViews;
+
+    // ============================================
+    // CONSTRUCTOR
+    // ============================================
 
     public TransactionViewHolder(@NonNull View itemView, boolean showCategory) {
         super(itemView);
 
-        this.id = itemView.findViewById(R.id.trn_id);
-        this.catName = itemView.findViewById(R.id.trn_category);
-        this.paymentMethod = itemView.findViewById(R.id.trn_payment_method);
-        this.store = itemView.findViewById(R.id.trn_store);
-        this.chargeDate = itemView.findViewById(R.id.trn_charge_date);
-        this.price = itemView.findViewById(R.id.trn_price);
+        this.idTV = itemView.findViewById(R.id.trn_id);
+        this.catNameTV = itemView.findViewById(R.id.trn_category);
+        this.paymentMethodTV = itemView.findViewById(R.id.trn_payment_method);
+        this.storeTV = itemView.findViewById(R.id.trn_store);
+        this.chargeDateTV = itemView.findViewById(R.id.trn_charge_date);
+        this.priceTV = itemView.findViewById(R.id.trn_price);
+        this.allTextViews = Arrays.asList(idTV, catNameTV, paymentMethodTV, storeTV, chargeDateTV, priceTV);
     }
 
-    public void onBindViewHolder(Transaction transaction) {
-        DecimalFormat decim = new DecimalFormat("#,###.##");
+    // ============================================
+    // DATA BINDING
+    // ============================================
 
-        if (transaction.getId() == null) { // Total(last) row
-            this.id.setText(transaction.getCategory()); // Get Total label
-            this.catName.setText("");
-            this.paymentMethod.setText("");
-            this.store.setText("");
-            this.chargeDate.setText("");
-            this.price.setText(decim.format(transaction.getPrice()));
+    /**
+     * Binds transaction data to the ViewHolder.
+     * Uses FormatUtil for consistent number formatting.
+     *
+     * @param transaction the transaction data to display
+     */
+    public void onBindViewHolder(@NonNull Transaction transaction) {
+        boolean isTotalRow = transaction.getId() == null;
+        
+        if (isTotalRow) {
+            bindTotalRow(transaction);
         } else {
-            this.id.setText(String.valueOf(transaction.getIdPerMonth()));
-            this.catName.setText(transaction.getCategory());
-            this.paymentMethod.setText(transaction.getPaymentMethod());
-            this.store.setText(transaction.getShop());
-            this.chargeDate.setText(DateUtil.convertDateToString(transaction.getPayDate(), Config.DATE_FORMAT));
-            this.price.setText(decim.format(transaction.getPrice()));
+            bindTransactionRow(transaction);
         }
 
         setStrikeThroughText(transaction.isDeleted());
 
-        if (transaction.getId() == null) {
-            UiUtil.setHeaderProperties(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), 12, false);
+        if (isTotalRow) {
+            UiUtil.setHeaderProperties(allTextViews, HEADER_TEXT_SIZE, false);
         }
     }
+    
+    /**
+     * Binds data for a regular transaction row.
+     */
+    private void bindTransactionRow(@NonNull Transaction transaction) {
+        idTV.setText(String.valueOf(transaction.getIdPerMonth()));
+        catNameTV.setText(transaction.getCategory());
+        paymentMethodTV.setText(transaction.getPaymentMethod());
+        storeTV.setText(transaction.getShop());
+        chargeDateTV.setText(DateUtil.convertDateToString(transaction.getPayDate(), Config.DATE_FORMAT));
+        priceTV.setText(FormatUtil.formatDecimal(transaction.getPrice()));
+    }
+    
+    /**
+     * Binds data for the total row (shows sum of transactions).
+     */
+    private void bindTotalRow(@NonNull Transaction transaction) {
+        idTV.setText(transaction.getCategory()); // Total label
+        catNameTV.setText(EMPTY);
+        paymentMethodTV.setText(EMPTY);
+        storeTV.setText(EMPTY);
+        chargeDateTV.setText(EMPTY);
+        priceTV.setText(FormatUtil.formatDecimal(transaction.getPrice()));
+    }
 
+    // ============================================
+    // STYLING
+    // ============================================
+
+    /**
+     * Sets strike-through style on all text views.
+     * Used for deleted transactions.
+     *
+     * @param enabled true to show strike-through, false to remove it
+     */
     public void setStrikeThroughText(boolean enabled) {
-        UiUtil.strikeThroughText(Arrays.asList(this.id, this.catName, this.paymentMethod, this.store, this.chargeDate, this.price), enabled);
+        UiUtil.strikeThroughText(allTextViews, enabled);
     }
 }

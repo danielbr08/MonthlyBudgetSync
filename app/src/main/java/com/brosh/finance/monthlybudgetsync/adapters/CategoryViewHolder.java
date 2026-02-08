@@ -9,33 +9,62 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.objects.Category;
+import com.brosh.finance.monthlybudgetsync.utils.FormatUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.List;
 
+/**
+ * ViewHolder for displaying budget categories in a RecyclerView.
+ * Handles formatting and styling of category, budget, and balance values.
+ */
 public class CategoryViewHolder extends RecyclerView.ViewHolder {
-    public TextView category;
-    public TextView budget;
-    public TextView balance;
+
+    // ============================================
+    // UI COMPONENTS
+    // ============================================
+
+    private final TextView categoryTV;
+    private final TextView budgetTV;
+    private final TextView balanceTV;
+    private final List<TextView> allTextViews;
+
+    // ============================================
+    // CONSTRUCTOR
+    // ============================================
 
     public CategoryViewHolder(@NonNull View itemView) {
         super(itemView);
-        this.category = itemView.findViewById(R.id.categoryLabel);
-        this.budget = itemView.findViewById(R.id.budgetLabel);
-        this.balance = itemView.findViewById(R.id.balanceLabel);
+        this.categoryTV = itemView.findViewById(R.id.categoryLabel);
+        this.budgetTV = itemView.findViewById(R.id.budgetLabel);
+        this.balanceTV = itemView.findViewById(R.id.balanceLabel);
+        this.allTextViews = Arrays.asList(categoryTV, budgetTV, balanceTV);
     }
 
-    public void onBindViewHolder(Category category) {
-        DecimalFormat decim = new DecimalFormat("#,###.##");
+    // ============================================
+    // DATA BINDING
+    // ============================================
 
-        this.category.setText(category.getName());
-        this.balance.setText(decim.format(category.getBalance()));
-        this.budget.setText(decim.format(category.getBudget()));
+    /**
+     * Binds category data to the ViewHolder.
+     * Uses FormatUtil for consistent number formatting.
+     *
+     * @param category the category data to display
+     */
+    public void onBindViewHolder(@NonNull Category category) {
+        categoryTV.setText(category.getName());
+        balanceTV.setText(FormatUtil.formatBalance(category.getBalance()));
+        budgetTV.setText(FormatUtil.formatBudget(category.getBudget()));
 
-        if (category.getBalance() < 0)
-            UiUtil.setTextViewColor(Arrays.asList(this.category, this.budget, this.balance), Color.RED);
-        if (category.getId() == null)
-            UiUtil.setTotalBudgetRow(Arrays.asList(this.category, this.budget, this.balance));
+        // Style based on balance (red if negative)
+        if (category.getBalance() < 0) {
+            UiUtil.setTextViewColor(allTextViews, Color.RED);
+        }
+        
+        // Style total row differently (identified by null ID)
+        if (category.getId() == null) {
+            UiUtil.setTotalBudgetRow(allTextViews);
+        }
     }
 }
