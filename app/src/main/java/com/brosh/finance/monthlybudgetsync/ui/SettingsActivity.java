@@ -117,7 +117,8 @@ public class SettingsActivity extends AppCompatActivity {
             autoCompleteyPref.setValue(userSettings.getAutoCompleteFrom());
             autoCompleteyPref.setSummary(String.valueOf(userSettings.getAutoCompleteFrom()));
 
-            if (user.getOwnerUid() != null) {
+            // Only allow the budget owner to change the charge day
+            if (!user.isOwner()) {
                 chargeDayPref.setEnabled(false);
             }
 
@@ -137,12 +138,27 @@ public class SettingsActivity extends AppCompatActivity {
             final TextView[] selectedDay = {defaultSelectionTV[0]};
             final TextView[] prevSelectedDay = {defaultSelectionTV[0]};
 
+            // Set up click listeners for all day TextViews
+            List<View> allDayTextViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
+            for (View view : allDayTextViews) {
+                if (view instanceof TextView dayTV) {
+                    dayTV.setOnClickListener(v -> {
+                        // Remove selection from previous day
+                        UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), dayPeekerView.getBackground());
+                        // Set selection on clicked day
+                        dayTV.setBackgroundResource(R.drawable.circle_pink_style);
+                        prevSelectedDay[0] = selectedDay[0];
+                        selectedDay[0] = dayTV;
+                    });
+                }
+            }
+
             DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
                         defaultSelectionTV[0] = selectedDay[0];
-                        String selectedDaytext = selectedDay[0].getText().toString();
+                        String selectedDaytext = selectedDay[0].getText().toString().trim();
                         int chargeDay = Integer.parseInt(selectedDaytext);
                         userSettings.setChargeDay(chargeDay);
                         chargeDayPref.setSummary(selectedDaytext);

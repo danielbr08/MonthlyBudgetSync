@@ -407,7 +407,7 @@ public class TransactionsActivity extends AppCompatActivity {
         
         // Update header appearance
         headerTV.setText(getString(R.string.header_with_arrow, text, ascOrDesc));
-        headerTV.setTextColor(Color.RED);
+        headerTV.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryLight));
         
         setDefaultHeadersStyleExceptSelected(headerTV);
         int sortBy = getSortBy(text);
