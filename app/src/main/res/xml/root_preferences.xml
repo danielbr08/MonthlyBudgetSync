@@ -1,71 +1,90 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/general">
+    <PreferenceCategory 
+        app:title="@string/general"
+        app:iconSpaceReserved="false">
 
         <ListPreference
+            app:key="currency"
+            app:title="@string/currency"
             app:defaultValue="@string/default_currency"
             app:entries="@array/currency_entries"
             app:entryValues="@array/currency_values"
-            app:key="currency"
-            app:title="@string/currency"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
 
         <Preference
             app:key="chargeDay"
             app:title="@string/charge_day"
-            app:useSimpleSummaryProvider="true" />
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
 
         <SeekBarPreference
-            android:layout_height="match_parent"
-            android:max="5"
             app:key="autoComplete"
             app:title="@string/auto_complete_length"
-            app:useSimpleSummaryProvider="true" />
+            android:max="5"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
 
         <SwitchPreferenceCompat
             app:key="defaultShowActiveOnly"
             app:title="@string/default_show_active_only"
-            android:summary="@string/default_show_active_only_summary"
-            app:useSimpleSummaryProvider="true" />
+            app:summary="@string/default_show_active_only_summary"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
+
+        <SwitchPreferenceCompat
+            app:key="allowEditPreviousMonths"
+            app:title="@string/allow_edit_previous_months"
+            app:summary="@string/allow_edit_previous_months_summary"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/profile">
+    <PreferenceCategory 
+        app:title="@string/profile"
+        app:iconSpaceReserved="false">
+        
         <Preference
             app:key="changeUserName"
             app:title="@string/change_user_name"
-            app:useSimpleSummaryProvider="true" />
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
         <Preference
             app:key="changeEmail"
             app:title="@string/change_email"
-            app:useSimpleSummaryProvider="true" />
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
         <Preference
             app:key="changePassword"
             app:title="@string/change_password"
-            app:useSimpleSummaryProvider="true" />
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
         <Preference
             app:key="changePhone"
             app:title="@string/change_phone"
-            app:useSimpleSummaryProvider="true" />
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
     </PreferenceCategory>
 
-
-    <PreferenceCategory app:title="@string/updates_and_notifications">
+    <PreferenceCategory 
+        app:title="@string/updates_and_notifications"
+        app:iconSpaceReserved="false">
 
         <SwitchPreferenceCompat
             app:key="emailUpdates"
-            app:title="@string/email_updates" />
+            app:title="@string/email_updates"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
         <SwitchPreferenceCompat
             app:key="notifications"
-            app:title="@string/notifications" />
-
-        <!--        <SwitchPreferenceCompat-->
-        <!--            app:dependency="sync"-->
-        <!--            app:key="attachment"-->
-        <!--            app:summaryOff="@string/attachment_summary_off"-->
-        <!--            app:summaryOn="@string/attachment_summary_on"-->
-        <!--            app:title="@string/attachment_title" />-->
+            app:title="@string/notifications"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
 
     </PreferenceCategory>
 

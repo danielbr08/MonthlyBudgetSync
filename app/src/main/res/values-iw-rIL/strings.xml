@@ -158,4 +158,6 @@
     <string name="final_price">מחיר סופי:</string>
     <string name="original_price">מקורי</string>
     <string name="add_category">+ הוסף קטגוריה</string>
+    <string name="allow_edit_previous_months">אפשר עריכת חודשים קודמים</string>
+    <string name="allow_edit_previous_months_summary">אפשר הכנסה ועריכת עסקאות בחודשים קודמים</string>
 </resources>

@@ -82,8 +82,10 @@
                             android:layout_height="48dp"
                             android:layout_weight="1"
                             android:background="@drawable/spinner_background"
-                            android:dropDownWidth="180dp"
-                            android:popupBackground="#FFFFFF" />
+                            android:spinnerMode="dropdown"
+                            android:dropDownWidth="match_parent"
+                            android:dropDownVerticalOffset="48dp"
+                            android:popupBackground="@drawable/spinner_dropdown_background" />
 
                         <View
                             android:layout_width="12dp"
@@ -95,8 +97,10 @@
                             android:layout_height="48dp"
                             android:layout_weight="0.7"
                             android:background="@drawable/spinner_background"
-                            android:dropDownWidth="140dp"
-                            android:popupBackground="#FFFFFF" />
+                            android:spinnerMode="dropdown"
+                            android:dropDownWidth="match_parent"
+                            android:dropDownVerticalOffset="48dp"
+                            android:popupBackground="@drawable/spinner_dropdown_background" />
 
                     </LinearLayout>
 
@@ -126,25 +130,25 @@
                             android:background="@drawable/nav_card_budget"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
+                            android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:elevation="4dp">
 
                             <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
                                 android:src="@drawable/budget_button_img"
                                 android:scaleType="fitCenter"
                                 android:contentDescription="@string/budget"
-                                android:layout_marginBottom="8dp" />
+                                android:layout_marginBottom="4dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/budget"
                                 android:textColor="#FFFFFF"
-                                android:textSize="14sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 
@@ -160,25 +164,25 @@
                             android:background="@drawable/nav_card_transactions"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
+                            android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:elevation="4dp">
 
                             <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
                                 android:src="@drawable/transactions_button_img"
                                 android:scaleType="fitCenter"
                                 android:contentDescription="@string/transactions"
-                                android:layout_marginBottom="8dp" />
+                                android:layout_marginBottom="4dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/transactions"
                                 android:textColor="#FFFFFF"
-                                android:textSize="14sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 
@@ -203,25 +207,25 @@
                             android:background="@drawable/nav_card_insert"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
+                            android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:elevation="4dp">
 
                             <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
                                 android:src="@drawable/add_button_md"
                                 android:scaleType="fitCenter"
                                 android:contentDescription="@string/insert_transaction"
-                                android:layout_marginBottom="8dp" />
+                                android:layout_marginBottom="4dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/insert_transaction"
                                 android:textColor="#FFFFFF"
-                                android:textSize="14sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 
@@ -237,25 +241,25 @@
                             android:background="@drawable/nav_card_create"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:padding="16dp"
+                            android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
                             android:elevation="4dp">
 
                             <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="90dp"
+                                android:layout_height="90dp"
                                 android:src="@drawable/budget_img"
                                 android:scaleType="fitCenter"
                                 android:contentDescription="@string/create_budget"
-                                android:layout_marginBottom="8dp" />
+                                android:layout_marginBottom="4dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/create_budget"
                                 android:textColor="#FFFFFF"
-                                android:textSize="14sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 

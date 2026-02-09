@@ -28,6 +28,7 @@ public class UserSettings implements Serializable {
     private static final boolean DEFAULT_ACTIVE_ONLY = true;
     private static final boolean DEFAULT_EMAIL_UPDATES = false;
     private static final boolean DEFAULT_NOTIFICATIONS = false;
+    private static final boolean DEFAULT_ALLOW_EDIT_PREVIOUS_MONTHS = false;
     
     private int chargeDay;
     private boolean isAdEnabled;
@@ -36,13 +37,14 @@ public class UserSettings implements Serializable {
     private boolean activeTransactionsOnlyByDefault;
     private boolean emailUpdates;
     private boolean notifications;
+    private boolean allowEditPreviousMonths;
 
     /**
      * Creates UserSettings with all parameters specified.
      */
     public UserSettings(int chargeDay, boolean isAdEnabled, @Nullable String currency, 
                         int autoCompleteFrom, boolean activeTransactionsOnlyByDefault, 
-                        boolean emailUpdates, boolean notifications) {
+                        boolean emailUpdates, boolean notifications, boolean allowEditPreviousMonths) {
         this.chargeDay = Math.max(1, Math.min(31, chargeDay));
         this.isAdEnabled = isAdEnabled;
         this.currency = currency != null ? currency : DEFAULT_CURRENCY;
@@ -50,6 +52,7 @@ public class UserSettings implements Serializable {
         this.activeTransactionsOnlyByDefault = activeTransactionsOnlyByDefault;
         this.emailUpdates = emailUpdates;
         this.notifications = notifications;
+        this.allowEditPreviousMonths = allowEditPreviousMonths;
     }
 
     /**
@@ -62,6 +65,7 @@ public class UserSettings implements Serializable {
         this.activeTransactionsOnlyByDefault = DEFAULT_ACTIVE_ONLY;
         this.emailUpdates = DEFAULT_EMAIL_UPDATES;
         this.notifications = DEFAULT_NOTIFICATIONS;
+        this.allowEditPreviousMonths = DEFAULT_ALLOW_EDIT_PREVIOUS_MONTHS;
         
         // Try to get default currency from resources
         try {
@@ -130,5 +134,13 @@ public class UserSettings implements Serializable {
 
     public void setAdEnabled(boolean adEnabled) {
         isAdEnabled = adEnabled;
+    }
+
+    public boolean isAllowEditPreviousMonths() {
+        return allowEditPreviousMonths;
+    }
+
+    public void setAllowEditPreviousMonths(boolean allowEditPreviousMonths) {
+        this.allowEditPreviousMonths = allowEditPreviousMonths;
     }
 }

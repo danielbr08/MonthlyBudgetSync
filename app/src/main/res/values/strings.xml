@@ -159,4 +159,6 @@
     <string name="add_category">+ Add Category</string>
     <string name="load_newer_years">▲ …</string>
     <string name="load_older_years">▼ …</string>
+    <string name="allow_edit_previous_months">Allow edit previous months</string>
+    <string name="allow_edit_previous_months_summary">Enable inserting and editing transactions in previous months</string>
 </resources>

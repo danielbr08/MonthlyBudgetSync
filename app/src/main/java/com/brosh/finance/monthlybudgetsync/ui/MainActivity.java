@@ -11,7 +11,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.view.ViewGroup;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -182,9 +184,39 @@ public class MainActivity extends AppCompatActivity {
             displayMonths.add(formatMonthForDisplay(ym));
         }
         
-        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this,
-                R.layout.custom_spinner, displayMonths);
-        monthAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        // Use custom adapter with explicit view creation (same as year adapter)
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(this,
+                R.layout.custom_spinner, displayMonths) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = convertView;
+                if (view == null) {
+                    view = getLayoutInflater().inflate(R.layout.custom_spinner, parent, false);
+                }
+                TextView textView = view.findViewById(android.R.id.text1);
+                if (textView != null) {
+                    textView.setText(getItem(position));
+                    textView.setTextColor(Color.WHITE);
+                }
+                return view;
+            }
+            
+            @NonNull
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = convertView;
+                if (view == null) {
+                    view = getLayoutInflater().inflate(R.layout.spinner_dropdown_item, parent, false);
+                }
+                TextView textView = view.findViewById(android.R.id.text1);
+                if (textView != null) {
+                    textView.setText(getItem(position));
+                    textView.setTextColor(Color.WHITE);
+                }
+                return view;
+            }
+        };
         monthSpinner.setAdapter(monthAdapter);
         
         // Select appropriate month
@@ -537,7 +569,8 @@ public class MainActivity extends AppCompatActivity {
                 
                 month = dbUtil.getMonth(yearMonth);
                 boolean isActive = month != null && month.isActive();
-                updateButtonStates(isActive);
+                boolean allowEditPrevious = user != null && user.getUserSettings().isAllowEditPreviousMonths();
+                updateButtonStates(isActive, allowEditPrevious);
             }
 
             @Override
@@ -549,19 +582,26 @@ public class MainActivity extends AppCompatActivity {
     
     /**
      * Updates button enabled states and backgrounds.
+     * 
+     * @param isActive true if the selected month is the current month
+     * @param allowEditPreviousMonths true if user setting allows editing previous months
      */
-    private void updateButtonStates(boolean isActive) {
-        insertTransactionButton.setEnabled(isActive);
+    private void updateButtonStates(boolean isActive, boolean allowEditPreviousMonths) {
+        // Insert transaction: enabled if active month OR if editing previous months is allowed
+        boolean canInsertTransaction = isActive || allowEditPreviousMonths;
+        insertTransactionButton.setEnabled(canInsertTransaction);
+        
+        // Create budget: only enabled for current (active) month
         createBudgetButton.setEnabled(isActive);
         
         // Update backgrounds for nav card style
         insertTransactionButton.setBackground(ContextCompat.getDrawable(this,
-            isActive ? R.drawable.nav_card_insert : R.drawable.nav_card_disabled));
+            canInsertTransaction ? R.drawable.nav_card_insert : R.drawable.nav_card_disabled));
         createBudgetButton.setBackground(ContextCompat.getDrawable(this,
             isActive ? R.drawable.nav_card_create : R.drawable.nav_card_disabled));
         
         // Update alpha for visual feedback
-        insertTransactionButton.setAlpha(isActive ? 1.0f : 0.5f);
+        insertTransactionButton.setAlpha(canInsertTransaction ? 1.0f : 0.5f);
         createBudgetButton.setAlpha(isActive ? 1.0f : 0.5f);
     }
     
@@ -664,7 +704,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         
-        if (user == null || dbUtil == null) {
+        if (dbUtil == null) {
+            return;
+        }
+        
+        // Refresh user to get latest settings (important after returning from Settings)
+        user = dbUtil.getUser();
+        if (user == null) {
             return;
         }
 
@@ -693,6 +739,8 @@ public class MainActivity extends AppCompatActivity {
             initRefMonthSpinner();
             enableAllButtons();
         }
+        // Recalculate button states based on current settings (important after returning from Settings)
+        recalculateButtonStates();
     }
     
     /**
@@ -740,6 +788,19 @@ public class MainActivity extends AppCompatActivity {
         budgetButton.setAlpha(0.5f);
         transactionsButton.setAlpha(0.5f);
         insertTransactionButton.setAlpha(0.5f);
+    }
+    
+    /**
+     * Recalculates button states based on current month selection and user settings.
+     * Call this after returning from Settings to ensure settings changes are applied.
+     */
+    private void recalculateButtonStates() {
+        if (month == null || user == null) {
+            return;
+        }
+        boolean isActive = month.isActive();
+        boolean allowEditPrevious = user.getUserSettings().isAllowEditPreviousMonths();
+        updateButtonStates(isActive, allowEditPrevious);
     }
 
     @Override
@@ -801,6 +862,9 @@ public class MainActivity extends AppCompatActivity {
             }
             
             initRefMonthSpinner();
+            
+            // Ensure button states are correct based on selected month and settings
+            recalculateButtonStates();
         } else {
             disableAllButtons();
         }

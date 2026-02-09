@@ -218,6 +218,9 @@ public final class Definitions {
     /** Notifications setting key */
     public static final String NOTIFICATIONS = "notifications";
     
+    /** Allow edit previous months setting key */
+    public static final String ALLOW_EDIT_PREVIOUS_MONTHS = "allowEditPreviousMonths";
+    
     // ============================================
     // ERROR MESSAGES
     // ============================================

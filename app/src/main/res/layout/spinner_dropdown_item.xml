@@ -4,10 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical|start"
-    android:padding="16dp"
-    android:textColor="#1B263B"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    android:textColor="#FFFFFF"
     android:textSize="15sp"
     android:ellipsize="end"
     android:maxLines="1"
     android:singleLine="true"
-    android:background="#FFFFFF" />
+    android:background="?attr/selectableItemBackground" />

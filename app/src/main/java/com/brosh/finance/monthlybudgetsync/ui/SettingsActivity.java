@@ -1,9 +1,7 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -52,15 +50,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    protected void onPause() {
+        super.onPause();
+        // Save settings when leaving the activity (more reliable than onDestroy)
         saveUserSettings();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     private void saveUserSettings() {
@@ -75,6 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         userSettings.setAutoCompleteFrom(prefs.getInt(Definitions.AUTO_COMPLETE, userSettings.getAutoCompleteFrom()));
         userSettings.setEmailUpdates(prefs.getBoolean(Definitions.EMAIL_UPDATES, userSettings.isEmailUpdates()));
         userSettings.setNotifications(prefs.getBoolean(Definitions.NOTIFICATIONS, userSettings.isNotifications()));
+        userSettings.setAllowEditPreviousMonths(prefs.getBoolean(Definitions.ALLOW_EDIT_PREVIOUS_MONTHS, userSettings.isAllowEditPreviousMonths()));
         String dbKey = user.getDbKey();
         if (dbKey != null) {
             Config.DatabaseReferenceUsers.child(dbKey).child(Definitions.USER_SETTINGS).setValue(userSettings);
@@ -106,86 +100,109 @@ public class SettingsActivity extends AppCompatActivity {
 
             SwitchPreferenceCompat emailUpdates = findPreference(Definitions.EMAIL_UPDATES);
             SwitchPreferenceCompat notifications = findPreference(Definitions.NOTIFICATIONS);
+            SwitchPreferenceCompat allowEditPreviousMonths = findPreference(Definitions.ALLOW_EDIT_PREVIOUS_MONTHS);
 
+            // Initialize SharedPreferences with current values
             prefs.edit().putString(Definitions.CURRENCY, userSettings.getCurrency()).commit();
             prefs.edit().putString(Definitions.CHARGE_DAY, String.valueOf(userSettings.getChargeDay())).commit();
+            prefs.edit().putBoolean(Definitions.ALLOW_EDIT_PREVIOUS_MONTHS, userSettings.isAllowEditPreviousMonths()).commit();
+            prefs.edit().putBoolean(Definitions.DEFAULT_SHOW_ACTIVE_ONLY, userSettings.isActiveTransactionsOnlyByDefault()).commit();
+            prefs.edit().putBoolean(Definitions.EMAIL_UPDATES, userSettings.isEmailUpdates()).commit();
+            prefs.edit().putBoolean(Definitions.NOTIFICATIONS, userSettings.isNotifications()).commit();
+            
+            // Set initial UI states
             activeTransactionsOnly.setChecked(userSettings.isActiveTransactionsOnlyByDefault());
             emailUpdates.setChecked(userSettings.isEmailUpdates());
             notifications.setChecked(userSettings.isNotifications());
+            allowEditPreviousMonths.setChecked(userSettings.isAllowEditPreviousMonths());
 
             chargeDayPref.setSummary(String.valueOf(userSettings.getChargeDay()));
             autoCompleteyPref.setValue(userSettings.getAutoCompleteFrom());
             autoCompleteyPref.setSummary(String.valueOf(userSettings.getAutoCompleteFrom()));
 
-            // Only allow the budget owner to change the charge day
+            // Only allow the budget owner to change certain settings
             if (!user.isOwner()) {
                 chargeDayPref.setEnabled(false);
+                allowEditPreviousMonths.setEnabled(false);
             }
+
+            // Add change listeners to update user object immediately
+            activeTransactionsOnly.setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean value = (Boolean) newValue;
+                userSettings.setActiveTransactionsOnlyByDefault(value);
+                prefs.edit().putBoolean(Definitions.DEFAULT_SHOW_ACTIVE_ONLY, value).commit();
+                return true;
+            });
+
+            emailUpdates.setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean value = (Boolean) newValue;
+                userSettings.setEmailUpdates(value);
+                prefs.edit().putBoolean(Definitions.EMAIL_UPDATES, value).commit();
+                return true;
+            });
+
+            notifications.setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean value = (Boolean) newValue;
+                userSettings.setNotifications(value);
+                prefs.edit().putBoolean(Definitions.NOTIFICATIONS, value).commit();
+                return true;
+            });
+
+            allowEditPreviousMonths.setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean value = (Boolean) newValue;
+                userSettings.setAllowEditPreviousMonths(value);
+                prefs.edit().putBoolean(Definitions.ALLOW_EDIT_PREVIOUS_MONTHS, value).commit();
+                return true;
+            });
 
             autoCompleteyPref.setOnPreferenceChangeListener((preference, newValue) -> {
                 int newVal = Integer.parseInt(newValue.toString());
                 ((SeekBarPreference) preference).setValue(newVal);
                 preference.setSummary(String.valueOf(newVal));
                 userSettings.setAutoCompleteFrom(newVal);
+                prefs.edit().putInt(Definitions.AUTO_COMPLETE, newVal).commit();
                 return false;
             });
 
-            View dayPeekerView = this.getLayoutInflater().inflate(R.layout.day_peeker, null);
-            List<Integer> ids = UiUtil.getIdTVByName((ViewGroup) dayPeekerView, String.valueOf(userSettings.getChargeDay()));
-            int defaultId = (ids != null && !ids.isEmpty()) ? ids.get(0) : R.id.tv1;
-            final TextView[] defaultSelectionTV = {dayPeekerView.findViewById(defaultId)};
-            defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
-            final TextView[] selectedDay = {defaultSelectionTV[0]};
-            final TextView[] prevSelectedDay = {defaultSelectionTV[0]};
-
-            // Set up click listeners for all day TextViews
-            List<View> allDayTextViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
-            for (View view : allDayTextViews) {
-                if (view instanceof TextView dayTV) {
-                    dayTV.setOnClickListener(v -> {
-                        // Remove selection from previous day
-                        UiUtil.restoreBackground(Arrays.asList(prevSelectedDay[0]), dayPeekerView.getBackground());
-                        // Set selection on clicked day
-                        dayTV.setBackgroundResource(R.drawable.circle_pink_style);
-                        prevSelectedDay[0] = selectedDay[0];
-                        selectedDay[0] = dayTV;
-                    });
-                }
-            }
-
-            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        //Yes button clicked
-                        defaultSelectionTV[0] = selectedDay[0];
-                        String selectedDaytext = selectedDay[0].getText().toString().trim();
-                        int chargeDay = Integer.parseInt(selectedDaytext);
-                        userSettings.setChargeDay(chargeDay);
-                        chargeDayPref.setSummary(selectedDaytext);
-                        prefs.edit().putString(Definitions.CHARGE_DAY, selectedDaytext).apply();
-                        dialog.dismiss();
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked - rollback
-                        UiUtil.restoreBackground(Arrays.asList(selectedDay[0]), dayPeekerView.getBackground());
-                        defaultSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
-                        prevSelectedDay[0] = defaultSelectionTV[0];
-                        selectedDay[0] = defaultSelectionTV[0];
-                        break;
-                }
-            };
-
             chargeDayPref.setOnPreferenceClickListener(preference -> {
+                // Create fresh view each time to avoid stale visual state
+                View dayPeekerView = getLayoutInflater().inflate(R.layout.day_peeker, null);
+                
+                // Get current charge day from userSettings (most up-to-date value)
+                int currentChargeDay = userSettings.getChargeDay();
+                List<Integer> ids = UiUtil.getIdTVByName((ViewGroup) dayPeekerView, String.valueOf(currentChargeDay));
+                int defaultId = (ids != null && !ids.isEmpty()) ? ids.get(0) : R.id.tv1;
+                
+                final TextView[] currentSelectionTV = {dayPeekerView.findViewById(defaultId)};
+                currentSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
+                final TextView[] selectedDayTV = {currentSelectionTV[0]};
+
+                // Set up click listeners for all day TextViews
+                List<View> allDayTextViews = UiUtil.findAllTextviews((ViewGroup) dayPeekerView);
+                for (View view : allDayTextViews) {
+                    if (view instanceof TextView dayTV) {
+                        dayTV.setOnClickListener(v -> {
+                            // Remove selection from previous day
+                            UiUtil.restoreBackground(Arrays.asList(selectedDayTV[0]), dayPeekerView.getBackground());
+                            // Set selection on clicked day
+                            dayTV.setBackgroundResource(R.drawable.circle_pink_style);
+                            selectedDayTV[0] = dayTV;
+                        });
+                    }
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(R.string.select_charge_day);
-                if (dayPeekerView.getParent() != null) {
-                    ((ViewGroup) dayPeekerView.getParent()).removeView(dayPeekerView);
-                }
-                builder.setView(dayPeekerView).setPositiveButton(R.string.select, dialogClickListener)
-                        .setNegativeButton(R.string.cancel, dialogClickListener);
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                builder.setView(dayPeekerView)
+                    .setPositiveButton(R.string.select, (dialog, which) -> {
+                        String selectedDayText = selectedDayTV[0].getText().toString().trim();
+                        int chargeDay = Integer.parseInt(selectedDayText);
+                        userSettings.setChargeDay(chargeDay);
+                        chargeDayPref.setSummary(selectedDayText);
+                        prefs.edit().putString(Definitions.CHARGE_DAY, selectedDayText).commit();
+                    })
+                    .setNegativeButton(R.string.cancel, null);
+                builder.create().show();
                 return true;
             });
 

@@ -148,12 +148,8 @@ public class PaginatedYearAdapter extends ArrayAdapter<String> {
                 textView.setTextColor(MARKER_COLOR);
                 textView.setTypeface(textView.getTypeface(), Typeface.ITALIC);
             } else {
-                // Normal year item - restore default styling
-                if (layoutRes == R.layout.custom_spinner) {
-                    textView.setTextColor(Color.WHITE);
-                } else {
-                    textView.setTextColor(0xFF1B263B);  // Dark color for dropdown
-                }
+                // Normal year item - use white text for both spinner and dropdown
+                textView.setTextColor(Color.WHITE);
                 textView.setTypeface(textView.getTypeface(), Typeface.NORMAL);
             }
         }

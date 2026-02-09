@@ -242,11 +242,11 @@
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
-        <item name="android:textColor">@color/colorTextDark</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:background">@color/colorSurface</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
     <!-- Row Item Style -->
@@ -325,6 +325,35 @@
     <style name="PreferenceThemeOverlay.App" parent="PreferenceThemeOverlay">
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textColorSecondary">@color/colorTextSecondary</item>
+        <item name="preferenceStyle">@style/Preference.App</item>
+        <item name="switchPreferenceCompatStyle">@style/Preference.App.SwitchPreferenceCompat</item>
+        <item name="preferenceCategoryStyle">@style/Preference.App.Category</item>
+        <item name="seekBarPreferenceStyle">@style/Preference.App.SeekBar</item>
+    </style>
+    
+    <!-- Base Preference Style - Allow text wrapping -->
+    <style name="Preference.App" parent="Preference.Material">
+        <item name="android:layout">@layout/preference_material</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+        <item name="singleLineTitle">false</item>
+    </style>
+    
+    <!-- Switch Preference Style -->
+    <style name="Preference.App.SwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="singleLineTitle">false</item>
+    </style>
+    
+    <!-- Category Style -->
+    <style name="Preference.App.Category" parent="Preference.Category.Material">
+        <item name="android:textColor">@color/colorPrimaryLight</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+    </style>
+    
+    <!-- SeekBar Preference Style -->
+    <style name="Preference.App.SeekBar" parent="Preference.SeekBarPreference.Material">
+        <item name="singleLineTitle">false</item>
     </style>
 
 </resources>
