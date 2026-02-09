@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Navigation Card - Warning Orange -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#40FFFFFF">
+    android:color="#30FFA726">
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="linear"
-                android:startColor="@color/colorNavCreate"
-                android:endColor="#D97706"
+                android:startColor="#FFA726"
+                android:endColor="#E89520"
                 android:angle="135" />
-            <corners android:radius="20dp" />
+            <corners android:radius="16dp" />
         </shape>
     </item>
 </ripple>

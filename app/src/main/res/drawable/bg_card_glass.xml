@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Card Background -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     
-    <solid android:color="@color/colorGlassCard" />
+    <solid android:color="#304858" />
     
-    <corners android:radius="20dp" />
-    
-    <stroke
-        android:width="1dp"
-        android:color="#15FFFFFF" />
+    <corners android:radius="12dp" />
 </shape>

@@ -1,39 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Main Background - Medium Dark Theme -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Base gradient background -->
+    <!-- Solid base -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#243540" />
+        </shape>
+    </item>
+    
+    <!-- Subtle gradient for depth -->
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="linear"
-                android:startColor="@color/colorBackgroundGradientStart"
-                android:endColor="@color/colorBackgroundGradientEnd"
-                android:angle="135" />
+                android:startColor="#082D4048"
+                android:endColor="#00000000"
+                android:angle="270" />
         </shape>
     </item>
     
-    <!-- Subtle pattern overlay -->
+    <!-- Very subtle teal accent glow at top -->
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="radial"
-                android:startColor="#10FFFFFF"
-                android:endColor="#00FFFFFF"
-                android:gradientRadius="600dp"
-                android:centerX="0.9"
-                android:centerY="0.1" />
-        </shape>
-    </item>
-    
-    <!-- Secondary glow -->
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:type="radial"
-                android:startColor="#150D7377"
+                android:startColor="#0C00A884"
                 android:endColor="#00000000"
                 android:gradientRadius="400dp"
-                android:centerX="0.1"
-                android:centerY="0.8" />
+                android:centerX="0.5"
+                android:centerY="0" />
         </shape>
     </item>
 </layer-list>

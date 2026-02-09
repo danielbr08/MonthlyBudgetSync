@@ -134,7 +134,7 @@
                         android:text="@string/remember_me"
                         android:textColor="@color/colorTextSecondary"
                         android:textSize="@dimen/text_sm"
-                        app:buttonTint="@color/colorPrimaryLight" />
+                        app:buttonTint="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/forgotPasswordTV"
@@ -159,7 +159,7 @@
                     android:textSize="@dimen/text_md"
                     android:textStyle="bold"
                     android:textAllCaps="false"
-                    android:fontFamily="@font/aclonica"
+                    android:fontFamily="sans-serif-medium"
                     app:cornerRadius="@dimen/corner_md"
                     app:backgroundTint="@color/colorButtonPrimary"
                     app:rippleColor="@color/colorPrimaryLight"
@@ -175,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xl"
                 android:visibility="invisible"
-                android:indeterminateTint="@color/colorPrimaryLight" />
+                android:indeterminateTint="@color/colorPrimary" />
 
             <!-- Create Account Link -->
             <LinearLayout

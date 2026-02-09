@@ -249,7 +249,11 @@ public class MainActivity extends AppCompatActivity {
     }
     
     /**
-     * Formats a yearMonth string for display (e.g., "2024-01" -> "01 - Jan").
+     * Formats a yearMonth string for display.
+     * Handles both LTR (English) and RTL (Hebrew) languages properly.
+     * Examples: 
+     *   English: "January" 
+     *   Hebrew: "ינואר"
      */
     private String formatMonthForDisplay(String yearMonth) {
         if (yearMonth == null || !yearMonth.contains(Config.SEPARATOR)) {
@@ -260,20 +264,21 @@ public class MainActivity extends AppCompatActivity {
         if (parts.length < 2) return yearMonth;
         
         String monthNum = parts[1];
-        String monthName = getMonthName(monthNum);
-        return monthNum + " - " + monthName;
+        return getMonthName(monthNum);
     }
     
     /**
      * Gets the localized month name from month number.
      * Uses the device's locale for proper localization.
+     * Returns full month names (e.g., "January", "ינואר") for better readability.
      */
     private String getMonthName(String monthNum) {
         try {
             int idx = Integer.parseInt(monthNum) - 1;
             if (idx >= 0 && idx < 12) {
-                java.text.DateFormatSymbols symbols = new java.text.DateFormatSymbols(java.util.Locale.getDefault());
-                String[] monthNames = symbols.getShortMonths();
+                java.util.Locale locale = java.util.Locale.getDefault();
+                java.text.DateFormatSymbols symbols = new java.text.DateFormatSymbols(locale);
+                String[] monthNames = symbols.getMonths(); // Full month names
                 return monthNames[idx];
             }
         } catch (NumberFormatException e) {
@@ -334,17 +339,20 @@ public class MainActivity extends AppCompatActivity {
         if (yearSpinner == null || monthSpinner == null) return null;
         
         Object yearObj = yearSpinner.getSelectedItem();
-        Object monthObj = monthSpinner.getSelectedItem();
         
-        if (yearObj == null || monthObj == null) return null;
+        if (yearObj == null) return null;
         
         String year = yearObj.toString();
-        String monthDisplay = monthObj.toString();
         
-        // Extract month number from display format "01 - Jan"
-        String monthNum = monthDisplay.split(" - ")[0];
+        // Get the selected position in month spinner and find the corresponding yearMonth
+        int monthPosition = monthSpinner.getSelectedItemPosition();
+        List<String> monthsForYear = getMonthsForYear(year);
         
-        return year + Config.SEPARATOR + monthNum;
+        if (monthPosition < 0 || monthPosition >= monthsForYear.size()) {
+            return null;
+        }
+        
+        return monthsForYear.get(monthPosition);
     }
 
     @Override

@@ -30,9 +30,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/insert_transaction"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:layout_marginBottom="20dp" />
 
             <!-- Form Card -->
@@ -56,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/category"
-                        android:textColor="#B8C5D6"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="6dp" />
@@ -66,7 +67,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@drawable/spinner_background"
-                        android:popupBackground="#FFFFFF" />
+                        android:popupBackground="@drawable/spinner_dropdown_background" />
 
                 </LinearLayout>
 
@@ -82,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/payment_method"
-                        android:textColor="#B8C5D6"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="6dp" />
@@ -92,7 +93,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@drawable/spinner_background"
-                        android:popupBackground="#FFFFFF" />
+                        android:popupBackground="@drawable/spinner_dropdown_background" />
 
                 </LinearLayout>
 
@@ -108,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/charge_date"
-                        android:textColor="#B8C5D6"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="6dp" />
@@ -123,7 +124,7 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:inputType="date"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="14sp"
                         tools:targetApi="o" />
 
@@ -141,7 +142,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/store"
-                        android:textColor="#B8C5D6"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="6dp" />
@@ -157,10 +158,10 @@
                         android:inputType="text"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="14sp"
                         android:hint="@string/store"
-                        android:textColorHint="#6B7B8C" />
+                        android:textColorHint="@color/colorInputHint" />
 
                 </LinearLayout>
 
@@ -176,7 +177,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/price"
-                        android:textColor="#B8C5D6"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="6dp" />
@@ -191,10 +192,10 @@
                         android:importantForAutofill="no"
                         android:inputType="numberSigned|numberDecimal"
                         android:textDirection="ltr"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="14sp"
                         android:hint="0.00"
-                        android:textColorHint="#6B7B8C"
+                        android:textColorHint="@color/colorInputHint"
                         tools:targetApi="jelly_bean_mr1" />
 
                 </LinearLayout>
@@ -218,9 +219,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/discount"
-                            android:textColor="#FFFFFF"
+                            android:textColor="@color/colorTextPrimary"
                             android:textSize="14sp"
-                            app:buttonTint="#32E0C4" />
+                            app:buttonTint="@color/colorPrimary" />
 
                         <LinearLayout
                             android:id="@+id/discountInputLayout"
@@ -239,10 +240,10 @@
                                 android:paddingStart="10dp"
                                 android:paddingEnd="10dp"
                                 android:hint="0"
-                                android:textColorHint="#6B7B8C"
+                                android:textColorHint="@color/colorInputHint"
                                 android:inputType="numberDecimal"
                                 android:maxLength="5"
-                                android:textColor="#FFFFFF"
+                                android:textColor="@color/colorTextPrimary"
                                 android:textSize="14sp"
                                 android:textAlignment="center"
                                 android:gravity="center" />
@@ -251,7 +252,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/discount_percent"
-                                android:textColor="#FFFFFF"
+                                android:textColor="@color/colorTextPrimary"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:paddingStart="6dp"
@@ -278,14 +279,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/final_price"
-                            android:textColor="#B8C5D6"
+                            android:textColor="@color/colorTextSecondary"
                             android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/finalPriceValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#10B981"
+                            android:textColor="@color/colorPositive"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -305,9 +306,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/comment"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="14sp"
-                        app:buttonTint="#32E0C4" />
+                        app:buttonTint="@color/colorPrimary" />
 
                     <EditText
                         android:id="@+id/commentEditText"
@@ -317,8 +318,8 @@
                         android:background="@drawable/input_background"
                         android:padding="14dp"
                         android:hint="@string/comment_hint"
-                        android:textColorHint="#6B7B8C"
-                        android:textColor="#FFFFFF"
+                        android:textColorHint="@color/colorInputHint"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="14sp"
                         android:inputType="textMultiLine"
                         android:maxLines="3"
@@ -334,7 +335,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:indeterminateTint="#32E0C4"
+                    android:indeterminateTint="@color/colorPrimary"
                     android:visibility="gone" />
 
                 <!-- Submit Button -->
@@ -343,10 +344,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:text="@string/insert"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/colorWhite"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textAllCaps="false"
+                    android:fontFamily="sans-serif-medium"
                     android:background="@drawable/btn_primary" />
 
             </LinearLayout>

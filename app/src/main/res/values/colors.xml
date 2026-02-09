@@ -1,89 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary Brand Colors - Deep Emerald Finance Theme -->
-    <color name="colorPrimary">#0D7377</color>
-    <color name="colorPrimaryDark">#14454A</color>
-    <color name="colorPrimaryLight">#32E0C4</color>
-    <color name="colorAccent">#FF6B6B</color>
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         WhatsApp-Inspired Professional Color Palette
+         Modern, Clean, and Instantly Recognizable
+    ═══════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Primary Brand Colors - WhatsApp Teal -->
+    <color name="colorPrimary">#00A884</color>
+    <color name="colorPrimaryDark">#075E54</color>
+    <color name="colorPrimaryLight">#25D366</color>
+    <color name="colorAccent">#00A884</color>
     
-    <!-- Surface Colors -->
-    <color name="colorSurface">#FFFFFF</color>
-    <color name="colorSurfaceVariant">#F8FAFA</color>
-    <color name="colorBackground">#0D1B2A</color>
-    <color name="colorBackgroundLight">#1B263B</color>
-    <color name="colorBackgroundGradientStart">#0D1B2A</color>
-    <color name="colorBackgroundGradientEnd">#1B3A4B</color>
+    <!-- Surface Colors - WhatsApp Medium-Dark Theme -->
+    <color name="colorSurface">#2A3B45</color>
+    <color name="colorSurfaceVariant">#324552</color>
+    <color name="colorBackground">#243540</color>
+    <color name="colorBackgroundLight">#2A3B45</color>
+    <color name="colorBackgroundGradientStart">#243540</color>
+    <color name="colorBackgroundGradientEnd">#2D4048</color>
     
     <!-- Card & Container Colors -->
-    <color name="colorCard">#FFFFFF</color>
-    <color name="colorCardDark">#1E3A5F</color>
-    <color name="colorCardOverlay">#1A2744</color>
-    <color name="colorGlassCard">#1E3A5F99</color>
+    <color name="colorCard">#304858</color>
+    <color name="colorCardDark">#304858</color>
+    <color name="colorCardOverlay">#385060</color>
+    <color name="colorGlassCard">#304858</color>
     
-    <!-- Text Colors -->
-    <color name="colorTextPrimary">#FFFFFF</color>
-    <color name="colorTextSecondary">#B8C5D6</color>
-    <color name="colorTextDark">#1B263B</color>
-    <color name="colorTextMuted">#6B7B8C</color>
+    <!-- Text Colors - WhatsApp Style -->
+    <color name="colorTextPrimary">#E9EDEF</color>
+    <color name="colorTextSecondary">#8696A0</color>
+    <color name="colorTextDark">#111B21</color>
+    <color name="colorTextMuted">#667781</color>
     
     <!-- Input & Form Colors -->
-    <color name="colorInputBackground">#FFFFFF</color>
-    <color name="colorInputBackgroundDark">#1E3A5F</color>
-    <color name="colorInputBorder">#E0E6ED</color>
-    <color name="colorInputBorderFocused">#0D7377</color>
-    <color name="colorInputHint">#9CA3AF</color>
+    <color name="colorInputBackground">#3A5565</color>
+    <color name="colorInputBackgroundDark">#3A5565</color>
+    <color name="colorInputBorder">#4D6878</color>
+    <color name="colorInputBorderFocused">#00A884</color>
+    <color name="colorInputHint">#667781</color>
     
-    <!-- Status Colors -->
-    <color name="colorSuccess">#10B981</color>
-    <color name="colorSuccessLight">#D1FAE5</color>
-    <color name="colorWarning">#F59E0B</color>
-    <color name="colorWarningLight">#FEF3C7</color>
-    <color name="colorError">#EF4444</color>
-    <color name="colorErrorLight">#FEE2E2</color>
-    <color name="colorInfo">#3B82F6</color>
+    <!-- Status Colors - WhatsApp Inspired -->
+    <color name="colorSuccess">#25D366</color>
+    <color name="colorSuccessLight">#1A3D2C</color>
+    <color name="colorWarning">#FFA726</color>
+    <color name="colorWarningLight">#3D3225</color>
+    <color name="colorError">#F15C6D</color>
+    <color name="colorErrorLight">#3D2529</color>
+    <color name="colorInfo">#53BDEB</color>
     
     <!-- Finance-specific Colors -->
-    <color name="colorPositive">#10B981</color>
-    <color name="colorNegative">#EF4444</color>
-    <color name="colorNeutral">#6B7280</color>
+    <color name="colorPositive">#25D366</color>
+    <color name="colorNegative">#F15C6D</color>
+    <color name="colorNeutral">#8696A0</color>
     
-    <!-- Button Colors -->
-    <color name="colorButtonPrimary">#0D7377</color>
-    <color name="colorButtonPrimaryPressed">#0A5C5F</color>
-    <color name="colorButtonSecondary">#1E3A5F</color>
-    <color name="colorButtonAccent">#FF6B6B</color>
+    <!-- Button Colors - WhatsApp Style -->
+    <color name="colorButtonPrimary">#00A884</color>
+    <color name="colorButtonPrimaryPressed">#008069</color>
+    <color name="colorButtonSecondary">#233138</color>
+    <color name="colorButtonAccent">#25D366</color>
     
-    <!-- Navigation Button Colors -->
-    <color name="colorNavBudget">#0D7377</color>
-    <color name="colorNavTransactions">#6366F1</color>
-    <color name="colorNavInsert">#10B981</color>
-    <color name="colorNavCreate">#F59E0B</color>
+    <!-- Navigation Button Colors - Harmonized with WhatsApp -->
+    <color name="colorNavBudget">#00A884</color>
+    <color name="colorNavTransactions">#53BDEB</color>
+    <color name="colorNavInsert">#25D366</color>
+    <color name="colorNavCreate">#FFA726</color>
     
     <!-- Gradient Colors -->
-    <color name="gradientStart">#0D7377</color>
-    <color name="gradientEnd">#14454A</color>
-    <color name="gradientAccentStart">#FF6B6B</color>
-    <color name="gradientAccentEnd">#EC4899</color>
+    <color name="gradientStart">#00A884</color>
+    <color name="gradientEnd">#075E54</color>
+    <color name="gradientAccentStart">#25D366</color>
+    <color name="gradientAccentEnd">#00A884</color>
     
     <!-- Row & List Colors -->
-    <color name="colorRowBackground">#1E3A5F80</color>
-    <color name="colorRowAlternate">#1B3A4B60</color>
-    <color name="colorRowBorder">#2D4A6A</color>
-    <color name="colorDivider">#374151</color>
+    <color name="colorRowBackground">#304858</color>
+    <color name="colorRowAlternate">#385060</color>
+    <color name="colorRowBorder">#456070</color>
+    <color name="colorDivider">#456070</color>
     
     <!-- Legacy colors (for backward compatibility) -->
-    <color name="colorLink">#32E0C4</color>
-    <color name="colorLinkOnWhite">#0D7377</color>
-    <color name="colorApp">#14454A</color>
-    <color name="colorLoginBackground">#0D1B2A</color>
-    <color name="colorRequired">#FF6B6B</color>
+    <color name="colorLink">#53BDEB</color>
+    <color name="colorLinkOnWhite">#00A884</color>
+    <color name="colorApp">#075E54</color>
+    <color name="colorLoginBackground">#243540</color>
+    <color name="colorRequired">#F15C6D</color>
     <color name="colorWhite">#FFFFFF</color>
     
     <!-- Shimmer/Loading Colors -->
-    <color name="shimmerBase">#1E3A5F</color>
-    <color name="shimmerHighlight">#2D4A6A</color>
+    <color name="shimmerBase">#304858</color>
+    <color name="shimmerHighlight">#3A5565</color>
     
     <!-- Shadow Colors -->
     <color name="shadowColor">#1A000000</color>
     <color name="shadowColorDark">#40000000</color>
+    
+    <!-- WhatsApp Specific UI Elements -->
+    <color name="colorOnline">#25D366</color>
+    <color name="colorBubbleOutgoing">#005D4B</color>
+    <color name="colorBubbleIncoming">#304858</color>
+    <color name="colorHeaderBar">#304858</color>
+    <color name="colorSearchBar">#2A3B45</color>
 </resources>

@@ -1,40 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Authentication Background - Medium Dark Theme -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Deep gradient base -->
+    <!-- Base -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#243540" />
+        </shape>
+    </item>
+    
+    <!-- Top header gradient -->
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="linear"
-                android:startColor="#0D1B2A"
-                android:centerColor="#14454A"
-                android:endColor="#0D7377"
-                android:angle="160" />
+                android:startColor="#304858"
+                android:centerColor="#2A3B45"
+                android:endColor="#243540"
+                android:angle="270" />
         </shape>
     </item>
     
-    <!-- Top right accent glow -->
+    <!-- Subtle teal accent glow -->
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="radial"
-                android:startColor="#2032E0C4"
+                android:startColor="#1200A884"
                 android:endColor="#00000000"
-                android:gradientRadius="500dp"
-                android:centerX="0.85"
+                android:gradientRadius="350dp"
+                android:centerX="0.5"
                 android:centerY="0.15" />
-        </shape>
-    </item>
-    
-    <!-- Bottom left subtle glow -->
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:type="radial"
-                android:startColor="#15FF6B6B"
-                android:endColor="#00000000"
-                android:gradientRadius="400dp"
-                android:centerX="0.1"
-                android:centerY="0.85" />
         </shape>
     </item>
 </layer-list>

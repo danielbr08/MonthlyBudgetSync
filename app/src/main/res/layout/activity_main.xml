@@ -49,7 +49,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text=""
-                            android:textColor="#B8C5D6"
+                            android:textColor="@color/colorTextSecondary"
                             android:textSize="14sp"
                             android:ellipsize="end"
                             android:maxLines="1" />
@@ -67,39 +67,42 @@
 
                     </LinearLayout>
 
-                    <!-- Date Selectors Card -->
+                    <!-- Date Selectors -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_card_glass"
+                        android:layout_gravity="center_horizontal"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:padding="16dp">
+                        android:padding="12dp">
 
+                        <!-- Month Spinner -->
                         <Spinner
                             android:id="@+id/monthSpinner"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="46dp"
+                            android:minWidth="160dp"
                             android:background="@drawable/spinner_background"
                             android:spinnerMode="dropdown"
-                            android:dropDownWidth="match_parent"
-                            android:dropDownVerticalOffset="48dp"
+                            android:dropDownWidth="wrap_content"
+                            android:dropDownVerticalOffset="46dp"
                             android:popupBackground="@drawable/spinner_dropdown_background" />
 
+                        <!-- Separator -->
                         <View
-                            android:layout_width="12dp"
+                            android:layout_width="16dp"
                             android:layout_height="1dp" />
 
+                        <!-- Year Spinner -->
                         <Spinner
                             android:id="@+id/yearSpinner"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="0.7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="46dp"
+                            android:minWidth="110dp"
                             android:background="@drawable/spinner_background"
                             android:spinnerMode="dropdown"
-                            android:dropDownWidth="match_parent"
-                            android:dropDownVerticalOffset="48dp"
+                            android:dropDownWidth="wrap_content"
+                            android:dropDownVerticalOffset="46dp"
                             android:popupBackground="@drawable/spinner_dropdown_background" />
 
                     </LinearLayout>
@@ -133,7 +136,7 @@
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
-                            android:elevation="4dp">
+                            android:elevation="2dp">
 
                             <ImageView
                                 android:layout_width="90dp"
@@ -147,8 +150,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/budget"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 
@@ -167,7 +170,7 @@
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
-                            android:elevation="4dp">
+                            android:elevation="2dp">
 
                             <ImageView
                                 android:layout_width="90dp"
@@ -181,8 +184,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/transactions"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 
@@ -210,7 +213,7 @@
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
-                            android:elevation="4dp">
+                            android:elevation="2dp">
 
                             <ImageView
                                 android:layout_width="90dp"
@@ -224,8 +227,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/insert_transaction"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 
@@ -244,7 +247,7 @@
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true"
-                            android:elevation="4dp">
+                            android:elevation="2dp">
 
                             <ImageView
                                 android:layout_width="90dp"
@@ -258,8 +261,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/create_budget"
-                                android:textColor="#FFFFFF"
-                                android:textSize="12sp"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="13sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center" />
 

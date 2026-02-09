@@ -198,7 +198,7 @@
                     android:textSize="@dimen/text_md"
                     android:textStyle="bold"
                     android:textAllCaps="false"
-                    android:fontFamily="@font/aclonica"
+                    android:fontFamily="sans-serif-medium"
                     app:cornerRadius="@dimen/corner_md"
                     app:backgroundTint="@color/colorButtonPrimary"
                     app:rippleColor="@color/colorPrimaryLight"
@@ -214,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lg"
                 android:visibility="invisible"
-                android:indeterminateTint="@color/colorPrimaryLight" />
+                android:indeterminateTint="@color/colorPrimary" />
 
             <!-- Login Link -->
             <LinearLayout

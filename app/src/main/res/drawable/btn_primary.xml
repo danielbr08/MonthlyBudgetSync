@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Primary Button - Bold Teal Action Button -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#40FFFFFF">
+    android:color="#4025D366">
     <item>
         <shape android:shape="rectangle">
-            <gradient
-                android:angle="135"
-                android:startColor="#32E0C4"
-                android:endColor="#0D7377"
-                android:type="linear" />
-            <corners android:radius="12dp" />
+            <solid android:color="#00A884" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
 </ripple>

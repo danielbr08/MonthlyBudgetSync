@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Navigation Card - Info Blue -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#40FFFFFF">
+    android:color="#3053BDEB">
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="linear"
-                android:startColor="@color/colorNavTransactions"
-                android:endColor="#4F46E5"
+                android:startColor="#53BDEB"
+                android:endColor="#3A9FCC"
                 android:angle="135" />
-            <corners android:radius="20dp" />
+            <corners android:radius="16dp" />
         </shape>
     </item>
 </ripple>

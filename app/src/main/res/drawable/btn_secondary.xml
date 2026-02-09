@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Secondary Button - Outlined Style -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#4032E0C4">
+    android:color="#3000A884">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#1A32E0C4" />
+            <solid android:color="#15233138" />
             <stroke
                 android:width="1.5dp"
-                android:color="#4032E0C4" />
-            <corners android:radius="12dp" />
+                android:color="#00A884" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
 </ripple>

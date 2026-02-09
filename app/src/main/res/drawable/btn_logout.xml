@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logout Button - Subtle Red/Coral accent to indicate action -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#40F15C6D">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#2AF15C6D" />
+            <stroke
+                android:width="1.5dp"
+                android:color="#F15C6D" />
+        </shape>
+    </item>
+</ripple>

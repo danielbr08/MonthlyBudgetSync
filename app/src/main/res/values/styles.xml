@@ -1,8 +1,13 @@
 <resources>
 
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         WhatsApp-Inspired Professional Dark Theme
+         Clean, Modern, and User-Friendly
+    ═══════════════════════════════════════════════════════════════════════ -->
+
     <!-- Base application theme using Material Design 3 with ActionBar -->
     <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
-        <!-- Primary Colors -->
+        <!-- Primary Colors - WhatsApp Teal -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
@@ -11,12 +16,12 @@
         <!-- Secondary Colors -->
         <item name="colorSecondary">@color/colorPrimaryLight</item>
         <item name="colorSecondaryVariant">@color/colorAccent</item>
-        <item name="colorOnSecondary">@color/colorTextDark</item>
+        <item name="colorOnSecondary">@color/colorWhite</item>
         
-        <!-- Surface Colors -->
-        <item name="colorSurface">@color/colorBackgroundLight</item>
+        <!-- Surface Colors - Match App Background -->
+        <item name="colorSurface">@color/colorBackground</item>
         <item name="colorOnSurface">@color/colorTextPrimary</item>
-        <item name="colorSurfaceVariant">@color/colorCardDark</item>
+        <item name="colorSurfaceVariant">@color/colorBackground</item>
         
         <!-- Background -->
         <item name="android:colorBackground">@color/colorBackground</item>
@@ -26,7 +31,7 @@
         <item name="colorError">@color/colorError</item>
         <item name="colorOnError">@color/colorWhite</item>
         
-        <!-- Status Bar -->
+        <!-- Status Bar - Match App Background -->
         <item name="android:statusBarColor">@color/colorBackground</item>
         <item name="android:navigationBarColor">@color/colorBackground</item>
         
@@ -36,13 +41,18 @@
         <item name="android:textColorSecondary">@color/colorTextSecondary</item>
         <item name="android:textColorHint">@color/colorInputHint</item>
         
-        <!-- Font -->
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <!-- Font - Clean Sans-Serif -->
+        <item name="android:fontFamily">sans-serif</item>
         
         <!-- Shape -->
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
+        
+        <!-- Popup Menu Style -->
+        <item name="popupMenuStyle">@style/Widget.App.PopupMenu</item>
+        <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
+        <item name="actionOverflowMenuStyle">@style/Widget.App.PopupMenu</item>
     </style>
 
     <!-- Theme with ActionBar for MainActivity -->
@@ -56,12 +66,12 @@
         <!-- Secondary Colors -->
         <item name="colorSecondary">@color/colorPrimaryLight</item>
         <item name="colorSecondaryVariant">@color/colorAccent</item>
-        <item name="colorOnSecondary">@color/colorTextDark</item>
+        <item name="colorOnSecondary">@color/colorWhite</item>
         
         <!-- Surface Colors -->
-        <item name="colorSurface">@color/colorBackgroundLight</item>
+        <item name="colorSurface">@color/colorBackground</item>
         <item name="colorOnSurface">@color/colorTextPrimary</item>
-        <item name="colorSurfaceVariant">@color/colorCardDark</item>
+        <item name="colorSurfaceVariant">@color/colorBackground</item>
         
         <!-- Background -->
         <item name="android:colorBackground">@color/colorBackground</item>
@@ -83,35 +93,47 @@
         
         <!-- ActionBar -->
         <item name="actionBarStyle">@style/Widget.App.ActionBar</item>
+        
+        <!-- Popup Menu Style -->
+        <item name="popupMenuStyle">@style/Widget.App.PopupMenu</item>
+        <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
+        <item name="actionOverflowMenuStyle">@style/Widget.App.PopupMenu</item>
     </style>
 
-    <!-- ActionBar Style -->
+    <!-- ActionBar Style - Match App Background -->
     <style name="Widget.App.ActionBar" parent="Widget.Material3.ActionBar.Solid">
         <item name="background">@color/colorBackground</item>
         <item name="titleTextStyle">@style/TextAppearance.App.ActionBar.Title</item>
     </style>
+    
+    <!-- Popup Menu Style - Match App Background -->
+    <style name="Widget.App.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@color/colorBackground</item>
+    </style>
 
     <style name="TextAppearance.App.ActionBar.Title" parent="TextAppearance.Material3.ActionBar.Title">
         <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <!-- Shape Appearances -->
+    <!-- Shape Appearances - WhatsApp Style Rounded Corners -->
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerSize">8dp</item>
     </style>
 
     <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">12dp</item>
     </style>
 
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
-        <item name="cornerSize">24dp</item>
+        <item name="cornerSize">16dp</item>
     </style>
 
     <!-- Base Widget Style -->
     <style name="Widget.App" parent="android:Widget" />
 
-    <!-- Primary Button Style -->
+    <!-- Primary Button Style - WhatsApp Green -->
     <style name="Widget.App.Button.Primary" parent="Widget.Material3.Button">
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">16sp</item>
@@ -122,15 +144,16 @@
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:minHeight">52dp</item>
-        <item name="cornerRadius">12dp</item>
+        <item name="cornerRadius">8dp</item>
         <item name="backgroundTint">@color/colorButtonPrimary</item>
         <item name="rippleColor">@color/colorPrimaryLight</item>
-        <item name="android:elevation">4dp</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <!-- Secondary Button Style -->
+    <!-- Secondary Button Style - Outlined -->
     <style name="Widget.App.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="android:textColor">@color/colorPrimaryLight</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">false</item>
@@ -139,10 +162,11 @@
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:minHeight">52dp</item>
-        <item name="cornerRadius">12dp</item>
-        <item name="strokeColor">@color/colorPrimaryLight</item>
-        <item name="strokeWidth">2dp</item>
-        <item name="rippleColor">@color/colorPrimaryLight</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="strokeColor">@color/colorPrimary</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="rippleColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <!-- Text Button Style -->
@@ -150,10 +174,11 @@
         <item name="android:textColor">@color/colorLink</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">false</item>
-        <item name="rippleColor">@color/colorPrimaryLight</item>
+        <item name="rippleColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <!-- Navigation Card Button Style -->
+    <!-- Navigation Card Button Style - WhatsApp Style -->
     <style name="Widget.App.CardButton" parent="Widget.App">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -165,66 +190,70 @@
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
-    <!-- Input Field Style -->
+    <!-- Input Field Style - WhatsApp Search Bar Inspired -->
     <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/colorInputBorderFocused</item>
-        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
-        <item name="boxCornerRadiusTopStart">12dp</item>
-        <item name="boxCornerRadiusTopEnd">12dp</item>
-        <item name="boxCornerRadiusBottomStart">12dp</item>
-        <item name="boxCornerRadiusBottomEnd">12dp</item>
-        <item name="boxBackgroundColor">@color/colorInputBackgroundDark</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxBackgroundColor">@color/colorInputBackground</item>
         <item name="hintTextColor">@color/colorTextSecondary</item>
         <item name="android:textColorHint">@color/colorInputHint</item>
     </style>
 
-    <!-- Card Style -->
+    <!-- Card Style - WhatsApp Chat Style -->
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@color/colorCardDark</item>
-        <item name="cardCornerRadius">16dp</item>
-        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">@color/colorCard</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">0dp</item>
         <item name="contentPadding">16dp</item>
     </style>
 
-    <!-- Glass Card Style -->
+    <!-- Glass Card Style - Semi-transparent panels -->
     <style name="Widget.App.CardView.Glass">
-        <item name="cardBackgroundColor">@color/colorGlassCard</item>
-        <item name="cardCornerRadius">20dp</item>
+        <item name="cardBackgroundColor">@color/colorCard</item>
+        <item name="cardCornerRadius">12dp</item>
         <item name="cardElevation">0dp</item>
-        <item name="contentPadding">20dp</item>
+        <item name="contentPadding">16dp</item>
     </style>
 
     <!-- Title Text Style -->
     <style name="TextAppearance.App.Title" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:textColor">@color/colorTextPrimary</item>
-        <item name="android:textSize">28sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.01</item>
     </style>
 
     <!-- Headline Style -->
     <style name="TextAppearance.App.Headline" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textColor">@color/colorTextPrimary</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <!-- Body Text Style -->
     <style name="TextAppearance.App.Body" parent="TextAppearance.Material3.BodyLarge">
         <item name="android:textColor">@color/colorTextSecondary</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <!-- Label Text Style -->
     <style name="TextAppearance.App.Label" parent="TextAppearance.Material3.LabelMedium">
         <item name="android:textColor">@color/colorTextSecondary</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">13sp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.05</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <!-- Spinner Styles -->
+    <!-- Spinner Styles - WhatsApp Dropdown Style -->
     <style name="AppTheme.Spinner">
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
         <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
@@ -236,6 +265,7 @@
         <item name="android:paddingEnd">12dp</item>
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="SpinnerDropDownItem">
@@ -247,30 +277,32 @@
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textSize">15sp</item>
         <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <!-- Row Item Style -->
+    <!-- Row Item Style - WhatsApp List Style -->
     <style name="Widget.App.RowItem" parent="Widget.App">
         <item name="android:background">@drawable/row_item_background</item>
         <item name="android:padding">12dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
         <item name="android:minHeight">56dp</item>
     </style>
 
-    <!-- Header Row Style -->
+    <!-- Header Row Style - WhatsApp Section Header -->
     <style name="Widget.App.HeaderRow" parent="Widget.App">
         <item name="android:background">@drawable/header_background</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:minHeight">48dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:minHeight">44dp</item>
     </style>
 
     <!-- Base Amount Text Style -->
     <style name="TextAppearance.App.Amount" parent="TextAppearance.Material3.BodyLarge">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <!-- Amount Text Positive -->
+    <!-- Amount Text Positive - Green like WhatsApp checkmarks -->
     <style name="TextAppearance.App.Amount.Positive" parent="TextAppearance.App.Amount">
         <item name="android:textColor">@color/colorPositive</item>
     </style>
@@ -280,10 +312,10 @@
         <item name="android:textColor">@color/colorNegative</item>
     </style>
 
-    <!-- Checkbox Style -->
+    <!-- Checkbox Style - WhatsApp Teal -->
     <style name="Widget.App.Checkbox" parent="Widget.Material3.CompoundButton.CheckBox">
         <item name="android:textColor">@color/colorTextPrimary</item>
-        <item name="buttonTint">@color/colorPrimaryLight</item>
+        <item name="buttonTint">@color/colorPrimary</item>
     </style>
 
     <!-- Settings Activity Theme with ActionBar -->
@@ -297,18 +329,18 @@
         <!-- Secondary Colors -->
         <item name="colorSecondary">@color/colorPrimaryLight</item>
         <item name="colorSecondaryVariant">@color/colorAccent</item>
-        <item name="colorOnSecondary">@color/colorTextDark</item>
+        <item name="colorOnSecondary">@color/colorWhite</item>
         
-        <!-- Surface Colors -->
-        <item name="colorSurface">@color/colorBackgroundLight</item>
+        <!-- Surface Colors - Match App Background -->
+        <item name="colorSurface">@color/colorBackground</item>
         <item name="colorOnSurface">@color/colorTextPrimary</item>
-        <item name="colorSurfaceVariant">@color/colorCardDark</item>
+        <item name="colorSurfaceVariant">@color/colorBackground</item>
         
         <!-- Background -->
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="colorOnBackground">@color/colorTextPrimary</item>
         
-        <!-- Status Bar -->
+        <!-- Status Bar - Match App Background -->
         <item name="android:statusBarColor">@color/colorBackground</item>
         <item name="android:navigationBarColor">@color/colorBackground</item>
         
@@ -316,6 +348,14 @@
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textColorPrimary">@color/colorTextPrimary</item>
         <item name="android:textColorSecondary">@color/colorTextSecondary</item>
+        
+        <!-- ActionBar - Match App Background -->
+        <item name="actionBarStyle">@style/Widget.App.ActionBar</item>
+        
+        <!-- Popup Menu Style -->
+        <item name="popupMenuStyle">@style/Widget.App.PopupMenu</item>
+        <item name="android:popupMenuStyle">@style/Widget.App.PopupMenu</item>
+        <item name="actionOverflowMenuStyle">@style/Widget.App.PopupMenu</item>
         
         <!-- Preference specific -->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.App</item>
@@ -331,7 +371,7 @@
         <item name="seekBarPreferenceStyle">@style/Preference.App.SeekBar</item>
     </style>
     
-    <!-- Base Preference Style - Allow text wrapping -->
+    <!-- Base Preference Style -->
     <style name="Preference.App" parent="Preference.Material">
         <item name="android:layout">@layout/preference_material</item>
         <item name="allowDividerAbove">false</item>
@@ -344,9 +384,9 @@
         <item name="singleLineTitle">false</item>
     </style>
     
-    <!-- Category Style -->
+    <!-- Category Style - WhatsApp Section Header -->
     <style name="Preference.App.Category" parent="Preference.Category.Material">
-        <item name="android:textColor">@color/colorPrimaryLight</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="allowDividerAbove">false</item>
         <item name="allowDividerBelow">false</item>
     </style>

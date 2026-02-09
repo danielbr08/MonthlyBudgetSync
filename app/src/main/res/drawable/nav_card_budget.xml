@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- WhatsApp-Style Navigation Card - Primary Teal -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#40FFFFFF">
+    android:color="#3000A884">
     <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="linear"
-                android:startColor="@color/colorNavBudget"
-                android:endColor="#095A5D"
+                android:startColor="#00A884"
+                android:endColor="#008069"
                 android:angle="135" />
-            <corners android:radius="20dp" />
+            <corners android:radius="16dp" />
         </shape>
     </item>
 </ripple>
