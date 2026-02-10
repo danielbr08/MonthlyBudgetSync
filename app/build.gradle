@@ -24,8 +24,8 @@ android {
         applicationId "com.brosh.finance.monthlybudgetsync"
         minSdk 24  // Updated from 21 for better API support
         targetSdk 34
-        versionCode 4
-        versionName "1.1.0"
+        versionCode 5
+        versionName "1.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

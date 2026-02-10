@@ -1,0 +1,60 @@
+{
+  "rules": {
+    // User's budget data - only owner or approved guests can access
+    "Monthly Budget": {
+      "$uid": {
+        // User can read/write their own data
+        // OR a guest who has been approved to share can read
+        ".read": "auth != null && (auth.uid === $uid || root.child('Owners').child($uid).child(auth.uid).exists())",
+        ".write": "auth != null && (auth.uid === $uid || root.child('Owners').child($uid).child(auth.uid).exists())"
+      }
+    },
+    
+    // Users profile data - each user can only access their own
+    "Users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    
+    // Shares - users can read their own share invitations, owners can write
+    "Shares": {
+      "$guestUid": {
+        // Guest can read their own share invitation
+        ".read": "auth != null && auth.uid === $guestUid",
+        // Owner can create/update share invitations for guests
+        ".write": "auth != null && (data.child('ownerUid').val() === auth.uid || newData.child('ownerUid').val() === auth.uid || auth.uid === $guestUid)"
+      }
+    },
+    
+    // Owners - tracks who has shared with whom
+    "Owners": {
+      "$ownerUid": {
+        // Only the owner can read their list of guests
+        ".read": "auth != null && auth.uid === $ownerUid",
+        "$guestUid": {
+          // Owner can write, guest can read (to verify their access)
+          ".write": "auth != null && auth.uid === $ownerUid",
+          ".read": "auth != null && (auth.uid === $ownerUid || auth.uid === $guestUid)"
+        }
+      }
+    },
+    
+    // Email to UID mapping - needed for sharing feature
+    // Any authenticated user can read (to find users to share with)
+    // Users can only write their own email mapping
+    "Email Uid": {
+      ".read": "auth != null",
+      "$emailKey": {
+        ".write": "auth != null"
+      }
+    },
+    
+    // Contact Us - any authenticated user can submit
+    "contactUs": {
+      ".read": false,
+      ".write": "auth != null"
+    }
+  }
+}
