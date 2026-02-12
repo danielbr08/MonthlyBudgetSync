@@ -31,6 +31,7 @@ import com.brosh.finance.monthlybudgetsync.utils.DatePickerHelper;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.IntentHelper;
 import com.brosh.finance.monthlybudgetsync.utils.KeyboardUtil;
+import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.brosh.finance.monthlybudgetsync.utils.ValidationUtil;
@@ -46,6 +47,12 @@ import java.util.List;
 import java.util.Set;
 
 public class InsertTransactionActivity extends AppCompatActivity {
+    
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase));
+    }
+    
     private Spinner categoriesSpinner;
     private Spinner paymentTypeSpinner;
     private Button btnSendTransaction;

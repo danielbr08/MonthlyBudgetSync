@@ -1,5 +1,6 @@
 package com.brosh.finance.monthlybudgetsync.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +14,7 @@ import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 /**
@@ -24,6 +26,11 @@ import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
  * - Refresh layout handling
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase));
+    }
     
     protected DBUtil dbUtil;
     @Nullable protected User user;

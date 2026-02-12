@@ -56,7 +56,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Join Monthly Budget"
+                    android:text="@string/join_monthly_budget"
                     android:textColor="@color/colorTextSecondary"
                     android:textSize="@dimen/text_sm"
                     android:layout_marginTop="@dimen/spacing_xs" />
@@ -127,7 +127,7 @@
                     app:endIconMode="password_toggle"
                     app:endIconTint="@color/colorTextSecondary"
                     app:errorEnabled="true"
-                    app:helperText="Minimum 6 characters"
+                    app:helperText="@string/minimum_6_characters"
                     app:helperTextTextColor="@color/colorTextMuted">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -174,7 +174,7 @@
                     android:hint="@string/phone"
                     app:startIconDrawable="@android:drawable/ic_menu_call"
                     app:startIconTint="@color/colorTextSecondary"
-                    app:helperText="Optional"
+                    app:helperText="@string/optional"
                     app:helperTextTextColor="@color/colorTextMuted">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -227,7 +227,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Already Registered? "
+                    android:text="@string/already_registered_question"
                     android:textColor="@color/colorTextSecondary"
                     android:textSize="@dimen/text_sm" />
 
@@ -235,7 +235,7 @@
                     android:id="@+id/createText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Login Here"
+                    android:text="@string/login_here"
                     android:textColor="@color/colorLink"
                     android:textSize="@dimen/text_sm"
                     android:textStyle="bold"

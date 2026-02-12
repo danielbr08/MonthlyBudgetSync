@@ -109,11 +109,11 @@ public final class FirebaseErrorHandler {
                 return true;
                 
             case ERROR_USER_DISABLED:
-                TextUtil.showMessage("Account has been disabled", Toast.LENGTH_LONG, context);
+                TextUtil.showMessage(context.getString(R.string.account_disabled), Toast.LENGTH_LONG, context);
                 return true;
                 
             case ERROR_TOO_MANY_REQUESTS:
-                TextUtil.showMessage("Too many attempts. Please try again later.", Toast.LENGTH_LONG, context);
+                TextUtil.showMessage(context.getString(R.string.too_many_attempts), Toast.LENGTH_LONG, context);
                 return true;
                 
             default:
@@ -191,7 +191,7 @@ public final class FirebaseErrorHandler {
                 return true;
                 
             case ERROR_OPERATION_NOT_ALLOWED:
-                TextUtil.showMessage("Email/password accounts are not enabled", Toast.LENGTH_LONG, context);
+                TextUtil.showMessage(context.getString(R.string.email_password_not_enabled), Toast.LENGTH_LONG, context);
                 return true;
                 
             default:
@@ -224,12 +224,12 @@ public final class FirebaseErrorHandler {
                 break;
                 
             case DatabaseError.PERMISSION_DENIED:
-                TextUtil.showMessage("Permission denied. Please check your access.", Toast.LENGTH_LONG, context);
+                TextUtil.showMessage(context.getString(R.string.permission_denied), Toast.LENGTH_LONG, context);
                 break;
                 
             case DatabaseError.DATA_STALE:
             case DatabaseError.EXPIRED_TOKEN:
-                TextUtil.showMessage("Session expired. Please log in again.", Toast.LENGTH_LONG, context);
+                TextUtil.showMessage(context.getString(R.string.session_expired), Toast.LENGTH_LONG, context);
                 break;
                 
             default:

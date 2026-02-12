@@ -2,6 +2,7 @@ package com.brosh.finance.monthlybudgetsync.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -12,12 +13,18 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.ContactUs;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 import java.util.Date;
 
 public class ContactUsActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase));
+    }
 
     private EditText messageET, subjectET;
 

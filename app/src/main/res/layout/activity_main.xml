@@ -35,13 +35,23 @@
                     android:orientation="vertical"
                     android:layout_marginBottom="20dp">
 
-                    <!-- Top Bar: User & Logout -->
+                    <!-- Top Bar: Menu, User & Logout -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="16dp">
+
+                        <ImageButton
+                            android:id="@+id/menuButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_menu_dots"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/menu"
+                            android:scaleType="fitCenter" />
 
                         <TextView
                             android:id="@+id/tv_user_logeed_in"
@@ -52,7 +62,10 @@
                             android:textColor="@color/colorTextSecondary"
                             android:textSize="14sp"
                             android:ellipsize="end"
-                            android:maxLines="1" />
+                            android:maxLines="1"
+                            android:gravity="center"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp" />
 
                         <ImageButton
                             android:id="@+id/logoutButton"

@@ -26,6 +26,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.google.android.gms.ads.AdRequest;
@@ -59,6 +62,12 @@ import java.util.List;
  * Provides navigation to budget, transactions, and other features.
  */
 public class MainActivity extends AppCompatActivity {
+    
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase));
+    }
+    
     private static final String TAG = "MainActivity";
     private static final String PREFS_CHECKBOX = "checkbox";
     private static final String PREFS_REMEMBER_ME = "rememberMe";
@@ -81,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private View createBudgetButton;
     private SwipeRefreshLayout refreshLayout;
     @Nullable private TextView userLoggedInTV;
+    private ImageButton menuButton;
     
     // Activity state
     private boolean isDestroyed = false;
@@ -408,15 +418,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         } catch (Exception e) {
             Log.e(TAG, "Could not open app guide", e);
-            TextUtil.showMessage("Could not open guide", Toast.LENGTH_SHORT, this);
+            TextUtil.showMessage(getString(R.string.could_not_open_guide), Toast.LENGTH_SHORT, this);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
+        // Disabled - using custom menu button at start of layout for RTL/LTR support
+        return false;
     }
 
     @Override
@@ -479,6 +488,7 @@ public class MainActivity extends AppCompatActivity {
         refresh();
         setRefreshListener();
         setupButtonListeners();
+        setupMenuButton();
         setupSpinnerListener();
         
         String yearMonth = month != null ? month.getYearMonth() : null;
@@ -495,6 +505,7 @@ public class MainActivity extends AppCompatActivity {
         budgetButton = findViewById(R.id.budgetButton);
         transactionsButton = findViewById(R.id.transactionsButton);
         createBudgetButton = findViewById(R.id.createBudgetButton);
+        menuButton = findViewById(R.id.menuButton);
     }
     
     /**
@@ -524,6 +535,41 @@ public class MainActivity extends AppCompatActivity {
             addParametersToActivity(intent);
             startActivity(intent);
         });
+    }
+    
+    /**
+     * Sets up the menu button to show a popup menu.
+     * The menu button is positioned at the start of the layout,
+     * which means left for LTR languages and right for RTL languages.
+     */
+    private void setupMenuButton() {
+        if (menuButton != null) {
+            menuButton.setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(MainActivity.this, menuButton);
+                popup.getMenuInflater().inflate(R.menu.main_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(item -> {
+                    int itemId = item.getItemId();
+                    if (itemId == R.id.settingsItem) {
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                        return true;
+                    } else if (itemId == R.id.shareItem) {
+                        openShareDialog();
+                        return true;
+                    } else if (itemId == R.id.recommend_to_friend) {
+                        shareAppWithFriend();
+                        return true;
+                    } else if (itemId == R.id.app_guide) {
+                        openAppGuide();
+                        return true;
+                    } else if (itemId == R.id.contactUsItem) {
+                        startActivity(new Intent(getApplicationContext(), ContactUsActivity.class));
+                        return true;
+                    }
+                    return false;
+                });
+                popup.show();
+            });
+        }
     }
     
     /**

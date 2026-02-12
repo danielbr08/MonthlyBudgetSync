@@ -160,4 +160,42 @@
     <string name="add_category">+ הוסף קטגוריה</string>
     <string name="allow_edit_previous_months">אפשר עריכת חודשים קודמים</string>
     <string name="allow_edit_previous_months_summary">אפשר הכנסה ועריכת עסקאות בחודשים קודמים</string>
+    <string name="load_newer_years">▲ …</string>
+    <string name="load_older_years">▼ …</string>
+    
+    <!-- מחרוזות חדשות לטקסט מקודד -->
+    <string name="join_monthly_budget">הצטרף לתקציב החודשי</string>
+    <string name="already_registered_question">כבר רשום?</string>
+    <string name="login_here">התחבר כאן</string>
+    <string name="new_here_question">חדש כאן?</string>
+    <string name="create_account">צור חשבון</string>
+    <string name="track_finances_smartly">נהל את הכספים שלך בחכמה</string>
+    <string name="we_love_to_hear">נשמח לשמוע ממך</string>
+    <string name="current_value">ערך נוכחי</string>
+    <string name="new_value">ערך חדש</string>
+    
+    <!-- הודעות שגיאה -->
+    <string name="could_not_open_guide">לא ניתן לפתוח את המדריך</string>
+    <string name="account_disabled">החשבון הושבת</string>
+    <string name="too_many_attempts">יותר מדי ניסיונות. נסה שוב מאוחר יותר.</string>
+    <string name="email_password_not_enabled">כניסה עם אימייל וסיסמה אינה מופעלת</string>
+    <string name="permission_denied">הגישה נדחתה. אנא בדוק את ההרשאות שלך.</string>
+    <string name="session_expired">פג תוקף ההתחברות. אנא התחבר מחדש.</string>
+    
+    <!-- טקסט עזרה לטפסים -->
+    <string name="minimum_6_characters">לפחות 6 תווים</string>
+    <string name="optional">אופציונלי</string>
+    
+    <!-- תפריט -->
+    <string name="menu">תפריט</string>
+    
+    <!-- הגדרות שפה -->
+    <string name="language">שפה</string>
+    <string name="more_options">אפשרויות נוספות</string>
+    <string name="previous">הקודם</string>
+    <string name="next">הבא</string>
+    <string name="page_indicator">%1$d / %2$d</string>
+    <string name="language_system_default">ברירת מחדל מערכת</string>
+    <string name="language_english">אנגלית</string>
+    <string name="language_changed_restart">השפה שונתה. האפליקציה מופעלת מחדש…</string>
 </resources>

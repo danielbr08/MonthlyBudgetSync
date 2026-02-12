@@ -47,7 +47,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Current Value"
+                    android:text="@string/current_value"
                     android:textColor="@color/colorTextSecondary"
                     android:textSize="@dimen/text_sm"
                     android:layout_marginBottom="@dimen/spacing_sm" />
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lg"
                     style="@style/Widget.App.TextInputLayout"
-                    android:hint="New Value"
+                    android:hint="@string/new_value"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.google.firebase.database.PropertyName;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class UserSettings implements Serializable {
     private static final boolean DEFAULT_EMAIL_UPDATES = false;
     private static final boolean DEFAULT_NOTIFICATIONS = false;
     private static final boolean DEFAULT_ALLOW_EDIT_PREVIOUS_MONTHS = false;
+    private static final boolean DEFAULT_IS_PREMIUM = false;
     
     private int chargeDay;
     private boolean isAdEnabled;
@@ -38,13 +40,16 @@ public class UserSettings implements Serializable {
     private boolean emailUpdates;
     private boolean notifications;
     private boolean allowEditPreviousMonths;
+    @PropertyName("premium")
+    private boolean premium;
 
     /**
      * Creates UserSettings with all parameters specified.
      */
     public UserSettings(int chargeDay, boolean isAdEnabled, @Nullable String currency, 
                         int autoCompleteFrom, boolean activeTransactionsOnlyByDefault, 
-                        boolean emailUpdates, boolean notifications, boolean allowEditPreviousMonths) {
+                        boolean emailUpdates, boolean notifications, boolean allowEditPreviousMonths,
+                        boolean premium) {
         this.chargeDay = Math.max(1, Math.min(31, chargeDay));
         this.isAdEnabled = isAdEnabled;
         this.currency = currency != null ? currency : DEFAULT_CURRENCY;
@@ -53,6 +58,7 @@ public class UserSettings implements Serializable {
         this.emailUpdates = emailUpdates;
         this.notifications = notifications;
         this.allowEditPreviousMonths = allowEditPreviousMonths;
+        this.premium = premium;
     }
 
     /**
@@ -66,6 +72,7 @@ public class UserSettings implements Serializable {
         this.emailUpdates = DEFAULT_EMAIL_UPDATES;
         this.notifications = DEFAULT_NOTIFICATIONS;
         this.allowEditPreviousMonths = DEFAULT_ALLOW_EDIT_PREVIOUS_MONTHS;
+        this.premium = DEFAULT_IS_PREMIUM;
         
         // Try to get default currency from resources
         try {
@@ -142,5 +149,19 @@ public class UserSettings implements Serializable {
 
     public void setAllowEditPreviousMonths(boolean allowEditPreviousMonths) {
         this.allowEditPreviousMonths = allowEditPreviousMonths;
+    }
+
+    /**
+     * Returns whether this user has a premium account.
+     * Premium users get access to all languages and currencies in dropdowns.
+     */
+    @PropertyName("premium")
+    public boolean isPremium() {
+        return premium;
+    }
+
+    @PropertyName("premium")
+    public void setPremium(boolean premium) {
+        this.premium = premium;
     }
 }

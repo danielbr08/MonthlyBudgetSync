@@ -14,6 +14,18 @@ public final class Config {
     }
     
     // ============================================
+    // PREMIUM FEATURE FLAGS (for future use)
+    // ============================================
+    
+    /** 
+     * If true, premium features are enabled for this build.
+     * In future: This will be determined by user's subscription status.
+     * When false, "Show all languages" and "Show all currencies" options
+     * in Settings will be disabled/hidden for non-premium users.
+     */
+    public static final boolean PREMIUM_FEATURES_ENABLED = true;
+    
+    // ============================================
     // DATE FORMATTING
     // ============================================
     

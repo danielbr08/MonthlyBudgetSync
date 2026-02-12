@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="We'd love to hear from you"
+                android:text="@string/we_love_to_hear"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="@dimen/text_sm"
                 android:layout_marginBottom="@dimen/spacing_xxl" />

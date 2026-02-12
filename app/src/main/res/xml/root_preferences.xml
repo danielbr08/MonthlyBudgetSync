@@ -5,13 +5,15 @@
         app:title="@string/general"
         app:iconSpaceReserved="false">
 
-        <ListPreference
+        <Preference
+            app:key="language"
+            app:title="@string/language"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
+
+        <Preference
             app:key="currency"
             app:title="@string/currency"
-            app:defaultValue="@string/default_currency"
-            app:entries="@array/currency_entries"
-            app:entryValues="@array/currency_values"
-            app:useSimpleSummaryProvider="true"
             app:iconSpaceReserved="false"
             app:singleLineTitle="false" />
 

@@ -24,6 +24,7 @@ import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.FirebaseErrorHandler;
+import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.brosh.finance.monthlybudgetsync.utils.ValidationUtil;
@@ -44,6 +45,11 @@ import java.util.Map;
  * Handles user input validation, Firebase Authentication, and initial data setup.
  */
 public class Register extends AppCompatActivity implements UserStartApp {
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase));
+    }
 
     // ============================================
     // CONSTANTS

@@ -62,7 +62,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="budget_created_successfully">Budget created successfully!</string>
-    <string name="logged_in_successfully">logged in successfully!</string>
+    <string name="logged_in_successfully">Logged in successfully!</string>
     <string name="insert">Insert</string>
     <string name="selecting_date">Selecting Date</string>
     <string name="date_format">%1$s/%2$s/%3$d</string>
@@ -74,7 +74,7 @@
     <string name="chek">Check</string>
     <string name="bank_wired">Bank Transfer</string>
     <string name="user_created">User Created</string>
-    <string name="logged_as">logged as: </string>
+    <string name="logged_as">Logged in as: </string>
     <string name="active_transactions">active</string>
     <string name="error">error!</string>
     <string name="network_error">Network error!</string>
@@ -82,10 +82,10 @@
     <string name="email_is_required">Email is Required.</string>
     <string name="password_is_required">Password is Required.</string>
     <string name="password_length_must_be_at_least_6">Password Must be >= 6 Characters</string>
-    <string name="password_are_not_matching">Password are not matching</string>
+    <string name="password_are_not_matching">Passwords do not match</string>
     <string name="recommend_to_friend">Recommend to a friend</string>
     <string name="settings">Settings</string>
-    <string name="successfully_shared">successfully shared!</string>
+    <string name="successfully_shared">Successfully shared!</string>
     <string name="cancel">Cancel</string>
     <string name="share_budget_question">The user \"%s\" has shared a budget with you.\nDo you want to share?\nPlease note that receiving the sharing will lose existing information.</string>
     <string name="share_budget">Share Monthly Budget</string>
@@ -107,18 +107,18 @@
     <string name="skl">₪</string>
     <string name="select_charge_day">Select Charge Day</string>
     <string name="one">1</string>
-    <string name="forgot_password">forgot password?</string>
+    <string name="forgot_password">Forgot password?</string>
     <string name="reset_password">Reset Password</string>
-    <string name="send">send</string>
-    <string name="email_sent_to_you_to_reset_password">email has sent to you to reset password!</string>
+    <string name="send">Send</string>
+    <string name="email_sent_to_you_to_reset_password">An email has been sent to reset your password!</string>
     <string name="please_enter_user_email_to_reset_password">Please enter user\'s email to reset password</string>
     <string name="select">Select</string>
     <string name="general">General</string>
-    <string name="error_weak_password">weak password</string>
-    <string name="error_invalid_email">invalid email</string>
-    <string name="error_email_already_in_use">email already in use</string>
-    <string name="user_not_found">user not found</string>
-    <string name="error_invalid_password">invalid_password</string>
+    <string name="error_weak_password">Weak password</string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="error_email_already_in_use">Email already in use</string>
+    <string name="user_not_found">User not found</string>
+    <string name="error_invalid_password">Invalid password</string>
     <string name="are_you_sure_you_want_to_refresh">Page refresh may result in loss of information.\nAre you sure you want to refresh?</string>
     <string name="default_show_active_only_summary">Show only active transactions(not deleted) as default in transactions screen</string>
     <string name="tutorial_app_youtube">https://youtu.be/6zDh77bxRBQ</string>
@@ -127,10 +127,10 @@
     <string name="admob_banner_unit_id">ca-app-pub-9791546601159997/7490378563</string>
     <string name="contact_us">Contact Us</string>
     <string name="subject">Subject</string>
-    <string name="message">message</string>
+    <string name="message">Message</string>
     <string name="submit">Submit</string>
     <string name="your_message_was_sent_successfully">Your message was sent successfully!</string>
-    <string name="user_not_exists">User not exists!</string>
+    <string name="user_not_exists">User does not exist!</string>
     <string name="profile">Profile</string>
     <string name="update_profile">Update Profile</string>
     <string name="old_password">Old Password</string>
@@ -161,4 +161,126 @@
     <string name="load_older_years">▼ …</string>
     <string name="allow_edit_previous_months">Allow edit previous months</string>
     <string name="allow_edit_previous_months_summary">Enable inserting and editing transactions in previous months</string>
+    
+    <!-- New strings for extracted hardcoded text -->
+    <string name="join_monthly_budget">Join Monthly Budget</string>
+    <string name="already_registered_question">Already Registered?</string>
+    <string name="login_here">Login Here</string>
+    <string name="new_here_question">New Here?</string>
+    <string name="create_account">Create Account</string>
+    <string name="track_finances_smartly">Track your finances smartly</string>
+    <string name="we_love_to_hear">We\'d love to hear from you</string>
+    <string name="current_value">Current Value</string>
+    <string name="new_value">New Value</string>
+    
+    <!-- Error messages for Firebase -->
+    <string name="could_not_open_guide">Could not open guide</string>
+    <string name="account_disabled">Account has been disabled</string>
+    <string name="too_many_attempts">Too many attempts. Please try again later.</string>
+    <string name="email_password_not_enabled">Email/password accounts are not enabled</string>
+    <string name="permission_denied">Permission denied. Please check your access.</string>
+    <string name="session_expired">Session expired. Please log in again.</string>
+    
+    <!-- Form helper text -->
+    <string name="minimum_6_characters">Minimum 6 characters</string>
+    <string name="optional">Optional</string>
+    
+    <!-- Menu -->
+    <string name="menu">Menu</string>
+    
+    <!-- Language settings -->
+    <string name="language">Language</string>
+    <string name="more_options">More options</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="page_indicator">%1$d / %2$d</string>
+    <string name="language_system_default">System Default</string>
+    <string name="language_english">English</string>
+    <string name="language_hebrew">עברית (Hebrew)</string>
+    <string name="language_spanish">Español (Spanish)</string>
+    <string name="language_french">Français (French)</string>
+    <string name="language_german">Deutsch (German)</string>
+    <string name="language_italian">Italiano (Italian)</string>
+    <string name="language_portuguese">Português (Portuguese)</string>
+    <string name="language_russian">Русский (Russian)</string>
+    <string name="language_polish">Polski (Polish)</string>
+    <string name="language_dutch">Nederlands (Dutch)</string>
+    <string name="language_chinese_simplified">简体中文 (Chinese Simplified)</string>
+    <string name="language_chinese_traditional">繁體中文 (Chinese Traditional)</string>
+    <string name="language_japanese">日本語 (Japanese)</string>
+    <string name="language_korean">한국어 (Korean)</string>
+    <string name="language_hindi">हिन्दी (Hindi)</string>
+    <string name="language_thai">ไทย (Thai)</string>
+    <string name="language_vietnamese">Tiếng Việt (Vietnamese)</string>
+    <string name="language_arabic">العربية (Arabic)</string>
+    <string name="language_turkish">Türkçe (Turkish)</string>
+    <string name="language_persian">فارسی (Persian)</string>
+    <string name="language_indonesian">Bahasa Indonesia (Indonesian)</string>
+    <string name="language_malay">Bahasa Melayu (Malay)</string>
+    <string name="language_filipino">Filipino (Filipino)</string>
+    <string name="language_ukrainian">Українська (Ukrainian)</string>
+    <string name="language_romanian">Română (Romanian)</string>
+    <string name="language_greek">Ελληνικά (Greek)</string>
+    <string name="language_changed_restart">Language changed. Restarting app…</string>
+    
+    <!-- All supported languages - filtered in code based on Config.SHOW_ALL_LANGUAGES -->
+    <string-array name="language_entries">
+        <item>@string/language_system_default</item>
+        <item>@string/language_english</item>
+        <item>@string/language_hebrew</item>
+        <item>@string/language_spanish</item>
+        <item>@string/language_french</item>
+        <item>@string/language_german</item>
+        <item>@string/language_italian</item>
+        <item>@string/language_portuguese</item>
+        <item>@string/language_russian</item>
+        <item>@string/language_polish</item>
+        <item>@string/language_dutch</item>
+        <item>@string/language_chinese_simplified</item>
+        <item>@string/language_chinese_traditional</item>
+        <item>@string/language_japanese</item>
+        <item>@string/language_korean</item>
+        <item>@string/language_hindi</item>
+        <item>@string/language_thai</item>
+        <item>@string/language_vietnamese</item>
+        <item>@string/language_arabic</item>
+        <item>@string/language_turkish</item>
+        <item>@string/language_persian</item>
+        <item>@string/language_indonesian</item>
+        <item>@string/language_malay</item>
+        <item>@string/language_filipino</item>
+        <item>@string/language_ukrainian</item>
+        <item>@string/language_romanian</item>
+        <item>@string/language_greek</item>
+    </string-array>
+    
+    <string-array name="language_values">
+        <item>system</item>
+        <item>en</item>
+        <item>iw</item>
+        <item>es</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>it</item>
+        <item>pt</item>
+        <item>ru</item>
+        <item>pl</item>
+        <item>nl</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>hi</item>
+        <item>th</item>
+        <item>vi</item>
+        <item>ar</item>
+        <item>tr</item>
+        <item>fa</item>
+        <item>in</item>
+        <item>ms</item>
+        <item>tl</item>
+        <item>uk</item>
+        <item>ro</item>
+        <item>el</item>
+    </string-array>
 </resources>

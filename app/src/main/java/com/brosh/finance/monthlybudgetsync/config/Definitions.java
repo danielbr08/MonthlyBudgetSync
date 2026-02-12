@@ -221,6 +221,12 @@ public final class Definitions {
     /** Allow edit previous months setting key */
     public static final String ALLOW_EDIT_PREVIOUS_MONTHS = "allowEditPreviousMonths";
     
+    /** Show all languages setting key */
+    public static final String SHOW_ALL_LANGUAGES = "showAllLanguages";
+    
+    /** Show all currencies setting key */
+    public static final String SHOW_ALL_CURRENCIES = "showAllCurrencies";
+    
     // ============================================
     // ERROR MESSAGES
     // ============================================

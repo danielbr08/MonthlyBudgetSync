@@ -68,16 +68,53 @@
         <item>31</item>
     </string-array>
 
+    <!-- Sorted by global popularity/usage -->
     <string-array name="currency_entries">
-        <item>@string/usd</item>
-        <item>@string/eur</item>
-        <item>@string/skl</item>
+        <item>$ (USD)</item>
+        <item>€ (EUR)</item>
+        <item>£ (GBP)</item>
+        <item>¥ (JPY/CNY)</item>
+        <item>₹ (INR)</item>
+        <item>R$ (BRL)</item>
+        <item>₩ (KRW)</item>
+        <item>₽ (RUB)</item>
+        <item>₪ (ILS)</item>
+        <item>₺ (TRY)</item>
+        <item>zł (PLN)</item>
+        <item>฿ (THB)</item>
+        <item>NT$ (TWD)</item>
+        <item>ر.س (SAR)</item>
+        <item>RM (MYR)</item>
+        <item>₱ (PHP)</item>
+        <item>₫ (VND)</item>
+        <item>Rp (IDR)</item>
+        <item>₴ (UAH)</item>
+        <item>lei (RON)</item>
+        <item>﷼ (IRR)</item>
     </string-array>
 
     <string-array name="currency_values">
-        <item>@string/usd</item>
-        <item>@string/eur</item>
-        <item>@string/skl</item>
+        <item>$</item>
+        <item>€</item>
+        <item>£</item>
+        <item>¥</item>
+        <item>₹</item>
+        <item>R$</item>
+        <item>₩</item>
+        <item>₽</item>
+        <item>₪</item>
+        <item>₺</item>
+        <item>zł</item>
+        <item>฿</item>
+        <item>NT$</item>
+        <item>ر.س</item>
+        <item>RM</item>
+        <item>₱</item>
+        <item>₫</item>
+        <item>Rp</item>
+        <item>₴</item>
+        <item>lei</item>
+        <item>﷼</item>
     </string-array>
 
 </resources>

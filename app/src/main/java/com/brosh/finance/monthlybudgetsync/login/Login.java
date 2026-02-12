@@ -31,6 +31,7 @@ import com.brosh.finance.monthlybudgetsync.objects.UserStartApp;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DialogHelper;
 import com.brosh.finance.monthlybudgetsync.utils.FirebaseErrorHandler;
+import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
 import com.brosh.finance.monthlybudgetsync.utils.NetworkUtil;
 import com.brosh.finance.monthlybudgetsync.utils.PreferencesManager;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
@@ -49,6 +50,11 @@ import java.lang.ref.WeakReference;
  * Handles email/password login and "remember me" functionality.
  */
 public class Login extends AppCompatActivity implements UserStartApp {
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase));
+    }
 
     // ============================================
     // CONSTANTS
