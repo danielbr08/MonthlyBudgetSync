@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_card_glass"
-                android:padding="16dp"
+                android:padding="18dp"
                 android:layout_marginBottom="12dp">
 
                 <!-- Category Spinner -->
@@ -50,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="18dp">
 
                     <TextView
                         android:id="@+id/chooseCategoryLabel"
@@ -58,14 +58,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/category"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.03"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="8dp" />
 
                     <Spinner
                         android:id="@+id/categorySpinner"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="52dp"
                         android:background="@drawable/spinner_background"
                         android:popupBackground="@drawable/spinner_dropdown_background" />
 
@@ -76,7 +79,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="18dp">
 
                     <TextView
                         android:id="@+id/choosePaymenMethodtLabel"
@@ -84,14 +87,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/payment_method"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.03"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="8dp" />
 
                     <Spinner
                         android:id="@+id/paymentMethodSpinner"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="52dp"
                         android:background="@drawable/spinner_background"
                         android:popupBackground="@drawable/spinner_dropdown_background" />
 
@@ -102,7 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="18dp">
 
                     <TextView
                         android:id="@+id/payDateLabel"
@@ -110,22 +116,27 @@
                         android:layout_height="wrap_content"
                         android:text="@string/charge_date"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.03"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="8dp" />
 
                     <EditText
                         android:id="@+id/payDatePlainText"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="52dp"
                         android:background="@drawable/input_background"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:clickable="true"
                         android:focusable="false"
                         android:inputType="date"
                         android:textColor="@color/colorTextPrimary"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
                         tools:targetApi="o" />
 
                 </LinearLayout>
@@ -135,7 +146,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="18dp">
 
                     <TextView
                         android:id="@+id/shopLabel"
@@ -143,25 +154,30 @@
                         android:layout_height="wrap_content"
                         android:text="@string/store"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.03"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="8dp" />
 
                     <AutoCompleteTextView
                         android:id="@+id/shopAutoCompleteTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="52dp"
                         android:background="@drawable/input_background"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@color/colorTextPrimary"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif"
                         android:hint="@string/store"
-                        android:textColorHint="@color/colorInputHint" />
+                        android:textColorHint="@color/colorInputHint"
+                        android:gravity="center_vertical" />
 
                 </LinearLayout>
 
@@ -170,7 +186,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="18dp">
 
                     <TextView
                         android:id="@+id/transactionPriceLabel"
@@ -178,24 +194,29 @@
                         android:layout_height="wrap_content"
                         android:text="@string/price"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.03"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="8dp" />
 
                     <EditText
                         android:id="@+id/transactionPricePlainText"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="52dp"
                         android:background="@drawable/input_background"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:importantForAutofill="no"
                         android:inputType="numberSigned|numberDecimal"
                         android:textDirection="ltr"
                         android:textColor="@color/colorTextPrimary"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
                         android:hint="0.00"
                         android:textColorHint="@color/colorInputHint"
+                        android:gravity="center_vertical"
                         tools:targetApi="jelly_bean_mr1" />
 
                 </LinearLayout>
@@ -206,7 +227,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="14dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -221,6 +242,8 @@
                             android:text="@string/discount"
                             android:textColor="@color/colorTextPrimary"
                             android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:minHeight="44dp"
                             app:buttonTint="@color/colorPrimary" />
 
                         <LinearLayout
@@ -234,17 +257,18 @@
 
                             <EditText
                                 android:id="@+id/discountPercentEditText"
-                                android:layout_width="70dp"
-                                android:layout_height="44dp"
+                                android:layout_width="80dp"
+                                android:layout_height="48dp"
                                 android:background="@drawable/input_background"
-                                android:paddingStart="10dp"
-                                android:paddingEnd="10dp"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp"
                                 android:hint="0"
                                 android:textColorHint="@color/colorInputHint"
                                 android:inputType="numberDecimal"
                                 android:maxLength="5"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="14sp"
+                                android:textSize="15sp"
+                                android:fontFamily="sans-serif-medium"
                                 android:textAlignment="center"
                                 android:gravity="center" />
 
@@ -255,7 +279,8 @@
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
-                                android:paddingStart="6dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:paddingStart="8dp"
                                 android:paddingEnd="4dp" />
 
                         </LinearLayout>
@@ -269,8 +294,8 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:background="@drawable/row_item_background"
-                        android:padding="12dp"
-                        android:layout_marginTop="8dp"
+                        android:padding="14dp"
+                        android:layout_marginTop="10dp"
                         android:visibility="gone">
 
                         <TextView
@@ -280,15 +305,17 @@
                             android:layout_weight="1"
                             android:text="@string/final_price"
                             android:textColor="@color/colorTextSecondary"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif" />
 
                         <TextView
                             android:id="@+id/finalPriceValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorPositive"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium" />
 
                     </LinearLayout>
 
@@ -308,23 +335,26 @@
                         android:text="@string/comment"
                         android:textColor="@color/colorTextPrimary"
                         android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:minHeight="44dp"
                         app:buttonTint="@color/colorPrimary" />
 
                     <EditText
                         android:id="@+id/commentEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="70dp"
+                        android:minHeight="80dp"
                         android:background="@drawable/input_background"
-                        android:padding="14dp"
+                        android:padding="16dp"
                         android:hint="@string/comment_hint"
                         android:textColorHint="@color/colorInputHint"
                         android:textColor="@color/colorTextPrimary"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif"
                         android:inputType="textMultiLine"
-                        android:maxLines="3"
+                        android:maxLines="4"
                         android:gravity="top|start"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:visibility="gone" />
 
                 </LinearLayout>
@@ -342,7 +372,7 @@
                 <Button
                     android:id="@+id/sendTransactionButton"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="56dp"
                     android:text="@string/insert"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
@@ -358,7 +388,7 @@
                 android:id="@+id/adView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 app:adSize="BANNER"
                 app:adUnitId="@string/admob_banner_unit_id" />
 

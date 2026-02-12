@@ -18,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
             android:paddingTop="12dp"
             android:paddingBottom="80dp">
 
@@ -42,64 +42,65 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_card_glass"
                 android:orientation="vertical"
-                android:paddingTop="4dp"
-                android:paddingBottom="8dp">
+                android:paddingTop="6dp"
+                android:paddingBottom="12dp">
 
-                <!-- Headers Row - matches row structure -->
+                <!-- Headers Row - Aligned with Row Items -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
                     android:paddingTop="10dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="10dp"
                     android:gravity="center_vertical">
 
-                    <!-- Category Header - matches bgt_category width -->
+                    <!-- Category Header -->
                     <TextView
                         android:id="@+id/header_col_1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.28"
-                        android:layout_marginEnd="4dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
+                        android:layout_weight="0.32"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/category"
                         android:textColor="@color/colorTextSecondary"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textAllCaps="true"
+                        android:fontFamily="sans-serif-medium"
                         android:letterSpacing="0.05" />
 
-                    <!-- Sum Header - matches bgt_budget width -->
+                    <!-- Sum Header -->
                     <TextView
                         android:id="@+id/header_col_2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.22"
+                        android:layout_weight="0.20"
                         android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/sum"
                         android:textColor="@color/colorTextSecondary"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textAllCaps="true"
+                        android:fontFamily="sans-serif-medium"
                         android:textAlignment="center"
                         android:letterSpacing="0.05" />
 
-                    <!-- Fixed Header - matches constant date section width -->
+                    <!-- Fixed/Recurring Header -->
                     <TextView
                         android:id="@+id/header_col_3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.50"
+                        android:layout_weight="0.48"
                         android:layout_marginStart="4dp"
                         android:text="@string/constant_date"
                         android:textColor="@color/colorTextSecondary"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textAllCaps="true"
+                        android:fontFamily="sans-serif-medium"
                         android:letterSpacing="0.05" />
 
                 </LinearLayout>
@@ -108,32 +109,37 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/colorDivider" />
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorDivider"
+                    android:alpha="0.4" />
 
+                <!-- Budget Rows RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/budgets_rows"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
 
                 <!-- Add Category Button -->
                 <Button
                     android:id="@+id/add_category_btn"
                     android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="14dp"
                     android:background="@drawable/btn_secondary"
                     android:onClick="addInputRow"
                     android:text="@string/add_category"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimary"
                     android:textSize="14sp"
+                    android:textStyle="bold"
                     android:fontFamily="sans-serif-medium" />
 
             </LinearLayout>
@@ -152,24 +158,24 @@
             <Button
                 android:id="@+id/createBudgetBtn"
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/btn_primary"
                 android:elevation="2dp"
                 android:onClick="createBudget"
                 android:text="@string/create"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:textColor="@color/colorWhite"
-                android:textSize="13sp"
-                android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.05" />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
 
             <!-- AdView Banner -->
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 app:adSize="BANNER"
                 app:adUnitId="@string/admob_banner_unit_id" />
 

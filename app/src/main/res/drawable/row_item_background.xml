@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- WhatsApp-Style List Item Background -->
+<!-- Professional List Item Background with Touch States -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#2000A884">
+    android:color="#3000A884">
+    
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    
     <item>
         <shape android:shape="rectangle">
             <solid android:color="#304858" />
-            <corners android:radius="8dp" />
+            <corners android:radius="10dp" />
         </shape>
     </item>
+    
 </ripple>

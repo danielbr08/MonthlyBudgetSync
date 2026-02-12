@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Professional Email Input Dialog Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card_glass"
+    android:padding="24dp">
+
+    <!-- Dialog Title -->
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_budget"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Subtitle/Description -->
+    <TextView
+        android:id="@+id/dialog_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/please_enter_user_email_to_share"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Email Input Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/email_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        style="@style/Widget.App.TextInputLayout"
+        android:hint="@string/email"
+        app:startIconDrawable="@android:drawable/sym_action_email"
+        app:startIconTint="@color/colorTextSecondary"
+        app:errorEnabled="true"
+        app:boxBackgroundColor="@color/colorInputBackground"
+        app:boxStrokeColor="@color/colorInputBorderFocused"
+        app:hintTextColor="@color/colorTextSecondary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="16sp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:imeOptions="actionDone" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Buttons Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <!-- Cancel Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/cancel"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginEnd="8dp"
+            app:rippleColor="@color/colorPrimary" />
+
+        <!-- Share/Submit Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:minWidth="100dp"
+            android:text="@string/share"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            app:cornerRadius="10dp"
+            app:backgroundTint="@color/colorButtonPrimary"
+            app:rippleColor="@color/colorPrimaryLight"
+            app:icon="@android:drawable/ic_menu_share"
+            app:iconGravity="textStart"
+            app:iconTint="@color/colorWhite"
+            app:iconPadding="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

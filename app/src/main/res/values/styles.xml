@@ -396,4 +396,28 @@
         <item name="singleLineTitle">false</item>
     </style>
 
+    <!-- Dialog Theme - Professional Dark Style -->
+    <style name="AppTheme.Dialog" parent="Theme.Material3.Dark.Dialog.Alert">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/colorCard</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:textColorSecondary">@color/colorTextSecondary</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Dialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Dialog.Button.Negative</item>
+    </style>
+    
+    <!-- Dialog Positive Button Style -->
+    <style name="Widget.App.Dialog.Button.Positive" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <!-- Dialog Negative Button Style -->
+    <style name="Widget.App.Dialog.Button.Negative" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorTextSecondary</item>
+    </style>
+
 </resources>

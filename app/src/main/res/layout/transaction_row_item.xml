@@ -1,82 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Professional Transaction Row Item - Clean, Scannable Layout -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/row_item_background"
-    android:padding="8dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
     android:layout_marginBottom="6dp"
     android:gravity="center_vertical"
-    android:minHeight="50dp"
+    android:minHeight="56dp"
     android:weightSum="1"
     android:baselineAligned="false"
     android:clickable="true"
     android:focusable="true">
 
+    <!-- ID Column -->
     <TextView
         android:id="@+id/trn_id"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
-        android:layout_weight="0.11"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="0.10"
         android:text="@string/id"
-        android:textColor="@color/colorTextSecondary"
+        android:textColor="@color/colorTextMuted"
         android:textSize="11sp"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:textDirection="locale"
         android:singleLine="true"
+        android:fontFamily="sans-serif"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Category Column -->
     <TextView
         android:id="@+id/trn_category"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
-        android:layout_weight="0.16"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="0.17"
         android:text="@string/category"
         android:textColor="@color/colorTextPrimary"
         android:textSize="12sp"
-        android:gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center_vertical|start"
         android:textDirection="locale"
         android:singleLine="true"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Store Column -->
     <TextView
         android:id="@+id/trn_store"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
         android:layout_weight="0.19"
         android:text="@string/store"
         android:textColor="@color/colorTextSecondary"
         android:textSize="12sp"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:textDirection="locale"
         android:singleLine="true"
         android:ellipsize="end"
+        android:fontFamily="sans-serif"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Charge Date Column -->
     <TextView
         android:id="@+id/trn_charge_date"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
-        android:layout_weight="0.21"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="0.20"
         android:text="@string/charge_date"
         android:textColor="@color/colorTextSecondary"
         android:textSize="11sp"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:textDirection="ltr"
         android:singleLine="true"
+        android:fontFamily="sans-serif"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Payment Method Column -->
     <TextView
         android:id="@+id/trn_payment_method"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
         android:layout_weight="0.18"
         android:text="@string/payment_method"
         android:textColor="@color/colorTextSecondary"
@@ -86,23 +104,26 @@
         android:textDirection="locale"
         android:singleLine="true"
         android:ellipsize="end"
+        android:fontFamily="sans-serif"
         tools:ignore="RtlCompat"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Price Column -->
     <TextView
         android:id="@+id/trn_price"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
-        android:layout_weight="0.15"
+        android:layout_marginStart="2dp"
+        android:layout_weight="0.16"
         android:text="@string/price"
         android:textColor="@color/colorPositive"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:textStyle="bold"
         android:textDirection="ltr"
         android:textAlignment="viewEnd"
         android:gravity="center_vertical|end"
         android:singleLine="true"
+        android:fontFamily="sans-serif-medium"
         tools:ignore="RtlCompat"
         tools:targetApi="jelly_bean_mr1" />
 

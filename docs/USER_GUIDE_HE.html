@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תקציב חודשי משותף - מדריך למשתמש</title>
+    <style>
+        * {
+            direction: rtl;
+            text-align: right;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.6em;
+            margin-top: 40px;
+            border-right: 5px solid #667eea;
+            padding-right: 15px;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        h3 {
+            color: #495057;
+            font-size: 1.3em;
+            margin-top: 25px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 14px;
+            text-align: right;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        tr:hover {
+            background: #e9ecef;
+        }
+        code {
+            background: #f1f3f4;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: Consolas, 'Courier New', monospace;
+            color: #c7254e;
+        }
+        blockquote {
+            border-right: 4px solid #667eea;
+            border-left: none;
+            padding: 15px 20px;
+            margin: 20px 0;
+            background: linear-gradient(to left, #f8f9fa, #fff);
+            border-radius: 0 8px 8px 0;
+        }
+        blockquote strong {
+            color: #667eea;
+        }
+        ul, ol {
+            padding-right: 25px;
+            padding-left: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(to left, transparent, #667eea, transparent);
+            margin: 40px 0;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .emoji {
+            font-size: 1.2em;
+        }
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .toc ol {
+            columns: 2;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .back-to-top:hover {
+            background: #764ba2;
+            text-decoration: none;
+        }
+        .version {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 תקציב חודשי משותף - מדריך למשתמש</h1>
+        <p class="version"><strong>גרסה 1.0</strong></p>
+        <p>ברוכים הבאים לאפליקציית תקציב חודשי משותף! מדריך מקיף זה יעזור לכם להכיר את כל תכונות האפליקציה ולשלוט בכספים שלכם.</p>
+
+        <hr>
+
+        <div class="toc">
+            <h3>📑 תוכן עניינים</h3>
+            <ol>
+                <li><a href="#intro">מבוא</a></li>
+                <li><a href="#getting-started">תחילת העבודה</a></li>
+                <li><a href="#first-budget">יצירת התקציב הראשון</a></li>
+                <li><a href="#transactions">רישום עסקאות</a></li>
+                <li><a href="#manage-transactions">צפייה וניהול עסקאות</a></li>
+                <li><a href="#budget-overview">סקירת התקציב</a></li>
+                <li><a href="#sharing">שיתוף התקציב</a></li>
+                <li><a href="#navigation">ניווט בין חודשים</a></li>
+                <li><a href="#settings">הגדרות והעדפות</a></li>
+                <li><a href="#profile">ניהול פרופיל</a></li>
+                <li><a href="#extras">תכונות נוספות</a></li>
+                <li><a href="#tips">טיפים ושיטות עבודה</a></li>
+                <li><a href="#troubleshooting">פתרון בעיות</a></li>
+                <li><a href="#languages">שפות נתמכות</a></li>
+            </ol>
+        </div>
+
+        <hr>
+
+        <h2 id="intro">📌 מבוא</h2>
+        <p><strong>תקציב חודשי משותף</strong> היא אפליקציה עוצמתית וקלה לשימוש לניהול תקציב, שנועדה לעזור לכם לעקוב אחר ההוצאות החודשיות, לנהל קטגוריות תקציב ולשמור על שליטה בכספים.</p>
+
+        <h3>✨ תכונות עיקריות</h3>
+        <ul>
+            <li><strong>יצירת תקציב חודשי</strong>: הגדירו קטגוריות תקציב מותאמות אישית עם סכומים מוקצים</li>
+            <li><strong>מעקב אחר עסקאות</strong>: תעדו כל הוצאה עם מידע מפורט</li>
+            <li><strong>סנכרון בזמן אמת</strong>: הנתונים מסתנכרנים אוטומטית בכל המכשירים באמצעות Firebase</li>
+            <li><strong>שיתוף תקציב</strong>: שתפו את התקציב עם בני משפחה או בני זוג</li>
+            <li><strong>תמיכה ב-27 שפות</strong>: כולל תמיכה בשפות מימין לשמאל</li>
+            <li><strong>ריבוי מטבעות</strong>: תמיכה בסמלי מטבע שונים</li>
+            <li><strong>קטגוריות גמישות</strong>: צרו קטגוריות להוצאות קבועות ומשתנות</li>
+            <li><strong>סינון חכם</strong>: סננו ומיינו עסקאות לפי קריטריונים מרובים</li>
+            <li><strong>משיכה לרענון</strong>: ראו תמיד את הנתונים העדכניים ביותר</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="getting-started">🚀 תחילת העבודה</h2>
+
+        <h3>יצירת חשבון</h3>
+        <ol>
+            <li>פתחו את אפליקציית תקציב חודשי משותף</li>
+            <li>במסך ההתחברות, לחצו על <strong>"חדש כאן? צור חשבון"</strong></li>
+            <li>מלאו את טופס ההרשמה:
+                <ul>
+                    <li><strong>שם מלא</strong>: השם שיוצג באפליקציה</li>
+                    <li><strong>אימייל</strong>: כתובת אימייל תקינה</li>
+                    <li><strong>מספר טלפון</strong>: מספר ליצירת קשר (אופציונלי)</li>
+                    <li><strong>סיסמה</strong>: לפחות 6 תווים</li>
+                    <li><strong>אימות סיסמה</strong>: הזינו את הסיסמה שוב</li>
+                </ul>
+            </li>
+            <li>לחצו על <strong>הרשמה</strong> ליצירת החשבון</li>
+            <li>תתחברו אוטומטית לאחר הרשמה מוצלחת</li>
+        </ol>
+
+        <h3>התחברות</h3>
+        <ol>
+            <li>פתחו את האפליקציה</li>
+            <li>הזינו את כתובת ה<strong>אימייל</strong> שלכם</li>
+            <li>הזינו את ה<strong>סיסמה</strong> שלכם</li>
+            <li>(אופציונלי) סמנו <strong>"זכור אותי"</strong> כדי להישאר מחוברים</li>
+            <li>לחצו על <strong>התחבר</strong></li>
+        </ol>
+
+        <blockquote>
+            <strong>💡 טיפ:</strong> כאשר "זכור אותי" מופעל, האפליקציה תתחבר אוטומטית בפעם הבאה שתפתחו אותה.
+        </blockquote>
+
+        <h3>שחזור סיסמה</h3>
+        <ol>
+            <li>במסך ההתחברות, לחצו על <strong>"שכחת סיסמה?"</strong></li>
+            <li>הזינו את כתובת האימייל המשויכת לחשבון</li>
+            <li>לחצו על <strong>שלח</strong></li>
+            <li>בדקו את האימייל להוראות איפוס הסיסמה</li>
+            <li>עקבו אחר הקישור באימייל ליצירת סיסמה חדשה</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="first-budget">💰 יצירת התקציב הראשון</h2>
+
+        <h3>הבנת קטגוריות תקציב</h3>
+        <p>תקציב מורכב ממספר <strong>קטגוריות</strong>, כל אחת מייצגת סוג של הוצאה. לדוגמה:</p>
+        <ul>
+            <li>🛒 מכולת</li>
+            <li>🏠 שכירות/משכנתא</li>
+            <li>💡 חשבונות</li>
+            <li>🚗 תחבורה</li>
+            <li>🎬 בידור</li>
+            <li>🍽️ אוכל בחוץ</li>
+            <li>🏥 בריאות</li>
+            <li>💵 חיסכון</li>
+        </ul>
+
+        <h3>הגדרת קטגוריות</h3>
+        <ol>
+            <li>מהמסך הראשי, לחצו על <strong>צור תקציב</strong></li>
+            <li>תראו טופס להוספת קטגוריות</li>
+            <li>לכל קטגוריה:
+                <ul>
+                    <li>הזינו את <strong>שם הקטגוריה</strong></li>
+                    <li>הזינו את <strong>ערך התקציב</strong></li>
+                    <li>אופציונלי: סמנו <strong>קבוע</strong> אם זה תשלום חוזר</li>
+                </ul>
+            </li>
+            <li>לחצו על <strong>+ הוסף קטגוריה</strong> להוספת קטגוריות נוספות</li>
+            <li>גררו קטגוריות לשינוי הסדר לפי עדיפות</li>
+            <li>לחצו על <strong>צור</strong> בסיום</li>
+        </ol>
+
+        <blockquote>
+            <strong>⚠️ אזהרה:</strong> יצירת תקציב חדש תחליף נתוני תקציב קיימים לחודש הנוכחי.
+        </blockquote>
+
+        <hr>
+
+        <h2 id="transactions">📝 רישום עסקאות</h2>
+
+        <h3>הוספת עסקה חדשה</h3>
+        <ol>
+            <li>מהמסך הראשי, לחצו על <strong>הוסף עסקה</strong></li>
+            <li>מלאו את פרטי העסקה</li>
+            <li>לחצו על כפתור <strong>שלח</strong> לשמירת העסקה</li>
+        </ol>
+
+        <h3>שדות העסקה</h3>
+        <table>
+            <tr>
+                <th>שדה</th>
+                <th>תיאור</th>
+                <th>חובה</th>
+            </tr>
+            <tr>
+                <td><strong>קטגוריה</strong></td>
+                <td>בחרו מקטגוריות התקציב</td>
+                <td>✅ כן</td>
+            </tr>
+            <tr>
+                <td><strong>אמצעי תשלום</strong></td>
+                <td>כרטיס אשראי, מזומן, צ'ק, או העברה בנקאית</td>
+                <td>✅ כן</td>
+            </tr>
+            <tr>
+                <td><strong>חנות</strong></td>
+                <td>היכן בוצעה הרכישה (עם השלמה אוטומטית)</td>
+                <td>❌ לא</td>
+            </tr>
+            <tr>
+                <td><strong>תאריך תשלום</strong></td>
+                <td>תאריך העסקה</td>
+                <td>✅ כן</td>
+            </tr>
+            <tr>
+                <td><strong>מחיר</strong></td>
+                <td>הסכום שהוצא</td>
+                <td>✅ כן</td>
+            </tr>
+            <tr>
+                <td><strong>הנחה</strong></td>
+                <td>החלת הנחה באחוזים</td>
+                <td>❌ לא</td>
+            </tr>
+            <tr>
+                <td><strong>הערה</strong></td>
+                <td>הוסיפו הערות לגבי העסקה</td>
+                <td>❌ לא</td>
+            </tr>
+        </table>
+
+        <h3>שימוש בהנחות</h3>
+        <p>אם קיבלתם הנחה על רכישה:</p>
+        <ol>
+            <li>סמנו את תיבת ה<strong>הנחה</strong></li>
+            <li>הזינו את אחוז ההנחה (0-100%)</li>
+            <li><strong>המחיר הסופי</strong> יחושב אוטומטית</li>
+        </ol>
+        <p><strong>דוגמה:</strong> מחיר מקורי: ₪100 | הנחה: 20% | מחיר סופי: ₪80</p>
+
+        <hr>
+
+        <h2 id="manage-transactions">📋 צפייה וניהול עסקאות</h2>
+
+        <h3>דפדוף בעסקאות</h3>
+        <ol>
+            <li>מהמסך הראשי, לחצו על <strong>עסקאות</strong></li>
+            <li>תראו רשימה של כל העסקאות לחודש הנבחר</li>
+            <li>כל שורה מציגה: מזהה, קטגוריה, חנות, תאריך, אמצעי תשלום ומחיר</li>
+        </ol>
+
+        <h3>סינון עסקאות</h3>
+        <p><strong>לפי קטגוריה:</strong> השתמשו בתפריט הנפתח למעלה</p>
+        <p><strong>לפי סטטוס:</strong> סמנו/בטלו סימון "פעיל" להצגה/הסתרת עסקאות מחוקות</p>
+
+        <h3>מיון עסקאות</h3>
+        <p>לחצו על כותרת עמודה כלשהי למיון. לחצו שוב למעבר בין סדר עולה (▲) ויורד (▼).</p>
+
+        <h3>מחיקה ושחזור עסקאות</h3>
+        <table>
+            <tr>
+                <th>פעולה</th>
+                <th>תנועה</th>
+            </tr>
+            <tr>
+                <td>מחיקת עסקה</td>
+                <td>החלקה ימינה ←</td>
+            </tr>
+            <tr>
+                <td>שחזור עסקה</td>
+                <td>החלקה שמאלה →</td>
+            </tr>
+            <tr>
+                <td>צפייה בפרטים</td>
+                <td>לחיצה ארוכה</td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <h2 id="budget-overview">📊 סקירת התקציב</h2>
+
+        <h3>הבנת מסך התקציב</h3>
+        <ol>
+            <li>מהמסך הראשי, לחצו על <strong>תקציב</strong></li>
+            <li>תראו את כל הקטגוריות עם הסטטוס הכספי שלהן</li>
+        </ol>
+
+        <h3>קידוד צבעים</h3>
+        <ul>
+            <li>🟢 <strong>ירוק</strong>: היתרה חיובית (מתחת לתקציב)</li>
+            <li>🔴 <strong>אדום</strong>: היתרה שלילית (מעל התקציב)</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="sharing">👥 שיתוף התקציב</h2>
+
+        <h3>הזמנת מישהו לשיתוף</h3>
+        <ol>
+            <li>לחצו על כפתור <strong>התפריט</strong> (אייקון המבורגר)</li>
+            <li>בחרו <strong>שתף</strong></li>
+            <li>הזינו את כתובת האימייל של האדם שאיתו תרצו לשתף</li>
+            <li>לחצו על <strong>שתף</strong></li>
+        </ol>
+
+        <blockquote>
+            <strong>⚠️ חשוב:</strong> קבלת שיתוף תחליף את נתוני התקציב הקיימים שלכם בתקציב המשותף.
+        </blockquote>
+
+        <h3>איך השיתוף עובד</h3>
+        <ul>
+            <li><strong>סנכרון בזמן אמת</strong>: כל השינויים מסתנכרנים מיידית</li>
+            <li><strong>תקציב יחיד</strong>: כולם רואים ועורכים את אותו תקציב</li>
+            <li><strong>הרשאות בעלים</strong>: רק בעל התקציב יכול לשנות הגדרות מסוימות</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="navigation">📅 ניווט בין חודשים</h2>
+        <p>במסך הראשי יש שני תפריטים נפתחים לניווט:</p>
+        <ol>
+            <li><strong>בורר שנה</strong>: בחרו את השנה</li>
+            <li><strong>בורר חודש</strong>: בחרו את החודש בתוך אותה שנה</li>
+        </ol>
+
+        <h3>עריכת חודשים קודמים</h3>
+        <ol>
+            <li>עברו ל<strong>הגדרות</strong></li>
+            <li>הפעילו <strong>"אפשר עריכת חודשים קודמים"</strong></li>
+        </ol>
+
+        <hr>
+
+        <h2 id="settings">⚙️ הגדרות והעדפות</h2>
+        <p>גישה להגדרות מ<strong>תפריט</strong> ← <strong>הגדרות</strong>.</p>
+
+        <h3>הגדרות זמינות</h3>
+        <ul>
+            <li><strong>יום חיוב</strong>: באיזה יום בחודש מתחיל מחזור התקציב</li>
+            <li><strong>שפה</strong>: בחירה מתוך 27 שפות</li>
+            <li><strong>מטבע</strong>: בחירת סמל מטבע</li>
+            <li><strong>הצג עסקאות פעילות בלבד</strong>: הסתרת עסקאות מחוקות</li>
+            <li><strong>אפשר עריכת חודשים קודמים</strong>: עריכת חודשים עברו</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="profile">👤 ניהול פרופיל</h2>
+        <p>גישה מ<strong>תפריט</strong> ← <strong>הגדרות</strong> ← קטע <strong>פרופיל</strong>.</p>
+        <ul>
+            <li>שינוי שם משתמש</li>
+            <li>שינוי אימייל</li>
+            <li>שינוי סיסמה</li>
+            <li>שינוי מספר טלפון</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="extras">➕ תכונות נוספות</h2>
+        <ul>
+            <li><strong>צור קשר</strong>: תפריט ← צור קשר</li>
+            <li><strong>סרטון הדרכה</strong>: תפריט ← מדריך לאפליקציה</li>
+            <li><strong>המלצה לחבר</strong>: תפריט ← המלץ לחבר</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="tips">💡 טיפים ושיטות עבודה מומלצות</h2>
+
+        <h3>תכנון תקציב</h3>
+        <ol>
+            <li><strong>התחילו עם הוצאות קבועות</strong>: רשמו קודם את כל התשלומים החוזרים</li>
+            <li><strong>היו ריאליסטיים</strong>: אל תמעיטו בערך הוצאות משתנות</li>
+            <li><strong>כללו חיסכון</strong>: התייחסו לחיסכון כ"תשלום לעצמכם"</li>
+            <li><strong>השאירו מרווח</strong>: אפשרו הוצאות בלתי צפויות</li>
+        </ol>
+
+        <h3>מעקב עסקאות</h3>
+        <ol>
+            <li><strong>רשמו מיידית</strong>: הזינו עסקאות ברגע שאתם מבצעים אותן</li>
+            <li><strong>השתמשו בהערות</strong>: הוסיפו הערות לרכישות לא ברורות</li>
+            <li><strong>בדקו באופן קבוע</strong>: סקרו את התקציב שבועית</li>
+        </ol>
+
+        <hr>
+
+        <h2 id="troubleshooting">🔧 פתרון בעיות</h2>
+
+        <h3>בעיות נפוצות</h3>
+        <p><strong>לא מצליח להתחבר:</strong></p>
+        <ul>
+            <li>בדקו את חיבור האינטרנט</li>
+            <li>וודאו את האימייל והסיסמה</li>
+            <li>השתמשו ב"שכחת סיסמה?" אם צריך</li>
+        </ul>
+
+        <p><strong>עסקאות לא מסתנכרנות:</strong></p>
+        <ul>
+            <li>וודאו שיש לכם חיבור אינטרנט</li>
+            <li>משכו למטה לרענון המסך</li>
+            <li>סגרו ופתחו מחדש את האפליקציה</li>
+        </ul>
+
+        <hr>
+
+        <h2 id="languages">🌍 שפות נתמכות</h2>
+        <p>תקציב חודשי משותף זמין ב-27 שפות:</p>
+        <table>
+            <tr><th>שפה</th><th>שם מקורי</th></tr>
+            <tr><td>אנגלית</td><td>English</td></tr>
+            <tr><td>עברית</td><td>עברית</td></tr>
+            <tr><td>ספרדית</td><td>Español</td></tr>
+            <tr><td>צרפתית</td><td>Français</td></tr>
+            <tr><td>גרמנית</td><td>Deutsch</td></tr>
+            <tr><td>איטלקית</td><td>Italiano</td></tr>
+            <tr><td>פורטוגזית</td><td>Português</td></tr>
+            <tr><td>רוסית</td><td>Русский</td></tr>
+            <tr><td>סינית</td><td>中文</td></tr>
+            <tr><td>יפנית</td><td>日本語</td></tr>
+            <tr><td>קוריאנית</td><td>한국어</td></tr>
+            <tr><td>ערבית</td><td>العربية</td></tr>
+            <tr><td>ועוד...</td><td>+15 שפות נוספות</td></tr>
+        </table>
+
+        <hr>
+
+        <p style="text-align: center; font-size: 1.2em;">
+            <strong>תודה שאתם משתמשים בתקציב חודשי משותף!</strong><br>
+            <span style="font-size: 0.9em; color: #6c757d;">אנו מקווים שהאפליקציה תעזור לכם להשיג את היעדים הפיננסיים שלכם.</span><br><br>
+            <em>ניהול תקציב מוצלח!</em> 💰
+        </p>
+    </div>
+
+    <a href="#" class="back-to-top">⬆️ למעלה</a>
+</body>
+</html>

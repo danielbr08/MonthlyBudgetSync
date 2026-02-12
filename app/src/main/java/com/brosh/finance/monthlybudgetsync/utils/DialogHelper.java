@@ -1,19 +1,22 @@
 package com.brosh.finance.monthlybudgetsync.utils;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.InputType;
-import android.view.View;
-import android.widget.EditText;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 
 import com.brosh.finance.monthlybudgetsync.R;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 /**
  * Helper class for creating common dialogs.
@@ -41,7 +44,7 @@ public final class DialogHelper {
                                         @NonNull String message,
                                         @NonNull Runnable onYes,
                                         @Nullable Runnable onNo) {
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(context, R.style.AppTheme_Dialog)
             .setMessage(message)
             .setCancelable(true)
             .setPositiveButton(context.getString(R.string.yes), (dialog, id) -> onYes.run())
@@ -69,7 +72,7 @@ public final class DialogHelper {
                                         @NonNull String negativeText,
                                         @NonNull Runnable onPositive,
                                         @Nullable Runnable onNegative) {
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(context, R.style.AppTheme_Dialog)
             .setMessage(message)
             .setCancelable(true)
             .setPositiveButton(positiveText, (dialog, id) -> onPositive.run())
@@ -97,47 +100,88 @@ public final class DialogHelper {
     }
     
     // ============================================
-    // INPUT DIALOGS
+    // STYLED EMAIL INPUT DIALOG
     // ============================================
     
     /**
-     * Shows a dialog with an email input field.
+     * Shows a beautifully styled email input dialog.
+     * Uses the custom dialog_email_input.xml layout.
      * 
      * @param context the context
      * @param title the dialog title
-     * @param hint the input hint
+     * @param subtitle the dialog subtitle/hint
      * @param positiveText positive button text
      * @param onSubmit callback with the entered email when submitted
      */
     public static void showEmailInputDialog(@NonNull Context context,
                                             @NonNull String title,
-                                            @NonNull String hint,
+                                            @NonNull String subtitle,
                                             @NonNull String positiveText,
                                             @NonNull EmailInputCallback onSubmit) {
-        final EditText emailInput = new EditText(context);
-        emailInput.setHint(hint);
-        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        // Create custom dialog
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_email_input);
         
-        AlertDialog dialog = new AlertDialog.Builder(context)
-            .setTitle(title)
-            .setView(emailInput)
-            .setPositiveButton(positiveText, null) // Set to null initially
-            .setNegativeButton(context.getString(R.string.cancel), (d, which) -> d.cancel())
-            .create();
+        // Make dialog background transparent to show our rounded corners
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT
+            );
+        }
         
-        dialog.show();
+        // Get views
+        TextView titleView = dialog.findViewById(R.id.dialog_title);
+        TextView subtitleView = dialog.findViewById(R.id.dialog_subtitle);
+        TextInputLayout emailInputLayout = dialog.findViewById(R.id.email_input_layout);
+        TextInputEditText emailInput = dialog.findViewById(R.id.email_input);
+        MaterialButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+        MaterialButton btnSubmit = dialog.findViewById(R.id.btn_submit);
         
-        // Override positive button to validate before dismissing
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String email = emailInput.getText().toString().trim();
+        // Set content
+        titleView.setText(title);
+        subtitleView.setText(subtitle);
+        btnSubmit.setText(positiveText);
+        
+        // Cancel button click
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        
+        // Submit button click
+        btnSubmit.setOnClickListener(v -> {
+            String email = emailInput.getText() != null ? 
+                emailInput.getText().toString().trim() : "";
             
             if (!ValidationUtil.isValidEmail(email)) {
-                emailInput.setError(context.getString(R.string.invalid_email));
+                emailInputLayout.setError(context.getString(R.string.invalid_email));
                 return;
             }
             
+            emailInputLayout.setError(null);
             onSubmit.onEmailSubmitted(email, dialog);
         });
+        
+        dialog.setCancelable(true);
+        dialog.show();
+    }
+    
+    /**
+     * Shows a beautifully styled share dialog specifically.
+     * Convenience method for share functionality.
+     * 
+     * @param context the context
+     * @param onShare callback when share is submitted
+     */
+    public static void showShareDialog(@NonNull Context context,
+                                       @NonNull ShareCallback onShare) {
+        showEmailInputDialog(
+            context,
+            context.getString(R.string.share_budget),
+            context.getString(R.string.please_enter_user_email_to_share),
+            context.getString(R.string.share),
+            (email, dialog) -> onShare.onShare(email, dialog)
+        );
     }
     
     /**
@@ -154,23 +198,49 @@ public final class DialogHelper {
                                            @NonNull String hint,
                                            @NonNull String positiveText,
                                            @NonNull TextInputCallback onSubmit) {
-        final EditText textInput = new EditText(context);
-        textInput.setHint(hint);
+        // Create custom dialog
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_email_input);
+        
+        // Make dialog background transparent
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT
+            );
+        }
+        
+        // Get views
+        TextView titleView = dialog.findViewById(R.id.dialog_title);
+        TextView subtitleView = dialog.findViewById(R.id.dialog_subtitle);
+        TextInputLayout inputLayout = dialog.findViewById(R.id.email_input_layout);
+        TextInputEditText textInput = dialog.findViewById(R.id.email_input);
+        MaterialButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+        MaterialButton btnSubmit = dialog.findViewById(R.id.btn_submit);
+        
+        // Configure for text input
+        titleView.setText(title);
+        subtitleView.setText(hint);
+        btnSubmit.setText(positiveText);
+        inputLayout.setHint(context.getString(R.string.enter_value));
+        inputLayout.setStartIconDrawable(null);
         textInput.setInputType(InputType.TYPE_CLASS_TEXT);
         
-        AlertDialog dialog = new AlertDialog.Builder(context)
-            .setTitle(title)
-            .setView(textInput)
-            .setPositiveButton(positiveText, null)
-            .setNegativeButton(context.getString(R.string.cancel), (d, which) -> d.cancel())
-            .create();
+        // Hide share icon for text input
+        btnSubmit.setIcon(null);
         
-        dialog.show();
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
         
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String text = textInput.getText().toString().trim();
+        btnSubmit.setOnClickListener(v -> {
+            String text = textInput.getText() != null ? 
+                textInput.getText().toString().trim() : "";
             onSubmit.onTextSubmitted(text, dialog);
         });
+        
+        dialog.setCancelable(true);
+        dialog.show();
     }
     
     // ============================================
@@ -187,7 +257,7 @@ public final class DialogHelper {
     public static void showMessage(@NonNull Context context,
                                    @Nullable String title,
                                    @NonNull String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AppTheme_Dialog);
         
         if (title != null) {
             builder.setTitle(title);
@@ -222,13 +292,9 @@ public final class DialogHelper {
     public static void showRefreshConfirmation(@NonNull Context context,
                                                @NonNull Runnable onConfirm,
                                                @NonNull Runnable onCancel) {
-        TextView tv = new TextView(context);
-        tv.setTextColor(ContextCompat.getColor(context, R.color.colorLoginBackground));
-        tv.setText(R.string.are_you_sure_you_want_to_refresh);
-        tv.setPadding(40, 40, 40, 0);
-        
-        new AlertDialog.Builder(context)
-            .setCustomTitle(tv)
+        new AlertDialog.Builder(context, R.style.AppTheme_Dialog)
+            .setTitle(R.string.refresh)
+            .setMessage(R.string.are_you_sure_you_want_to_refresh)
             .setCancelable(false)
             .setNegativeButton(context.getString(R.string.yes), (dialog, id) -> onConfirm.run())
             .setPositiveButton(context.getString(R.string.no), (dialog, id) -> onCancel.run())
@@ -248,7 +314,19 @@ public final class DialogHelper {
          * @param email the entered email
          * @param dialog the dialog (can be dismissed if validation passes)
          */
-        void onEmailSubmitted(@NonNull String email, @NonNull AlertDialog dialog);
+        void onEmailSubmitted(@NonNull String email, @NonNull Dialog dialog);
+    }
+    
+    /**
+     * Callback interface for share dialogs.
+     */
+    public interface ShareCallback {
+        /**
+         * Called when share is submitted.
+         * @param email the entered email
+         * @param dialog the dialog (can be dismissed if validation passes)
+         */
+        void onShare(@NonNull String email, @NonNull Dialog dialog);
     }
     
     /**
@@ -260,6 +338,6 @@ public final class DialogHelper {
          * @param text the entered text
          * @param dialog the dialog (can be dismissed if validation passes)
          */
-        void onTextSubmitted(@NonNull String text, @NonNull AlertDialog dialog);
+        void onTextSubmitted(@NonNull String text, @NonNull Dialog dialog);
     }
 }

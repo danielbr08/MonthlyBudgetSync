@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תקציב חודשי משותף - מדריך מהיר</title>
+    <style>
+        * {
+            direction: rtl;
+            text-align: right;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            border-bottom: 3px solid #11998e;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #11998e;
+            font-size: 1.4em;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            text-align: right;
+        }
+        th {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        tr:hover {
+            background: #e8f5e9;
+        }
+        .highlight-box {
+            background: linear-gradient(to left, #e8f5e9, #fff);
+            border-right: 4px solid #11998e;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background: linear-gradient(to left, #fff3e0, #fff);
+            border-right: 4px solid #ff9800;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 20px 0;
+        }
+        ul {
+            padding-right: 25px;
+            padding-left: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        code {
+            background: #e8f5e9;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #11998e;
+            font-weight: bold;
+        }
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(to left, transparent, #11998e, transparent);
+            margin: 30px 0;
+        }
+        .emoji-large {
+            font-size: 1.5em;
+        }
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .shortcuts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .shortcut-item {
+            background: white;
+            border: 2px solid #11998e;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .shortcut-item strong {
+            color: #11998e;
+            display: block;
+            margin-bottom: 5px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ מדריך מהיר - תקציב חודשי משותף</h1>
+        <p><strong>התחילו לנהל את הכסף שלכם תוך 5 דקות!</strong></p>
+
+        <hr>
+
+        <h2><span class="step-number">1</span> התחברות</h2>
+        <ul>
+            <li><strong>משתמש חדש?</strong> לחצו "צור חשבון" → מלאו פרטים → לחצו "הרשמה"</li>
+            <li><strong>משתמש קיים?</strong> הזינו אימייל וסיסמה → לחצו "התחבר"</li>
+            <li><strong>שכחתם סיסמה?</strong> לחצו "שכחת סיסמה?" לאיפוס</li>
+        </ul>
+
+        <h2><span class="step-number">2</span> יצירת תקציב</h2>
+        <ol>
+            <li>לחצו על <code>צור תקציב</code></li>
+            <li>הוסיפו קטגוריות (לדוגמה: מכולת, שכירות, חשבונות)</li>
+            <li>הזינו סכום לכל קטגוריה</li>
+            <li>לחצו <code>צור</code></li>
+        </ol>
+
+        <h2><span class="step-number">3</span> הוספת עסקה</h2>
+        <ol>
+            <li>לחצו על <code>הוסף עסקה</code></li>
+            <li>בחרו קטגוריה ואמצעי תשלום</li>
+            <li>הזינו חנות, תאריך ומחיר</li>
+            <li>לחצו <code>שלח</code></li>
+        </ol>
+
+        <div class="highlight-box">
+            <strong>💡 טיפ:</strong> יש לכם הנחה? סמנו את תיבת "הנחה" והזינו את האחוז - המחיר הסופי יחושב אוטומטית!
+        </div>
+
+        <h2><span class="step-number">4</span> סקירת התקציב</h2>
+        <ul>
+            <li>לחצו על <code>תקציב</code> לצפייה ביתרות</li>
+            <li>🟢 <strong>ירוק</strong> = מתחת לתקציב</li>
+            <li>🔴 <strong>אדום</strong> = מעל התקציב</li>
+        </ul>
+
+        <h2><span class="step-number">5</span> ניהול עסקאות</h2>
+        <ul>
+            <li>לחצו על <code>עסקאות</code> לצפייה בכל העסקאות</li>
+            <li>סננו לפי קטגוריה באמצעות התפריט הנפתח</li>
+            <li>לחצו על כותרת עמודה למיון</li>
+        </ul>
+
+        <hr>
+
+        <h2>🎯 קיצורי דרך חשובים</h2>
+        <div class="shortcuts">
+            <div class="shortcut-item">
+                <strong>מחיקת עסקה</strong>
+                החלקה ימינה ←
+            </div>
+            <div class="shortcut-item">
+                <strong>שחזור עסקה</strong>
+                החלקה שמאלה →
+            </div>
+            <div class="shortcut-item">
+                <strong>צפייה בפרטים</strong>
+                לחיצה ארוכה
+            </div>
+            <div class="shortcut-item">
+                <strong>רענון נתונים</strong>
+                משיכה למטה
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>👥 שיתוף התקציב</h2>
+        <ol>
+            <li>לחצו על <strong>תפריט</strong> (☰)</li>
+            <li>בחרו <strong>שתף</strong></li>
+            <li>הזינו את האימייל של האדם השני</li>
+            <li>לחצו <strong>שתף</strong></li>
+        </ol>
+
+        <div class="warning-box">
+            <strong>⚠️ שימו לב:</strong> קבלת שיתוף מוחקת את התקציב הקיים של המקבל!
+        </div>
+
+        <hr>
+
+        <h2>⚙️ הגדרות מהירות</h2>
+        <table>
+            <tr>
+                <th>הגדרה</th>
+                <th>מיקום</th>
+            </tr>
+            <tr>
+                <td>שינוי שפה</td>
+                <td>תפריט ← הגדרות ← שפה</td>
+            </tr>
+            <tr>
+                <td>שינוי מטבע</td>
+                <td>תפריט ← הגדרות ← מטבע</td>
+            </tr>
+            <tr>
+                <td>עריכת חודשים קודמים</td>
+                <td>תפריט ← הגדרות ← הפעלת אפשרות</td>
+            </tr>
+            <tr>
+                <td>שינוי סיסמה</td>
+                <td>תפריט ← הגדרות ← פרופיל</td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <h2>❓ עזרה נוספת</h2>
+        <div class="card">
+            <ul>
+                <li><strong>סרטון הדרכה:</strong> תפריט ← מדריך לאפליקציה</li>
+                <li><strong>יצירת קשר:</strong> תפריט ← צור קשר</li>
+                <li><strong>מדריך מלא:</strong> פתחו את <code>USER_GUIDE_HE.html</code></li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <footer>
+            <p style="font-size: 1.3em;">🎉 <strong>זהו! אתם מוכנים להתחיל!</strong></p>
+            <p>ניהול תקציב מוצלח!</p>
+        </footer>
+    </div>
+</body>
+</html>

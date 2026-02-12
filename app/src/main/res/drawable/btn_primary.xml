@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- WhatsApp-Style Primary Button - Bold Teal Action Button -->
+<!-- Professional Primary Button with Enhanced States -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="#4025D366">
-    <item>
+    
+    <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
-            <solid android:color="#00A884" />
-            <corners android:radius="8dp" />
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="10dp" />
         </shape>
     </item>
+    
+    <item>
+        <selector>
+            <!-- Disabled State -->
+            <item android:state_enabled="false">
+                <shape android:shape="rectangle">
+                    <solid android:color="#3A5565" />
+                    <corners android:radius="10dp" />
+                </shape>
+            </item>
+            
+            <!-- Pressed State -->
+            <item android:state_pressed="true">
+                <shape android:shape="rectangle">
+                    <solid android:color="#008069" />
+                    <corners android:radius="10dp" />
+                </shape>
+            </item>
+            
+            <!-- Default State -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#00A884" />
+                    <corners android:radius="10dp" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+    
 </ripple>

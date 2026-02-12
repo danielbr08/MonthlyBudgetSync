@@ -41,6 +41,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
+import com.brosh.finance.monthlybudgetsync.utils.DialogHelper;
 import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
@@ -701,7 +702,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Opens a dialog to share budget with another user.
+     * Opens a beautifully styled dialog to share budget with another user.
      */
     public void openShareDialog() {
         if (isFinishing() || isDestroyed) {
@@ -709,29 +710,10 @@ public class MainActivity extends AppCompatActivity {
         }
         
         final Context context = this;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        final EditText emailInput = new EditText(this);
-        emailInput.setHint(getString(R.string.please_enter_user_email_to_share));
-        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        builder.setTitle(getString(R.string.share_budget));
-
-        builder.setView(emailInput);
-        builder.setPositiveButton(getString(R.string.share), null);
-        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.cancel());
         
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String emailText = TextUtil.safeTrim(emailInput.getText().toString());
-            
-            if (!TextUtil.isEmailValid(emailText)) {
-                emailInput.setError(getString(R.string.invalid_email));
-                return;
-            }
-            
+        DialogHelper.showShareDialog(this, (email, dialog) -> {
             try {
-                DBUtil.getInstance().share(emailText);
+                DBUtil.getInstance().share(email);
                 TextUtil.showMessage(getString(R.string.successfully_shared), Toast.LENGTH_LONG, context);
                 dialog.dismiss();
             } catch (Exception e) {

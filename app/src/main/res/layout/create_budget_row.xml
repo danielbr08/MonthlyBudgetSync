@@ -1,107 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Professional Budget Row Item - Clean, Modern Layout -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/row_item_background"
     android:orientation="horizontal"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
-    android:paddingTop="6dp"
-    android:paddingBottom="6dp"
-    android:layout_marginBottom="6dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:layout_marginBottom="8dp"
     android:gravity="center_vertical"
     android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    android:minHeight="60dp">
 
-    <!-- Category Name -->
+    <!-- Category Name Input -->
     <EditText
         android:id="@+id/bgt_category"
         android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_weight="0.28"
-        android:layout_marginEnd="4dp"
+        android:layout_height="48dp"
+        android:layout_weight="0.32"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/input_background"
         android:hint="@string/category"
         android:inputType="text"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:singleLine="true"
         android:textColor="@color/colorTextPrimary"
         android:textColorHint="@color/colorInputHint"
-        android:textSize="12sp"
-        android:importantForAutofill="no" />
+        android:textSize="13sp"
+        android:fontFamily="sans-serif-medium"
+        android:importantForAutofill="no"
+        android:gravity="center_vertical" />
 
-    <!-- Budget Value -->
+    <!-- Budget Value Input -->
     <EditText
         android:id="@+id/bgt_budget"
         android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_weight="0.22"
+        android:layout_height="48dp"
+        android:layout_weight="0.20"
         android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/input_background"
         android:hint="0"
         android:inputType="numberDecimal"
-        android:paddingStart="6dp"
-        android:paddingEnd="6dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:singleLine="true"
         android:textAlignment="center"
         android:textColor="@color/colorTextPrimary"
         android:textColorHint="@color/colorInputHint"
         android:textDirection="ltr"
-        android:textSize="12sp"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-medium"
         android:importantForAutofill="no"
+        android:gravity="center"
         tools:ignore="RtlCompat"
         tools:targetApi="jelly_bean_mr1" />
 
     <!-- Constant Date Section -->
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.50"
+        android:layout_height="48dp"
+        android:layout_weight="0.48"
         android:layout_marginStart="4dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="@drawable/input_background_light"
+        android:paddingStart="4dp"
+        android:paddingEnd="8dp">
 
-        <!-- Checkbox -->
+        <!-- Fixed/Recurring Checkbox -->
         <CheckBox
             android:id="@+id/bgt_constant_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/colorPrimary" />
+            android:buttonTint="@color/colorPrimary"
+            android:minWidth="36dp"
+            android:minHeight="36dp"
+            android:padding="4dp" />
 
-        <!-- Store Name -->
+        <!-- Store Name Input -->
         <EditText
             android:id="@+id/bgt_store"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="6dp"
             android:background="@drawable/input_background"
             android:hint="@string/store"
             android:inputType="text"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"
             android:textColorHint="@color/colorInputHint"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:visibility="invisible"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:gravity="center_vertical" />
 
-        <!-- Charge Day -->
+        <!-- Charge Day Selector -->
         <TextView
             android:id="@+id/bgt_charge_day"
-            android:layout_width="36dp"
+            android:layout_width="42dp"
             android:layout_height="40dp"
             android:background="@drawable/input_background"
             android:gravity="center"
             android:text="@string/one"
             android:textColor="@color/colorTextPrimary"
-            android:textSize="12sp"
-            android:visibility="invisible" />
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            android:fontFamily="sans-serif-medium" />
 
     </LinearLayout>
 

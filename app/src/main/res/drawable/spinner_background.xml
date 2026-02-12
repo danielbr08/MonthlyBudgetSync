@@ -1,26 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- WhatsApp-Style Spinner Background with Frame Border -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Border frame -->
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" />
-            <stroke
-                android:width="1dp"
-                android:color="#4D6878" />
-            <corners android:radius="8dp" />
-            <padding
-                android:left="12dp"
-                android:right="32dp"
-                android:top="0dp"
-                android:bottom="0dp" />
-        </shape>
+<!-- Professional Spinner Background with Clean Frame -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Pressed State -->
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#405B6B" />
+                    <stroke
+                        android:width="1.5dp"
+                        android:color="#00A884" />
+                    <corners android:radius="10dp" />
+                    <padding
+                        android:left="14dp"
+                        android:right="36dp"
+                        android:top="0dp"
+                        android:bottom="0dp" />
+                </shape>
+            </item>
+            <item
+                android:drawable="@drawable/ic_dropdown_arrow"
+                android:gravity="end|center_vertical"
+                android:width="14dp"
+                android:height="14dp"
+                android:right="12dp" />
+        </layer-list>
     </item>
-    <!-- Dropdown Arrow -->
-    <item
-        android:drawable="@drawable/ic_dropdown_arrow"
-        android:gravity="end|center_vertical"
-        android:width="14dp"
-        android:height="14dp"
-        android:right="10dp" />
-</layer-list>
+    
+    <!-- Focused State -->
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#3A5565" />
+                    <stroke
+                        android:width="1.5dp"
+                        android:color="#00A884" />
+                    <corners android:radius="10dp" />
+                    <padding
+                        android:left="14dp"
+                        android:right="36dp"
+                        android:top="0dp"
+                        android:bottom="0dp" />
+                </shape>
+            </item>
+            <item
+                android:drawable="@drawable/ic_dropdown_arrow"
+                android:gravity="end|center_vertical"
+                android:width="14dp"
+                android:height="14dp"
+                android:right="12dp" />
+        </layer-list>
+    </item>
+    
+    <!-- Default State -->
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@android:color/transparent" />
+                    <stroke
+                        android:width="1dp"
+                        android:color="#4D6878" />
+                    <corners android:radius="10dp" />
+                    <padding
+                        android:left="14dp"
+                        android:right="36dp"
+                        android:top="0dp"
+                        android:bottom="0dp" />
+                </shape>
+            </item>
+            <item
+                android:drawable="@drawable/ic_dropdown_arrow"
+                android:gravity="end|center_vertical"
+                android:width="14dp"
+                android:height="14dp"
+                android:right="12dp" />
+        </layer-list>
+    </item>
+    
+</selector>

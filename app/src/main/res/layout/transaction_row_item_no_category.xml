@@ -1,71 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Professional Transaction Row Item (No Category) - Clean, Scannable Layout -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/row_item_background"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:layout_marginBottom="6dp"
+    android:gravity="center_vertical"
+    android:minHeight="56dp"
     android:weightSum="100"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:clickable="true"
+    android:focusable="true">
 
+    <!-- ID Column -->
     <TextView
         android:id="@+id/trn_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@drawable/border_style"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="14"
+        android:layout_marginEnd="4dp"
         android:text="@string/id"
-        android:layout_weight="16"
+        android:textColor="@color/colorTextMuted"
+        android:textSize="11sp"
+        android:gravity="center_vertical|start"
         android:textDirection="locale"
         android:singleLine="true"
+        android:fontFamily="sans-serif"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Store Column -->
     <TextView
         android:id="@+id/trn_store"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@drawable/border_style"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="24"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/store"
-        android:layout_weight="19"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center_vertical|start"
         android:textDirection="locale"
         android:singleLine="true"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Charge Date Column -->
     <TextView
         android:id="@+id/trn_charge_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@drawable/border_style"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="24"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/charge_date"
-        android:layout_weight="23"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="12sp"
+        android:gravity="center_vertical|start"
         android:textDirection="ltr"
         android:singleLine="true"
+        android:fontFamily="sans-serif"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Payment Method Column -->
     <TextView
         android:id="@+id/trn_payment_method"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@drawable/border_style"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="22"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/payment_method"
-        android:layout_weight="24"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="11sp"
+        android:textAlignment="center"
+        android:gravity="center"
         android:textDirection="locale"
         android:singleLine="true"
         android:ellipsize="end"
+        android:fontFamily="sans-serif"
         tools:targetApi="jelly_bean_mr1" />
 
+    <!-- Price Column -->
     <TextView
         android:id="@+id/trn_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@drawable/border_style"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="16"
+        android:layout_marginStart="2dp"
         android:text="@string/price"
+        android:textColor="@color/colorPositive"
+        android:textSize="13sp"
+        android:textStyle="bold"
         android:textDirection="ltr"
-        android:layout_weight="18"
+        android:textAlignment="viewEnd"
+        android:gravity="center_vertical|end"
         android:singleLine="true"
+        android:fontFamily="sans-serif-medium"
         tools:targetApi="jelly_bean_mr1" />
 
 </LinearLayout>
