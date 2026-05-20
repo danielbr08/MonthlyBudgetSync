@@ -32,6 +32,7 @@ import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.IntentHelper;
 import com.brosh.finance.monthlybudgetsync.utils.KeyboardUtil;
 import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
+import com.brosh.finance.monthlybudgetsync.utils.SessionGuardUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 import com.brosh.finance.monthlybudgetsync.utils.ValidationUtil;
@@ -85,6 +86,9 @@ public class InsertTransactionActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_circular);
         String refMonth = IntentHelper.getYearMonth(this);
         user = DBUtil.getInstance().getUser();
+        if (!SessionGuardUtil.requireUser(this, user)) {
+            return;
+        }
         
         // Setup ads visibility with null safety
         boolean adEnabled = user != null && user.getUserSettings().isAdEnabled();
@@ -232,8 +236,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
                 return;
             }
 
-            double originalPrice = Double.parseDouble(priceStr);
-            double discountPercent = discountStr.isEmpty() ? 0 : Double.parseDouble(discountStr);
+            double originalPrice = ValidationUtil.parseDouble(priceStr, 0);
+            double discountPercent = discountStr.isEmpty() ? 0 : ValidationUtil.parseDouble(discountStr, 0);
 
             // Validate discount percentage (0-100)
             if (discountPercent < 0) discountPercent = 0;
@@ -248,7 +252,7 @@ public class InsertTransactionActivity extends AppCompatActivity {
             } else {
                 finalPriceLayout.setVisibility(View.GONE);
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             finalPriceLayout.setVisibility(View.GONE);
         }
     }
@@ -268,24 +272,22 @@ public class InsertTransactionActivity extends AppCompatActivity {
      * @return the final price to be used for the transaction
      */
     private double getFinalTransactionPrice() {
-        try {
-            double originalPrice = Double.parseDouble(transactionPriceEditText.getText().toString().trim());
-            
-            if (discountCheckBox.isChecked()) {
-                String discountStr = discountPercentEditText.getText().toString().trim();
-                double discountPercent = discountStr.isEmpty() ? 0 : Double.parseDouble(discountStr);
-                
-                // Validate discount percentage (0-100)
-                if (discountPercent < 0) discountPercent = 0;
-                if (discountPercent > 100) discountPercent = 100;
-                
-                return calculateDiscountedPrice(originalPrice, discountPercent);
-            }
-            
-            return originalPrice;
-        } catch (NumberFormatException e) {
+        if (transactionPriceEditText == null) {
             return 0;
         }
+        double originalPrice = ValidationUtil.parseDouble(
+                transactionPriceEditText.getText().toString().trim(), 0);
+        if (originalPrice <= 0) {
+            return 0;
+        }
+        if (discountCheckBox != null && discountCheckBox.isChecked() && discountPercentEditText != null) {
+            String discountStr = discountPercentEditText.getText().toString().trim();
+            double discountPercent = discountStr.isEmpty() ? 0 : ValidationUtil.parseDouble(discountStr, 0);
+            if (discountPercent < 0) discountPercent = 0;
+            if (discountPercent > 100) discountPercent = 100;
+            return calculateDiscountedPrice(originalPrice, discountPercent);
+        }
+        return originalPrice;
     }
 
     public void setSpinnersAllignment() {
@@ -368,6 +370,12 @@ public class InsertTransactionActivity extends AppCompatActivity {
         int idPerMonth = month.getTranIdNumerator() + 1;
         DatabaseReference transactionsNode = dbUtil.getDBTransactionsPath(month.getYearMonth(), catId);
         String tranId = transactionsNode.push().getKey();
+        if (tranId == null) {
+            progressBar.setVisibility(View.GONE);
+            TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, this);
+            btnSendTransaction.setEnabled(true);
+            return;
+        }
         
         // Get comment (optional)
         String comment = commentEditText.getText().toString().trim();
@@ -397,8 +405,8 @@ public class InsertTransactionActivity extends AppCompatActivity {
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 try {
                     Object trnNumeratorFB = mutableData.child(Definitions.TRAN_ID_NUMERATOR).getValue();
-                    int newIdPerMonth = trnNumeratorFB != null 
-                        ? Integer.parseInt(trnNumeratorFB.toString()) + 1 : 1;
+                    int newIdPerMonth = trnNumeratorFB != null
+                        ? ValidationUtil.parseInt(trnNumeratorFB.toString(), 0) + 1 : 1;
                     
                     transaction.setIdPerMonth(newIdPerMonth);
                     mutableData.child(Definitions.TRAN_ID_NUMERATOR).setValue(newIdPerMonth);

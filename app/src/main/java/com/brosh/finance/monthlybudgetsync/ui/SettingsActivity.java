@@ -24,8 +24,11 @@ import com.brosh.finance.monthlybudgetsync.config.Config;
 import com.brosh.finance.monthlybudgetsync.config.Definitions;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.objects.UserSettings;
+import com.brosh.finance.monthlybudgetsync.utils.BudgetInputUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
+import com.brosh.finance.monthlybudgetsync.utils.SessionGuardUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.ValidationUtil;
 
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -53,6 +56,9 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         user = DBUtil.getInstance().getUser();
+        if (!SessionGuardUtil.requireUser(this, user)) {
+            return;
+        }
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings, new SettingsFragment())
@@ -77,7 +83,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         UserSettings userSettings = user.getUserSettings();
-        userSettings.setChargeDay(Integer.parseInt(prefs.getString(Definitions.CHARGE_DAY, String.valueOf(userSettings.getChargeDay()))));
+        userSettings.setChargeDay(BudgetInputUtil.parseChargeDay(
+                prefs.getString(Definitions.CHARGE_DAY, String.valueOf(userSettings.getChargeDay()))));
         userSettings.setCurrency(prefs.getString(Definitions.CURRENCY, userSettings.getCurrency()));
         userSettings.setActiveTransactionsOnlyByDefault(prefs.getBoolean(Definitions.DEFAULT_SHOW_ACTIVE_ONLY, userSettings.isActiveTransactionsOnlyByDefault()));
         userSettings.setAutoCompleteFrom(prefs.getInt(Definitions.AUTO_COMPLETE, userSettings.getAutoCompleteFrom()));
@@ -101,6 +108,12 @@ public class SettingsActivity extends AppCompatActivity {
             final Context context = this.getContext();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             User user = DBUtil.getInstance().getUser();
+            if (user == null) {
+                if (getActivity() != null) {
+                    SessionGuardUtil.redirectToLogin(getActivity());
+                }
+                return;
+            }
             userSettings = user.getUserSettings();
 
             Preference languagePref = findPreference("language");
@@ -141,54 +154,70 @@ public class SettingsActivity extends AppCompatActivity {
             prefs.edit().putBoolean(Definitions.NOTIFICATIONS, userSettings.isNotifications()).commit();
             
             // Set initial UI states
-            activeTransactionsOnly.setChecked(userSettings.isActiveTransactionsOnlyByDefault());
-            emailUpdates.setChecked(userSettings.isEmailUpdates());
-            notifications.setChecked(userSettings.isNotifications());
-            allowEditPreviousMonths.setChecked(userSettings.isAllowEditPreviousMonths());
+            if (activeTransactionsOnly != null) {
+                activeTransactionsOnly.setChecked(userSettings.isActiveTransactionsOnlyByDefault());
+            }
+            if (emailUpdates != null) {
+                emailUpdates.setChecked(userSettings.isEmailUpdates());
+            }
+            if (notifications != null) {
+                notifications.setChecked(userSettings.isNotifications());
+            }
+            if (allowEditPreviousMonths != null) {
+                allowEditPreviousMonths.setChecked(userSettings.isAllowEditPreviousMonths());
+            }
 
-            chargeDayPref.setSummary(String.valueOf(userSettings.getChargeDay()));
-            autoCompleteyPref.setValue(userSettings.getAutoCompleteFrom());
-            autoCompleteyPref.setSummary(String.valueOf(userSettings.getAutoCompleteFrom()));
+            if (chargeDayPref != null) {
+                chargeDayPref.setSummary(String.valueOf(userSettings.getChargeDay()));
+            }
+            if (autoCompleteyPref != null) {
+                autoCompleteyPref.setValue(userSettings.getAutoCompleteFrom());
+                autoCompleteyPref.setSummary(String.valueOf(userSettings.getAutoCompleteFrom()));
+            }
 
             // Only allow the budget owner to change certain settings
             if (!user.isOwner()) {
-                chargeDayPref.setEnabled(false);
-                allowEditPreviousMonths.setEnabled(false);
+                if (chargeDayPref != null) {
+                    chargeDayPref.setEnabled(false);
+                }
+                if (allowEditPreviousMonths != null) {
+                    allowEditPreviousMonths.setEnabled(false);
+                }
             }
 
             // Language and Currency preferences are handled by custom dialogs set up above
 
             // Add change listeners to update user object immediately
-            activeTransactionsOnly.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (activeTransactionsOnly != null) activeTransactionsOnly.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean value = (Boolean) newValue;
                 userSettings.setActiveTransactionsOnlyByDefault(value);
                 prefs.edit().putBoolean(Definitions.DEFAULT_SHOW_ACTIVE_ONLY, value).commit();
                 return true;
             });
 
-            emailUpdates.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (emailUpdates != null) emailUpdates.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean value = (Boolean) newValue;
                 userSettings.setEmailUpdates(value);
                 prefs.edit().putBoolean(Definitions.EMAIL_UPDATES, value).commit();
                 return true;
             });
 
-            notifications.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (notifications != null) notifications.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean value = (Boolean) newValue;
                 userSettings.setNotifications(value);
                 prefs.edit().putBoolean(Definitions.NOTIFICATIONS, value).commit();
                 return true;
             });
 
-            allowEditPreviousMonths.setOnPreferenceChangeListener((preference, newValue) -> {
+            if (allowEditPreviousMonths != null) allowEditPreviousMonths.setOnPreferenceChangeListener((preference, newValue) -> {
                 boolean value = (Boolean) newValue;
                 userSettings.setAllowEditPreviousMonths(value);
                 prefs.edit().putBoolean(Definitions.ALLOW_EDIT_PREVIOUS_MONTHS, value).commit();
                 return true;
             });
 
-            autoCompleteyPref.setOnPreferenceChangeListener((preference, newValue) -> {
-                int newVal = Integer.parseInt(newValue.toString());
+            if (autoCompleteyPref != null) autoCompleteyPref.setOnPreferenceChangeListener((preference, newValue) -> {
+                int newVal = ValidationUtil.parseInt(String.valueOf(newValue), userSettings.getAutoCompleteFrom());
                 ((SeekBarPreference) preference).setValue(newVal);
                 preference.setSummary(String.valueOf(newVal));
                 userSettings.setAutoCompleteFrom(newVal);
@@ -196,7 +225,7 @@ public class SettingsActivity extends AppCompatActivity {
                 return false;
             });
 
-            chargeDayPref.setOnPreferenceClickListener(preference -> {
+            if (chargeDayPref != null) chargeDayPref.setOnPreferenceClickListener(preference -> {
                 // Create fresh view each time to avoid stale visual state
                 View dayPeekerView = getLayoutInflater().inflate(R.layout.day_peeker, null);
                 
@@ -206,6 +235,9 @@ public class SettingsActivity extends AppCompatActivity {
                 int defaultId = (ids != null && !ids.isEmpty()) ? ids.get(0) : R.id.tv1;
                 
                 final TextView[] currentSelectionTV = {dayPeekerView.findViewById(defaultId)};
+                if (currentSelectionTV[0] == null) {
+                    return true;
+                }
                 currentSelectionTV[0].setBackgroundResource(R.drawable.circle_pink_style);
                 final TextView[] selectedDayTV = {currentSelectionTV[0]};
 
@@ -228,9 +260,9 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.setView(dayPeekerView)
                     .setPositiveButton(R.string.select, (dialog, which) -> {
                         String selectedDayText = selectedDayTV[0].getText().toString().trim();
-                        int chargeDay = Integer.parseInt(selectedDayText);
+                        int chargeDay = BudgetInputUtil.parseChargeDay(selectedDayText);
                         userSettings.setChargeDay(chargeDay);
-                        chargeDayPref.setSummary(selectedDayText);
+                        chargeDayPref.setSummary(String.valueOf(chargeDay));
                         prefs.edit().putString(Definitions.CHARGE_DAY, selectedDayText).commit();
                     })
                     .setNegativeButton(R.string.cancel, null);
@@ -238,25 +270,25 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
             });
 
-            changeUserNamePref.setOnPreferenceClickListener(preference -> {
+            if (changeUserNamePref != null) changeUserNamePref.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
                 intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_USER_NAME);
                 startActivity(intent);
                 return true;
             });
-            changeEmailPref.setOnPreferenceClickListener(preference -> {
+            if (changeEmailPref != null) changeEmailPref.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
                 intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_EMAIL);
                 startActivity(intent);
                 return true;
             });
-            changePasswordPref.setOnPreferenceClickListener(preference -> {
+            if (changePasswordPref != null) changePasswordPref.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
                 intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_PASSWORD);
                 startActivity(intent);
                 return true;
             });
-            changePhonePref.setOnPreferenceClickListener(preference -> {
+            if (changePhonePref != null) changePhonePref.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
                 intent.putExtra(Definitions.UPDATE_TYPE, Definitions.UPDATE_PHONE_NUMBER);
                 startActivity(intent);

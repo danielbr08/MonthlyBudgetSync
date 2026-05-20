@@ -19,6 +19,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Share;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
+import com.brosh.finance.monthlybudgetsync.utils.SessionGuardUtil;
 import com.brosh.finance.monthlybudgetsync.utils.TextUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -56,6 +57,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         user = DBUtil.getInstance().getUser();
+        if (!SessionGuardUtil.requireUser(this, user)) {
+            return;
+        }
         if (extras != null) {
             updateType = extras.getInt(UPDATE_TYPE);
         }
@@ -97,6 +101,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void update(View view) {
+        if (submit == null || progressBar == null || newValueET == null || passwordToConfirmET == null) {
+            return;
+        }
         submit.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
         String newValue = newValueET.getText().toString().trim();
@@ -120,14 +127,25 @@ public class ProfileActivity extends AppCompatActivity {
                     break;
             }
         } catch (Exception e) {
+            resetSubmitUi();
             String message = getString(R.string.error);
             TextUtil.showMessage(message, Toast.LENGTH_LONG, getApplicationContext());
+        }
+    }
+
+    private void resetSubmitUi() {
+        if (submit != null) {
+            submit.setEnabled(true);
+        }
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
         }
     }
 
     private void changeEmail(String newEmail, String password) {
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
         if (usr == null || usr.getEmail() == null) {
+            resetSubmitUi();
             TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
             return;
         }
@@ -140,8 +158,12 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        user.updateEmail(newEmail)
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (firebaseUser == null) {
+                            resetSubmitUi();
+                            return;
+                        }
+                        firebaseUser.updateEmail(newEmail)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task1) {
@@ -157,6 +179,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                                             // update user node
                                             User userObject = DBUtil.getInstance().getUser();
+                                            if (userObject == null) {
+                                                resetSubmitUi();
+                                                return;
+                                            }
                                             userObject.setEmail(newEmail);
                                             DBUtil.getInstance().getDBUsersPath().child(userObject.getUid()).setValue(userObject);
 
@@ -176,11 +202,10 @@ public class ProfileActivity extends AppCompatActivity {
                                             TextUtil.showMessage(message, Toast.LENGTH_LONG, getApplicationContext());
                                             finish();
                                         } else {
-                                            submit.setEnabled(true);
-                                            progressBar.setVisibility(View.GONE);
-                                            if (task.getException() instanceof FirebaseNetworkException) {
+                                            resetSubmitUi();
+                                            if (task1.getException() instanceof FirebaseNetworkException) {
                                                 TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, getApplicationContext());
-                                            } else if (task.getException() instanceof FirebaseAuthException authException) {
+                                            } else if (task1.getException() instanceof FirebaseAuthException authException) {
                                                 String errorCode = authException.getErrorCode();
                                                 switch (errorCode) {
                                                     case "ERROR_INVALID_EMAIL":
@@ -203,26 +228,30 @@ public class ProfileActivity extends AppCompatActivity {
     private void changePassword(String newPassword, String passwordConfirm) {
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
         if (usr == null || usr.getEmail() == null) {
+            resetSubmitUi();
             TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
             return;
         }
         AuthCredential credential = EmailAuthProvider.getCredential(usr.getEmail(), passwordConfirm);
         usr.reauthenticate(credential)
                 .addOnCompleteListener(task -> {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    user.updatePassword(newPassword)
+                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (firebaseUser == null) {
+                        resetSubmitUi();
+                        return;
+                    }
+                    firebaseUser.updatePassword(newPassword)
                             .addOnCompleteListener(task1 -> {
                                 if (task1.isSuccessful()) {
                                     String message = getString(R.string.password_successfully_changed);
                                     TextUtil.showMessage(message, Toast.LENGTH_LONG, getApplicationContext());
                                     finish();
                                 } else {
-                                    submit.setEnabled(true);
-                                    progressBar.setVisibility(View.GONE);
-                                    if (task.getException() instanceof FirebaseNetworkException) {
+                                    resetSubmitUi();
+                                    if (task1.getException() instanceof FirebaseNetworkException) {
                                         TextUtil.showMessage(getString(R.string.network_error), Toast.LENGTH_SHORT, getApplicationContext());
                                         return;
-                                    } else if (task.getException() instanceof FirebaseAuthException authException) {
+                                    } else if (task1.getException() instanceof FirebaseAuthException authException) {
                                         String errorCode = authException.getErrorCode();
                                         switch (errorCode) {
                                             case "ERROR_WEAK_PASSWORD":
@@ -237,9 +266,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void changePhoneNumber(String phoneNumber, String password) {
-        User user = DBUtil.getInstance().getUser();
+        User localUser = DBUtil.getInstance().getUser();
+        if (localUser == null) {
+            resetSubmitUi();
+            return;
+        }
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
         if (usr == null || usr.getEmail() == null) {
+            resetSubmitUi();
             TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
             return;
         }
@@ -248,14 +282,13 @@ public class ProfileActivity extends AppCompatActivity {
         usr.reauthenticate(credential)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        user.setPhone(phoneNumber);
-                        Config.DatabaseReferenceUsers.child(user.getUid()).setValue(user);
+                        localUser.setPhone(phoneNumber);
+                        Config.DatabaseReferenceUsers.child(localUser.getUid()).setValue(localUser);
                         String message = getString(R.string.phone_number_successfully_changed);
                         TextUtil.showMessage(message, Toast.LENGTH_LONG, getApplicationContext());
                         finish();
                     } else {
-                        submit.setEnabled(true);
-                        progressBar.setVisibility(View.GONE);
+                        resetSubmitUi();
                         String message = getString(R.string.error);
                         TextUtil.showMessage(message, Toast.LENGTH_LONG, getApplicationContext());
                     }
@@ -264,9 +297,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void changeUserName(String newUserName, String password) {
-        User user = DBUtil.getInstance().getUser();
+        User localUser = DBUtil.getInstance().getUser();
+        if (localUser == null) {
+            resetSubmitUi();
+            return;
+        }
         FirebaseUser usr = FirebaseAuth.getInstance().getCurrentUser();
         if (usr == null || usr.getEmail() == null) {
+            resetSubmitUi();
             TextUtil.showMessage(getString(R.string.error), Toast.LENGTH_LONG, getApplicationContext());
             return;
         }
@@ -275,14 +313,13 @@ public class ProfileActivity extends AppCompatActivity {
         usr.reauthenticate(credential)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        user.setName(newUserName);
-                        Config.DatabaseReferenceUsers.child(user.getUid()).setValue(user);
+                        localUser.setName(newUserName);
+                        Config.DatabaseReferenceUsers.child(localUser.getUid()).setValue(localUser);
                         String message = getString(R.string.user_name_successfully_changed);
                         TextUtil.showMessage(message, Toast.LENGTH_LONG, getApplicationContext());
                         finish();
                     } else {
-                        submit.setEnabled(true);
-                        progressBar.setVisibility(View.GONE);
+                        resetSubmitUi();
                         String message = getString(R.string.error);
                         TextUtil.showMessage(message, Toast.LENGTH_LONG, getApplicationContext());
                     }

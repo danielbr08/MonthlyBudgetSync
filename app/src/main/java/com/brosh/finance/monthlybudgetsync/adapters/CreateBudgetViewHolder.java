@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brosh.finance.monthlybudgetsync.R;
 import com.brosh.finance.monthlybudgetsync.objects.Budget;
+import com.brosh.finance.monthlybudgetsync.utils.BudgetInputUtil;
 import com.brosh.finance.monthlybudgetsync.utils.FormatUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
+import com.brosh.finance.monthlybudgetsync.utils.ValidationUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -112,10 +114,79 @@ public class CreateBudgetViewHolder extends RecyclerView.ViewHolder {
         store.setText(shopText);
         chargeDay.setText(String.valueOf(budgetData.getChargeDay()));
 
-        catName.requestFocus();
-
         store.setVisibility(visibility);
         chargeDay.setVisibility(visibility);
+    }
+
+    // ============================================
+    // ROW DATA ACCESS (used when saving budget)
+    // ============================================
+
+    @NonNull
+    public EditText getCategoryEditText() {
+        return catName;
+    }
+
+    @NonNull
+    public EditText getValueEditText() {
+        return budget;
+    }
+
+    @NonNull
+    public CheckBox getConstPaymentCheckBox() {
+        return constDate;
+    }
+
+    @NonNull
+    public EditText getShopEditText() {
+        return store;
+    }
+
+    @NonNull
+    public TextView getChargeDayTextView() {
+        return chargeDay;
+    }
+
+    @NonNull
+    public String getCategoryText() {
+        return ValidationUtil.safeTrim(catName.getText().toString());
+    }
+
+    public int getParsedValue() {
+        return BudgetInputUtil.parseBudgetAmount(budget.getText().toString());
+    }
+
+    public boolean isConstPaymentChecked() {
+        return constDate.isChecked();
+    }
+
+    @NonNull
+    public String getShopText() {
+        return ValidationUtil.safeTrim(store.getText().toString());
+    }
+
+    public int getParsedChargeDay() {
+        return BudgetInputUtil.parseChargeDay(chargeDay.getText().toString());
+    }
+
+    /**
+     * Builds a {@link Budget} from the current view state.
+     */
+    @NonNull
+    public Budget toBudget(int priority) {
+        boolean constPayment = isConstPaymentChecked();
+        String shop = constPayment ? getShopText() : null;
+        int chargeDay = constPayment ? getParsedChargeDay() : 1;
+        if (!constPayment) {
+            store.setText("");
+        }
+        return BudgetInputUtil.buildBudget(
+                getCategoryText(),
+                getParsedValue(),
+                constPayment,
+                shop,
+                chargeDay,
+                priority);
     }
 
     // ============================================

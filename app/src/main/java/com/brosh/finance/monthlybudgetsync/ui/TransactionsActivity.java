@@ -34,6 +34,7 @@ import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.DateUtil;
 import com.brosh.finance.monthlybudgetsync.utils.FormatUtil;
 import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
+import com.brosh.finance.monthlybudgetsync.utils.SessionGuardUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 import java.util.ArrayList;
@@ -69,6 +70,10 @@ public class TransactionsActivity extends AppCompatActivity {
     private User user;
     private String refMonth;
     private List<String> defaultTextTVHeaders;
+    @Nullable
+    private ItemTouchHelper itemTouchHelper;
+    @Nullable
+    private String currentRefMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +81,14 @@ public class TransactionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transactions);
         
         initializeData();
+        if (user == null) {
+            return;
+        }
         initializeViews();
+        if (transactionsRows != null) {
+            itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
+            itemTouchHelper.attachToRecyclerView(transactionsRows);
+        }
         setupAds();
         setupToolbar();
         setupUI(savedInstanceState);
@@ -90,8 +102,14 @@ public class TransactionsActivity extends AppCompatActivity {
         refMonth = extras != null ? extras.getString(Definitions.MONTH, null) : null;
         dbUtil = DBUtil.getInstance();
         user = dbUtil.getUser();
+        if (!SessionGuardUtil.requireUser(this, user)) {
+            return;
+        }
         month = dbUtil.getMonth(refMonth);
-        transactions = dbUtil.getTransactions(refMonth);
+        currentRefMonth = month != null
+                ? DateUtil.getYearMonth(month.getRefMonth(), Config.SEPARATOR)
+                : refMonth;
+        transactions = dbUtil.getTransactions(currentRefMonth);
         
         // Initialize default header texts
         defaultTextTVHeaders = Arrays.asList(
@@ -146,7 +164,9 @@ public class TransactionsActivity extends AppCompatActivity {
         Bundle intentExtras = getIntent().getExtras();
         String selectedCategory = intentExtras != null ? intentExtras.getString(EXTRA_CATEGORY_NAME, null) : null;
         
-        transactionsActiveFilterCB.setChecked(true);
+        if (transactionsActiveFilterCB != null) {
+            transactionsActiveFilterCB.setChecked(true);
+        }
         setActiveTransactionListener();
         
         updateNoTransactionsVisibility();
@@ -185,7 +205,7 @@ public class TransactionsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setDefaultHeadersStyleExceptSelected(null);
-                String categoryName = categoriesSpinner.getSelectedItem().toString();
+                String categoryName = getSelectedCategoryName();
                 setTransactionsInGui(categoryName, Definitions.SORT_BY_ID, Definitions.ARROW_UP);
             }
 
@@ -237,9 +257,20 @@ public class TransactionsActivity extends AppCompatActivity {
         // Setup RecyclerView
         adapter = new TransactionsViewAdapter(this, transactions, isAllCategories);
         adapter.setOnTransactionLongClickListener(this::showTransactionDetailsDialog);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(transactionsRows);
-        transactionsRows.setAdapter(adapter);
-        transactionsRows.setLayoutManager(new LinearLayoutManager(this));
+        if (transactionsRows != null) {
+            transactionsRows.setAdapter(adapter);
+            if (transactionsRows.getLayoutManager() == null) {
+                transactionsRows.setLayoutManager(new LinearLayoutManager(this));
+            }
+        }
+    }
+
+    @NonNull
+    private String getSelectedCategoryName() {
+        if (categoriesSpinner == null || categoriesSpinner.getSelectedItem() == null) {
+            return getString(R.string.all);
+        }
+        return categoriesSpinner.getSelectedItem().toString();
     }
     
     /**
@@ -386,11 +417,13 @@ public class TransactionsActivity extends AppCompatActivity {
      * Sets up click listeners for sortable headers.
      */
     public void setOnClickTextViews() {
+        if (headersLL == null) {
+            return;
+        }
         for (int i = 0; i < headersLL.getChildCount(); i++) {
-            final int index = i;
-            View child = headersLL.getChildAt(index);
-            if (child instanceof TextView) {
-                child.setOnClickListener(view -> handleHeaderClick((TextView) view));
+            View child = headersLL.getChildAt(i);
+            if (child instanceof TextView headerTV) {
+                child.setOnClickListener(view -> handleHeaderClick(headerTV));
             }
         }
     }
@@ -400,6 +433,9 @@ public class TransactionsActivity extends AppCompatActivity {
      */
     private void handleHeaderClick(TextView headerTV) {
         String allText = headerTV.getText().toString();
+        if (allText.isEmpty()) {
+            return;
+        }
         char ascOrDesc = allText.charAt(allText.length() - 1);
         String text;
         
@@ -418,7 +454,7 @@ public class TransactionsActivity extends AppCompatActivity {
         
         setDefaultHeadersStyleExceptSelected(headerTV);
         int sortBy = getSortBy(text);
-        setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), sortBy, ascOrDesc);
+        setTransactionsInGui(getSelectedCategoryName(), sortBy, ascOrDesc);
     }
 
     /**
@@ -438,9 +474,12 @@ public class TransactionsActivity extends AppCompatActivity {
      * Resets header styling except for the selected header.
      */
     public void setDefaultHeadersStyleExceptSelected(@Nullable TextView selectedHeader) {
+        if (headersLL == null || defaultTextTVHeaders == null) {
+            return;
+        }
         for (int i = 0; i < headersLL.getChildCount(); i++) {
             View child = headersLL.getChildAt(i);
-            if (child instanceof TextView currentTV && currentTV != selectedHeader) {
+            if (child instanceof TextView currentTV && currentTV != selectedHeader && i < defaultTextTVHeaders.size()) {
                 currentTV.setText(defaultTextTVHeaders.get(i));
                 currentTV.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
             }
@@ -454,7 +493,7 @@ public class TransactionsActivity extends AppCompatActivity {
         SwipeRefreshLayout refreshLayout = findViewById(R.id.refresh_layout_transactions);
         if (refreshLayout != null) {
             refreshLayout.setOnRefreshListener(() -> {
-                setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
+                setTransactionsInGui(getSelectedCategoryName(), Definitions.SORT_BY_ID, Definitions.ARROW_UP);
                 refreshLayout.setRefreshing(false);
             });
         }
@@ -464,8 +503,11 @@ public class TransactionsActivity extends AppCompatActivity {
      * Sets up the active transactions filter checkbox listener.
      */
     public void setActiveTransactionListener() {
-        transactionsActiveFilterCB.setOnCheckedChangeListener((buttonView, isChecked) -> 
-            setTransactionsInGui(categoriesSpinner.getSelectedItem().toString(), Definitions.SORT_BY_ID, Definitions.ARROW_UP));
+        if (transactionsActiveFilterCB == null) {
+            return;
+        }
+        transactionsActiveFilterCB.setOnCheckedChangeListener((buttonView, isChecked) ->
+            setTransactionsInGui(getSelectedCategoryName(), Definitions.SORT_BY_ID, Definitions.ARROW_UP));
     }
 
     /**
@@ -475,10 +517,9 @@ public class TransactionsActivity extends AppCompatActivity {
             0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
 
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, 
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
                               @NonNull RecyclerView.ViewHolder target) {
-            adapter.notifyItemMoved(viewHolder.getBindingAdapterPosition(), target.getBindingAdapterPosition());
-            return true;
+            return false;
         }
 
         @Override
@@ -498,8 +539,21 @@ public class TransactionsActivity extends AppCompatActivity {
         boolean onlyActive = transactionsActiveFilterCB.isChecked();
         boolean isSpecificCategory = categoriesSpinner.getSelectedItemPosition() > 0;
         
-        Category category = dbUtil.getCategoryByName(refMonth, tran.getCategory());
-        if (category == null) return;
+        String monthKey = currentRefMonth != null ? currentRefMonth : refMonth;
+        if (monthKey == null) {
+            if (adapter != null) {
+                adapter.notifyItemChanged(position);
+            }
+            return;
+        }
+
+        Category category = dbUtil.getCategoryByName(monthKey, tran.getCategory());
+        if (category == null) {
+            if (adapter != null) {
+                adapter.notifyItemChanged(position);
+            }
+            return;
+        }
         
         String catId = category.getId();
         boolean update = false;
@@ -514,8 +568,8 @@ public class TransactionsActivity extends AppCompatActivity {
         }
         
         if (update) {
-            dbUtil.markDeleteTransaction(refMonth, tran);
-            dbUtil.updateCategoryBudgetValue(refMonth, catId);
+            dbUtil.markDeleteTransaction(monthKey, tran);
+            dbUtil.updateCategoryBudgetValue(monthKey, catId);
         }
         
         // Update UI
@@ -539,9 +593,13 @@ public class TransactionsActivity extends AppCompatActivity {
         if (user == null) return;
         
         String currency = user.getUserSettings().getCurrency();
-        double sum = catId != null 
-            ? dbUtil.getTransactionsSum(refMonth, catId, onlyActive)
-            : dbUtil.getTransactionsSum(refMonth, onlyActive);
+        String monthKey = currentRefMonth != null ? currentRefMonth : refMonth;
+        if (monthKey == null) {
+            return;
+        }
+        double sum = catId != null
+            ? dbUtil.getTransactionsSum(monthKey, catId, onlyActive)
+            : dbUtil.getTransactionsSum(monthKey, onlyActive);
         
         updateTotalLabel(currency, FormatUtil.roundToTwoDecimals(sum));
     }

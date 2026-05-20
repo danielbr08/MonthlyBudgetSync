@@ -6,6 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/row_item_background"
     android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:weightSum="100"
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
     android:paddingTop="10dp"
@@ -21,7 +23,7 @@
         android:id="@+id/bgt_category"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_weight="0.32"
+        android:layout_weight="24"
         android:layout_marginEnd="8dp"
         android:background="@drawable/input_background"
         android:hint="@string/category"
@@ -41,7 +43,7 @@
         android:id="@+id/bgt_budget"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_weight="0.20"
+        android:layout_weight="24"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/input_background"
@@ -65,13 +67,13 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_weight="0.48"
+        android:layout_weight="52"
         android:layout_marginStart="4dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/input_background_light"
-        android:paddingStart="4dp"
-        android:paddingEnd="8dp">
+        android:paddingStart="2dp"
+        android:paddingEnd="4dp">
 
         <!-- Fixed/Recurring Checkbox -->
         <CheckBox
@@ -79,18 +81,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:buttonTint="@color/colorPrimary"
-            android:minWidth="36dp"
-            android:minHeight="36dp"
-            android:padding="4dp" />
+            android:minWidth="32dp"
+            android:minHeight="32dp"
+            android:padding="2dp" />
 
         <!-- Store Name Input -->
         <EditText
             android:id="@+id/bgt_store"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="6dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="4dp"
+            android:minHeight="40dp"
             android:background="@drawable/input_background"
             android:hint="@string/store"
             android:inputType="text"
@@ -99,7 +102,7 @@
             android:singleLine="true"
             android:textColor="@color/colorTextPrimary"
             android:textColorHint="@color/colorInputHint"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:visibility="invisible"
             android:importantForAutofill="no"
             android:gravity="center_vertical" />
@@ -107,7 +110,7 @@
         <!-- Charge Day Selector -->
         <TextView
             android:id="@+id/bgt_charge_day"
-            android:layout_width="42dp"
+            android:layout_width="36dp"
             android:layout_height="40dp"
             android:background="@drawable/input_background"
             android:gravity="center"

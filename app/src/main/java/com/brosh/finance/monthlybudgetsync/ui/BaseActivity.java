@@ -15,6 +15,7 @@ import com.brosh.finance.monthlybudgetsync.objects.Month;
 import com.brosh.finance.monthlybudgetsync.objects.User;
 import com.brosh.finance.monthlybudgetsync.utils.DBUtil;
 import com.brosh.finance.monthlybudgetsync.utils.LocaleHelper;
+import com.brosh.finance.monthlybudgetsync.utils.SessionGuardUtil;
 import com.brosh.finance.monthlybudgetsync.utils.UiUtil;
 
 /**
@@ -45,6 +46,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         
         // Initialize common components
         initializeData();
+        if (!ensureUserSession()) {
+            return;
+        }
         setupAds();
         setupToolbar();
         
@@ -124,6 +128,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
     
+    /**
+     * Ensures a logged-in user exists; redirects to login otherwise.
+     */
+    protected boolean ensureUserSession() {
+        return SessionGuardUtil.requireUser(this, user);
+    }
+
     /**
      * Checks if data is valid (user and month exist).
      */

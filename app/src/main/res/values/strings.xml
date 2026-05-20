@@ -53,6 +53,7 @@
     <string name="charge_day">charge day</string>
     <string name="create">Create</string>
     <string name="please_insert_budget">please insert budget!</string>
+    <string name="no_budget_changes">No changes to save.</string>
     <string name="create_budget_question">Creating a new budget will delete the current month\'s data, continue?</string>
     <string name="duplicate_category">Duplicate category!</string>
     <string name="illegal_Character">Illegal character!</string>

@@ -50,58 +50,105 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:baselineAligned="false"
+                    android:weightSum="100"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
                     android:gravity="center_vertical">
 
-                    <!-- Category Header -->
+                    <!-- Category: same column as bgt_category -->
                     <TextView
                         android:id="@+id/header_col_1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.32"
+                        android:layout_weight="24"
                         android:layout_marginEnd="8dp"
+                        android:gravity="start|center_vertical"
                         android:text="@string/category"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="11sp"
+                        android:textSize="10sp"
                         android:textStyle="bold"
                         android:textAllCaps="true"
                         android:fontFamily="sans-serif-medium"
-                        android:letterSpacing="0.05" />
+                        android:maxLines="1"
+                        android:ellipsize="end" />
 
-                    <!-- Sum Header -->
+                    <!-- Sum: same column as bgt_budget -->
                     <TextView
                         android:id="@+id/header_col_2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.20"
+                        android:layout_weight="24"
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="8dp"
+                        android:gravity="center"
                         android:text="@string/sum"
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="11sp"
+                        android:textSize="10sp"
                         android:textStyle="bold"
                         android:textAllCaps="true"
                         android:fontFamily="sans-serif-medium"
-                        android:textAlignment="center"
-                        android:letterSpacing="0.05" />
+                        android:maxLines="1"
+                        android:ellipsize="end" />
 
-                    <!-- Fixed/Recurring Header -->
-                    <TextView
+                    <!-- Same inner layout as row: padding + fixed | store | day (mirrors create_budget_row third block) -->
+                    <LinearLayout
                         android:id="@+id/header_col_3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.48"
+                        android:layout_weight="52"
                         android:layout_marginStart="4dp"
-                        android:text="@string/constant_date"
-                        android:textColor="@color/colorTextSecondary"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:textAllCaps="true"
-                        android:fontFamily="sans-serif-medium"
-                        android:letterSpacing="0.05" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="4dp">
+
+                        <TextView
+                            android:id="@+id/header_fixed_toggle"
+                            android:layout_width="36dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/constant_date"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:fontFamily="sans-serif-medium"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
+
+                        <TextView
+                            android:id="@+id/header_store"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:gravity="start|center_vertical"
+                            android:text="@string/store"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:fontFamily="sans-serif-medium"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
+
+                        <TextView
+                            android:id="@+id/header_charge_day"
+                            android:layout_width="36dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/charge_date"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:fontFamily="sans-serif-medium"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -109,8 +156,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="10dp"
                     android:background="@color/colorDivider"
                     android:alpha="0.4" />
@@ -162,7 +209,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/btn_primary"
                 android:elevation="2dp"
-                android:onClick="createBudget"
+                android:onClick="onCreateBudgetClicked"
                 android:text="@string/create"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"

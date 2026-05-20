@@ -936,6 +936,9 @@ public final class DBUtil {
             if (isFrqTran(bgt))
                 idPerMonth++;
             String catId = getDBCategoriesPath(refMonth).push().getKey();
+            if (catId == null) {
+                continue;
+            }
             Category cat = budgetToCategory(bgt, catId, idPerMonth);
             updateSpecificCategory(refMonth, budgetNumber, cat);
         }
@@ -951,6 +954,10 @@ public final class DBUtil {
             Date payDate = DateUtil.getCurrentDate(budget.getChargeDay());
             String yearMonth = DateUtil.getYearMonth(DateUtil.getTodayDate(), Config.SEPARATOR);
             String tranId = getDBTransactionsPath(yearMonth, catId).push().getKey();
+            if (tranId == null) {
+                cat.setTransactions(transactions);
+                return cat;
+            }
             Transaction transaction = new Transaction(tranId, idPerMonth, budget.getCategoryName(), paymentMethod, budget.getShop(), payDate, budget.getValue());
             transactions.put(tranId, transaction);
             String shop = budget.getShop();
